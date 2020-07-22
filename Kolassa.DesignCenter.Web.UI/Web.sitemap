@@ -1,0 +1,33 @@
+﻿<siteMap>
+  <siteMapNode title="Home" description="Home" url="default.aspx" >
+    <siteMapNode title="My Projects" description="My Projects"
+     url="Projects.aspx">
+      <siteMapNode title="Images"
+       description="Project Images"
+       url="flickr/flickr.aspx" />
+      <siteMapNode title="Customers"
+       description="Customers"
+       url="frmCustomers.aspx" />
+          <siteMapNode title="New Quote"
+       description="New QUote"
+       url="frmNewQuote.aspx" />
+    </siteMapNode>
+    <siteMapNode title="Admin"
+     description="Floors"
+     url="frmFloors.aspx">
+      <siteMapNode title="Unit Types"
+       description="Edit Unit Types"
+       url="frmUnitTypes.aspx" />
+      <siteMapNode title="Levels"
+       description="Prject Levels"
+       url="frmLevels.aspx" />
+      <siteMapNode title="Dynamic"
+       description="Dynamic Data Entry"
+       url="Dynamic.aspx" />
+          <siteMapNode title="Units"
+       description="Units"
+       url="frmUnits.aspx" />
+    </siteMapNode>
+  </siteMapNode>
+</siteMap>
+

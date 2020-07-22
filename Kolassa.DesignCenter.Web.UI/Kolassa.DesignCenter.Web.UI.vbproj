@@ -1,0 +1,1373 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>
+    </SchemaVersion>
+    <ProjectGuid>{9D0C7CFD-1C10-4A30-9CC0-7C17482ED3E0}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Kolassa.DesignCenter.Web.UI</RootNamespace>
+    <AssemblyName>Kolassa.DesignCenter.Web.UI</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <MyType>Custom</MyType>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TypeScriptToolsVersion>2.5</TypeScriptToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>Kolassa.DesignCenter.Web.UI.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>Kolassa.DesignCenter.Web.UI.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AjaxControlToolkit">
+      <HintPath>..\packages\AjaxControlToolkit.18.1.0\lib\net40\AjaxControlToolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="AspNet.ScriptManager.bootstrap">
+      <HintPath>..\packages\AspNet.ScriptManager.bootstrap.4.0.0\lib\net45\AspNet.ScriptManager.bootstrap.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="AspNet.ScriptManager.jQuery">
+      <HintPath>..\packages\AspNet.ScriptManager.jQuery.3.3.1\lib\net45\AspNet.ScriptManager.jQuery.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FlickrNet">
+      <HintPath>..\..\..\..\Visual Studio 2015\Projects\Select2017\packages\FlickrNet.3.24.0\lib\net20\FlickrNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Kolassa.DesignCenter.ReportManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Kolassa.DesignCenter.ReportManager\bin\Release\PublishOutput\bin\Kolassa.DesignCenter.ReportManager.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.Web">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.Web.2.4.1\lib\net45\Microsoft.AI.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.4.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.FriendlyUrls">
+      <HintPath>..\..\..\..\Visual Studio 2015\Projects\Select2017\packages\Microsoft.AspNet.FriendlyUrls.Core.1.0.2\lib\net45\Microsoft.AspNet.FriendlyUrls.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.TelemetryCorrelation">
+      <HintPath>..\packages\Microsoft.AspNet.TelemetryCorrelation.1.0.0\lib\net45\Microsoft.AspNet.TelemetryCorrelation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Web.Optimization.WebForms">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.WebForms.1.1.3\lib\net45\Microsoft.AspNet.Web.Optimization.WebForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.2.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.Security.2.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.2.1.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Facebook">
+      <HintPath>..\packages\Microsoft.Owin.Security.Facebook.3.0.1\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Google">
+      <HintPath>..\packages\Microsoft.Owin.Security.Google.3.0.1\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.MicrosoftAccount">
+      <HintPath>..\packages\Microsoft.Owin.Security.MicrosoftAccount.3.0.1\lib\net45\Microsoft.Owin.Security.MicrosoftAccount.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.2.1.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Twitter">
+      <HintPath>..\packages\Microsoft.Owin.Security.Twitter.3.0.1\lib\net45\Microsoft.Owin.Security.Twitter.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Diagnostics.DiagnosticSource">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.DataVisualization" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Http.Common, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Web.Http.Common.4.0.20126.16343\lib\net40\System.Web.Http.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\..\..\..\Visual Studio 2015\Projects\Select2017\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Telerik.Web.UI, Version=2017.2.621.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Desktop\radgrid\Bin\Telerik.Web.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Themes\Basic\" />
+    <Folder Include="images\flickr\NewFolder1\" />
+    <Folder Include="obj\Release\TempPE\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Collections.Specialized" />
+    <Import Include="System.Configuration" />
+    <Import Include="System.Text" />
+    <Import Include="System.Text.RegularExpressions" />
+    <Import Include="System.Web" />
+    <Import Include="System.Web.Caching" />
+    <Import Include="System.Web.SessionState" />
+    <Import Include="System.Web.Security" />
+    <Import Include="System.Web.Profile" />
+    <Import Include="System.Web.UI" />
+    <Import Include="System.Web.UI.WebControls" />
+    <Import Include="System.Web.UI.WebControls.WebParts" />
+    <Import Include="System.Web.UI.HtmlControls" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="About.aspx" />
+    <Content Include="Account\AddPhoneNumber.aspx" />
+    <Content Include="Account\Confirm.aspx" />
+    <Content Include="Account\Forgot.aspx" />
+    <Content Include="Account\Lockout.aspx" />
+    <Content Include="Account\Login.aspx" />
+    <Content Include="Account\Manage.aspx" />
+    <Content Include="Account\ManageLogins.aspx" />
+    <Content Include="Account\ManagePassword.aspx" />
+    <Content Include="Account\OpenAuthProviders.ascx" />
+    <Content Include="Account\Register.aspx" />
+    <Content Include="Account\RegisterExternalLogin.aspx" />
+    <Content Include="Account\ResetPassword.aspx" />
+    <Content Include="Account\ResetPasswordConfirmation.aspx" />
+    <Content Include="Account\TwoFactorAuthenticationSignIn.aspx" />
+    <Content Include="Account\VerifyPhoneNumber.aspx" />
+    <Content Include="Content\bootstrap-grid.css" />
+    <Content Include="Content\bootstrap-grid.min.css" />
+    <Content Include="Content\bootstrap-reboot.css" />
+    <Content Include="Content\bootstrap-reboot.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="frmUnitTypes.aspx" />
+    <Content Include="Old_App_Code\License.txt" />
+    <Content Include="App_Data\aspnet-Select2017-20170607095616.mdf" />
+    <Content Include="App_Data\aspnet-Select2017-20170607095616_log.ldf">
+      <DependentUpon>aspnet-Select2017-20170607095616.mdf</DependentUpon>
+    </Content>
+    <Content Include="App_Themes\amelia-bootstrap-theme.css" />
+    <Content Include="App_Themes\base-bootstrap-theme.css" />
+    <Content Include="App_Themes\cyborg-bootstrap-theme.css" />
+    <Content Include="App_Themes\simple-bootstrap-theme.css" />
+    <Content Include="bin\AjaxControlToolkit.dll" />
+    <Content Include="bin\Antlr3.Runtime.dll" />
+    <Content Include="bin\Antlr3.Runtime.pdb" />
+    <Content Include="bin\App_Licenses.dll" />
+    <Content Include="bin\AspNet.ScriptManager.bootstrap.dll" />
+    <Content Include="bin\AspNet.ScriptManager.jQuery.dll" />
+    <Content Include="bin\EntityFramework.dll" />
+    <Content Include="bin\EntityFramework.SqlServer.dll" />
+    <Content Include="bin\EntityFramework.SqlServer.xml" />
+    <Content Include="bin\EntityFramework.xml" />
+    <Content Include="bin\FlickrNet.dll" />
+    <Content Include="bin\Kolassa.DesignCenter.ReportManager.dll" />
+    <Content Include="bin\Kolassa.DesignCenter.ReportManager.pdb" />
+    <Content Include="bin\Kolassa.DesignCenter.ReportManager.xml" />
+    <Content Include="bin\MenuPilot.dll" />
+    <Content Include="bin\Microsoft.AI.Agent.Intercept.dll" />
+    <Content Include="bin\Microsoft.AI.DependencyCollector.dll" />
+    <Content Include="bin\Microsoft.AI.DependencyCollector.xml" />
+    <Content Include="bin\Microsoft.AI.PerfCounterCollector.dll" />
+    <Content Include="bin\Microsoft.AI.ServerTelemetryChannel.dll" />
+    <Content Include="bin\Microsoft.AI.ServerTelemetryChannel.xml" />
+    <Content Include="bin\Microsoft.AI.Web.dll" />
+    <Content Include="bin\Microsoft.AI.Web.xml" />
+    <Content Include="bin\Microsoft.AI.WindowsServer.dll" />
+    <Content Include="bin\Microsoft.AI.WindowsServer.xml" />
+    <Content Include="bin\Microsoft.ApplicationInsights.dll" />
+    <Content Include="bin\Microsoft.ApplicationInsights.xml" />
+    <Content Include="bin\Microsoft.AspNet.FriendlyUrls.dll" />
+    <Content Include="bin\Microsoft.AspNet.FriendlyUrls.xml" />
+    <Content Include="bin\Microsoft.AspNet.Identity.Core.dll" />
+    <Content Include="bin\Microsoft.AspNet.Identity.Core.xml" />
+    <Content Include="bin\Microsoft.AspNet.Identity.EntityFramework.dll" />
+    <Content Include="bin\Microsoft.AspNet.Identity.EntityFramework.xml" />
+    <Content Include="bin\Microsoft.AspNet.Identity.Owin.dll" />
+    <Content Include="bin\Microsoft.AspNet.Identity.Owin.xml" />
+    <Content Include="bin\Microsoft.AspNet.TelemetryCorrelation.dll" />
+    <Content Include="bin\Microsoft.AspNet.TelemetryCorrelation.xml" />
+    <Content Include="bin\Microsoft.AspNet.Web.Optimization.WebForms.dll" />
+    <Content Include="bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll" />
+    <Content Include="bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml" />
+    <Content Include="bin\Microsoft.Owin.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.Cookies.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.Cookies.xml" />
+    <Content Include="bin\Microsoft.Owin.Security.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.OAuth.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.OAuth.xml" />
+    <Content Include="bin\Microsoft.Owin.Security.xml" />
+    <Content Include="bin\Microsoft.Owin.xml" />
+    <Content Include="bin\Microsoft.Web.Infrastructure.dll" />
+    <Content Include="bin\Newtonsoft.Json.dll" />
+    <Content Include="bin\Newtonsoft.Json.xml" />
+    <Content Include="bin\Owin.dll" />
+    <Content Include="bin\roslyn\csc.exe" />
+    <Content Include="bin\roslyn\csi.exe" />
+    <Content Include="bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.dll" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll" />
+    <Content Include="bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll" />
+    <Content Include="bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll" />
+    <Content Include="bin\roslyn\Microsoft.Win32.Primitives.dll" />
+    <Content Include="bin\roslyn\System.AppContext.dll" />
+    <Content Include="bin\roslyn\System.Collections.Immutable.dll" />
+    <Content Include="bin\roslyn\System.Console.dll" />
+    <Content Include="bin\roslyn\System.Diagnostics.FileVersionInfo.dll" />
+    <Content Include="bin\roslyn\System.Diagnostics.Process.dll" />
+    <Content Include="bin\roslyn\System.Diagnostics.StackTrace.dll" />
+    <Content Include="bin\roslyn\System.IO.Compression.dll" />
+    <Content Include="bin\roslyn\System.IO.FileSystem.dll" />
+    <Content Include="bin\roslyn\System.IO.FileSystem.DriveInfo.dll" />
+    <Content Include="bin\roslyn\System.IO.FileSystem.Primitives.dll" />
+    <Content Include="bin\roslyn\System.IO.Pipes.dll" />
+    <Content Include="bin\roslyn\System.Reflection.Metadata.dll" />
+    <Content Include="bin\roslyn\System.Security.AccessControl.dll" />
+    <Content Include="bin\roslyn\System.Security.Claims.dll" />
+    <Content Include="bin\roslyn\System.Security.Cryptography.Algorithms.dll" />
+    <Content Include="bin\roslyn\System.Security.Cryptography.Encoding.dll" />
+    <Content Include="bin\roslyn\System.Security.Cryptography.Primitives.dll" />
+    <Content Include="bin\roslyn\System.Security.Cryptography.X509Certificates.dll" />
+    <Content Include="bin\roslyn\System.Security.Principal.Windows.dll" />
+    <Content Include="bin\roslyn\System.Text.Encoding.CodePages.dll" />
+    <Content Include="bin\roslyn\System.Threading.Thread.dll" />
+    <Content Include="bin\roslyn\System.ValueTuple.dll" />
+    <Content Include="bin\roslyn\System.Xml.ReaderWriter.dll" />
+    <Content Include="bin\roslyn\System.Xml.XmlDocument.dll" />
+    <Content Include="bin\roslyn\System.Xml.XPath.dll" />
+    <Content Include="bin\roslyn\System.Xml.XPath.XDocument.dll" />
+    <Content Include="bin\roslyn\vbc.exe" />
+    <Content Include="bin\roslyn\VBCSCompiler.exe" />
+    <Content Include="bin\System.Diagnostics.DiagnosticSource.dll" />
+    <Content Include="bin\System.Diagnostics.DiagnosticSource.xml" />
+    <Content Include="bin\System.Web.Optimization.dll" />
+    <Content Include="bin\System.Web.Optimization.xml" />
+    <Content Include="bin\Telerik.Web.UI.dll" />
+    <Content Include="bin\Telerik.Web.UI.xml" />
+    <Content Include="bin\WebGrease.dll" />
+    <Content Include="Contact.aspx" />
+    <Content Include="Content\Sidebar.css" />
+    <Content Include="Content\Site.css" />
+    <Content Include="controls\ModalPopupRelation.ascx" />
+    <Content Include="controls\ModelPopupRelation.ascx" />
+    <Content Include="controls\ModelPopupRelation.ascx.cs" />
+    <Content Include="controls\ModelPopupRelation.ascx.designer.cs" />
+    <Content Include="css\flickr\colorbox.css" />
+    <Content Include="css\flickr\Site.css" />
+    <Content Include="css\menu.css" />
+    <Content Include="css\RadGridBootstsap\base-bootstrap-theme.css" />
+    <Content Include="css\RadGridBootstsap\RadGrid.css" />
+    <Content Include="css\RadGridBootstsap\Scripts.js" />
+    <Content Include="css\RadGridBootstsap\Styles.css" />
+    <Content Include="css\RadStyles.css" />
+    <Content Include="css\report.css" />
+    <Content Include="css\StyleSheet.css" />
+    <Content Include="ctrlContactEntry.ascx" />
+    <Content Include="ctrlContacts.ascx" />
+    <Content Include="ctrlCustomers.ascx" />
+    <Content Include="ctrlGoogleChartPie.ascx" />
+    <Content Include="ctrlImageNew.ascx" />
+    <Content Include="ctrlImages.ascx" />
+    <Content Include="ctrlSubObjects.ascx" />
+    <Content Include="Default.aspx" />
+    <Content Include="Default1.aspx" />
+    <Content Include="Default2.aspx" />
+    <Content Include="favicon.ico" />
+    <Content Include="flickr\About.aspx" />
+    <Content Include="flickr\About.aspx.cs" />
+    <Content Include="flickr\Default.aspx" />
+    <Content Include="flickr\Default.aspx.cs" />
+    <Content Include="flickr\Flickr.aspx" />
+    <Content Include="flickr\Flickr.aspx.cs" />
+    <Content Include="flickr\Site.master.cs" />
+    <Content Include="frmAdjustments.aspx" />
+    <Content Include="frmBuildingLevels.aspx" />
+    <Content Include="frmCommunications.aspx" />
+    <Content Include="frmCommunicationsMultiQuote.aspx" />
+    <Content Include="frmCompanyInformation.aspx" />
+    <Content Include="frmCustomers.aspx" />
+    <Content Include="frmCustomersold.aspx" />
+    <Content Include="frmEditNewRequestedUpgrades.aspx" />
+    <Content Include="frmEditRequestedUpgrades.aspx" />
+    <Content Include="frmEventLogs.aspx" />
+    <Content Include="frmExplodeSelections.aspx" />
+    <Content Include="frmFloors.aspx" />
+    <Content Include="frmIncompatibilities.aspx" />
+    <Content Include="frmIncompatlist.aspx" />
+    <Content Include="frmIncompatMSG.aspx" />
+    <Content Include="frmLevels.aspx" />
+    <Content Include="frmMissingSelections.aspx" />
+    <Content Include="frmNewQuote.aspx" />
+    <Content Include="frmOptionPricing.aspx" />
+    <Content Include="frmOptionPricingQuickLoad.aspx" />
+    <Content Include="frmPayments.aspx" />
+    <Content Include="frmPaymentsMultiQuote.aspx" />
+    <Content Include="frmProjects.aspx" />
+    <Content Include="frmQuote - Copy.aspx" />
+    <Content Include="frmQuoteUnlock.aspx" />
+    <Content Include="frmQuoteUnlockPhase1.aspx" />
+    <Content Include="frmQuoteUnlockPhase2.aspx" />
+    <Content Include="frmRegistration.aspx" />
+    <Content Include="frmReportCategoryMap.aspx" />
+    <Content Include="frmReportManager.aspx" />
+    <Content Include="frmReportManagerMaintenance.aspx" />
+    <Content Include="frmRoomTypes.aspx" />
+    <Content Include="frmRoomUpgradesAvailable.aspx" />
+    <Content Include="frmSearchForCustomer.aspx" />
+    <Content Include="frmsubfrmVendorPricing.aspx" />
+    <Content Include="frmsubReportFields.aspx" />
+    <Content Include="frmTiers.aspx" />
+    <Content Include="frmUnitProfiles.aspx" />
+    <Content Include="frmUnits.aspx" />
+    <Content Include="frmUpgradeCategories.aspx" />
+    <Content Include="frmVendorConsolidation.aspx" />
+    <Content Include="frmVendors.aspx" />
+    <Content Include="images\add.PNG" />
+    <Content Include="images\add1.png" />
+    <Content Include="images\calendar.gif" />
+    <Content Include="images\cancel.png" />
+    <Content Include="images\Cancel1.png" />
+    <Content Include="images\collapse.jpg" />
+    <Content Include="images\delete.png" />
+    <Content Include="images\delete1.png" />
+    <Content Include="images\edit.jpg" />
+    <Content Include="images\edit.PNG" />
+    <Content Include="images\edit1.PNG" />
+    <Content Include="images\excel.jpg" />
+    <Content Include="images\expand.jpg" />
+    <Content Include="images\flickr\border.png" />
+    <Content Include="images\flickr\controls.png" />
+    <Content Include="images\flickr\first.gif" />
+    <Content Include="images\flickr\internet_explorer\borderBottomCenter.png" />
+    <Content Include="images\flickr\internet_explorer\borderBottomLeft.png" />
+    <Content Include="images\flickr\internet_explorer\borderBottomRight.png" />
+    <Content Include="images\flickr\internet_explorer\borderMiddleLeft.png" />
+    <Content Include="images\flickr\internet_explorer\borderMiddleRight.png" />
+    <Content Include="images\flickr\internet_explorer\borderTopCenter.png" />
+    <Content Include="images\flickr\internet_explorer\borderTopLeft.png" />
+    <Content Include="images\flickr\internet_explorer\borderTopRight.png" />
+    <Content Include="images\flickr\last.gif" />
+    <Content Include="images\flickr\loading.gif" />
+    <Content Include="images\flickr\loading_background.png" />
+    <Content Include="images\flickr\next.gif" />
+    <Content Include="images\flickr\overlay.png" />
+    <Content Include="images\flickr\previous.gif" />
+    <Content Include="images\insert1.PNG" />
+    <Content Include="images\leaf.JPG" />
+    <Content Include="images\loading.gif" />
+    <Content Include="images\loading_nice.gif" />
+    <Content Include="images\Logo.png" />
+    <Content Include="images\logo2.png" />
+    <Content Include="images\logo3.png" />
+    <Content Include="images\NewLogo.png" />
+    <Content Include="images\NoImage.png" />
+    <Content Include="images\OK.png" />
+    <Content Include="images\people-jerks-shovel.gif" />
+    <Content Include="images\png\airplane.png" />
+    <Content Include="images\png\attachment.png" />
+    <Content Include="images\png\broken-heart.png" />
+    <Content Include="images\png\browser.png" />
+    <Content Include="images\png\cancel.png" />
+    <Content Include="images\png\center-alignment.png" />
+    <Content Include="images\png\clock-1.png" />
+    <Content Include="images\png\clock.png" />
+    <Content Include="images\png\cloud-computing.png" />
+    <Content Include="images\png\compass.png" />
+    <Content Include="images\png\computer.png" />
+    <Content Include="images\png\cursor.png" />
+    <Content Include="images\png\document-1.png" />
+    <Content Include="images\png\document-2.png" />
+    <Content Include="images\png\document-3.png" />
+    <Content Include="images\png\document.png" />
+    <Content Include="images\png\download.png" />
+    <Content Include="images\png\earth-globe.png" />
+    <Content Include="images\png\email.png" />
+    <Content Include="images\png\film.png" />
+    <Content Include="images\png\folder.png" />
+    <Content Include="images\png\gamepad.png" />
+    <Content Include="images\png\group.png" />
+    <Content Include="images\png\heart.png" />
+    <Content Include="images\png\internet.png" />
+    <Content Include="images\png\layers.png" />
+    <Content Include="images\png\left-alignment.png" />
+    <Content Include="images\png\light-bulb-1.png" />
+    <Content Include="images\png\light-bulb.png" />
+    <Content Include="images\png\link.png" />
+    <Content Include="images\png\list.png" />
+    <Content Include="images\png\mail.png" />
+    <Content Include="images\png\microphone.png" />
+    <Content Include="images\png\notification.png" />
+    <Content Include="images\png\padlock.png" />
+    <Content Include="images\png\pencil.png" />
+    <Content Include="images\png\phone-book-1.png" />
+    <Content Include="images\png\phone-book.png" />
+    <Content Include="images\png\picture-1.png" />
+    <Content Include="images\png\picture.png" />
+    <Content Include="images\png\placeholder.png" />
+    <Content Include="images\png\push-pin.png" />
+    <Content Include="images\png\right-alignment.png" />
+    <Content Include="images\png\settings.png" />
+    <Content Include="images\png\share.png" />
+    <Content Include="images\png\shield-1.png" />
+    <Content Include="images\png\shield-2.png" />
+    <Content Include="images\png\shield.png" />
+    <Content Include="images\png\smartphone.png" />
+    <Content Include="images\png\speech-bubble-1.png" />
+    <Content Include="images\png\speech-bubble.png" />
+    <Content Include="images\png\tablet.png" />
+    <Content Include="images\png\unlock.png" />
+    <Content Include="images\png\upload.png" />
+    <Content Include="images\png\user-1.png" />
+    <Content Include="images\png\user-2.png" />
+    <Content Include="images\png\user-3.png" />
+    <Content Include="images\png\user.png" />
+    <Content Include="images\png\volume.png" />
+    <Content Include="images\png\zoom-in.png" />
+    <Content Include="images\png\zoom-out.png" />
+    <Content Include="images\radActionsSprite1.png" />
+    <Content Include="images\radActionsSprite2.png" />
+    <Content Include="images\radActionsSprite3.png" />
+    <Content Include="images\update.PNG" />
+    <Content Include="Kolassa.DesignCenter.Web.UI.vbproj.user" />
+    <Content Include="Logins.aspx" />
+    <Content Include="MikeATest.ascx" />
+    <Content Include="obj\Debug\TempPE\My Project.Resources.Designer.vb.dll" />
+    <Content Include="obj\Debug\WebForms_Basic.xml" />
+    <Content Include="Project_Readme.html" />
+    <Content Include="Scripts\bootstrap.bundle.js" />
+    <Content Include="Scripts\bootstrap.bundle.min.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\esm\popper-utils.js" />
+    <Content Include="Scripts\esm\popper-utils.min.js" />
+    <Content Include="Scripts\esm\popper.js" />
+    <Content Include="Scripts\esm\popper.min.js" />
+    <Content Include="Scripts\esm\popper.min.js.map" />
+    <Content Include="Scripts\esm\popper.js.map" />
+    <Content Include="Scripts\esm\popper-utils.min.js.map" />
+    <Content Include="Scripts\esm\popper-utils.js.map" />
+    <Content Include="Scripts\bootstrap.min.js.map" />
+    <Content Include="Scripts\bootstrap.js.map" />
+    <Content Include="Scripts\bootstrap.bundle.min.js.map" />
+    <Content Include="Scripts\bootstrap.bundle.js.map" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-reboot.min.css.map" />
+    <Content Include="Content\bootstrap-reboot.css.map" />
+    <Content Include="Content\bootstrap-grid.min.css.map" />
+    <Content Include="Content\bootstrap-grid.css.map" />
+    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.3.1.js" />
+    <Content Include="Scripts\jquery-3.3.1.min.js" />
+    <Content Include="Scripts\jquery-3.3.1.slim.js" />
+    <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
+    <Content Include="Scripts\jquery.colorbox-min.js" />
+    <Content Include="Scripts\jquery.min.js" />
+    <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\popper-utils.js" />
+    <Content Include="Scripts\popper-utils.min.js" />
+    <Content Include="Scripts\popper.js" />
+    <Content Include="Scripts\popper.min.js" />
+    <Content Include="Scripts\respond.js" />
+    <Content Include="Scripts\respond.matchmedia.addListener.js" />
+    <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
+    <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\umd\popper-utils.js" />
+    <Content Include="Scripts\umd\popper-utils.min.js" />
+    <Content Include="Scripts\umd\popper.js" />
+    <Content Include="Scripts\umd\popper.min.js" />
+    <Content Include="Scripts\WebForms\DetailsView.js" />
+    <Content Include="Scripts\WebForms\Focus.js" />
+    <Content Include="Scripts\WebForms\GridView.js" />
+    <Content Include="Scripts\WebForms\Menu.js" />
+    <Content Include="Scripts\WebForms\MenuStandards.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjax.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxApplicationServices.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxComponentModel.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxCore.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxGlobalization.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxHistory.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxNetwork.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxSerialization.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxTimer.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxWebForms.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxWebServices.js" />
+    <Content Include="Scripts\WebForms\SmartNav.js" />
+    <Content Include="Scripts\WebForms\TreeView.js" />
+    <Content Include="Scripts\WebForms\WebForms.js" />
+    <Content Include="Scripts\WebForms\WebParts.js" />
+    <Content Include="Scripts\WebForms\WebUIValidation.js" />
+    <Content Include="Scripts\umd\popper.min.js.map" />
+    <Content Include="Scripts\umd\popper.js.map" />
+    <Content Include="Scripts\umd\popper-utils.min.js.map" />
+    <Content Include="Scripts\umd\popper-utils.js.map" />
+    <Content Include="Scripts\README.md" />
+    <Content Include="Scripts\popper.min.js.map" />
+    <Content Include="Scripts\popper.js.map" />
+    <Content Include="Scripts\popper-utils.min.js.map" />
+    <Content Include="Scripts\popper-utils.js.map" />
+    <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.3.1.min.map" />
+    <None Include="Scripts\_references.js" />
+    <Content Include="Test.html" />
+    <Content Include="ViewSwitcher.ascx" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="About.aspx.designer.vb">
+      <DependentUpon>About.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="About.aspx.vb">
+      <DependentUpon>About.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\AddPhoneNumber.aspx.designer.vb">
+      <DependentUpon>AddPhoneNumber.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\AddPhoneNumber.aspx.vb">
+      <DependentUpon>AddPhoneNumber.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\Confirm.aspx.designer.vb">
+      <DependentUpon>Confirm.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Confirm.aspx.vb">
+      <DependentUpon>Confirm.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\Forgot.aspx.designer.vb">
+      <DependentUpon>Forgot.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Forgot.aspx.vb">
+      <DependentUpon>Forgot.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\Lockout.aspx.designer.vb">
+      <DependentUpon>Lockout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Lockout.aspx.vb">
+      <DependentUpon>Lockout.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\Login.aspx.designer.vb">
+      <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Login.aspx.vb">
+      <DependentUpon>Login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\Manage.aspx.designer.vb">
+      <DependentUpon>Manage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Manage.aspx.vb">
+      <DependentUpon>Manage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\ManageLogins.aspx.designer.vb">
+      <DependentUpon>ManageLogins.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\ManageLogins.aspx.vb">
+      <DependentUpon>ManageLogins.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\ManagePassword.aspx.designer.vb">
+      <DependentUpon>ManagePassword.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\ManagePassword.aspx.vb">
+      <DependentUpon>ManagePassword.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\OpenAuthProviders.ascx.designer.vb">
+      <DependentUpon>OpenAuthProviders.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\OpenAuthProviders.ascx.vb">
+      <DependentUpon>OpenAuthProviders.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\Register.aspx.designer.vb">
+      <DependentUpon>Register.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Register.aspx.vb">
+      <DependentUpon>Register.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\RegisterExternalLogin.aspx.designer.vb">
+      <DependentUpon>RegisterExternalLogin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\RegisterExternalLogin.aspx.vb">
+      <DependentUpon>RegisterExternalLogin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\ResetPassword.aspx.designer.vb">
+      <DependentUpon>ResetPassword.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\ResetPassword.aspx.vb">
+      <DependentUpon>ResetPassword.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\ResetPasswordConfirmation.aspx.designer.vb">
+      <DependentUpon>ResetPasswordConfirmation.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\ResetPasswordConfirmation.aspx.vb">
+      <DependentUpon>ResetPasswordConfirmation.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\TwoFactorAuthenticationSignIn.aspx.designer.vb">
+      <DependentUpon>TwoFactorAuthenticationSignIn.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\TwoFactorAuthenticationSignIn.aspx.vb">
+      <DependentUpon>TwoFactorAuthenticationSignIn.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\VerifyPhoneNumber.aspx.designer.vb">
+      <DependentUpon>VerifyPhoneNumber.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\VerifyPhoneNumber.aspx.vb">
+      <DependentUpon>VerifyPhoneNumber.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmBuildingLevels.aspx.designer.vb">
+      <DependentUpon>frmBuildingLevels.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmCommunications.aspx.designer.vb">
+      <DependentUpon>frmCommunications.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmCommunicationsMultiQuote.aspx.designer.vb">
+      <DependentUpon>frmCommunicationsMultiQuote.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmCompanyInformation.aspx.designer.vb">
+      <DependentUpon>frmCompanyInformation.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmCustomersold.aspx.designer.vb">
+      <DependentUpon>frmCustomersold.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmEditNewRequestedUpgrades.aspx.designer.vb">
+      <DependentUpon>frmEditNewRequestedUpgrades.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmEditRequestedUpgrades.aspx.designer.vb">
+      <DependentUpon>frmEditRequestedUpgrades.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmEventLogs.aspx.designer.vb">
+      <DependentUpon>frmEventLogs.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmExplodeSelections.aspx.designer.vb">
+      <DependentUpon>frmExplodeSelections.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmIncompatibilities.aspx.designer.vb">
+      <DependentUpon>frmIncompatibilities.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmIncompatlist.aspx.designer.vb">
+      <DependentUpon>frmIncompatlist.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmIncompatMSG.aspx.designer.vb">
+      <DependentUpon>frmIncompatMSG.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmMissingSelections.aspx.designer.vb">
+      <DependentUpon>frmMissingSelections.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmNewQuote.aspx.designer.vb">
+      <DependentUpon>frmNewQuote.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmOptionPricing.aspx.designer.vb">
+      <DependentUpon>frmOptionPricing.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmOptionPricingQuickLoad.aspx.designer.vb">
+      <DependentUpon>frmOptionPricingQuickLoad.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmPayments.aspx.designer.vb">
+      <DependentUpon>frmPayments.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmPaymentsMultiQuote.aspx.designer.vb">
+      <DependentUpon>frmPaymentsMultiQuote.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmQuoteUnlock.aspx.designer.vb">
+      <DependentUpon>frmQuoteUnlock.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmQuoteUnlockPhase1.aspx.designer.vb">
+      <DependentUpon>frmQuoteUnlockPhase1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmQuoteUnlockPhase2.aspx.designer.vb">
+      <DependentUpon>frmQuoteUnlockPhase2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmRegistration.aspx.designer.vb">
+      <DependentUpon>frmRegistration.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmReportCategoryMap.aspx.designer.vb">
+      <DependentUpon>frmReportCategoryMap.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmReportManager.aspx.designer.vb">
+      <DependentUpon>frmReportManager.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmReportManagerMaintenance.aspx.designer.vb">
+      <DependentUpon>frmReportManagerMaintenance.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmRoomTypes.aspx.designer.vb">
+      <DependentUpon>frmRoomTypes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmRoomUpgradesAvailable.aspx.designer.vb">
+      <DependentUpon>frmRoomUpgradesAvailable.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmSearchForCustomer.aspx.designer.vb">
+      <DependentUpon>frmSearchForCustomer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmsubfrmVendorPricing.aspx.designer.vb">
+      <DependentUpon>frmsubfrmVendorPricing.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmsubReportFields.aspx.designer.vb">
+      <DependentUpon>frmsubReportFields.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmTiers.aspx.designer.vb">
+      <DependentUpon>frmTiers.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmUnitProfiles.aspx.designer.vb">
+      <DependentUpon>frmUnitProfiles.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmUnitTypes.aspx.designer.vb">
+      <DependentUpon>frmUnitTypes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmUnitTypes.aspx.vb">
+      <DependentUpon>frmUnitTypes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmUpgradeCategories.aspx.designer.vb">
+      <DependentUpon>frmUpgradeCategories.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmVendorConsolidation.aspx.designer.vb">
+      <DependentUpon>frmVendorConsolidation.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmVendors.aspx.designer.vb">
+      <DependentUpon>frmVendors.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MikeATest.ascx.designer.vb">
+      <DependentUpon>MikeATest.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Old_App_Code\Class1.vb" />
+    <Compile Include="Old_App_Code\clsBase.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Old_App_Code\clsControl.vb" />
+    <Compile Include="Old_App_Code\clsDataLoader.vb" />
+    <Compile Include="Old_App_Code\clsObjects.vb" />
+    <Compile Include="Old_App_Code\clsQuote.vb" />
+    <Compile Include="Old_App_Code\clsSelectDataLoader.vb" />
+    <Compile Include="Old_App_Code\clsTest.vb" />
+    <Compile Include="Old_App_Code\DynamicallyTemplatedGridViewHandler.vb" />
+    <Compile Include="Old_App_Code\FlickrBLL.vb" />
+    <Compile Include="Old_App_Code\ReportControl.vb" />
+    <Compile Include="App_Start\BundleConfig.vb" />
+    <Compile Include="App_Start\IdentityConfig.vb" />
+    <Compile Include="App_Start\RouteConfig.vb" />
+    <Compile Include="App_Start\Startup.Auth.vb" />
+    <Compile Include="Contact.aspx.designer.vb">
+      <DependentUpon>Contact.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Contact.aspx.vb">
+      <DependentUpon>Contact.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="controls\ModalPopupRelation.ascx.designer.vb">
+      <DependentUpon>ModalPopupRelation.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="controls\ModalPopupRelation.ascx.vb">
+      <DependentUpon>ModalPopupRelation.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ctrlContactEntry.ascx.designer.vb">
+      <DependentUpon>ctrlContactEntry.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ctrlContactEntry.ascx.vb">
+      <DependentUpon>ctrlContactEntry.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ctrlContacts.ascx.designer.vb">
+      <DependentUpon>ctrlContacts.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ctrlContacts.ascx.vb">
+      <DependentUpon>ctrlContacts.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ctrlCustomers.ascx.designer.vb">
+      <DependentUpon>ctrlCustomers.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ctrlCustomers.ascx.vb">
+      <DependentUpon>ctrlCustomers.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ctrlGoogleChartPie.ascx.designer.vb">
+      <DependentUpon>ctrlGoogleChartPie.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ctrlGoogleChartPie.ascx.vb">
+      <DependentUpon>ctrlGoogleChartPie.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ctrlImageNew.ascx.designer.vb">
+      <DependentUpon>ctrlImageNew.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ctrlImageNew.ascx.vb">
+      <DependentUpon>ctrlImageNew.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ctrlImages.ascx.designer.vb">
+      <DependentUpon>ctrlImages.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ctrlImages.ascx.vb">
+      <DependentUpon>ctrlImages.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ctrlSubObjects.ascx.designer.vb">
+      <DependentUpon>ctrlSubObjects.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ctrlSubObjects.ascx.vb">
+      <DependentUpon>ctrlSubObjects.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Default.aspx.designer.vb">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Default.aspx.vb">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Default1.aspx.designer.vb">
+      <DependentUpon>Default1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Default1.aspx.vb">
+      <DependentUpon>Default1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Default2.aspx.designer.vb">
+      <DependentUpon>Default2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Default2.aspx.vb">
+      <DependentUpon>Default2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmAdjustments.aspx.designer.vb">
+      <DependentUpon>frmAdjustments.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmAdjustments.aspx.vb">
+      <DependentUpon>frmAdjustments.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmBuildingLevels.aspx.vb">
+      <DependentUpon>frmBuildingLevels.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmCommunications.aspx.vb">
+      <DependentUpon>frmCommunications.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmCommunicationsMultiQuote.aspx.vb">
+      <DependentUpon>frmCommunicationsMultiQuote.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmCompanyInformation.aspx.vb">
+      <DependentUpon>frmCompanyInformation.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmCustomers.aspx.designer.vb">
+      <DependentUpon>frmCustomers.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmCustomers.aspx.vb">
+      <DependentUpon>frmCustomers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmCustomersold.aspx.vb">
+      <DependentUpon>frmCustomersold.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmEditNewRequestedUpgrades.aspx.vb">
+      <DependentUpon>frmEditNewRequestedUpgrades.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmEditRequestedUpgrades.aspx.vb">
+      <DependentUpon>frmEditRequestedUpgrades.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmEventLogs.aspx.vb">
+      <DependentUpon>frmEventLogs.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmExplodeSelections.aspx.vb">
+      <DependentUpon>frmExplodeSelections.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmFloors.aspx.designer.vb">
+      <DependentUpon>frmFloors.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmFloors.aspx.vb">
+      <DependentUpon>frmFloors.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmIncompatibilities.aspx.vb">
+      <DependentUpon>frmIncompatibilities.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmIncompatlist.aspx.vb">
+      <DependentUpon>frmIncompatlist.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmIncompatMSG.aspx.vb">
+      <DependentUpon>frmIncompatMSG.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmLevels.aspx.designer.vb">
+      <DependentUpon>frmLevels.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmLevels.aspx.vb">
+      <DependentUpon>frmLevels.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmMissingSelections.aspx.vb">
+      <DependentUpon>frmMissingSelections.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmNewQuote.aspx.vb">
+      <DependentUpon>frmNewQuote.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmOptionPricing.aspx.vb">
+      <DependentUpon>frmOptionPricing.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmOptionPricingQuickLoad.aspx.vb">
+      <DependentUpon>frmOptionPricingQuickLoad.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmPayments.aspx.vb">
+      <DependentUpon>frmPayments.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmPaymentsMultiQuote.aspx.vb">
+      <DependentUpon>frmPaymentsMultiQuote.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmProjects.aspx.designer.vb">
+      <DependentUpon>frmProjects.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmProjects.aspx.vb">
+      <DependentUpon>frmProjects.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmQuote - Copy.aspx.vb">
+      <DependentUpon>frmQuote - Copy.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmQuoteUnlock.aspx.vb">
+      <DependentUpon>frmQuoteUnlock.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmQuoteUnlockPhase1.aspx.vb">
+      <DependentUpon>frmQuoteUnlockPhase1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmQuoteUnlockPhase2.aspx.vb">
+      <DependentUpon>frmQuoteUnlockPhase2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmRegistration.aspx.vb">
+      <DependentUpon>frmRegistration.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmReportCategoryMap.aspx.vb">
+      <DependentUpon>frmReportCategoryMap.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmReportManager.aspx.vb">
+      <DependentUpon>frmReportManager.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmReportManagerMaintenance.aspx.vb">
+      <DependentUpon>frmReportManagerMaintenance.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmRoomTypes.aspx.vb">
+      <DependentUpon>frmRoomTypes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmRoomUpgradesAvailable.aspx.vb">
+      <DependentUpon>frmRoomUpgradesAvailable.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmSearchForCustomer.aspx.vb">
+      <DependentUpon>frmSearchForCustomer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmsubfrmVendorPricing.aspx.vb">
+      <DependentUpon>frmsubfrmVendorPricing.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmsubReportFields.aspx.vb">
+      <DependentUpon>frmsubReportFields.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmTiers.aspx.vb">
+      <DependentUpon>frmTiers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmUnitProfiles.aspx.vb">
+      <DependentUpon>frmUnitProfiles.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmUnits.aspx.designer.vb">
+      <DependentUpon>frmUnits.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmUnits.aspx.vb">
+      <DependentUpon>frmUnits.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmUpgradeCategories.aspx.vb">
+      <DependentUpon>frmUpgradeCategories.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmVendorConsolidation.aspx.vb">
+      <DependentUpon>frmVendorConsolidation.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="frmVendors.aspx.vb">
+      <DependentUpon>frmVendors.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Logins.aspx.designer.vb">
+      <DependentUpon>Logins.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Logins.aspx.vb">
+      <DependentUpon>Logins.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MikeATest.ascx.vb">
+      <DependentUpon>MikeATest.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="modDates.vb" />
+    <Compile Include="Models\IdentityModels.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\MyExtensions\MyWebExtension.vb">
+      <VBMyExtensionTemplateID>Microsoft.VisualBasic.Web.MyExtension</VBMyExtensionTemplateID>
+      <VBMyExtensionTemplateVersion>1.0.0.0</VBMyExtensionTemplateVersion>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Site.Master.designer.vb">
+      <DependentUpon>Site.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Site.Master.vb">
+      <DependentUpon>Site.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Site.Mobile.Master.designer.vb">
+      <DependentUpon>Site.Mobile.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Site.Mobile.Master.vb">
+      <DependentUpon>Site.Mobile.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Startup.vb" />
+    <Compile Include="ViewSwitcher.ascx.designer.vb">
+      <DependentUpon>ViewSwitcher.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ViewSwitcher.ascx.vb">
+      <DependentUpon>ViewSwitcher.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="licenses.licx" />
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ApplicationInsights.config" />
+    <Content Include="Bundle.config" />
+    <Content Include="CrystalReport1.rpt" />
+    <Content Include="Global.asax.exclude" />
+    <Content Include="Global.asax.vb.exclude" />
+    <Content Include="Account\Web.config" />
+    <Content Include="Old_App_Code\Class1.vb.exclude" />
+    <Content Include="Old_App_Code\Readme.doc" />
+    <Content Include="bin\AjaxControlToolkit.dll.refresh" />
+    <Content Include="bin\Antlr3.Runtime.dll.refresh" />
+    <Content Include="bin\AspNet.ScriptManager.bootstrap.dll.refresh" />
+    <Content Include="bin\AspNet.ScriptManager.jQuery.dll.refresh" />
+    <Content Include="bin\EntityFramework.dll.refresh" />
+    <Content Include="bin\EntityFramework.SqlServer.dll.refresh" />
+    <Content Include="bin\FlickrNet.dll.refresh" />
+    <Content Include="bin\MenuPilot.dll.refresh" />
+    <Content Include="bin\Microsoft.AI.Agent.Intercept.dll.refresh" />
+    <Content Include="bin\Microsoft.AI.DependencyCollector.dll.refresh" />
+    <Content Include="bin\Microsoft.AI.PerfCounterCollector.dll.refresh" />
+    <Content Include="bin\Microsoft.AI.ServerTelemetryChannel.dll.refresh" />
+    <Content Include="bin\Microsoft.AI.Web.dll.refresh" />
+    <Content Include="bin\Microsoft.AI.WindowsServer.dll.refresh" />
+    <Content Include="bin\Microsoft.ApplicationInsights.dll.refresh" />
+    <Content Include="bin\Microsoft.AspNet.FriendlyUrls.dll.refresh" />
+    <Content Include="bin\Microsoft.AspNet.Identity.Core.dll.refresh" />
+    <Content Include="bin\Microsoft.AspNet.Identity.EntityFramework.dll.refresh" />
+    <Content Include="bin\Microsoft.AspNet.Identity.Owin.dll.refresh" />
+    <Content Include="bin\Microsoft.AspNet.TelemetryCorrelation.dll.refresh" />
+    <Content Include="bin\Microsoft.AspNet.Web.Optimization.WebForms.dll.refresh" />
+    <Content Include="bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll.refresh" />
+    <Content Include="bin\roslyn\csc.exe.config" />
+    <Content Include="bin\roslyn\csc.exe.refresh" />
+    <Content Include="bin\roslyn\csc.rsp" />
+    <Content Include="bin\roslyn\csi.exe.config" />
+    <Content Include="bin\roslyn\csi.exe.refresh" />
+    <Content Include="bin\roslyn\csi.rsp" />
+    <Content Include="bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll.refresh" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll.refresh" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll.refresh" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.dll.refresh" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll.refresh" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll.refresh" />
+    <Content Include="bin\roslyn\Microsoft.CSharp.Core.targets" />
+    <Content Include="bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll.refresh" />
+    <Content Include="bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll.refresh" />
+    <Content Include="bin\roslyn\Microsoft.VisualBasic.Core.targets" />
+    <Content Include="bin\roslyn\Microsoft.Win32.Primitives.dll.refresh" />
+    <Content Include="bin\roslyn\System.AppContext.dll.refresh" />
+    <Content Include="bin\roslyn\System.Collections.Immutable.dll.refresh" />
+    <Content Include="bin\roslyn\System.Console.dll.refresh" />
+    <Content Include="bin\roslyn\System.Diagnostics.FileVersionInfo.dll.refresh" />
+    <Content Include="bin\roslyn\System.Diagnostics.Process.dll.refresh" />
+    <Content Include="bin\roslyn\System.Diagnostics.StackTrace.dll.refresh" />
+    <Content Include="bin\roslyn\System.IO.Compression.dll.refresh" />
+    <Content Include="bin\roslyn\System.IO.FileSystem.dll.refresh" />
+    <Content Include="bin\roslyn\System.IO.FileSystem.DriveInfo.dll.refresh" />
+    <Content Include="bin\roslyn\System.IO.FileSystem.Primitives.dll.refresh" />
+    <Content Include="bin\roslyn\System.IO.Pipes.dll.refresh" />
+    <Content Include="bin\roslyn\System.Reflection.Metadata.dll.refresh" />
+    <Content Include="bin\roslyn\System.Security.AccessControl.dll.refresh" />
+    <Content Include="bin\roslyn\System.Security.Claims.dll.refresh" />
+    <Content Include="bin\roslyn\System.Security.Cryptography.Algorithms.dll.refresh" />
+    <Content Include="bin\roslyn\System.Security.Cryptography.Encoding.dll.refresh" />
+    <Content Include="bin\roslyn\System.Security.Cryptography.Primitives.dll.refresh" />
+    <Content Include="bin\roslyn\System.Security.Cryptography.X509Certificates.dll.refresh" />
+    <Content Include="bin\roslyn\System.Security.Principal.Windows.dll.refresh" />
+    <Content Include="bin\roslyn\System.Text.Encoding.CodePages.dll.refresh" />
+    <Content Include="bin\roslyn\System.Threading.Thread.dll.refresh" />
+    <Content Include="bin\roslyn\System.ValueTuple.dll.refresh" />
+    <Content Include="bin\roslyn\System.Xml.ReaderWriter.dll.refresh" />
+    <Content Include="bin\roslyn\System.Xml.XmlDocument.dll.refresh" />
+    <Content Include="bin\roslyn\System.Xml.XPath.dll.refresh" />
+    <Content Include="bin\roslyn\System.Xml.XPath.XDocument.dll.refresh" />
+    <Content Include="bin\roslyn\vbc.exe.config" />
+    <Content Include="bin\roslyn\vbc.exe.refresh" />
+    <Content Include="bin\roslyn\vbc.rsp" />
+    <Content Include="bin\roslyn\VBCSCompiler.exe.config" />
+    <Content Include="bin\roslyn\VBCSCompiler.exe.refresh" />
+    <Content Include="bin\Telerik.Web.UI.dll.refresh" />
+    <Content Include="flickr\Site.master" />
+    <Content Include="images\dc.webm" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <Content Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
+    <Content Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <Content Include="obj\Release\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <Content Include="obj\Release\Kolassa.DesignCenter.Web.UI.vbproj.CoreCompileInputs.cache" />
+    <None Include="packages.config" />
+    <Content Include="Site.Master" />
+    <Content Include="Site.Mobile.Master" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <Content Include="Web.sitemap" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Scripts\index.d.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>58596</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:58596/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

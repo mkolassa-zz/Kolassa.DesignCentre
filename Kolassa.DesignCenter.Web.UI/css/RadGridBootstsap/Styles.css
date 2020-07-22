@@ -1,0 +1,121 @@
+﻿/*Layout*/
+body, html, form {
+	margin: 0;
+	padding: 10px;
+}
+
+.filter-container {
+	margin: 0 auto 20px;
+	min-width: 300px;
+	width: 30%;
+}
+
+/*Sprites and icons*/
+.sprite1 .RadGrid .rgAdd,
+.sprite1 .RadGrid .rgRefresh,
+.sprite1 .RadGrid .rgEdit,
+.sprite1 .RadGrid .rgDel,
+.sprite1 .RadGrid .rgFilter,
+.sprite1 .RadGrid .rgSortDesc,
+.sprite1 .RadGrid .rgSortAsc {
+	background-image: url(images/radActionsSprite1.png);
+}
+
+.sprite2 .RadGrid .rgAdd,
+.sprite2 .RadGrid .rgRefresh,
+.sprite2 .RadGrid .rgEdit,
+.sprite2 .RadGrid .rgDel,
+.sprite2 .RadGrid .rgFilter,
+.sprite2 .RadGrid .rgSortDesc,
+.sprite2 .RadGrid .rgSortAsc {
+	background-image: url(images/radActionsSprite2.png);
+}
+
+.sprite3 .RadGrid .rgAdd,
+.sprite3 .RadGrid .rgRefresh,
+.sprite3 .RadGrid .rgEdit,
+.sprite3 .RadGrid .rgDel,
+.sprite3 .RadGrid .rgFilter {
+	background-image: url(images/radActionsSprite3.png);
+}
+
+.RadGrid .rgEdit {
+	margin-right: 3px;
+	background-position: -117px -3117px;
+}
+
+.RadGrid .rgDel {
+	margin-right: 3px;
+	background-position: -67px -3367px;
+}
+
+div.RadGrid .rgRefresh {
+	margin-right: 3px;
+	width: 20px;
+	height: 20px;
+	vertical-align: top;
+	background-position: -115px -1315px;
+}
+
+div.RadGrid .rgAdd {
+	margin-right: 3px;
+	width: 20px;
+	height: 20px;
+	vertical-align: top;
+	background-position: -115px -3015px;
+}
+
+div.RadGrid .rgFilter {
+	background-position: -112px -4508px;
+}
+
+div.RadGrid .rgSortDesc {
+	background-position: -117px -19px;
+}
+
+div.RadGrid .rgSortAsc {
+	background-position: -117px -70px;
+}
+
+/*Custom Styles for integration the RadGrid with Bootstrap*/
+.rgHeaderDiv .table {
+	margin-bottom: 0;
+}
+
+div.RadGrid .rgCommandCell {
+	padding: 0;
+}
+
+.rgDataDiv .rgMasterTable {
+	margin-top: -1px;
+}
+
+div.RadGrid .rgPager .rgPagerButton {
+	vertical-align: middle;
+}
+
+div.RadGrid .pagination {
+	margin: 1em;
+}
+
+div.RadGrid .rgInfoPart {
+	padding: 1em;
+}
+
+div.RadGrid .rgInfoPart > * {
+	float: left;
+	margin-left: 1em;
+	line-height: 31px;
+}
+
+div.RadGrid .table {
+	margin-bottom: 0;
+}
+
+.RadGrid .rgCommandTable td {
+	border-top: 0;
+}
+
+.RadGrid .rgFilterMenu {
+	position: absolute;
+}

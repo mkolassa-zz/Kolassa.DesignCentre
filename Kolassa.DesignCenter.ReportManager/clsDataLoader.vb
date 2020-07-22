@@ -1,0 +1,613 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports System.Configuration
+Imports Microsoft.AspNet.identity
+Imports System.IO
+Imports Microsoft.VisualBasic
+Public Class clsDataLoader
+    Dim mdsReports As DataSet = New DataSet
+    Public mdsReportCategories As DataSet
+    Dim mdsReportControls As DataSet
+    Public mdsAllControls As DataSet
+    Dim mdsListItems As DataSet
+    Dim msErrorMsg As String
+    Dim mdsChildren As DataSet
+    Dim cns As SqlConnection
+    Dim cno As OleDb.OleDbConnection
+    Dim msSQLParameter As SqlParameter
+    Dim mscnStr As String
+    Dim mscnType As String
+	Dim mlCategoryID As Long
+	Public NodeID As Long
+	Public ProjectID As String = "11112222-3333-4444-5555-666677778888"
+	Dim NL As String = Chr(13) & Chr(10)
+    Public Sub New()
+        NodeID = System.Web.HttpContext.Current.Session("NodeID")
+        ProjectID = System.Web.HttpContext.Current.Session("Project")
+        '      If Not IsNothing(ProjectID) Then Stop
+        mscnType = "SQLConnection" '"OLEDB"
+        mscnStr = System.Configuration.ConfigurationManager.ConnectionStrings.Item("ReportManager").ToString
+        '	response.write(mscnStr)
+        ' mscnStr = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=c:\data\parallax\pinnacle\pinnacle data.mdb;User Id=admin;Password=;"
+        'LoadReports(0)
+    End Sub
+    Public Function LoadReport(ByVal liReportID As Integer) As DataSet
+        Dim lsSQL As String
+
+        '*** Initialize
+        LoadReport = Nothing
+
+        '*** Check for No Selected Category
+        If liReportID = 0 Then
+            ' Debug("No Category Selectedd")
+            Exit Function
+        End If
+
+
+        lsSQL = "SELECT tblReportDescriptions.ReportID,          " & NL &
+                "       tblReportDescriptions.ReportDescription, " & NL &
+                "       tblReportDescriptions.ReportName,   s.SelectStatement ,     " & NL &
+                "       tblReportDescriptions.EntityType, tblReportDescriptions.TableName         " & NL &
+                "FROM   tblReportDescriptions           " & NL &
+                "       Left Join tblReportSQL S on tblReportDescriptions.ReportID = S.ReportID " & NL &
+                "WHERE  tblReportDescriptions.ReportID=" & liReportID & NL &
+                " order by tblReportDescriptions.ReportName ;"
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        ds = fGetDataset(mscnType, mscnStr, lsSQL, "Reports")
+
+        '*** Debugging Start
+        Dim dt As DataTable = ds.Tables.Item("Reports")
+        Dim rowCustomer As DataRow
+
+        For Each rowCustomer In dt.Rows
+            Console.WriteLine(rowCustomer.Item("ReportDescription"))
+        Next
+        '*** Debugging End
+
+        mdsReports = ds
+        LoadReport = mdsReports
+    End Function
+    Public Function LoadReports(ByVal llCategoryID As Long, ReportName As String, llReportID As Long) As DataSet
+        Dim lsSQL As String
+
+        '*** Initialize
+        LoadReports = Nothing
+
+        '*** Check for No Selected Category
+        If llCategoryID = 0 And ReportName = "" And llReportID = 0 Then
+            ' Debug("No Category Selectedd")
+            Exit Function
+        End If
+        If llReportID > 0 Then
+            lsSQL = "SELECT tblReportDescriptions.ReportID,          " & NL &
+                "       tblReportDescriptions.ReportDescription, " & NL &
+                "       tblReportDescriptions.ReportName,         " & NL &
+                "       tblReportDescriptions.EntityType , tblReportDescriptions.TableName           " & NL &
+                "FROM   tblReportDescriptions  " & NL &
+                "WHERE  tblReportDescriptions.ReportID=" & llReportID & " " & NL &
+                " order by tblReportDescriptions.ReportName ;"
+        Else
+            If ReportName = "" Or ReportName Is Nothing Then
+                lsSQL = "SELECT tblReportDescriptions.ReportID,          " & NL &
+                    "       tblReportDescriptions.ReportDescription, " & NL &
+                    "       tblReportDescriptions.ReportName,   s.SelectStatement ,     " & NL &
+                    "       tblReportDescriptions.EntityType, tblReportDescriptions.TableName         " & NL &
+                    "FROM   tblReportCategoryMap INNER JOIN          " & NL &
+                    "       tblReportDescriptions ON                 " & NL &
+                    "       tblReportCategoryMap.ReportID = tblReportDescriptions.ReportID " & NL &
+                    "       Left Join tblReportSQL S on tblReportDescriptions.ReportID = S.ReportID " & NL &
+                    "WHERE  tblReportCategoryMap.CategoryID=" & llCategoryID & NL &
+                    " order by tblReportDescriptions.ReportName ;"
+            Else
+                lsSQL = "SELECT tblReportDescriptions.ReportID,          " & NL &
+                    "       tblReportDescriptions.ReportDescription, " & NL &
+                    "       tblReportDescriptions.ReportName,         " & NL &
+                    "       tblReportDescriptions.EntityType , tblReportDescriptions.TableName           " & NL &
+                    "FROM   tblReportDescriptions  " & NL &
+                    "WHERE  ReportName='" & ReportName & "'" & NL &
+                    " order by tblReportDescriptions.ReportName ;"
+            End If
+        End If
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        ds = fGetDataset(mscnType, mscnStr, lsSQL, "Reports")
+
+        '*** Debugging Start
+        Dim dt As DataTable = ds.Tables.Item("Reports")
+        Dim rowCustomer As DataRow
+
+        For Each rowCustomer In dt.Rows
+            Console.WriteLine(rowCustomer.Item("ReportDescription"))
+        Next
+        '*** Debugging End
+
+        mdsReports = ds
+        LoadReports = mdsReports
+    End Function
+    Public Function LoadReportResults(ByVal lsSQL As String, lsWhere As String, liReportID As Integer) As DataSet
+        Dim ds As New DataSet()
+
+        '*** Initialize
+        LoadReportResults = Nothing
+
+        '*** Check for Empty SQL
+        If lsSQL = "" Then
+            If liReportID < 1 Then
+                ' Debug("No Category Selectedd")
+                Exit Function
+            Else
+                ds = LoadReport(liReportID)
+                If ds.Tables.Count > 0 Then
+                    Dim dt As DataTable
+                    Dim dr As DataRow
+
+                    dt = ds.Tables(0)
+                    dr = dt.Rows(0)
+                    lsSQL = dr("SelectStatement")
+                End If
+            End If
+        End If
+        lsSQL = Replace(lsSQL, "@WHERE@", lsWhere)
+
+
+        '*** Load a data set.
+
+        ds = fGetDataset(mscnType, mscnStr, lsSQL, "ReportResults")
+
+        mdsReports = ds
+        LoadReportResults = mdsReports
+    End Function
+    Public Function LoadReportCategories(lsCat As String) As DataSet
+		Dim lsSQL As String
+
+		'*** Initialize
+		LoadReportCategories = Nothing
+
+		lsSQL = "Select * from tblReportCategories"
+		If lsCat = "" Or lsCat Is Nothing Then
+			lsCat = ""
+		Else
+			lsSQL = lsSQL & " Where ReportCategoryDescription='" & lsCat & "'"
+		End If
+
+		'*** Load a data set.
+		Dim ds As New DataSet()
+		ds = fGetDataset(mscnType, mscnStr, lsSQL, "Categories")
+		'*** Debugging Start
+		Dim dt As DataTable = New DataTable("ReportCategoryType")
+		dt.Columns.Add("ReportCategoryName", Type.GetType("System.String"))
+		Dim dr As DataRow
+		dr = dt.NewRow()
+		dr("ReportCategoryName") = lsCat
+		dt.Rows.Add(dr)
+		ds.Tables.Add(dt)
+
+		mdsReportCategories = ds
+		LoadReportCategories = mdsReportCategories
+	End Function
+	Public Function LoadAllControls() As DataSet
+		Dim NL As String = Chr(13) & Chr(10)
+		Dim lsSQL As String
+
+		'*** Initialize
+		LoadAllControls = Nothing
+
+		lsSQL = "Select * from tblReportControls "
+
+
+		'*** Load a data set.
+		Dim ds As New DataSet()
+		ds = fGetDataset(mscnType, mscnStr, lsSQL, "Controls")
+
+		mdsAllControls = ds
+		LoadAllControls = mdsAllControls
+	End Function
+    Public Function LoadReportControls(ByVal llReportID As Long) As DataSet
+        Dim lscnType As String = "OLEDB"
+        Dim lsSQL As String
+
+        '*** Initialize
+        LoadReportControls = Nothing
+
+        lsSQL = "SELECT tblReportControls.*, " &
+                "       tblReportFields.* " &
+                "From   tblReportFields inner join tblReportControls on " &
+                "       tblreportfields.reportcontrol = tblreportcontrols.controlid " &
+                "WHERE  ReportID= " & llReportID & " " &
+                "ORDER BY SortOrder "
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        ds = fGetDataset(mscnType, mscnStr, lsSQL, "ReportControls")
+
+        mdsReportControls = ds
+        LoadReportControls = mdsReportControls
+    End Function
+
+    Public Function LoadReportViews(lsReportID As String) As DataSet
+        Dim lsSQL As String
+
+        '*** Initialize
+        LoadReportViews = Nothing
+
+        lsSQL = "Select * from tblReportViews"
+        If lsReportID = "" Or lsReportID Is Nothing Then
+            lsReportID = ""
+        Else
+            lsSQL = lsSQL & " Where ReportID='" & lsReportID & "'"
+        End If
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        ds = fGetDataset(mscnType, mscnStr, lsSQL, "Views")
+        '*** Debugging Start
+
+
+        mdsReportCategories = ds
+        LoadReportViews = mdsReportCategories
+    End Function
+    Public Function LoadAllReportColumns() As DataSet
+        Dim NL As String = Chr(13) & Chr(10)
+        Dim lsSQL As String
+
+        '*** Initialize
+        LoadAllReportColumns = Nothing
+
+        lsSQL = "Select * from TBLREPORTVIEWCOLUMNS "
+
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        ds = fGetDataset(mscnType, mscnStr, lsSQL, "Controls")
+
+        mdsAllControls = ds
+        LoadAllReportColumns = mdsAllControls
+    End Function
+    Public Function LoadReportViewColumns(ByVal lsViewID As String) As DataSet
+        Dim lscnType As String = "OLEDB"
+        Dim lsSQL As String
+
+        '*** Initialize
+        LoadReportViewColumns = Nothing
+
+        lsSQL = "SELECT * " &
+                "FROM   TBLREPORTVIEWCOLUMNS " &
+                "WHERE  ViewID= '" & lsViewID & "' " &
+                "ORDER BY ColumnOrder "
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        ds = fGetDataset(mscnType, mscnStr, lsSQL, "ViewColumns")
+
+        'mdsReportControls = ds
+        LoadReportViewColumns = ds
+    End Function
+
+    Public Function DeleteReportViewColumns(ByVal lsViewID As String) As Boolean
+        Dim lscnType As String = "OLEDB"
+        Dim lsSQL As String
+
+        '*** Initialize
+        DeleteReportViewColumns = Nothing
+
+        lsSQL = "Delete " &
+                "FROM   TBLREPORTVIEWCOLUMNS " &
+                "WHERE  ViewID= '" & lsViewID & "' "
+
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        Dim cmd As New SqlCommand
+        cmd.CommandText = lsSQL
+        Dim c As New Collection
+        c.Add(cmd)
+
+        Dim b As Boolean = fRunSQLCommands(mscnType, mscnStr, c)
+
+        'mdsReportControls = ds
+        DeleteReportViewColumns = True
+    End Function
+    Public Function InsertReportViewColumns(ByVal lsViewID As String, ByVal lsID As String,
+                                    ByVal lsFieldName As String, ByVal lsColumnName As String, lsColumnFormat As String,
+                                    ByVal liColumnOrder As Integer, ByVal lbVIsible As Boolean) As Boolean
+        Dim lgID As New Guid
+        Dim msSQLcmd As SqlCommand
+        lgID = Guid.NewGuid
+        Dim lsSQL As String
+        Dim lscnStr As String = mscnStr
+        '  Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+        '*** Initialize
+        InsertReportViewColumns = False
+        '*** Check for No Selected Category
+        'If llNodeID = 0 Then
+        ' Exit Function
+        ' End If
+
+        If isGUID(lsID) Then
+        Else
+            lsID = Guid.NewGuid.ToString
+        End If
+        lsSQL = "INSERT INTO tblReportViewColumns (ID, VIEWID, FIELDNAME, COLUMNNAME, COLUMNORDER, COLUMNFORMAT, COLUMNVISIBLE ) " &
+                "Values ( @idGuid, @viewid, @fieldname, @columnname, @columnorder, @columnformat, @columnvisible);"
+        msSQLcmd = New SqlCommand
+        msSQLcmd.CommandText = lsSQL
+        msSQLcmd.Parameters.Clear()
+        msSQLcmd.Parameters.AddWithValue("@idGuid", New Guid(lgID.ToString))
+        msSQLcmd.Parameters.AddWithValue("@viewid", New Guid(lsViewID))
+        msSQLcmd.Parameters.AddWithValue("@fieldname", (lsFieldName))
+        msSQLcmd.Parameters.AddWithValue("@columnname", fTakeOutQuotes(lsColumnName))
+        msSQLcmd.Parameters.AddWithValue("@columnorder", liColumnOrder)
+        msSQLcmd.Parameters.AddWithValue("@columnvisible", lbVIsible)
+        msSQLcmd.Parameters.AddWithValue("@columnformat", fTakeOutQuotes(lsColumnFormat))
+
+        '*** Run The SQL.
+        InsertReportViewColumns = fExecuteSQLCmd("SQLConnection", lscnStr, msSQLcmd)
+    End Function
+    Function fGetUser() As String
+
+        fGetUser = "11111111-2222-3333-4444-555566667777" ' Web.HttpContext.Current.User.Identity.GetUserId()
+
+    End Function
+    Public Function InsertReportView(ByVal lsViewID As String, ByVal lsName As String,
+                                    ByVal lsTYpe As String, ByVal lsForm As String, liReportID As Integer,
+                                    ByVal liNodeID As Integer) As Boolean
+        Dim lgID As New Guid
+        Dim lsUserID As String = fGetUser()
+        Dim msSQLcmd As SqlCommand
+        lgID = Guid.NewGuid
+        Dim lsSQL As String
+        Dim lscnStr As String = mscnStr
+        Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+        '*** Initialize
+        InsertReportView = False
+        '*** Check for No Selected Category
+        'If llNodeID = 0 Then
+        ' Exit Function
+        ' End If
+
+        lsSQL = "INSERT INTO tblReportViews (ID, CODE, Name, TYPE, FORM, REPORTID, NODEID, ACTIVE ,CREATEUSER, CREATEDATE) " &
+                "Values ( @idGuid,@Code, @Name, @type, @form, @reportid, @nodeid, 1,@CurrentUser, getdate());"
+        msSQLcmd = New SqlCommand
+        msSQLcmd.CommandText = lsSQL
+        msSQLcmd.Parameters.Clear()
+        msSQLcmd.Parameters.AddWithValue("@idGuid", (lsViewID))
+        msSQLcmd.Parameters.AddWithValue("@Name", (lsName))
+        msSQLcmd.Parameters.AddWithValue("@Code", (lsName))
+        msSQLcmd.Parameters.AddWithValue("@type", (lsTYpe))
+        msSQLcmd.Parameters.AddWithValue("@form", fTakeOutQuotes(lsForm))
+        msSQLcmd.Parameters.AddWithValue("@reportid", liReportID)
+        msSQLcmd.Parameters.AddWithValue("@nodeid", liNodeID)
+        msSQLcmd.Parameters.AddWithValue("@CurrentUser", lsCurrentUser)
+
+
+        '*** Run The SQL.
+        InsertReportView = fExecuteSQLCmd("SQLConnection", lscnStr, msSQLcmd)
+    End Function
+    Public Function isGUID(ByVal QFormUID As String) As Boolean
+        If QFormUID Is Nothing Then
+            QFormUID = "00" ' "00000000-0000-0000-0000-000000000000"
+        End If
+        Dim guidRegEx As Regex = New Regex("^(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$")
+        If guidRegEx.IsMatch(QFormUID) Then
+            Return True
+        Else
+            Return False
+        End If
+    End Function
+    Public Function fExecuteSQLCmd(ByVal lsConnectionType As String, ByVal lsCn As String, ByVal cms As SqlCommand) As Boolean
+
+        Select Case lsConnectionType
+            Case "SQLConnection"
+                cns = New SqlClient.SqlConnection
+
+                cns.ConnectionString = lsCn
+                cns.Open()
+                cms.Connection = cns
+
+
+                cms.ExecuteNonQuery()
+                msSQLParameter = Nothing
+                cns.Close()
+            Case "OLEDB"
+                cno = New OleDb.OleDbConnection
+                cno.ConnectionString = lsCn
+                cno.Open()
+                ' CheckdbConnection("OLEDB", lsCn)
+                '*** Set up a data set command object.
+
+                Dim cmo As New OleDb.OleDbCommand
+                cmo.Connection = cno
+                cmo.CommandText = "" 'lsSQL
+                cmo.ExecuteNonQuery()
+                cno.Close()
+        End Select
+        fExecuteSQLCmd = True
+    End Function
+    Function fTakeOutQuotes(ByVal lsStr As String) As String
+        lsStr = Replace(lsStr, "script", "scri_pt")
+        lsStr = Replace(lsStr, """", """""")
+        lsStr = Replace(lsStr, "'", "''")
+        fTakeOutQuotes = Trim(lsStr)
+    End Function
+    Public Function fRunSQLCommands(ByVal lsConnectionType As String, ByVal lsCn As String, ByVal cCommands As Collection) As Boolean
+        Try
+            Select Case lsConnectionType
+                Case "SQLConnection"
+                    Dim trans As SqlClient.SqlTransaction
+                    cns = New SqlClient.SqlConnection
+                    Dim cms As New SqlClient.SqlCommand
+                    cns.ConnectionString = lsCn
+                    cns.Open()
+
+                    trans = cns.BeginTransaction("SampleTransaction")
+                    Try
+                        For Each cms In cCommands
+                            cms.Connection = cns
+                            cms.Transaction = trans
+                            cms.ExecuteNonQuery()
+                        Next
+                        trans.Commit()
+                    Catch ex As Exception
+                        msErrorMsg = ex.Message
+                        trans.Rollback()
+                        fRunSQLCommands = False
+                        Exit Function
+                    End Try
+                    cns.Close()
+                Case "OLEDB"
+                    cno = New OleDb.OleDbConnection
+                    cno.ConnectionString = lsCn
+                    cno.Open()
+                    ' CheckdbConnection("OLEDB", lsCn)
+                    '*** Set up a data set command object.
+
+
+                    Dim cms As New SqlCommand
+                    Dim cmo As New OleDb.OleDbCommand
+                    cmo.Connection = cno
+                    For Each cms In cCommands
+                        cmo.CommandText = cms.CommandText
+                        cmo.ExecuteNonQuery()
+                    Next
+                    cno.Close()
+            End Select
+            fRunSQLCommands = True
+        Catch
+            msErrorMsg = msErrorMsg & Err.Description
+            fRunSQLCommands = False
+        End Try
+    End Function
+    Public Function LoadListItems(ByVal lsCnStr As String, ByVal lsSQL As String) As DataSet
+        Dim lscnType As String = "OLEDB"
+        On Error GoTo LoadListItemsError
+
+        If ProjectID Is Nothing Then ProjectID = "11112222-3333-4444-5555-666677778888"
+		LoadListItems = New DataSet
+		'*** Load a data set.
+		lsSQL = lsSQL.Replace("@ProjectID@", ProjectID)
+		lsSQL = lsSQL.Replace("@NodeID@", NodeID)
+		Dim ds As New DataSet()
+        ds = fGetDataset(lscnType, lsCnStr, lsSQL, "ListItems")
+
+        mdsListItems = ds
+        LoadListItems = mdsListItems
+
+LoadListItemsExit:
+        Exit Function
+LoadListItemsError:
+		Dim t As DataTable
+		t = New DataTable
+		t.Columns.Add("ID")
+		t.Columns.Add("Description")
+		Dim r As DataRow
+		r = t.NewRow
+
+		r(0) = 0
+		r(1) = Err.Description
+
+		t.Rows.Add(r)
+		ds.Tables.Add(t)
+        Debug.Print("<error msg='" & Err.Description & "' />")
+        Resume LoadListItemsExit
+    End Function
+
+    Public Function LoadChildren(ByVal lsCnStr As String, ByVal lsSQL As String) As DataSet
+        Dim lscnType As String = ""
+
+        On Error GoTo LoadChildrenError
+        LoadChildren = New DataSet
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        ds = fGetDataset(lscnType, lsCnStr, lsSQL, "Children")
+
+        mdsChildren = ds
+        LoadChildren = mdsChildren
+
+LoadChildrenExit:
+        Exit Function
+LoadChildrenError:
+        Debug.Print("<error msg='" & Err.Description & "' />")
+        Resume LoadChildrenExit
+    End Function
+    '  Private Function CheckdbConnection(ByVal lsConnectionType, ByVal lsConnectionString) As Boolean
+    '      If cn Is Nothing Then
+    '          cn = New Data.SqlClient.SqlConnection
+    '      End If
+    '      If cn.State = ConnectionState.Closed Then
+    '  Dim lscn As String
+    '          lscn = "DRIVER={Microsoft Access Driver (*.mdb)};DBQ=c:\data\parallax\pinnacle\pinnacle data.mdb"
+    '          lscn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=c:\data\parallax\pinnacle\pinnacle data.mdb;User Id=admin;Password=;"
+    '          cn.ConnectionString = lscn
+    '  '"Server=azshdsd17;user id=scored;password=scored;Database=Quality;Pooling=false;"
+    '          cn.Open()
+    '      End If
+    '      If cn.State <> ConnectionState.Open Then
+    '          CheckdbConnection = False
+    '      Else
+    '         CheckdbConnection = True
+    '     End If
+    ' End Function
+    Private Function fGetDataset(ByVal lsConnectionType As String, ByVal lsCn As String, ByVal lsSQL As String, ByVal lsTableName As String) As DataSet
+        Debug.Print("<clsDataLoader.fGetDataset>" & lsSQL & "</clsDataLoader.fGetDataset>")
+        If lsSQL.Length > 4 Then
+            If Right(Trim(lsSQL), 4).ToUpper = " AND" Then
+                lsSQL = Trim(lsSQL)
+                lsSQL = Left(lsSQL, lsSQL.Length - 4)
+            End If
+        Else
+            fGetDataset = New DataSet
+            Exit Function
+        End If
+        Dim ds As DataSet = New DataSet
+        If lsCn = "" Then
+            lsCn = mscnStr
+            lsConnectionType = mscnType
+        End If
+        If lsConnectionType = "" Then
+            lsConnectionType = mscnType
+            lsCn = mscnStr
+        End If
+        'Debug.Print(lsSQL)
+        Select Case lsConnectionType
+            Case "SQLConnection"
+				cns = New SqlClient.SqlConnection
+				'	response.write(lsCn)
+				cns.ConnectionString = lsCn
+                cns.Open()
+                ' CheckdbConnection("SQLServer", lsCn)
+                '*** Set up a data set command object.
+                Dim dscmd As New SqlDataAdapter(lsSQL, cns)
+
+                '*** Load a data set.
+                Try
+                    dscmd.Fill(ds, lsTableName)
+                Catch
+                    ds = New DataSet
+                    Dim dt As New DataTable("Empty")
+                    ds.Tables.Add(dt)
+                End Try
+                cns.Close()
+            Case "OLEDB"
+                cno = New OleDb.OleDbConnection
+                cno.ConnectionString = lsCn
+                cno.Open()
+                ' CheckdbConnection("OLEDB", lsCn)
+                '*** Set up a data set command object.
+                Dim dscmdO As New OleDb.OleDbDataAdapter(lsSQL, cno)
+
+                '*** Load a data set.
+                dscmdO.Fill(ds, lsTableName)
+                cno.Close()
+        End Select
+
+        fGetDataset = ds
+    End Function
+    Protected Overrides Sub Finalize()
+        MyBase.Finalize()
+    End Sub
+
+End Class
+

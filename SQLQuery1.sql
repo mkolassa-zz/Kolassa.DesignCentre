@@ -1,0 +1,1 @@
+﻿Select * from tblReportCategories Where ReportCategoryDescription='frmQuote'

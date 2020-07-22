@@ -1,0 +1,462 @@
+﻿<%@ Master Language="VB" AutoEventWireup="true" CodeBehind="Site.Master.vb" Inherits="Kolassa.DesignCentre.UI.SiteMaster" %>
+<%@ Import Namespace="Kolassa.DesignCentre.UI" %>
+<%@ Import Namespace="Microsoft.AspNet.Identity" %>
+<%@ Register Src="~/Controls/ctrlProjectList.ascx" TagPrefix="uc1" TagName="ctrlProjectList" %>
+
+<!DOCTYPE html>
+
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> Design Centre</title>
+
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+
+    <webopt:bundlereference runat="server" path="~/Content/css" />
+	<style>
+		.dc-max-width {
+				max-width: 12% !important;
+			}
+	</style>
+    <style>
+        #ajaxoverlay {
+          position: fixed; /* Sit on top of the page content */
+          /*display: none;*/ /* Hidden by default */
+          width: 100%; /* Full width (cover the whole page) */
+          height: 100%; /* Full height (cover the whole page) */
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+          z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+          cursor: pointer; /* Add a pointer on hover */
+        }
+    </style>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="Content/fontawesome-all.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+	<!-- link href="Content/bootstrap.css" rel="stylesheet" />
+	<link href="Content/sidebar.css" rel="stylesheet" />
+	<link rel="stylesheet" href="Content/material.min.css" -->
+
+</head>
+<body>
+	
+    <form runat="server">
+        <script src="/Scripts/modernizr-2.6.2.js"></script>
+        <script src="Scripts/popper.js"></script>
+      <asp:ScriptManager runat="server" EnablePageMethods="true"> 
+            <Scripts>
+                <asp:ScriptReference Name="jquery" />   
+                <asp:ScriptReference Name="bootstrap" /> 
+                <%--To learn more about bundling scripts in ScriptManager see https://go.microsoft.com/fwlink/?LinkID=301884 --%>
+                <%--Framework Scripts
+                <asp:ScriptReference Name="MsAjaxBundle" />
+                <asp:ScriptReference Name="respond" />
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
+                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+                <asp:ScriptReference Name="WebFormsBundle" />--%>
+                <%--Site Scripts--%>
+            </Scripts>
+        </asp:ScriptManager> 
+		
+		<nav class="swite-header sticky-top py-0" style="background-color:cornsilk">
+        <div class="container d-flex flex-column flex-md-row justify-content-between">
+            <a class="py-2" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="d-block mx-auto"><circle cx="12" cy="12" r="10"></circle><line x1="14.31" y1="8" x2="20.05" y2="17.94"></line><line x1="9.69" y1="8" x2="21.17" y2="8"></line><line x1="7.38" y1="12" x2="13.12" y2="2.06"></line><line x1="9.69" y1="16" x2="3.95" y2="6.06"></line><line x1="14.31" y1="16" x2="2.83" y2="16"></line><line x1="16.62" y1="12" x2="10.88" y2="21.94"></line></svg>
+            </a>
+		    <a class="navbar-brand" runat="server" href="~/">Design Centre</a>
+            <a class="py-2 d-none d-md-inline-block" runat="server" href="~/About">About</a>
+            <a class="py-2 d-none d-md-inline-block" runat="server" href="~/Contact">Contact</a>
+
+            <asp:LoginView runat="server" ViewStateMode="Disabled">
+                <AnonymousTemplate> <a class="py-2 d-none d-md-inline-block" runat="server" href="~/">Home</a>  
+				    <a class="py-2 d-none d-md-inline-block" runat="server" href="~/Account/Register">Register</a></li>
+				    <a class="py-2 d-none d-md-inline-block" runat="server" href="~/Account/Login">Log in</a></li>
+                </AnonymousTemplate>
+                <LoggedInTemplate>
+				    <a href="#" data-target="#sidebar" data-toggle="collapse" aria-expanded="false" onclick="w3_open()"><i class="fas fa-bars fa-1x" 
+                        style="position: absolute;top: 10px; left: 10px;"></i></a>
+				    <a class="py-2 d-none d-md-inline-block" runat="server" href="~/Account/Manage" title="Manage your account">Hello, <%:IIf(Session("UserFriendlyName") Is Nothing, Context.User.Identity.GetUserName(), Session("UserFriendlyName"))  %>!</a>
+                    <asp:LoginStatus class="py-2 d-none d-md-inline-block" runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
+                
+                    <ul class="navbar-nav px-3">
+                        <li class="nav-item text-nowrap">		
+						<%    If Session("Project") Is Nothing Then  %>
+            			 	<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ProjectModal" style="border:none;">
+									<i class="fa fa-search" ></i> Select Project
+							</button>
+          
+						<%Else  %>
+								<button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#ProjectModal" style="padding-top:10px;border:none;">
+								    <i class="fa fa-arrow-circle-down" ></i> <%: Session("ProjectName")  %></a>
+								</button>
+						<%End If %>&nbsp;
+				        </li>
+                    </ul>
+			        <!--		<div class="btn-group">
+		        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			        Action
+		        </button>
+		        <div class="dropdown-menu">
+			        <a class="dropdown-item" href="#">Action</a>
+			        <a class="dropdown-item" href="#">Another action</a>
+			        <a class="dropdown-item" href="#">Something else here</a>
+			        <div class="dropdown-divider"></div>
+			        <a class="dropdown-item" href="#">Separated link</a>
+		        </div>
+	        </div> -->
+                </LoggedInTemplate>
+            </asp:LoginView>
+        </div>
+        </nav>
+
+
+		<style>
+			 
+      nav.sidebar, .main{
+          -webkit-transition: margin 200ms ease-out;
+          -moz-transition: margin 200ms ease-out;
+          -o-transition: margin 200ms ease-out;
+          transition: margin 200ms ease-out;
+      }
+
+  .main{
+    padding: 10px 10px 0 10px;
+  }
+
+ @media (min-width: 765px) {
+
+		    .main {
+		        position: absolute;
+		        width: calc(100% - 40px);
+		        margin-left: 40px;
+		        float: right;
+		    }
+
+    nav.sidebar:hover + .main{
+      margin-left: 200px;
+    }
+
+    nav.sidebar.navbar.sidebar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand {
+      margin-left: 0px;
+    }
+
+    nav.sidebar .navbar-brand, nav.sidebar .navbar-header{
+      text-align: center;
+      width: 100%;
+      margin-left: 0px;
+    }
+    
+    nav.sidebar a{
+      padding-right: 13px;
+    }
+
+    nav.sidebar .navbar-nav > li:first-child{
+      border-top: 1px #e5e5e5 solid;
+    }
+
+    nav.sidebar .navbar-nav > li{
+      border-bottom: 1px #e5e5e5 solid;
+    }
+
+    nav.sidebar .navbar-nav .open .dropdown-menu {
+      position: static;
+      float: none;
+      width: auto;
+      margin-top: 0;
+      background-color: transparent;
+      border: 0;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
+
+    nav.sidebar .navbar-collapse, nav.sidebar .container-fluid{
+      padding: 0 0px 0 0px;
+    }
+
+    .navbar-inverse .navbar-nav .open .dropdown-menu>li>a {
+      color: #777;
+    }
+
+    nav.sidebar{
+      width: 200px;
+      height: 100%;
+      margin-left: -160px;
+      float: left;
+      margin-bottom: 0px;
+    }
+
+    nav.sidebar li {
+      width: 100%;
+    }
+
+    nav.sidebar:hover{
+      margin-left: 0px;
+    }
+
+    .forAnimate{
+      opacity: 0;
+    }
+  }
+   
+  @media (min-width: 1330px) {
+
+    .main{
+      width: calc(100% - 200px);
+      margin-left: 200px;
+    }
+
+    nav.sidebar{
+      margin-left: 0px;
+      float: left;
+    }
+
+    nav.sidebar .forAnimate{
+      opacity: 1;
+    }
+  }
+
+  nav.sidebar .navbar-nav .open .dropdown-menu>li>a:hover, nav.sidebar .navbar-nav .open .dropdown-menu>li>a:focus {
+    color: #CCC;
+    background-color: transparent;
+  }
+
+  nav:hover .forAnimate{
+    opacity: 1;
+  }
+  section{
+    padding-left: 15px;
+  }
+
+		</style>
+		<!--
+   <nav class="navbar navbar-default sidebar" role="navigation">
+    <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>      
+    </div>
+    <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active">
+			<a href="#">Home<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span></a></li>
+		    <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmProjects" ><i class="fa fa-th"     ></i> <span class="d-none d-md-inline">Projects</span></a>
+			<a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmCustomers"><i class="fa fa-users"  ></i> <span class="d-none d-md-inline">Customers</span></a>
+			<a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmContacts" ><i class="fa fa-phone"   ></i> <span class="d-none d-md-inline">Contacts</span></a>
+			<a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmQuote"    ><i class="fa fa-quote-left"></i> <span class="d-none d-md-inline">Quotes</span></a>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a>
+          <ul class="dropdown-menu forAnimate" role="menu">
+      
+			  
+			<a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmUnits"><i class="fa fa-users"  ></i> <span class="d-none d-md-inline">Units</span></a>
+			<a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmUnitTypes" ><i class="fa fa-phone"   ></i> <span class="d-none d-md-inline">Unit Types</span></a>
+			<a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmTiers"    ><i class="fa fa-quote-left"></i> <span class="d-none d-md-inline">Tiers</span></a>
+            <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmBuildingPhases"><i class="fa fa-users"  ></i> <span class="d-none d-md-inline">Building Phases</span></a>
+			<a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmProjectTypes" ><i class="fa fa-phone"   ></i> <span class="d-none d-md-inline">Project Types</span></a>
+			<a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmFloors"    ><i class="fa fa-quote-left"></i> <span class="d-none d-md-inline">Floors</span></a>
+            
+			  <li class="divider"></li>
+            <li><a href="#">FAQ </a></li>
+            <li class="divider"></li>
+            <li><a href="#">About Us</a></li>
+          </ul>
+        </li>          
+       </ul>
+    </div>
+  </div>
+</nav>
+	-->
+	
+        <asp:loginview ID="lg" runat="server">
+             <AnonymousTemplate>
+                <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+              
+            </AnonymousTemplate>
+			 <LoggedInTemplate>
+
+
+            <div id="main" style="border: none;">
+                <div class="w3-teal" style="float: left; border:none">
+                      <!-- button ><span class="dark-blue-text">Hey<i     class="fas fa-bars fa-1x"></i></span></!-->
+                    <!-- button id="openNav" class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</!-->
+                        <!-- End Menu.js Markup Opening Tags-->
+                        <!-- menu.js Markup Start -->
+                        <div class="w3-sidebar w3-bar-block w3-card w3-animate-left" style="display:none" id="mySidebar">
+                        <!-- button class="btn btn-Success w3-bar-item w3-button w3-large"
+                                onclick="w3_close()">
+                            Close &times;
+                        </!-->
+
+                   <!-- End Menu.js Markup Opening Tags-->
+
+				<div class="container-fluid">
+				<div class="row d-flex d-md-block flex-nowrap wrapper">
+					</div></div>
+				
+				<div ><!-- class="dc-max-width col-xs-1 float-left col-1 pl-0 pr-0 collapse width " 	id="sidebar"> -->
+					<div class="list-group border-0 card text-center text-md-left" onclick="w3_close()">
+						<span class="d-none d-md-inline">
+						<a runat="server" href="#" class="list-group-item d-inline-block collapsed" style="width:100%;" data-toggle="collapse" 
+							data-parent="#sidebar" aria-expanded="false"><i class="fa fa-user-circle fa-2x"></i> 
+							<%:IIf(Session("UserFriendlyName") Is Nothing, Context.User.Identity.GetUserName(), Session("UserFriendlyName"))  %></a>
+						</span>
+						<!-- Page Info Pane -->
+						<div class="panel-group">
+							<div class="panel panel-default">
+							  <div class="panel-heading">
+								<bs-label class="">
+								  <span class="d-block p-2  text-white" style="background-color:cornsilk;"><a data-toggle="collapse" href="#collapse1">Options</a></span>
+								</bs-label>
+							  </div>
+							  <div id="collapse1" class="panel-collapse collapse">
+								<div class="list-group-item d-inline-block collapsed">Project ID: <%: Session("Project")  %></div>
+								<div class="list-group-item d-inline-block collapsed"><asp:literal runat="server" ID="litPageInfo"></asp:literal></div>
+							  </div>
+							</div>
+						</div>
+						<!-- End Page Info Pane -->
+
+						 
+						
+						
+                <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmProjects" ><i class="fa fa-th"     ></i> <span class="d-none d-md-inline">Project Dashboard</span></a>
+                <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmCustomers"><i class="fa fa-users"  ></i> <span class="d-none d-md-inline">Customers</span></a>
+        <!--        <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmContacts" ><i class="fa fa-phone"   ></i> <span class="d-none d-md-inline">Contacts</span></a> -->
+                <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmQuote"    ><i class="fa fa-quote-left"></i> <span class="d-none d-md-inline">Quotes</span></a>
+
+         	<!--	       <li class="divider"></li>
+				          
+          
+                <span class="d-block p-2 bg-dark text-white">Admin</span>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=Units"><i class="fa fa-users"  ></i> <span class="d-none d-md-inline">Units</span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UnitTypes" ><i class="fa fa-phone"   ></i> <span class="d-none d-md-inline">Unit Types</span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UNITPROFILES"  ></i> <span class="d-none d-md-inline">Unit Profiles</span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UnitTiers"    ><i class="fa fa-quote-left"></i> <span class="d-none d-md-inline">Tiers</span></a>
+
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=PROJECTS"  ></i> <span class="fa fa-pencil-alt">Projects</span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ProjectPhases"><i class="fa fa-adversal"  ></i> <span class="d-none d-md-inline">Building Phases</span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ProjectTypes" ><i class="fa fa-angle-down"   ></i> <span class="d-none d-md-inline">Project Types</span></a>
+
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=Floors"       ><i class="fa fa-quote-left"></i> <span class="d-none d-md-inline">Floors</span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ROOMS"  ></i> <span class="fa fa-bath">Rooms</span></a>
+
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=VENDORS"  ></i> <span class="fa fa-people-carry">Vendors</span></a>
+
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=LOGINS"   ></i> <span class="fa fa-users">Logins</span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=DEPOSITCONDITIONS"  ></i> <span class="fa fa-money-bill-alt">Deposit Contitions</span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=COMPANYINFO"   ></i> <span class="fa fa-compass">Company Info</span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=REPORTCATEGORIES"   ></i> <span class="fa fa-dochub">Report Categories</span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=BASE"  ></i> <span class="fa fa-baseball-ball">Base</span></a>
+			-->
+		</ul>
+	</div>
+</div>
+           <!-- Start Menu.js Markup Main Div Tags-->
+            </div >
+ </div>
+                </div> <!-- Closing Menu.js Div Tag -->
+
+
+			</LoggedInTemplate>
+		</asp:loginview>
+
+
+			<div class="page-header">
+				<div class="container body-content" style="padding-top:5px;">
+			 		<!-- THIS IS THE PANEL FOR SEARCHING FOR A Project -->
+					<asp:Panel Runat="server" ID="pnlProjectLookup"   Width="400px" Visible = "true">
+						<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR SEARCHING FOR A Project -->
+						<div class="modal fade" id="ProjectModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						  <div class="modal-dialog" role="document">
+							<div class="modal-content">
+							  <div class="modal-header">
+								<h5 class="modal-title" id="lblProjectModal">Project Search</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									  <span aria-hidden="true">&times;</span>
+									</button>
+								 
+					
+								</div>
+								<div class="modal-body">
+								 <uc1:ctrlProjectList runat="server" id="ctrlProjectList" />
+								</div>
+							  <div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+							
+							  </div>
+							</div>
+						  </div>
+						</div>
+					</asp:Panel>
+					<!-- END PROJECT LOOKUP PANEL -->
+                    <asp:ContentPlaceHolder ID="MainContent" runat="server" >
+					</asp:ContentPlaceHolder>
+				</div>
+			</div>
+	
+		<hr />
+		<!--script src="Scripts/materialize.js"></!--script -->
+<!-- Footer -->
+<footer class="page-footer font-small blue fixed-bottom">
+
+  <!-- Copyright -->
+  <div class="footer-copyright text-center py-3">© 2020 Copyright:
+    <a href="http://addisonstuart.com/"> Addison Stuart</a>
+  </div>
+  <!-- Copyright -->
+
+</footer>
+<!-- Footer -->
+	
+		
+    </form>
+    <!-- Menu.js Stuff -->
+        <script>
+            function w3_open() {
+              //  document.getElementById("main").style.marginLeft = "25%";
+               // document.getElementById("mySidebar").style.width = "25%";
+                document.getElementById("mySidebar").style.display = "block";
+                document.getElementById("openNav").style.display = 'none';
+            }
+            function w3_close() {
+                document.getElementById("main").style.marginLeft = "0%";
+                document.getElementById("mySidebar").style.display = "none";
+                document.getElementById("openNav").style.display = "inline-block";
+            }
+    </script>
+	<!-- end menu.js stuff -->
+    	<script>
+            $('#CustomersModal').on('show.bs.modal', function (e) {
+                // do something...
+                // alert('mike');
+                //    var p = document.getElementsByTagName("p");
+                //    var frm = document.getElementsByTagName("form");
+                var formcount = document.forms.length;
+                for (var i = 0; i < formcount; i++) {
+                    var frm = document.forms[i];
+                frm.reset;
+            }
+             //   alert('d');
+               // frm.trigger("reset");
+            })
+</script>
+</body>
+	
+</html>

@@ -1,0 +1,89 @@
+﻿body { border: border-width = 0px;
+}
+.dropdownmenu
+{ border: position:absolute;border-style:hidden;border-width:1px;
+	overflow:hidden; font-size: xx-small;
+}
+.menu
+{  background-color:#cccc99; font-size:small; font-family: Arial; width: 100%;
+}
+.criteria
+{  background-color:Transparent; font-size:small; font-family: Arial; width: 401px;
+}
+body
+        {
+        padding:0 0 2em 0;
+        border:0;
+        margin:0;
+        text-align:center;
+        font-size:11px;
+        line-height:16px;
+        font-family: "Lucida Grande","Lucida Sans Unicode",geneva,verdana,sans-serif;
+        color:#545454;
+        min-width: 800px;
+        background:#fff url(/media/gradient-e5e5e5-ffffff.gif) repeat-x 0 0;
+        }
+h1,
+h2
+        {
+        font-weight:lighter;
+        font-family:georgia, times new roman, times, georgia, palatino, serif;
+        text-align:center;
+        margin-top:1em;
+        }
+input
+        {
+        margin:0;
+        border:1px solid #ccc;
+        border-top-color:#aaa;
+        border-left-color:#aaa;
+        }
+.w2em { width:2em; }
+.w4em { width:4em; }
+.w8em { width:8em; }
+label
+        {
+        font-weight:bold;
+        color:#545454;
+        }
+legend
+        {
+        color:#545454;
+        font-weight:bold;
+        }
+form
+        {
+        width:700px;
+        background:#fcfcfc;
+        border:1px solid #ccc;
+        text-align:left;
+        padding:10px;
+        margin:0 auto 5em auto;
+        }
+a:link
+        {
+        background:transparent;
+        color:#678602;
+        text-decoration:none;
+        font-weight:normal;
+        }
+a:visited
+        {
+        color:#83aa00;
+        background:transparent;
+        text-decoration:none;
+        font-weight:normal;
+        }
+a:hover
+        {
+        color:#880000;
+        background:transparent;
+        text-decoration:underline;
+        font-weight:normal;
+        }
+fieldset
+        {
+        margin-bottom:1.6em;
+        padding:1em;
+        border:1px solid #ccc;
+        }
