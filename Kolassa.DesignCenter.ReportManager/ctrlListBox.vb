@@ -17,6 +17,8 @@ Public Class ctrlListBox
     Dim trig As AsyncPostBackTrigger
 
     Protected Overrides Sub CreateChildControlsSub()
+        mcSelectedItems.Clear()
+        mcSelectedItems2.Clear()
         Debug.Print("<ctrlListbox.CreateChildControls>")
         Controls.Clear()
         Dim li As ListItem
@@ -57,6 +59,8 @@ Public Class ctrlListBox
         lblField2.ID = "lblField2"
         lblField2.Visible = False
         ctrlField1 = New ListBox
+        'ClearChildViewState()
+
         ctrlField1.ID = "ctrlField1"
         ctrlField1.CssClass = "form-control form-control-sm"
         ctrlField2 = New ListBox
@@ -71,7 +75,10 @@ Public Class ctrlListBox
         AddHandler CustomValidator1.ServerValidate, AddressOf CustomValidator1_ServerValidate
 
         Controls.Add(lblFieldName)
+        Controls.Add(fGetFieldButton)
         Controls.Add(DropDownList1)
+
+
         Controls.Add(uPanel1)
         uPanel1.ContentTemplateContainer.Controls.Add(lblField1)
         uPanel1.ContentTemplateContainer.Controls.Add(ctrlField1)
@@ -283,6 +290,7 @@ Public Class ctrlListBox
                 Next
 
             Next
+
         End If
     End Sub
 
@@ -322,8 +330,11 @@ Public Class ctrlListBox
 
     Private Sub ctrlListBox_Init(sender As Object, e As EventArgs) Handles Me.Init
         On Error Resume Next
-        Debug.Print("<ctrlListBox_Init selectedindex=" & ctrlField1.SelectedIndex & " />")
+        If Not ctrlField1 Is Nothing Then
+            Debug.Print("<ctrlListBox_Init selectedindex=" & ctrlField1.SelectedIndex & " />")
+        End If
     End Sub
+
 
     Private Sub ctrlListBox_PreRender(sender As Object, e As EventArgs) Handles Me.PreRender
         On Error Resume Next

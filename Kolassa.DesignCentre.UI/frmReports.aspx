@@ -19,40 +19,36 @@
       
        
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Results</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand" href="#">Results</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
-  </button>
+    </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#"></a>
-      </li>
-        <li>
-          <asp:linkButton ID="lnkGetWhereClause" runat="server" Text="Submit" CssClass="btn btn-primary" style="padding-left:20px">Submit</asp:linkButton>
-        </li>
-      <li>      <!-- Button to Open the Modal -->
-        <img class="btn btn-seondary" height="40" data-toggle="modal" data-target="#modalWhere" style="padding-left:20px" src="images/eye.png"/>
-          </li>
-
-        <li>
-            <asp:ImageButton ID="imgLoadColumns" runat="server" ImageUrl="~/images/tools.png" style="padding-left:20px;padding-right:20px; padding-top:12px; height:30px"  OnClick="lnkLoadColumns_click"   data-toggle="modal" data-target="#loadMe" ToolTip="Edit Views"/>
-        </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" style="padding-left:20;pxpadding-right:20px;" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fa fa-print fa-2x"></i> &nbsp;
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <asp:linkbutton ID="lnkdPrintPage" runat="server" OnClick="PrintCurrentPage" CssClass="btn btn-mini">Print Page</asp:linkbutton>
-                    <asp:Linkbutton ID="lnkPrintAll"   runat="server" onclick="PrintAllPages"    CssClass="btn btn-mini">Print All Pages</asp:Linkbutton>
-        </div>
-      </li>
-      <li class="nav-item" style="padding-left:20px;padding-right:20px; padding-top:5px;">
-           <asp:linkbutton ID="lnkExport"  runat="server" tooltip="Download" ><img src="images/download.png" height="15px" /></asp:linkbutton>
-      </li>
-    </ul>
-  </div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active"><a class="nav-link" href="#"></a></li>
+            <li>    <asp:linkButton ID="lnkGetWhereClause" runat="server" Text="Submit" CssClass="btn btn-primary" style="padding-left:20px">Submit</asp:linkButton></li>
+            <li>      <!-- Button to Open the Modal -->
+                <img class="btn btn-seondary" height="40" data-toggle="modal" data-target="#modalWhere" style="padding-left:20px" src="images/eye.png"/>
+            </li>
+            <li>
+                <asp:ImageButton ID="imgLoadColumns" runat="server" ImageUrl="~/images/tools.png" style="padding-left:20px;padding-right:20px; padding-top:12px; height:30px"  OnClick="lnkLoadColumns_click"   data-toggle="modal" data-target="#loadMe" ToolTip="Edit Views"/>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" style="padding-left:20;pxpadding-right:20px;" href="#" id="navbarDropdown" 
+                    role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-print fa-2x"></i> &nbsp;
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <asp:linkbutton ID="lnkdPrintPage" runat="server" OnClick="PrintCurrentPage" CssClass="btn btn-mini">Print Page</asp:linkbutton>
+                        <asp:Linkbutton ID="lnkPrintAll"   runat="server" onclick="PrintAllPages"    CssClass="btn btn-mini">Print All Pages</asp:Linkbutton>
+                </div>
+            </li>
+            <li class="nav-item" style="padding-left:20px;padding-right:20px; padding-top:5px;">
+                <asp:linkbutton ID="lnkExport"  runat="server" tooltip="Download" ><img src="images/download.png" height="15px" /></asp:linkbutton>
+            </li>
+        </ul>
+    </div>
 </nav>
            
 
@@ -123,32 +119,30 @@
                   </div>
                 <asp:Panel ID="pnlMessage" runat="server"></asp:Panel>
                   <div class="container-fluid">
-   
-
-                    <cc1:ReportResults ID="ReportResults" runat="server" />
-  
-                </div>
+                       <cc1:ReportResults ID="ReportResults" runat="server" />
+                  </div>
             </ContentTemplate>
             <Triggers>
                 <asp:AsyncPostBackTrigger ControlID="lnkGetWhereClause" EventName="Click" />
             </Triggers>
      </asp:UpdatePanel>
 
-         <div class="modal fade" id="loadMe" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel">
-  <div class="modal-dialog modal-sm" role="document">
-    <div class="modal-content">
-      <div class="modal-body text-center">
-        <div class="loader"></div>
-        <div class="loader-txt  pad-all">Loading . . .  <br />
-            <div class="spinner-border pad-all" role="status">
-              <span class="sr-only pad-all">Loading... <br /></span><i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
-<span class="sr-only">Loading... <br /></span>
+<div class="modal fade" id="loadMe" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="loader">
+                    <!-- -->
+                </div>
+                <div class="loader-txt  pad-all">Loading . . .  <br />
+                    <div class="spinner-border pad-all" role="status">
+                        <span class="sr-only pad-all">Loading... <br /></span><i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
+                        <span class="sr-only">Loading... <br /></span>
+                    </div>
+                </div>
             </div>
-
         </div>
-      </div>
     </div>
-  </div>
 </div>
   
 
@@ -181,9 +175,9 @@
           //  $("#modalColumns .modal-body").html(body);
             $("#modalColumns").modal("show");
         }
-</script>
-    //*** Bootstrap Report Alerts
-     <style type="text/css">
+    </script>
+  <!--  //*** Bootstrap Report Alerts-->
+    <style type="text/css">
          .messagealert {
              width: 100%;
              position: fixed;

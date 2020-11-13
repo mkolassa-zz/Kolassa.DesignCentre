@@ -15,7 +15,7 @@ Public Class clsDataLoader
     Dim cns As SqlConnection
     Dim cno As OleDb.OleDbConnection
     Dim msSQLParameter As SqlParameter
-    Dim mscnStr As String
+    Public mscnStr As String
     Dim mscnType As String
 	Dim mlCategoryID As Long
 	Public NodeID As Long
@@ -150,6 +150,7 @@ Public Class clsDataLoader
             End If
         End If
         lsSQL = Replace(lsSQL, "@WHERE@", lsWhere)
+        lsSQL = Replace(lsSQL, "SearchText", " isnull([code],' ' ) + isnull( [name],' ') + isnull( [description],' ') ")
 
 
         '*** Load a data set.
@@ -204,18 +205,20 @@ Public Class clsDataLoader
 		mdsAllControls = ds
 		LoadAllControls = mdsAllControls
 	End Function
-    Public Function LoadReportControls(ByVal llReportID As Long) As DataSet
+    Public Function LoadReportControls(ByVal llReportID As Long, Optional llControlNum As Long = 0, Optional lsFieldID As String = "") As DataSet
         Dim lscnType As String = "OLEDB"
         Dim lsSQL As String
 
         '*** Initialize
         LoadReportControls = Nothing
 
-        lsSQL = "SELECT tblReportControls.*, " &
-                "       tblReportFields.* " &
+        lsSQL = "SELECT tblReportControls.*
+                       , tblReportControls.ID as ReportControlID
+                       , tblReportFields.* 
+                       , TblReportFields.ID as ReportControlFieldID " &
                 "From   tblReportFields inner join tblReportControls on " &
                 "       tblreportfields.reportcontrol = tblreportcontrols.controlid " &
-                "WHERE  ReportID= " & llReportID & " " &
+                "WHERE  ReportID= " & llReportID & " " & IIf(llControlNum > 0, " AND ReportControl =" & llControlNum & " ", "") & IIf(lsFieldID = "", "", " AND tblReportFields.ID ='" & lsFieldID & "' ") &
                 "ORDER BY SortOrder "
 
         '*** Load a data set.
@@ -225,6 +228,7 @@ Public Class clsDataLoader
         mdsReportControls = ds
         LoadReportControls = mdsReportControls
     End Function
+
 
     Public Function LoadReportViews(lsReportID As String) As DataSet
         Dim lsSQL As String
@@ -346,9 +350,7 @@ Public Class clsDataLoader
         InsertReportViewColumns = fExecuteSQLCmd("SQLConnection", lscnStr, msSQLcmd)
     End Function
     Function fGetUser() As String
-
         fGetUser = "11111111-2222-3333-4444-555566667777" ' Web.HttpContext.Current.User.Identity.GetUserId()
-
     End Function
     Public Function InsertReportView(ByVal lsViewID As String, ByVal lsName As String,
                                     ByVal lsTYpe As String, ByVal lsForm As String, liReportID As Integer,
@@ -406,7 +408,7 @@ Public Class clsDataLoader
                 cns.Open()
                 cms.Connection = cns
 
-
+                On Error GoTo fexecuteSQLError
                 cms.ExecuteNonQuery()
                 msSQLParameter = Nothing
                 cns.Close()
@@ -424,6 +426,10 @@ Public Class clsDataLoader
                 cno.Close()
         End Select
         fExecuteSQLCmd = True
+        Return True
+fexecuteSQLError:
+        Dim lsErr As String = Err.Description
+        Debug.Print("<error>" & lsErr & "</error>")
     End Function
     Function fTakeOutQuotes(ByVal lsStr As String) As String
         lsStr = Replace(lsStr, "script", "scri_pt")
@@ -512,7 +518,6 @@ LoadListItemsError:
         Debug.Print("<error msg='" & Err.Description & "' />")
         Resume LoadListItemsExit
     End Function
-
     Public Function LoadChildren(ByVal lsCnStr As String, ByVal lsSQL As String) As DataSet
         Dim lscnType As String = ""
 
@@ -608,6 +613,246 @@ LoadChildrenError:
     Protected Overrides Sub Finalize()
         MyBase.Finalize()
     End Sub
+    '*******************************************************
+    '*** Report Fields - Field Level Info for the Report Controls
+    '*******************************************************
+    Public Function LoadReportFields(ByVal llNodeID As Long, ByVal lsWhere As String, ByVal lbActive As Boolean, ByVal lsID As String) As DataSet
+        Dim lsSQL As String
+        Dim lscnStr As String = mscnStr
+        '*** Initialize
+        LoadReportFields = Nothing
+        'llNodeID = 2
+        lsWhere = Replace(lsWhere, "SearchText", " code + name + description ")
+        If lsWhere = Nothing Then lsWhere = ""
+        '*** Check for No Selected Category
+        If llNodeID = 0 Then
+            'response.write("No Project Selectedd")
+            Exit Function
+        End If
 
+        lsSQL = "SELECT *                  " & NL &
+                "FROM TBLREPORTFIELDS      " & NL &
+                "WHERE  ( NodeID=" & llNodeID & " " & IIf(lsWhere.Length > 4, " And " & lsWhere, "") &
+                    IIf(lbActive = True, " And Active = 1 ", "") & ")" & NL &
+                    IIf(isGUID(lsID), " AND ID = '" & lsID & "' ", "")
+
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        ds = fGetDataset("SQLConnection", lscnStr, lsSQL, "Projects")
+
+        LoadReportFields = ds
+    End Function
+
+
+End Class
+Public Class clsReportFields
+
+
+
+    Public Function LoadRecords(ReportNum As Long, ControlNum As Long, FieldID As String) As Collection
+        Dim c As New clsDataLoader
+        Dim ds As DataSet = c.LoadReportControls(ReportNum, ControlNum, FieldID)
+        Dim dr As DataRow
+        Dim dt As DataTable
+        Dim cf As clsReportField
+        Dim cFields As Collection = New Collection
+        If ds Is Nothing Then Return cFields '  *** Form is not Active on the screen
+        If ds.Tables.Count > 0 Then
+            dt = ds.Tables(0)
+            Dim liCounter As Integer
+            For liCounter = 0 To dt.Rows.Count - 1
+                dr = dt.Rows(liCounter)
+                cf.ReportFieldID = dr("ID")
+                cf.ReportFieldID = IIf(IsDBNull(dr("ReportControlFieldID")), "", dr("ReportControlFieldID").ToString)
+                cf.FieldName = IIf(IsDBNull(dr("FieldName")), "", dr("FieldName"))
+                cf.TableName = IIf(IsDBNull(dr("TableName")), "", dr("TableName"))
+
+                cf.Name = IIf(IsDBNull(dr("Name")), "", dr("Name"))
+                cf.NodeID = IIf(IsDBNull(dr("NodeID")), "", dr("NodeID"))
+                cf.FieldLength = IIf(IsDBNull(dr("FieldLength")), "", dr("FieldLength"))
+                cf.Title = IIf(IsDBNull(dr("FieldTitle")), "", dr("FieldTitle"))
+                cf.ValidationTitle = IIf(IsDBNull(dr("FieldValidationTitle")), "", dr("FieldValidationTitle"))
+                cf.ValidationPattern = IIf(IsDBNull(dr("FieldValidationPattern")), "", dr("FieldValidationPattern"))
+                cf.Validation = IIf(IsDBNull(dr("Validation")), "", dr("Validation"))
+                cf.ReportID = IIf(IsDBNull(dr("ReportID")), "", dr("ReportID"))
+                cf.ReportControl = IIf(IsDBNull(dr("ReportControl")), "", dr("ReportControl"))
+                cf.SortOrder = IIf(IsDBNull(dr("SortOrder")), "", dr("SortOrder"))
+                cf.FieldReadOnly = IIf((IsDBNull(dr("FieldReadOnly"))), True, False)
+                cf.Active = IIf(IsDBNull(dr("Active")), False, IIf(dr("Active") = True, True, False))
+                cf.Required = IIf(IsDBNull(dr("Required")), False, IIf(dr("Required") = True, True, False))
+                cf.FieldType = IIf(IsDBNull(dr("FieldType")), "", dr("FieldType"))
+            Next
+        End If
+
+        Return cFields
+
+    End Function
+
+End Class
+Public Class clsReportField
+    Public ReportFieldID As String
+    Public ReportControl As String
+    Public FieldName As String
+    Public TableName As String
+    Public Name As String
+    Public Code As String
+    Public Title As String
+    Public FieldLength As Integer
+    Public ValidationTitle As String
+    Public ValidationPattern As String
+    Public Validation As String
+    Public ReportID As Long
+    Public FieldReadOnly As Boolean
+    Public Active As Boolean
+    Public Required As Boolean
+    Public FieldType As String
+    Public NodeID As String
+    Public SortOrder As Integer = 0
+    Public Sub New()
+        NodeID = System.Web.HttpContext.Current.Session("NodeID")
+    End Sub
+
+    Public Function Insert() As Boolean
+        Dim c As New Kolassa.DesignCenter.ReportManager.clsDataLoader
+        Dim lgID As New Guid
+        Dim msSQLcmd As SqlCommand
+        lgID = Guid.NewGuid
+        Dim lsSQL As String
+
+
+        '*** Initialize
+        Insert = False
+        '*** Check for No Selected Category
+        'If llNodeID = 0 Then
+        ' Exit Function
+        ' End If
+
+        lsSQL = "INSERT INTO tblReportFields
+           ([ReportID]           ,[ReportControl]           ,[Fieldtype]
+           ,[Required]           ,[Active]           ,[NodeID]
+           ,[CreateDate]           ,[Createuser]           ,[UpdateDate]           ,[UpdateUser]
+           ,[SortOrder]           ,[Validation]           ,[FieldValidationPattern]           ,[FieldValidationTitle]
+           ,[TableName]           ,[FieldName]           ,[FieldReadOnly]           ,[FieldLength]
+           ,[FieldTitle]           ,[ID]           ,[Name])
+     VALUES
+           (@ReportID,
+           ,@pReportControl
+           ,@pFieldtype
+           ,@pRequired
+           ,@pActive
+           ,@pNodeID
+           ,@pCreateDate
+           ,@pCreateuser
+           ,@pUpdateDate
+           ,@pUpdateUser
+           ,@pSortOrder
+           ,@pValidation
+           ,@pFieldValidationPattern
+           ,@pFieldValidationTitle
+           ,@pTableName
+           ,@pFieldName
+           ,@pFieldReadOnly
+           ,@pFieldLength
+           ,@pFieldTitle
+           ,@pID
+           ,@pName)"
+
+        msSQLcmd = New SqlCommand
+        msSQLcmd.CommandText = lsSQL
+        msSQLcmd.Parameters.Clear()
+
+        msSQLcmd.Parameters.AddWithValue("@ReportID", ReportID)
+        msSQLcmd.Parameters.AddWithValue("@pReportControl", ReportControl)
+        msSQLcmd.Parameters.AddWithValue("@pFieldtype", FieldType)
+        msSQLcmd.Parameters.AddWithValue("@pRequired", Required)
+        msSQLcmd.Parameters.AddWithValue("@pActive", Active)
+        msSQLcmd.Parameters.AddWithValue("@pNodeID", NodeID)
+        msSQLcmd.Parameters.AddWithValue("@pCreateDate", Now())
+        msSQLcmd.Parameters.AddWithValue("@pCreateuser", c.fGetUser)
+        msSQLcmd.Parameters.AddWithValue("@pUpdateDate", Now())
+        msSQLcmd.Parameters.AddWithValue("@pUpdateUser", c.fGetUser)
+        msSQLcmd.Parameters.AddWithValue("@pSortOrder", SortOrder)
+        msSQLcmd.Parameters.AddWithValue("@pValidation", Validation)
+        msSQLcmd.Parameters.AddWithValue("@pFieldValidationPattern", ValidationPattern)
+        msSQLcmd.Parameters.AddWithValue("@pFieldValidationTitle", ValidationTitle)
+        msSQLcmd.Parameters.AddWithValue("@pTableName", TableName)
+        msSQLcmd.Parameters.AddWithValue("@pFieldName", FieldName)
+        msSQLcmd.Parameters.AddWithValue("@pFieldReadOnly", FieldReadOnly)
+        msSQLcmd.Parameters.AddWithValue("@pFieldLength", FieldLength)
+        msSQLcmd.Parameters.AddWithValue("@pFieldTitle", Title)
+        msSQLcmd.Parameters.AddWithValue("@pID", ReportFieldID)
+        msSQLcmd.Parameters.AddWithValue("@pName", Name)
+
+
+        '*** Run The SQL.
+        Insert = c.fExecuteSQLCmd("SQLConnection", c.mscnStr, msSQLcmd)
+    End Function
+    Public Function Update() As Boolean
+        Dim c As New Kolassa.DesignCenter.ReportManager.clsDataLoader
+        Dim lgID As New Guid
+        Dim msSQLcmd As SqlCommand
+        lgID = Guid.NewGuid
+        Dim lsSQL As String
+
+
+        '*** Initialize
+        Update = False
+        '*** Check for No Selected Category
+        'If llNodeID = 0 Then
+        ' Exit Function
+        ' End If
+
+        lsSQL = "Update tblReportFields set
+                     [ReportID] = @ReportID
+                    ,[ReportControl] = @pReportControl
+                    ,[Fieldtype] = @pFieldtype
+                    ,[Required] = @pRequired
+                    ,[Active] = @pActive
+                    ,[NodeID] = @pNodeID
+                    ,[UpdateDate] = GetDate()
+                    ,[UpdateUser] = @pUser
+                    ,[SortOrder] = @pSortOrder
+                    ,[Validation] = @pValidation
+                    ,[FieldValidationPattern] = @pFieldValidationPattern
+                    ,[FieldValidationTitle] = @pFieldValidationTitle
+                    ,[TableName] = @pTableName
+                    ,[FieldName] = @pFieldName
+                    ,[FieldReadOnly] = @pFieldReadOnly
+                    ,[FieldLength] =@pFieldLength
+                    ,[FieldTitle] = @pFieldTitle
+                    ,[ID] = @pID
+                    ,[Name] = @pName
+                  Where ID = @pID"
+
+        msSQLcmd = New SqlCommand
+        msSQLcmd.CommandText = lsSQL
+        msSQLcmd.Parameters.Clear()
+
+        msSQLcmd.Parameters.AddWithValue("@ReportID", ReportID)
+        msSQLcmd.Parameters.AddWithValue("@pReportControl", ReportControl)
+        msSQLcmd.Parameters.AddWithValue("@pFieldtype", FieldType)
+        msSQLcmd.Parameters.AddWithValue("@pRequired", IIf(Required = True, 1, 0))
+        msSQLcmd.Parameters.AddWithValue("@pActive", IIf(Active = True, 1, 0))
+        msSQLcmd.Parameters.AddWithValue("@pNodeID", NodeID)
+        msSQLcmd.Parameters.AddWithValue("@pUpdateDate", Now())
+        msSQLcmd.Parameters.AddWithValue("@pUpdateUser", c.fGetUser)
+        msSQLcmd.Parameters.AddWithValue("@pSortOrder", SortOrder)
+        msSQLcmd.Parameters.AddWithValue("@pValidation", Validation)
+        msSQLcmd.Parameters.AddWithValue("@pFieldValidationPattern", ValidationPattern)
+        msSQLcmd.Parameters.AddWithValue("@pFieldValidationTitle", ValidationTitle)
+        msSQLcmd.Parameters.AddWithValue("@pTableName", TableName)
+        msSQLcmd.Parameters.AddWithValue("@pFieldName", FieldName)
+        msSQLcmd.Parameters.AddWithValue("@pFieldReadOnly", IIf(FieldReadOnly = True, 1, 0))
+        msSQLcmd.Parameters.AddWithValue("@pFieldLength", FieldLength)
+        msSQLcmd.Parameters.AddWithValue("@pFieldTitle", Title)
+        msSQLcmd.Parameters.AddWithValue("@pID", ReportFieldID)
+        msSQLcmd.Parameters.AddWithValue("@pName", Name)
+        msSQLcmd.Parameters.AddWithValue("@pUser", c.fGetUser)
+
+
+        '*** Run The SQL.
+        Update = c.fExecuteSQLCmd("SQLConnection", c.mscnStr, msSQLcmd)
+    End Function
 End Class
 

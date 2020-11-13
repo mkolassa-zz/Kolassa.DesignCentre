@@ -32,10 +32,11 @@ Partial Public Class clsBase
     End Property
     Public Property SelectedItems() As Collection
         Get
-            Debug.Print("<clsBase.SelectedItems ClientID = '" & Me.ClientID & "' Count='" & mcSelectedItems.Count & "' />")
+            Debug.Print("<clsBase.SelectedItems [GET] ClientID = '" & Me.ClientID & "' Count='" & mcSelectedItems.Count & "' />")
             SelectedItems = mcSelectedItems
         End Get
         Set(ByVal value As Collection)
+            Debug.Print("<clsBase.SelectedItems [SET] ClientID = '" & Me.ClientID & "' Count='" & mcSelectedItems.Count & "' />")
             mcSelectedItems = value
         End Set
     End Property
@@ -129,7 +130,7 @@ Partial Public Class clsBase
         Dim ddl1 As DropDownList = Me.FindControl("DropDownList1")
         msOperator = lsOption
 
-        lblfn.Text = msFieldName
+        If Not lblfn Is Nothing Then lblfn.Text = msFieldName
         Select Case lsOption
             Case ("Equals"), "="
                 lblf1.Text = "="
@@ -182,12 +183,16 @@ Partial Public Class clsBase
         Dim ddl1 As DropDownList = Me.FindControl("DropDownList1")
 
 
-        If msReportType = "Form" Then
+        If msReportType = "Form" Or msReportType Is Nothing Then
 
             lblf1.Text = "="
             ddl1.SelectedValue = "="
-            lblfn.CssClass = "control-label font-weight-bold"
-            lblfn.Visible = True
+
+            If Not lblfn Is Nothing Then
+                lblfn.CssClass = "control-label font-weight-bold"
+
+                lblfn.Visible = True
+            End If
             ddl1.Visible = False
             lblf1.Visible = False
             lblf2.Visible = False

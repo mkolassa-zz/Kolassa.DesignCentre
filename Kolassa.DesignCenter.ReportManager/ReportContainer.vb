@@ -21,13 +21,16 @@ Public Class ReportContainer
 	Dim litmsg As Literal
 	Dim upHeader As Panel
 	Dim up1 As Panel
-	Dim up2 As Panel ' UpdatePanel
-	Dim LoadImage As System.Web.UI.WebControls.Image
+    Dim up2 As Panel ' UpdatePanel
+    Dim ctrlRMFieldEditor As mycontrol_
+    Dim LoadImage As System.Web.UI.WebControls.Image
 	Dim tbl As Table
 	Dim tblRow As TableRow
 	Dim tblCell As TableCell
 	Dim btn As Button
     Dim mbDebug As Boolean
+    Dim mbShowRFPanel ' *** SHowHides RFMODAL
+
     Public ReportDescription As String
     Public NodeID As Long
 	Public ProjectID As String
@@ -89,49 +92,65 @@ Public Class ReportContainer
         EnsureChildControls()
         Debug.Print("</RecreateChildControls>")
     End Sub
-	Protected Overrides Sub CreateChildControls()
+    Protected Overrides Sub CreateChildControls()
         Debug.Print("<ReportContainer_CreateChildControls>")
-
+        Dim ctrlid As String
+        Dim lsHidden As String = ""
+        Dim p As Page
+        Dim ctrlName As String = ""
+        p = Me.Page
+        If p Is Nothing Then Exit Sub
+        ctrlid = p.Request.Form("__LASTFOCUS")
+        If p.IsPostBack Then
+            ctrlName = p.Request.Params.Get("__EVENTTARGET")
+        End If
         Controls.Clear()
+
+        ctrlRMFieldEditor = New mycontrol_
+        ctrlRMFieldEditor.ID = "ReportManagerFieldEditor"
+        ctrlRMFieldEditor.Attributes.Clear()
+        ctrlRMFieldEditor.Attributes.Remove("style")
+        Controls.Add(ctrlRMFieldEditor)
 
 
         '*** Create the Category Drop Down
         cboReportCategory = New DropDownList
-		cboReportCategory.ID = "cboReportCategory"
-		cboReportCategory.AutoPostBack = True
-		cboReportCategory.Attributes("class") = "form-group"
-		AddHandler cboReportCategory.SelectedIndexChanged, AddressOf cboReportCategory_Changed
-		AddHandler cboReportCategory.TextChanged, AddressOf cboReportCategory_Changed
+        cboReportCategory.ID = "cboReportCategory"
+        cboReportCategory.AutoPostBack = True
+        cboReportCategory.Attributes("class") = "form-group"
+        AddHandler cboReportCategory.SelectedIndexChanged, AddressOf cboReportCategory_Changed
+        AddHandler cboReportCategory.TextChanged, AddressOf cboReportCategory_Changed
 
-		btnSetReport = New Button
-		btnSetReport.Text = "Set Report"
+        btnSetReport = New Button
+        btnSetReport.Text = "Set Report"
         btnSetReport.ID = "btnSetReport"
         btnSetReport.CssClass = "d-none"
         AddHandler btnSetReport.Click, AddressOf btnSetReport_Click
 
 
-		txtReportID = New TextBox
+        txtReportID = New TextBox
         txtReportID.ID = "txtReportID"
         txtReportID.CssClass = "d-none"
         updatePanel1 = New Panel ' UpdatePanel
-		updatePanel2 = New Panel ' UpdatePanel
-		updatePanel1.ID = "updatePanel1"
-		updatePanel2.ID = "updatePanel2"
+        updatePanel2 = New Panel ' UpdatePanel
+        updatePanel1.ID = "updatePanel1"
+        updatePanel2.ID = "updatePanel2"
 
-		upHeader = New Panel
-		upHeader.ID = "upHeader"
-		up1 = New Panel
-		up1.ID = "up1"
-		up2 = New Panel 'UpdatePanel
-		up2.ID = "up2"
+        upHeader = New Panel
+        upHeader.ID = "upHeader"
+        up1 = New Panel
+        up1.ID = "up1"
+        up1.Attributes.Remove("style") '202009
+        up2 = New Panel 'UpdatePanel
+        up2.ID = "up2"
 
 
 
-		AddHandler up2.Load, AddressOf UP2Load
-		txtDebug = New TextBox
-		txtDebug.ID = "txtDebug"
-		litmsg = New Literal
-		litmsg.ID = "litmsg"
+        AddHandler up2.Load, AddressOf UP2Load
+        txtDebug = New TextBox
+        txtDebug.ID = "txtDebug"
+        litmsg = New Literal
+        litmsg.ID = "litmsg"
         Debug.Print("<Clear control='litmessage' />")
         litmsg.Text = "" '<B>This is the litmsg control</B>"
 
@@ -187,61 +206,102 @@ Public Class ReportContainer
 
 
         tbl = New Table
-		tbl.ID = "tbl"
-		tblRow = New TableRow
-		tblRow.ID = "tblRow"
-		tblCell = New TableCell
-		tblCell.ID = "tblCell"
-		'  UpdateProgress1 = New UpdateProgress
-		'  UpdateProgress1.ID = "UpdateProgress1"
-		LoadImage = New System.Web.UI.WebControls.Image
-		LoadImage.ImageUrl = "images/Loading.gif"
-		'  UpdateProgress1.Controls.Add(LoadImage)
+        tbl.ID = "tbl"
+        tbl.Attributes.Add("style", "width:100%")
+        tblRow = New TableRow
+        tblRow.ID = "tblRow"
+        tblCell = New TableCell
+        tblCell.ID = "tblCell"
+        '  UpdateProgress1 = New UpdateProgress
+        '  UpdateProgress1.ID = "UpdateProgress1"
+        LoadImage = New System.Web.UI.WebControls.Image
+        LoadImage.ImageUrl = "images/Loading.gif"
+        '  UpdateProgress1.Controls.Add(LoadImage)
 
 
-		'upHeader.Controls.Add(cboReportCategory)
+        'upHeader.Controls.Add(cboReportCategory)
 
-		'upHeader.Controls.Add(btn)
-		upHeader.Controls.Add(txtDebug)
-		upHeader.Controls.Add(litmsg)
-
-
+        'upHeader.Controls.Add(btn)
+        upHeader.Controls.Add(txtDebug)
+        upHeader.Controls.Add(litmsg)
 
 
-		Controls.Add(updatePanel1)
-		Controls.Add(updatePanel2)
-		Controls.Add(up2)
-		Controls.Add(up1)
-
-		'updatePanel2.Triggers.Add(asyncPostBackTrigger1)
-		'up2.Triggers.Add(asyncPostbackTrigger2)
-
-		up2.CssClass = "form-group"
-
-		up2.Controls.Add(cboReportCategory)
-		up2.Controls.Add(lstReports) 'up2.ContentTemplateContainer.Controls.Add(lstReports) '20190315
-		up2.Controls.Add(txtReportID)
-		up2.Controls.Add(btnSetReport)
-
-		'up2.Controls.Add(d)
-		tblRow.Cells.Add(tblCell)
-		tbl.Rows.Add(tblRow)
-		up1.Controls.Add(tbl) 'up2.ContentTemplateContainer.Controls.Add(tbl)
-
-		'*** Border for the entire Group
-		'Me.tbl.CssClass = "border border-primary col-md"
 
 
-		' Controls.Add(UpdateProgress1)
-		'UpdateProgress1.Controls.Add(LoadImage)
-		ReportContainer_Load()
-		lstReports_Load()
-		' up2_Load()
 
-		CreateChildControlsSub()
+
+        'updatePanel2.Triggers.Add(asyncPostBackTrigger1)
+        'up2.Triggers.Add(asyncPostbackTrigger2)
+
+        up2.CssClass = "form-group"
+
+        up2.Controls.Add(cboReportCategory)
+        up2.Controls.Add(lstReports) 'up2.ContentTemplateContainer.Controls.Add(lstReports) '20190315
+        up2.Controls.Add(txtReportID)
+        up2.Controls.Add(btnSetReport)
+
+        'up2.Controls.Add(d)
+        tblRow.Cells.Add(tblCell)
+        tbl.Rows.Add(tblRow)
+        up1.Controls.Add(tbl) 'up2.ContentTemplateContainer.Controls.Add(tbl)
+
+        Controls.Add(updatePanel1)
+        Controls.Add(updatePanel2)
+        Controls.Add(up2)
+        Controls.Add(up1)
+        setPanelVisibility() '*** Should Panels be visible?
+
+        '*** Border for the entire Group
+        'Me.tbl.CssClass = "border border-primary col-md"
+
+        ' Controls.Add(UpdateProgress1)
+        'UpdateProgress1.Controls.Add(LoadImage)
+
+        ReportContainer_Load()
+        lstReports_Load()
+
+        CreateChildControlsSub()
 
         Debug.Print("</ReportContainer_CreateChildControls>")
 
+    End Sub
+    Sub setPanelVisibility()
+        '*** Identify if the Control that caused the postback was "cmdPopulateFieldvalues"
+        '*** if so, Process to form and then hide the control
+
+        '*** Get the Control Name that caused the Postback
+        Dim ctrlname As String = ""
+        If Page.IsPostBack Then
+            ctrlname = Page.Request.Params.Get("__EVENTTARGET")
+        End If
+
+        '*** Make sure the UP1 Panel Exists
+        Dim cp As Panel = Me.FindControl("up1")
+        Dim ctrlRMFieldEditor As mycontrol_ = cp.Parent.FindControl("ReportManagerFieldEditor")
+
+        '*** If UP1 Does not exist, exit, cuz the Container is not right
+        If cp Is Nothing Then Exit Sub
+        Dim rfe As Panel = ctrlRMFieldEditor.FindControl("pnlRF-modal")
+        ' rfe = Page.FindControl("rfmodal")
+        If Not rfe Is Nothing Then
+            rfe.Attributes.Remove("style")
+            If Not cp Is Nothing Then
+                cp.Attributes.Remove("style")
+                If ctrlname.Contains("cmdPopulateFieldValues") Then
+                    '   cp.Attributes.Add("style", "visibility:hidden") '202009
+                    '   rfe.Attributes.Add("style", "visibility:visible")
+                    mbShowRFPanel = True
+                Else
+                    mbShowRFPanel = False
+                    cp.Visible = True
+                    cp.Attributes.Add("Dude", "fgf")
+                    cp.Attributes.Remove("style")
+                    cp.Attributes.Add("style", "visibility:visible; display:block;")
+                    '    rfe.Attributes.Add("style", "visibility:hidden")
+                End If
+            End If
+        End If
+        '        mbShowRFPanel = True
     End Sub
     Public Sub btnSetReport_Click()
         ' On Error Resume Next
@@ -268,6 +328,7 @@ Public Class ReportContainer
 	'********* RENDER THE CONTROLS  ********************
 	Protected Overrides Sub Render(writer As HtmlTextWriter)
         Debug.Print("<ReportContainer_Render>")
+        If upHeader Is Nothing Then Exit Sub
         AddAttributesToRender(writer)
 		writer.AddAttribute(HtmlTextWriterAttribute.Cellpadding, "1")
 
@@ -278,17 +339,26 @@ Public Class ReportContainer
 		upHeader.CssClass = "col-12"
 		upHeader.RenderControl(writer)
 
-		updatePanel1.RenderControl(writer)
+        updatePanel1.RenderControl(writer)
+
+        If mbShowRFPanel Then
+            ctrlRMFieldEditor.Visible = True
+            up1.Visible = vbFalse
+
+        Else
+            ctrlRMFieldEditor.Visible = False
+            up1.Visible = True
+        End If
+        If Not ctrlRMFieldEditor Is Nothing Then ctrlRMFieldEditor.RenderControl(writer)
 
 
-		up2.RenderControl(writer)
-        up1.CssClass = "col-sm-9"
+
         up1.RenderControl(writer)
-		' UpdateProgress1.RenderControl(writer)
-		''LoadImage.RenderControl(writer)
+        ' UpdateProgress1.RenderControl(writer)
+        ''LoadImage.RenderControl(writer)
 
 
-		writer.RenderEndTag() ' </span>
+        writer.RenderEndTag() ' </span>
 
 
 		RenderSubControls(writer)
@@ -344,9 +414,15 @@ Public Class ReportContainer
 		End Set
 	End Property
 	Public Property ReportID() As Integer
-		Get
-            Debug.Print("<PropertyGet ReportID='" & Val(txtReportID.Text) & "'/>")
-            Return Val(txtReportID.Text)
+        Get
+            Dim lsreport As String
+            If txtReportID Is Nothing Then
+                lsreport = "0"
+            Else
+                lsreport = txtReportID.Text
+            End If
+            Debug.Print("<PropertyGet ReportID='" & Val(lsreport) & "'/>")
+            Return Val(lsreport)
 
         End Get
         Set(ByVal value As Integer)
@@ -473,25 +549,36 @@ Public Class ReportContainer
 
         Debug.Print("</ReportContainer_Load>")
     End Sub
-	Private Sub ReportContainer_LoadCategories()
-        Debug.Print("<ReportContainer_LoadCategories>")
-        If Me.cboReportCategory.Items.Count > 0 Then
-            Debug.Print("<msg ms='Categories already exist, exit without doing anything' />")
-        Else
+    Private Sub ReportContainer_LoadCategories()
+        Try
+            Debug.Print("<ReportContainer_LoadCategories>")
+            If Me.cboReportCategory.Items.Count > 0 Then
+                Debug.Print("<msg ms='Categories already exist, exit without doing anything' />")
 
-            '*** Should I reload mdlDataLoader.mdsReportCategories? 
-            Dim ds As DataSet = mdlDataLoader.mdsReportCategories
-            Dim ReportCategoryName As String = ""
-            Debug.Print("<c cboReportCategory.SelectedValue=" & cboReportCategory.SelectedValue & "/>")
-            '*** Have We loaded the categories from the DB?
-            If Not ds Is Nothing Then
-                ReportCategoryName = ds.Tables("ReportCategoryType").Rows(0)(0)
-            End If
-            If ReportCategoryName.ToLower <> ReportCategoryType.ToLower Or (ReportCategoryName = "" And ReportCategoryType = "") Then
-                mdlDataLoader.LoadReportCategories(ReportCategoryType)
-                ds = mdlDataLoader.mdsReportCategories
-            End If
-            Dim dt As DataTable = ds.Tables("Categories")
+            Else
+
+                '*** Should I reload mdlDataLoader.mdsReportCategories? 
+                Dim ds As DataSet = mdlDataLoader.mdsReportCategories
+                Dim ReportCategoryName As String = ""
+                Debug.Print("<c cboReportCategory.SelectedValue=" & cboReportCategory.SelectedValue & "/>")
+                '*** Have We loaded the categories from the DB?
+                If Not ds Is Nothing Then
+                    ReportCategoryName = ds.Tables("ReportCategoryType").Rows(0)(0)
+                Else
+                    'No Categories, Exit
+                    Exit Sub
+                End If
+                Dim lsCatName As String = ReportCategoryName.ToLower
+                If ReportCategoryType Is Nothing Then
+                    Exit Sub
+                End If
+                Dim lsCatType As String = ReportCategoryType.ToLower
+
+                If lsCatName <> ReportCategoryType.ToLower Or (ReportCategoryName = "" And ReportCategoryType = "") Then
+                    mdlDataLoader.LoadReportCategories(ReportCategoryType)
+                    ds = mdlDataLoader.mdsReportCategories
+                End If
+                Dim dt As DataTable = ds.Tables("Categories")
                 Dim dr As DataRow
                 Dim cat As ReportCategory
                 cboReportCategory.Items.Clear()
@@ -500,47 +587,49 @@ Public Class ReportContainer
                 End If
                 mcReportCategories.Clear()
 
-            '*** Should we load the Category Dropdown box?  Not if it is NOT  reporttype
-            For Each dr In dt.Rows
-                ReportType = dr("ReportCategoryType")
-                If ReportType = "Form" Then
-                    'Stop
-                End If
-                If 2 = 2 Or ReportCategoryType = "" Or dr("ReportCategoryType") = ReportCategoryType Then
-                    cat = New ReportCategory
-
-                    cat.HideReportLists = CBool(dr("ReportCategoryHideLists"))
-                    '     If cat.HideReportLists = True Then
-                    'up2.CssClass = "d-none"
-                    'Else
-                    '   up2.CssClass = "col-sm-9"
-                    'End If
-                    'response.write(dr("reportCategoryID")) & " " &  dr("reportCategoryDescription")
-                    cat.CategoryID = CInt(dr("reportCategoryID"))
-                    cat.CategoryDescription = dr("reportCategoryDescription")
-                    'lstItm = New ListItem
-                    'lstItm.Value = cat.CategoryID
-                    'lstItm.Text = cat.CategoryDescription
-                    'lstItm = Nothing
-                    'cboReportCategory.Items.Add(lstItm)
-                    If ReportCategoryType Is Nothing Or ReportCategoryType = "" Then
-                        mcReportCategories.Add(cat)
-                    Else
-                        If ReportCategoryType.ToUpper = cat.CategoryDescription.ToUpper Then
-                            mcReportCategories.Add(cat)
-                        End If
-
-
+                '*** Should we load the Category Dropdown box?  Not if it is NOT  reporttype
+                For Each dr In dt.Rows
+                    ReportType = dr("ReportCategoryType")
+                    If ReportType = "Form" Then
+                        'Stop
                     End If
-                End If
-            Next dr
+                    If 2 = 2 Or ReportCategoryType = "" Or dr("ReportCategoryType") = ReportCategoryType Then
+                        cat = New ReportCategory
 
-            dr = Nothing
+                        cat.HideReportLists = CBool(dr("ReportCategoryHideLists"))
+                        '     If cat.HideReportLists = True Then
+                        'up2.CssClass = "d-none"
+                        'Else
+                        '   up2.CssClass = "col-sm-9"
+                        'End If
+                        'response.write(dr("reportCategoryID")) & " " &  dr("reportCategoryDescription")
+                        cat.CategoryID = CInt(dr("reportCategoryID"))
+                        cat.CategoryDescription = dr("reportCategoryDescription")
+                        'lstItm = New ListItem
+                        'lstItm.Value = cat.CategoryID
+                        'lstItm.Text = cat.CategoryDescription
+                        'lstItm = Nothing
+                        'cboReportCategory.Items.Add(lstItm)
+                        If ReportCategoryType Is Nothing Or ReportCategoryType = "" Then
+                            mcReportCategories.Add(cat)
+                        Else
+                            If ReportCategoryType.ToUpper = cat.CategoryDescription.ToUpper Then
+                                mcReportCategories.Add(cat)
+                            End If
+
+
+                        End If
+                    End If
+                Next dr
+
+                dr = Nothing
                 dt = Nothing
                 ds = Nothing
 
             End If
-        Debug.Print("</ReportContainer_LoadCategories>")
+            Debug.Print("</ReportContainer_LoadCategories>")
+        Catch
+        End Try
     End Sub
 
 
@@ -672,9 +761,13 @@ Public Class ReportContainer
             If ds.Tables.Count > 0 Then
                 If ds.Tables(0).Rows.Count > 0 Then
                     rptID = ds.Tables(0).Rows(0)("ReportID")
-                    TableName = ds.Tables(0).Rows(0)("TableName")
+                    If IsDBNull(ds.Tables(0).Rows(0)("TableName")) Then
+                        TableName = "NoTable"
+                    Else
+                        TableName = ds.Tables(0).Rows(0)("TableName")
+                    End If
                 End If
-                Return rptID
+                    Return rptID
             End If
 
         End If
@@ -758,7 +851,7 @@ Public Class ReportContainer
 
                             If rptCtrl.Required And (IsDBNull(rptCtrl.Value) Or rptCtrl.Value = "" Or rptCtrl.Value = "-1") Then
                                 '*If ctrl.BackColor = Color.Red And (IsDBNull(ctrl.Text) Or ctrl.Text = "" Or ctrl.Text = "-1") Then
-                                ' response.write("Required Field must be filled")
+                                Debug.Print("<msg ms='Required Field  " & rptCtrl.FieldName & " must be filled' />")
                                 f_CreateWhereClause = "Cancel"
                                 ctrl.Focus()
                                 Exit Function
@@ -801,6 +894,7 @@ Public Class ReportContainer
 
                         ReportOut = ReportOut & "</td></tr>"
                         lsSQL = lsSQL & ReportControl.SQL
+                        Debug.Print("Control " & ReportControl.ControlName & " SQL: " & ReportControl.SQL)
                         ' End If
                     End If
                 Next
@@ -890,9 +984,9 @@ CreateWhere_Exit:
 					Dim key As String = pair.Key
 					' Get value.
 					Dim value As String = pair.Value
-					' Display.
-					Console.WriteLine("{0}, {1}", key, value)
-					f_LoadFromObject.Add(New KeyValuePair(Of String, String)(key, value))
+                    ' Display.
+                    Debug.Print("<" & key & " val=" & value & " />")
+                    f_LoadFromObject.Add(New KeyValuePair(Of String, String)(key, value))
 				Next
 
 			Next
@@ -970,9 +1064,10 @@ LoadFromObject_Exit:
                             ' Create List Item
 
                             If dc.ColumnName = ReportControl.FieldName Then
+                                '     If ReportControl.FieldName = "UnitTypeID" Then Stop
                                 lrli = New ReportListItem
-                                lrli.Value = dr(dc).ToString
-                                lrli.Description = dr(dc).ToString
+                                lrli.Value = dr(dc).ToString.Trim
+                                lrli.Description = dr(dc).ToString.Trim
                                 ReportControl.SelectedItems.Add(lrli)
                                 Exit For
                             End If
@@ -1163,7 +1258,9 @@ LoadFromObject_Exit:
             Debug.Print("<msg count='" & tbl.Controls(0).Controls(0).Controls(0).Controls.Count.ToString & "' />")
             For Each p In tbl.Controls(0).Controls(0).Controls
                 For Each ctrl In p.Controls
-
+                    If 2 = 1 Then
+                        Exit Sub
+                    End If
                     Debug.Print("<msg ms='sUpdateControls:Up2-" & ctrl.ID & " Value:" & ctrl.ToString & "' />")
                     '*** Controls capable of Criteria have a ReportControl Tag
                     rptctrl2 = Nothing
@@ -1185,11 +1282,13 @@ LoadFromObject_Exit:
                                 If ctrlb.Valid = True Then
                                     rptctrl.DataOperator = (ctrlb.DataOperator)
                                     rptctrl.DataType = ctrlb.DataType
-                                    rptctrl.SelectedItems = ctrlb.SelectedItems
-                                    rptctrl.SelectedItems2 = ctrlb.SelectedItems2
+                                    If ctrlb.SelectedItems.Count > 0 Then
+                                        rptctrl.SelectedItems = ctrlb.SelectedItems
+                                        rptctrl.SelectedItems2 = ctrlb.SelectedItems2
+                                    End If
                                     rptctrl.Enabled = True
-                                Else
-                                    rptctrl.DataOperator = Nothing
+                                    Else
+                                        rptctrl.DataOperator = Nothing
                                     rptctrl.DataType = Nothing
                                     If rptctrl.SelectedItems.Count > 0 Then
                                         rptctrl.SelectedItems.Clear()
@@ -1428,7 +1527,7 @@ Err_Cmdrunreport_Click:
             ctrl.ID = ReportControl.ControlName
             ctrl.FieldName = ReportControl.FieldDescription
 
-            ctrl.msReportType = rpt.ReportType
+            ctrl.msReportType = IIf(IsDBNull(rpt.ReportType), "Form", rpt.ReportType)
             ctrl.CssClass = "CustomControl"
             If ReportControl IsNot Nothing Then
                 '  On Error Resume Next
@@ -1468,6 +1567,7 @@ Err_Cmdrunreport_Click:
         FindReportByID = New Report
         Dim ds As DataSet
         ds = mdlDataLoader.LoadReports(0, "", llReportID)
+        If ds Is Nothing Then ds = New DataSet
         If ds.Tables.Count > 0 Then
             If ds.Tables(0).Rows.Count > 0 Then
                 FindReportByID.ReportID = ds.Tables(0).Rows(0)("ReportID")
@@ -1495,8 +1595,71 @@ Err_Cmdrunreport_Click:
     End Sub
     Public Sub ShowMessage(Message As String, lsType As String)
         'Show Bootstrap Message
-        ScriptManager.RegisterClientScriptBlock(Me, Me.GetType(), "myScript" & Guid.NewGuid.ToString, "ShowMessage('" & Message & "','" & lsType & "','');", True)
+        ScriptManager.RegisterClientScriptBlock(Me, Me.GetType(), "myScript" & Guid.NewGuid.ToString, "ShowMessage('" & Message & "','" & lsType & "');", True)
     End Sub
+
+
+
+
+    '*** Thise is my attempt to get the child control to raise an event here for clicking the edit Field Button each control should have
+    Protected Overrides Function OnBubbleEvent(ByVal sender As Object, ByVal e As EventArgs) As Boolean
+
+        '*** Bubbled up, Tell control NOT to rerender the Form Controls so we can show the Field Manager form
+
+
+        setPanelVisibility()
+
+        If TypeOf e Is CommandEventArgs Or TypeOf e Is EventArgs Then
+            Dim cp As Panel = Me.FindControl("up1")
+            '     Dim ctrlRMFieldEditor As mycontrol_ = Me.FindControl("ctrlRMFieldEditor")
+            Dim rfe As mycontrol_ = cp.FindControl("ReportManagerFieldEditor")
+            If Not rfe Is Nothing Then
+                If Not cp Is Nothing Then
+                    '********************************************************************
+                    '*** Get Field Data from the Report fields table to configure forms
+                    '********************************************************************
+                    Dim lsReportID As String = "0" 'ReportID
+                    Dim llcontrolNum As Long = 0
+                    Dim lsFieldID As String = ""
+
+                    If TypeOf (sender) Is Button Then
+                        Dim cmd As Button = sender 'Return False
+                        Dim keys As IEnumerator = cmd.Attributes.Keys.GetEnumerator()
+                        Dim liCounter As Integer = 1
+                        Dim Key As String
+                        While keys.MoveNext
+                            Key = keys.Current
+                            Select Case Key
+                                Case "data-reportid" : lsReportID = cmd.Attributes(Key)
+                                Case "data-reportcontrolfieldnumid" : llcontrolNum = cmd.Attributes(Key)
+                                Case "data-reportcontrolfieldid" : lsFieldID = cmd.Attributes(Key)
+                            End Select
+                        End While
+                    End If
+
+
+                    Dim llReportID As Long = Val(lsReportID)
+
+
+
+                    rfe.LoadForm(llReportID, llcontrolNum, lsFieldID)
+                    Debug.Print(Me.Controls.Count)
+                    'Stop the bubbling of the CommandEventArgs
+                    Return True
+                End If
+
+            End If
+        End If
+
+        'If we are dealing with something other than a CommandEventArgs,
+        'let the bubbling proceed unmolested...
+        Return False
+    End Function
+
+
+
+
+
 
 
 

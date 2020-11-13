@@ -16,8 +16,28 @@ Public Class ctrlBase
 
 	Dim mnuCTRL1 As Menu
 	Dim mnuCTRL As DropDownList
-
+	Dim cmdFieldDef As Button
+	Dim cmdFieldDeflnk As LinkButton
 	Public initReportControl As ReportControl
+	Public Function fGetFieldButton() As Button
+		cmdFieldDef = New Button
+		cmdFieldDef.Text = "<i class='fa fa-forward' aria-hidden='true'></i>" ' "+"
+		cmdFieldDef.Text = "+"
+		cmdFieldDef.UseSubmitBehavior = False
+
+		cmdFieldDef.Attributes.Add("onmousedown", "document.getElementById('divsaverecord').style.display = 'none';")
+		cmdFieldDef.CssClass = "btn btn-link pull-right"
+
+		cmdFieldDef.ID = "cmdPopulateFieldValues"
+		cmdFieldDef.Attributes.Add("data-reportid", mrptCtrl.ReportID)
+		cmdFieldDef.Attributes.Add("data-reportcontrolid", mrptCtrl.ReportControlID)
+		cmdFieldDef.Attributes.Add("data-reportcontrolfieldnumid", mrptCtrl.ReportControlNumID)
+		cmdFieldDef.Attributes.Add("data-reportcontrolfieldid", mrptCtrl.ReportControlFieldID)
+
+		AddHandler cmdFieldDef.Click, AddressOf LoadReportFields
+		fGetFieldButton = cmdFieldDef
+	End Function
+
 	Public Sub UpdateParent()
 	End Sub
 	Private Sub ctrlBase_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
@@ -37,7 +57,7 @@ Public Class ctrlBase
 	Protected Overrides Sub CreateChildControls()
 		Controls.Clear()
 
-
+		Dim cmd As Button
 		mnuCTRL1 = New Menu
         mnuCTRL1.ID = "mnuCTRL1"
         mnuCTRL1.ToolTip = msFieldName
@@ -48,26 +68,51 @@ Public Class ctrlBase
 		mnuCTRL.CssClass = "form-control control-label  form-control-sm"
 		Dim li As New ListItem
         Dim rli As ReportListItem
-        For Each rli In miListItems
-            li = New ListItem
-            li.Text = rli.Description
-            li.Value = rli.Value
-            mnuCTRL.Items.Add(li)
-        Next
+		For Each rli In miListItems
+			li = New ListItem
+			li.Text = rli.Description
+			li.Value = rli.Value
+			mnuCTRL.Items.Add(li)
+		Next
 		' AddHandler imgbt.Click, AddressOf imgbt_Click
 		' AddHandler cal.SelectionChanged, AddressOf cal_SelectionChanged
 
 
+
 		Controls.Add(mnuCTRL)
 		Controls.Add(mnuCTRL1)
+
+
+		Dim span As New Panel
+		span.Attributes("class") = "form-group row"
+		span.ID = "ctTitle"
+		span.Attributes.Add("Titles", "TitleStyle")
+
+		Dim a, b, c As Label
+		a = New Label
+		b = New Label
+		c = New Label
+		a.Text = "a start"
+		b.Text = "B Start"
+		c.Text = "c start"
+		span.Controls.Add(a)
+
+
+		cmd = New Button 'fGetFieldButton()
+		'	Controls.Add(cmd)
 		lblTitle = New Label
         lblTitle.ID = "lbl" & msFieldName
 		lblTitle.Text = msFieldName
 		lblTitle.CssClass = "control-label font-weight-bold"
-		If msReportType = "form" Then
+		If msReportType = "Form" Then
 			lblTitle.Visible = False
 		End If
-		Controls.Add(lblTitle)
+		span.Controls.Add(lblTitle)
+		span.Controls.Add(b)
+		span.Controls.Add(cmd)
+		span.Controls.Add(c)
+		Controls.Add(span)
+		'	Controls.Add(lblTitle)
 		CreateChildControlsSub()
     End Sub
     Protected Overridable Sub CreateChildControlsSub()
@@ -104,10 +149,24 @@ Public Class ctrlBase
         lblTitle2.RenderControl(writer)
     End Sub
 
-    Private Sub ctrlBase_Init(sender As Object, e As EventArgs) Handles Me.Init
-        Dim t As DateTime = Now
-    End Sub
+	Private Sub ctrlBase_Init(sender As Object, e As EventArgs) Handles Me.Init
+		Dim t As DateTime = Now
+	End Sub
+	Public Delegate Sub cmdFieldDelegate(sender As Object, e As EventArgs)
+	Public Event cmdField As cmdFieldDelegate
+	Public Event EditReportField(ReportID As Long, ControlNum As Long, FieldID As String)
+	Public Overridable Sub LoadReportFields(sender As Object, e As EventArgs)
 
+		RaiseBubbleEvent(sender, e)
+		'		Dim cbut As cmdFieldDelegate = New cmdFieldDelegate(AddressOf TestButton)
+		'		cbut.Invoke(Me, New EventArgs)
+	End Sub
+
+	Sub TestButton(sender As Object, e As EventArgs)
+		MyBase.RaiseBubbleEvent(sender, e)
+		RaiseBubbleEvent(sender, e)
+		Stop
+	End Sub
 	Public Overridable Sub setValues()
 		'*** Set the controls = the selected Value
 		If SelectedItems.Count > 0 Then ctrlField1.Text = SelectedItems(0).ToString

@@ -15,7 +15,8 @@ Public Class ctrlComboBox
     Dim ctrlField2 As DropDownList
     Dim CustomValidator1 As CustomValidator
     Dim trig As AsyncPostBackTrigger
-
+    Dim txttest1 As TextBox
+    Dim msSelectedItem As String
 
 
     Protected Overrides Sub CreateChildControlsSub()
@@ -67,10 +68,13 @@ Public Class ctrlComboBox
         lblField2.Visible = False
         ctrlField1 = New DropDownList
         ctrlField1.Items.Insert(0, New ListItem(String.Empty, String.Empty))
+
         ctrlField1.SelectedIndex = 0
 
         ctrlField1.ID = "ctrlField1"
         ctrlField1.CssClass = "form-control form-control-sm"
+        txttest1 = New TextBox
+        txttest1.ID = "txtTest1"
         ctrlField2 = New DropDownList
         ctrlField2.ID = "ctrlField2"
         ctrlField2.CssClass = "form-control form-control-sm"
@@ -85,13 +89,17 @@ Public Class ctrlComboBox
 
 
         Controls.Add(lblFieldName)
+        Controls.Add(fGetFieldButton)
         Controls.Add(DropDownList1)
         Controls.Add(uPanel1)
 
 
 
+
         uPanel1.ContentTemplateContainer.Controls.Add(lblField1)
         uPanel1.ContentTemplateContainer.Controls.Add(ctrlField1)
+        uPanel1.ContentTemplateContainer.Controls.Add(txttest1)
+
         uPanel1.ContentTemplateContainer.Controls.Add(lblField2)
         uPanel1.ContentTemplateContainer.Controls.Add(ctrlField2)
         uPanel1.ContentTemplateContainer.Controls.Add(CustomValidator1)
@@ -266,6 +274,11 @@ Public Class ctrlComboBox
     Protected Sub UpdatePanel1_DataBinding(ByVal sender As Object, ByVal e As System.EventArgs) 'Handles UpdatePanel1.DataBinding
         Debug.Print("<clsComboBox.UpdatePanel1_DataBinding>")
         SetFields(Me.DropDownList1.Text, Me.DropDownList1.SelectedValue)
+        If msSelectedItem = "" Then
+            '*** There is no Value
+        Else
+            ctrlField1.SelectedValue = msSelectedItem
+        End If
         Debug.Print("</clsComboBox.UpdatePanel1_DataBinding>")
     End Sub
     Protected Sub Pagie_iLoad(ByVal sender As Object, ByVal e As System.EventArgs) 'Handles Me.Load
@@ -289,8 +302,9 @@ Public Class ctrlComboBox
 
     Public Overrides Sub SetFields(lsOption As String, lsValue As String)
         '*** Added 6/1/2020  This was missing from Listbox control
-        Dim lstItem As ListItem
+        Dim lstItem, lstSelectedItem As ListItem
         MyBase.SetFields(lsOption, lsValue)
+        msSelectedItem = ""
         Dim lrli As ReportListItem
         If SelectedItems.Count > 0 Then
             For Each lrli In SelectedItems
@@ -300,6 +314,11 @@ Public Class ctrlComboBox
                             lstItem.Selected = True
                             Debug.Print("CTRLComboBox Set Fields: " & lblFieldName.Text & " Value: " & ctrlField1.Text)
                             ctrlField1.Items.FindByValue(lrli.Value).Selected = True
+                            txttest1.Text = ctrlField1.SelectedValue
+                            msSelectedItem = ctrlField1.SelectedValue
+                            lstSelectedItem = ctrlField1.SelectedItem
+                            lstSelectedItem.Selected = True
+                            ctrlField1.DataBind()
                             Exit Sub
                         End If
 
@@ -311,6 +330,7 @@ Public Class ctrlComboBox
 
     Private Sub ctrlComboBox_DataBinding(sender As Object, e As EventArgs) Handles Me.DataBinding
         On Error Resume Next
+        '       SetFields(Me.DropDownList1.Text, Me.DropDownList1.SelectedValue) ' Trying this 20201101
         Debug.Print("<ctrlComboBox_DataBinding selectedindex=" & ctrlField1.SelectedIndex & " />")
     End Sub
 

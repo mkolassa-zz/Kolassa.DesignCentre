@@ -6,6 +6,7 @@ Partial Public Class AddPhoneNumber
     Inherits System.Web.UI.Page
     Protected Sub PhoneNumber_Click(sender As Object, e As EventArgs)
         Dim manager = Context.GetOwinContext().GetUserManager(Of ApplicationUserManager)()
+
         Dim code = manager.GenerateChangePhoneNumberToken(User.Identity.GetUserId(), PhoneNumber.Text)
         If manager.SmsService IsNot Nothing Then
             Dim message = New IdentityMessage() With {
@@ -18,4 +19,5 @@ Partial Public Class AddPhoneNumber
 
         Response.Redirect("/Account/VerifyPhoneNumber?PhoneNumber=" & HttpUtility.UrlEncode(PhoneNumber.Text))
     End Sub
+
 End Class

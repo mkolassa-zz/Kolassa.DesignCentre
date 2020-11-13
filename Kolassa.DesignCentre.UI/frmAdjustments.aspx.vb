@@ -15,7 +15,7 @@ Partial Class _frmAdjustments
         contact.City = "Mt Prospect"
         contact.StateProvince = "IL"
         contact.PostalCode = "60056"
-        contact.NodeID = 2
+        contact.NodeID = Session("NodeID")
         contact.ImageURL = "https://www.flickr.com/gp/kolassa/66Gc28"
         contact.Phone1 = "3216549872"
         contact.Phone2 = "1234567890"

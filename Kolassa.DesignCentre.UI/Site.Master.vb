@@ -53,7 +53,7 @@ Public Class SiteMaster
         Dim a As New GlobalFunctionsDC
         Dim lsLast
 
-        Session("NodeID") = 1
+        If Session("NodeID") Is Nothing Then Session("NodeID") = 0
         If Session("UserFriendlyName") Is Nothing Or Session("UserFriendlyName") = "" Then
             Dim context = New ApplicationDbContext()
             ' Create an instance of the generic type UserStore(Of T), with
@@ -123,4 +123,13 @@ Public Class SiteMaster
         Context.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie)
     End Sub
 
+    Protected Sub SetNode(sender As Object, e As EventArgs) Handles txtNodeID.TextChanged, btnNode.Click
+        If Session("NodeID") <> txtNodeID.Text Then
+            Session("NodeID") = txtNodeID.Text
+            Session("ProjectObject") = Nothing
+            Session("ProjectName") = Nothing
+            Session("Project") = Nothing
+        End If
+    End Sub
 End Class
+

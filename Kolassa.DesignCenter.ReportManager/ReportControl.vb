@@ -235,15 +235,23 @@ Public Class Report
 		For Each dr In dt.Rows
 			rptCtrl = New ReportControl
 			rptCtrl.ControlFieldType = CStr(dr("ControlFieldType"))
-			rptCtrl.ControlName = If(dr("FieldName") Is DBNull.Value, dr("ControlName"), dr("FieldName"))
-			rptCtrl.Description = If(dr("FieldTitle") Is DBNull.Value, dr("ControlDescription"), dr("FieldTitle"))
-			rptCtrl.FieldDescription = If(dr("FieldTitle") Is DBNull.Value, dr("ControlFieldDescription"), dr("FieldTitle"))
-			rptCtrl.FieldName = If(dr("FieldName") Is DBNull.Value, dr("ControlFieldName"), dr("FieldName"))
-			rptCtrl.Type = dr("ControlType")
+            rptCtrl.ControlName = If(dr("FieldName") Is DBNull.Value, dr("ControlName"), If(Trim(dr("FieldName")) = "", dr("ControlName"), dr("FieldName")))
+            rptCtrl.Description = If(dr("FieldTitle") Is DBNull.Value, dr("ControlDescription"), If(Trim(dr("FieldTitle")) = "", dr("ControlDescription"), dr("FieldTitle")))
+            rptCtrl.FieldDescription = If(dr("FieldTitle") Is DBNull.Value, dr("ControlFieldDescription"), If(Trim(dr("FieldTitle")) = "", dr("ControlFieldDescription"), dr("FieldTitle")))
+            rptCtrl.FieldName = If(dr("FieldName") Is DBNull.Value, dr("ControlFieldName"), If(Trim(dr("FieldName")) = "", dr("ControlFieldName"), dr("FieldName")))
+            rptCtrl.Type = dr("ControlType")
 			rptCtrl.ConnectionString = "" 'cnStr
-			rptCtrl.Required = dr("Required")
+            rptCtrl.Required = dr("Required")
 
-			If Not dr("ControlValidationPattern") Is DBNull.Value Then rptCtrl.ValidationPattern = Trim(dr("ControlValidationPattern"))
+            rptCtrl.ReportID = dr("ReportID")                                    'ID for the Report (Number)
+            rptCtrl.ReportControlID = dr("ReportControlID").ToString             'ID for the Control (GUID)
+            rptCtrl.ReportControlNumID = dr("ReportControl")                     'ID for the Control (Number)
+            rptCtrl.ReportControlFieldID = dr("ReportControlFieldID").ToString   'ID for the Control FIeld Instance (GUID)
+
+
+
+
+            If Not dr("ControlValidationPattern") Is DBNull.Value Then rptCtrl.ValidationPattern = Trim(dr("ControlValidationPattern"))
 			If Not dr("FieldValidationPattern") Is DBNull.Value Then rptCtrl.ValidationPattern = Trim(dr("FieldValidationPattern"))
 			If Not dr("ControlValidationTitle") Is DBNull.Value Then rptCtrl.ValidationTitle = Trim(dr("ControlValidationTitle"))
 			If Not dr("FieldValidationTitle") Is DBNull.Value Then rptCtrl.ValidationTitle = Trim(dr("FieldValidationTitle"))
@@ -251,10 +259,10 @@ Public Class Report
 			If Not dr("FieldLength") Is DBNull.Value Then
 				If dr("FieldLength") > 0 Then rptCtrl.FieldLength = Trim(dr("FieldLength"))
 			End If
-			If Not dr("FieldName") Is DBNull.Value Then rptCtrl.FieldName = Trim(dr("FieldName"))
-			If Not dr("TableName") Is DBNull.Value Then rptCtrl.tableName = Trim(dr("TableName"))
-			'Debug.Print (rptCtrl.Type & rptCtrl.FieldName)
-			If Not IsDBNull(dr("ControlSQL")) Then
+            'If Not dr("FieldName") Is DBNull.Value Then rptCtrl.FieldName = Trim(dr("FieldName"))
+            'If Not dr("TableName") Is DBNull.Value Then rptCtrl.tableName = Trim(dr("TableName"))
+            'Debug.Print (rptCtrl.Type & rptCtrl.FieldName)
+            If Not IsDBNull(dr("ControlSQL")) Then
 				rptCtrl.RowSource = dr("ControlSQL")
 			Else
 				rptCtrl.RowSource = ""
@@ -262,7 +270,7 @@ Public Class Report
 			'  Dim liCounter As Integer = 0
 			' Dim liCols As Integer = dt.Columns.Count - 1
 			'For liCounter = 0 To liCols
-			'lsMsg = lsMsg & (dt.Columns(liCounter).ColumnName & dr(liCounter)) & ":     "
+			'lsMsg = lsMsg & (dt.Columns(liCounter).ColumnName & dr(liCounter)) & ":      "
 			'Next
 			'  lsMsg = lsMsg & Chr(13) & Chr(10)
 
@@ -348,6 +356,13 @@ Public Class ReportControl
     Dim msParent As String
     Dim msControlName As String = ""
     Dim msControlFieldType As String = ""
+
+    Public ReportControlFieldID As String = ""  'Unique Identifer for the Record that Holds the Report/Control/Field combo
+    Public ReportControlID As String = ""       'Unique Identifier for the record that holds the Control Definition
+    Public ReportID As Long = 0
+    Public ReportControlFieldNumID As Long = 0      'Nemeric Field for the ReportControl to Field COmbo
+    Public ReportControlNumID As Long = 0       'Numeric Value for Report Control Instance
+
     Dim msControlConnectionString As String = ""
     Dim msControlRowSource As String = "" '*** SQL used to fill the Control
     Dim msOperator As String = ""
@@ -358,8 +373,11 @@ Public Class ReportControl
 	Protected msValidationPattern As String = ""
 	Protected msValidationTitle As String = ""
 
+    Public Sub New()
+        'Stop
+    End Sub
 
-	Public Sub LoadListItems()
+    Public Sub LoadListItems()
         If mcListItems Is Nothing Then
             mcListItems = New ReportListItems
         End If
@@ -440,9 +458,11 @@ Public Class ReportControl
             SelectedItems = mcSelectedItems
         End Get
         Set(ByVal value As Collection)
+            '     If msFieldName = "UnitTypeID" Then Stop
+            Debug.Print("<" & msFieldName & " Value=" & value(1).ToString & " />")
             mcSelectedItems = value
-			'response.write(value.ToString)
-		End Set
+            'response.write(value.ToString)
+        End Set
     End Property
     Public Property SelectedItems2() As Collection
         Get
@@ -781,6 +801,7 @@ Public Class ReportListItems
         Dim lsDescription As String
 
         '*** Check to see if the Recordset actually has records
+        If dt Is Nothing Then Exit Sub
         For Each dr In dt.Rows
             liListItem = New ReportListItem
             If IsDBNull(dr(1)) Then

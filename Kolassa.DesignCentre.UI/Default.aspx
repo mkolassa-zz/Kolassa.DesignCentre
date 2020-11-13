@@ -129,7 +129,7 @@
                     <asp:Repeater ID="Repeater1" runat="server" DataSourceID="odsProjects" >
                     <ItemTemplate>
 						<div class="card mb-3" style="width: 18rem;">
-						  <asp:image  ID="imgProj" runat="server" style="clip:rect(0px,100px,200px,0px);"  cssclass="card-img-top img-thumbnail" src='<%#Eval("imageURL") %>' AlternateText="Project Image" />
+						  <asp:image  ID="imgProj" runat="server" style="clip:rect(0px,100px,200px,0px);"  cssclass="card-img-top img-thumbnail" src='<%#Eval("imageURL") %>' AlternateText='<%#Eval("ProjectTYpeName") %>' />
 						  <div class="card-body">
 							<h5 class="card-title"><a href="frmProjects.aspx?ProjectID=<%#Eval("ID") %>"><%#Eval("Name") %></a></h5>
 							<p class="card-text"> <%#Eval("Description") %>
@@ -159,7 +159,8 @@
 				</UpdateParameters>
           
 				<SelectParameters>
-					<asp:Parameter DefaultValue="2" Name="llNodeID"  Type="Int64" />
+					<asp:SessionParameter Name="llNodeID" SessionField="NodeID" DefaultValue="0" />
+		
 					<asp:Parameter Name="lsWhere" Type="String" DefaultValue="" />
 					<asp:Parameter Name="lbActive" Type="Boolean" DefaultValue="True" />
 					<asp:Parameter Name="lsID" Type="String" DefaultValue="" />

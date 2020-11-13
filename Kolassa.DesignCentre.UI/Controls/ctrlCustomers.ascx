@@ -6,10 +6,10 @@
 		<EditItemTemplate>
        	    <div class="form-row">
 				<div class="col-md-12 mb-3">
-					<div style="display:none"><asp:Literal ID="litID"  runat="server" Text='<%#Eval("ID") %>' /></div>
+					<div style="display:block"><asp:Literal ID="litID"  runat="server" Text='<%#Eval("ID") %>' /></div>
 				  <label for="validationTooltip01">Customer Name</label>
 				  <asp:textbox runat="server" type="text" cssclass="form-control" id="txtCustomerName" placeholder="Customer Name"
-					   required="required" Text='<%#Eval("CustomerName")%>' ></asp:textbox> 
+					   requiredr="required" Text='<%#Eval("CustomerName")%>' ></asp:textbox> 
 				  <div class="valid-tooltip">
 					Looks good!
 				  </div>
@@ -22,7 +22,7 @@
         <asp:Textbox runat="server" type="text" text='<%#Eval("CustomerEmail")%>'
 
 			class="form-control" id="txtEmail" placeholder="Email" 
-			aria-describedby="validationTooltipUsernamePrepend" required />
+			aria-describedby="validationTooltipUsernamePrepend" requiredd="no" />
         <div class="invalid-tooltip">
           Please choose a unique and valid username.
         </div>
@@ -34,7 +34,7 @@
       <div class="input-group">
 
         <asp:textbox runat="server" type="text" text='<%#Eval("CustomerPhone")%>' class="form-control" id="txtPhoneNum" 
-			placeholder="999-888-7777" aria-describedby="validationTooltipUsernamePrepend" required />
+			placeholder="999-888-7777" aria-describedby="validationTooltipUsernamePrepend" requiredr="required" />
         <div class="invalid-tooltip">
           Please enter a valid Phone Number.
         </div>
@@ -47,7 +47,7 @@
     <div class="col-md-6 mb-3">
       <label for="txtAddress">Address</label>
       <asp:textbox runat="server"  type="text" class="form-control" id="txtAddress" 
-		  placeholder="Address" text='<%#Eval("CustomerAddress")%>' TextMode="MultiLine"  required />
+		  placeholder="Address" text='<%#Eval("CustomerAddress")%>' TextMode="MultiLine"  requiredr="F" />
       <div class="invalid-tooltip">
         Please provide a valid Address.
       </div>
@@ -57,7 +57,7 @@
     <div class="col-md-6 mb-3">
       <label for="txtCity">City</label>
       <asp:textbox runat="server"  type="text" class="form-control" id="txtCity" placeholder="City" 
-		  value='<%#Eval("CustomerCity")%>' required />
+		  value='<%#Eval("CustomerCity")%>' requiredr="f" />
       <div class="invalid-tooltip">
         Please provide a valid city.
       </div>
@@ -65,7 +65,7 @@
     <div class="col-md-3 mb-3">
       <label for="txtState">State</label>
       <asp:textbox runat="server"  type="text" class="form-control" id="txtState" 
-		  placeholder="State" required text='<%#Eval("StateProvince")%>'/>
+		  placeholder="State" requiredr="required" text='<%#Eval("StateProvince")%>'/>
       <div class="invalid-tooltip">
         Please provide a valid state.
       </div>
@@ -73,7 +73,7 @@
     <div class="col-md-3 mb-3">
       <label for="txtZip">Zip</label>
       <asp:textbox runat="server"  type="text" class="form-control" id="txtZip" placeholder="Zip" text='<%#Eval("Postal_Code")%>'
-		  required />
+		  requirerd="required" />
       <div class="invalid-tooltip">
         Please provide a valid zip.
       </div>

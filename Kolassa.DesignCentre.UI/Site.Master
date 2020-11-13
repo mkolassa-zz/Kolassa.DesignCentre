@@ -50,7 +50,7 @@
     <form runat="server">
         <script src="/Scripts/modernizr-2.6.2.js"></script>
         <script src="Scripts/popper.js"></script>
-      <asp:ScriptManager runat="server" EnablePageMethods="true"> 
+      <asp:ScriptManager runat="server" EnablePageMethods="true" > 
             <Scripts>
                 <asp:ScriptReference Name="jquery" />   
                 <asp:ScriptReference Name="bootstrap" /> 
@@ -101,6 +101,21 @@
 						<%Else  %>
 								<button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#ProjectModal" style="padding-top:10px;border:none;">
 								    <i class="fa fa-arrow-circle-down" ></i> <%: Session("ProjectName")  %></a>
+								</button>
+						<%End If %>&nbsp;
+				        </li>
+                    </ul>
+                     <ul class="navbar-nav px-3">
+                        <li class="nav-item text-nowrap">		
+						<%    If Session("NodeID") Is Nothing Then  %>
+            			 	<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#NodeModal" style="border:none;">
+									<i class="fa fa-search" ></i> Select Node
+							</button>
+          
+						<%Else  %>
+								<button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#NodeModal" style="padding-top:10px;border:none;">
+								    <i class="fa fa-arrow-circle-down" ></i>Node: <%# Session("NodeID")  %></a>
+
 								</button>
 						<%End If %>&nbsp;
 				        </li>
@@ -341,7 +356,7 @@
         <!--        <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmContacts" ><i class="fa fa-phone"   ></i> <span class="d-none d-md-inline">Contacts</span></a> -->
                 <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmQuote"    ><i class="fa fa-quote-left"></i> <span class="d-none d-md-inline">Quotes</span></a>
 
-         	<!--	       <li class="divider"></li>
+         		       <li class="divider"></li>
 				          
           
                 <span class="d-block p-2 bg-dark text-white">Admin</span>
@@ -364,7 +379,7 @@
                 <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=COMPANYINFO"   ></i> <span class="fa fa-compass">Company Info</span></a>
                 <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=REPORTCATEGORIES"   ></i> <span class="fa fa-dochub">Report Categories</span></a>
                 <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=BASE"  ></i> <span class="fa fa-baseball-ball">Base</span></a>
-			-->
+			
 		</ul>
 	</div>
 </div>
@@ -409,7 +424,42 @@
                     <asp:ContentPlaceHolder ID="MainContent" runat="server" >
 					</asp:ContentPlaceHolder>
 				</div>
-			</div>
+		
+            	<div class="container body-content" style="padding-top:5px;">
+			 		<!-- THIS IS THE PANEL FOR SEARCHING FOR A NODE -->
+					<asp:Panel Runat="server" ID="Panel1"   Width="400px" Visible = "true">
+						<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR SEARCHING FOR A Project -->
+						<div class="modal fade" id="NodeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						  <div class="modal-dialog" role="document">
+							<div class="modal-content">
+							  <div class="modal-header">
+								<h5 class="modal-title" id="lblNodeModal">Node Search</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									  <span aria-hidden="true">&times;</span>
+									</button>
+								 
+					
+								</div>
+								<div class="modal-body">
+								 <!-- <uc1:ctrlProjectList runat="server" id="ctrlProjectList1" /> -->
+                                    <asp:TextBox runat="server" ID="txtNodeID" type="number"></asp:TextBox>
+                                    <br /><asp:Button runat="server" ID="btnNode" />
+								</div>
+							  <div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+							
+							  </div>
+							</div>
+						  </div>
+						</div>
+					</asp:Panel>
+					<!-- END PROJECT LOOKUP PANEL -->
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" >
+					</asp:ContentPlaceHolder>
+				</div>    
+            
+            </div>
+
 	
 		<hr />
 		<!--script src="Scripts/materialize.js"></!--script -->

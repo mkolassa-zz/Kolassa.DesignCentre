@@ -91,12 +91,12 @@
 		  <div class="modal-dialog" role="document">
 			<div class="modal-content">
 			  <div class="modal-header">
-				<h5 class="modal-title" id="Customer">Customer</h5>
+				<h5 class="modal-title" id="Customer">Customer <button title="clear" onclick="clear();" /></h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					  <span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				<div class="modal-body">
+				<div class="modal-body"> 
 					<asp:UpdateProgress runat="server" AssociatedUpdatePanelID="upCustomer" id="ajaxoverlay" >
 						<ProgressTemplate>
 							<div><strong>  Loading...</strong> <img src="images/loadingH.gif" style="height:20px;" /></div>
@@ -104,9 +104,9 @@
 					</asp:UpdateProgress>
 					<asp:UpdatePanel ID="upCustomer" runat="server">
 						<ContentTemplate >
-							<div style="display:none">
-								ID:<asp:textbox ID="txtID" runat="server" ></asp:textbox>-ID
-								<asp:Button ID="cmdUPCustomer" runat="server" />
+							<div style="display:block">
+								ID:<asp:textbox Width="50px" ID="txtID" runat="server" CssClass="background:transparent;border:none;width:outline:none;padding:0px fa-500px fa-500px 0px;" ></asp:textbox>
+								<asp:Button ID="cmdUPCustomer" runat="server" CssClass="display:none" />
 							</div>
 							<uc2:ctrlCustomers runat="server" ID="ctrlCustomers1" />
 						</ContentTemplate>
@@ -179,11 +179,44 @@
 			  } 
 		  });
   	</script>
-		<script>
-            $('#CustomersModal').on('show.bs.modal', function (e) {
-                // do something...
-                // alert('mike');
-                document.getElementById("ctl01").reset();
-            })
-</script>
+
+	    <script>
+			$('#CustomersModal').on('hide.bs.modal', function (e) {
+				clear();
+				//       alert("modal hiding");
+			})
+				function clear() {
+					var c = $(this);
+					var f = document.getElementById('MainContent_ctrlCustomers1_fvCustomer');
+					var k = f.getElementsByTagName("input");
+					for (item of k) {
+						if (item.type != 'submit') {
+							console.log(item);
+							item.value = '';
+						}
+					}
+                        var k = f.getElementsByTagName("textarea");
+					for (item of k) {
+						if (item.type != 'submit') {
+							console.log(item);
+							item.value = '';
+						}
+					}
+					var k = f.getElementsByTagName("select");
+                            for (item of k) {
+                                if (item.type != 'submit') {
+                                    console.log(item);
+                                    item.value = '';
+                                } 
+                    } 
+					
+			//	var l = f.find("input");
+			//	l.val('');
+		//		l.end();
+			//	l = f.find("input[type=checkbox], input[type=radio]");
+			//	l.prop("checked", "");
+              //    l.end();
+            }
+        </script>
 </asp:Content>
+	

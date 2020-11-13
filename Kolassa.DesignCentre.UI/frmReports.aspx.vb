@@ -29,18 +29,27 @@
         ScriptManager.RegisterClientScriptBlock(Me, Me.GetType(), "myScript" & Guid.NewGuid.ToString, "ShowMessage('" & Message & "','" & lsType & "','');", True)
     End Sub
     Private Sub _Default_Load(sender As Object, e As EventArgs) Handles Me.Load
-        If Me.IsPostBack Or 1 = 1 Then
-        End If
-        Session("NodeID") = 1
-        Session("ProjectID") = "742d682d-278f-4cf3-b527-c9115c5028a7"
+        '    If Me.IsPostBack Or 1 = 1 Then
+        '   End If
+        '  If Session("NodeID") Is Nothing Then Session("NodeID") = 0
+        '   Session("ProjectID") = "742d682d-278f-4cf3-b527-c9115c5028a7"
     End Sub
 
     Private Sub _Default_PreInit(sender As Object, e As EventArgs) Handles Me.Init
 
-        ReportResults.liReportID = ReportContainer1.ReportID
+        If ReportContainer1.ReportID = -10 Then
+            If Request.QueryString("rpt") = "" Then
+                ReportResults.liReportID = 15 ' Take this out takethisout
+            Else
+                ReportResults.liReportID = Val(Request.QueryString("rpt"))
+            End If
+        Else
+            ReportResults.liReportID = ReportContainer1.ReportID
+        End If
         ReportResults.Attributes("data-reportdesc") = ReportContainer1.ReportDescription
         ReportResults.Attributes("data-reportwheredesc") = ReportContainer1.ReportOut
         ReportResults.ReportDesc = ReportContainer1.ReportDescription
+
     End Sub
     'Protected Sub ObjectDataSource1_Selected(sender As Object, e As ObjectDataSourceStatusEventArgs) Handles ObjectDataSource1.Selected
     'End Sub

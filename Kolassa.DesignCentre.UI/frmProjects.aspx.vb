@@ -15,7 +15,7 @@ Public Class frmProjects
         '*** Put user code to initialize the page here
         Page.Form.Enctype = "multipart/form-data"
         System.Threading.Thread.Sleep(500)
-		If Session("NodeID") Is Nothing Then Session("NodeID") = 1
+		If Session("NodeID") Is Nothing Then Session("NodeID") = 0
 		If IsPostBack Then
 			' response.write(Session("msFilter"))
 			Return

@@ -33,8 +33,8 @@ Public Class ctrlTextBox
 		Dim liCol As New ListItemCollection
 
 		lblFieldName = New Label
-		lblFieldName.ID = "lblFieldName"
-		DropDownList1 = New DropDownList
+        lblFieldName.ID = "lblFieldName"
+        DropDownList1 = New DropDownList
 		DropDownList1.ID = "DropDownList1"
 		DropDownList1.CssClass = "my-1 mr-sm-2"
 		li = New ListItem()
@@ -71,8 +71,9 @@ Public Class ctrlTextBox
 		lblField2.Visible = False
 		ctrlField1 = New TextBox
 		ctrlField1.ID = "ctrlField1"
+        ctrlField1.CssClass = "form-control form-control-sm"
 
-		If mrptCtrl.Required Then ctrlField1.Attributes.Add("required", "required")
+        If mrptCtrl.Required Then ctrlField1.Attributes.Add("required", "required")
 		If mrptCtrl.Read_Only Then ctrlField1.ReadOnly = True
 		If mrptCtrl.ValidationPattern <> "" Then ctrlField1.Attributes.Add("pattern", mrptCtrl.ValidationPattern)
 		If mrptCtrl.ValidationTitle <> "" Then ctrlField1.Attributes.Add("title", mrptCtrl.ValidationTitle)
@@ -94,10 +95,12 @@ Public Class ctrlTextBox
 		AddHandler uPanel1.DataBinding, AddressOf UpdatePanel1_DataBinding
 		AddHandler CustomValidator1.ServerValidate, AddressOf CustomValidator1_ServerValidate
 
-		Controls.Add(lblFieldName)
-		Controls.Add(DropDownList1)
-		Controls.Add(uPanel1)
-		uPanel1.Controls.Add(lblField1)
+        uPanel1.Controls.Add(lblFieldName)
+        uPanel1.Controls.Add(fGetFieldButton)
+        Controls.Add(DropDownList1)
+        Controls.Add(uPanel1)
+
+        uPanel1.Controls.Add(lblField1)
 		uPanel1.Controls.Add(ctrlField1)
 		uPanel1.Controls.Add(lblField2)
 		uPanel1.Controls.Add(ctrlField2)
@@ -121,8 +124,8 @@ Public Class ctrlTextBox
 	Protected Overrides Sub RenderSubControls(writer As HtmlTextWriter)
         On Error GoTo Error_catch
         DropDownList1.RenderControl(writer)
-		lblFieldName.RenderControl(writer)
-		lblField1.RenderControl(writer)
+        'lblFieldName.RenderControl(writer)
+        lblField1.RenderControl(writer)
 		lblField2.RenderControl(writer)
 		uPanel1.RenderControl(writer)
 		On Error GoTo 0
@@ -203,6 +206,8 @@ Error_Catch:
     Private Sub ctrlTextBox_Init(sender As Object, e As EventArgs) Handles Me.Init
         Me.ToolTip = Me.ToolTip & "Init:" & Now.ToLongTimeString
     End Sub
+
+
 
 
 

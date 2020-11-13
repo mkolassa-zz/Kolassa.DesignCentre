@@ -223,7 +223,7 @@ Public Class clsProject
 		'Dim lsMsg As String
 		Dim lbOK As Boolean
 		lbOK = c.InsertProjects(LLNodeID, Name, Description, ImageUrl, ProjectType, Code)
-		'LLNodeID, ObjectID, Name, Active, UnitTypeID, Availalbe, Tier, DepositTypeID)
+		'llNodeID, ObjectID, Name, Active, UnitTypeID, Availalbe, Tier, DepositTypeID)
 		If lbOK = False Then
 			'lsMsg = obj.ErrorMessage
 		End If
@@ -383,12 +383,12 @@ Public Class clsRoom
     End Sub
     Public Overrides Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-        c.InsertRooms(LLNodeID, Code, Name, Description)
-    End Sub
+		c.InsertRooms(LLNodeID, Code, Name, Description)
+	End Sub
     Public Overrides Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-        c.UpdateRooms(LLNodeID, Code, Name, Description, Active, ID)
-        Update = 1
+		c.UpdateRooms(LLNodeID, Code, Name, Description, Active, ID)
+		Update = 1
     End Function
 
 End Class
@@ -1418,14 +1418,14 @@ Public Class clsBase
 	Public Property UpdateUser As String
 	Public Property UpdateUserName As String
 	Public Property CreateUserName As String
-	Public Property LLNodeID As Long
+	Public Property llNodeID As Long
 	Public Property NodeID As Integer
 	Public Property ImageUrl As String
 	Public FormValue As List(Of KeyValuePair(Of String, String))
 	Public Property ErrorMessage As String
 	Public Property TableName As String
 	Public Sub New()
-		LLNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 	Public Overridable Sub processFormValues()
 		Dim lsString As String = ""
@@ -1455,7 +1455,7 @@ Public Class clsBase
 				Case "CreateUserName".ToUpper
 					CreateUserName = kvp.Value
 				Case "llNodeID".ToUpper
-					LLNodeID = kvp.Value
+					llNodeID = kvp.Value
 				Case "NodeID".ToUpper
 					NodeID = kvp.Value
 				Case "ImageUrl".ToUpper
@@ -1476,7 +1476,7 @@ Public Class clsBase
 	End Sub
 	Public Overridable Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.InsertBase(LLNodeID, Name, Description, ImageUrl, Code)
+		c.InsertBase(llNodeID, Name, Description, ImageUrl, Code)
 	End Sub
 	Public Overridable Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
@@ -1484,7 +1484,7 @@ Public Class clsBase
 		If Active Then
 			lsActive = "1"
 		End If
-		c.UpdateBase(LLNodeID, Name, Description, ImageUrl, "", lsActive, ID, Code)
+		c.UpdateBase(llNodeID, Name, Description, ImageUrl, "", lsActive, ID, Code)
 
 		Update = 1
 	End Function
@@ -1919,9 +1919,9 @@ Public Class clsReportCategory
 	Public Property ReportCategoryType As String
 	Public Property ReportCategoryID As Long
 	Public Property HideLists As Boolean
-    'Private Property LLNodeID As Long
-    Public Sub New()
-		LLNodeID = System.Web.HttpContext.Current.Session("NodeID")
+	'Private Property llNodeID As Long
+	Public Sub New()
+		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 	Public Overrides Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
@@ -2010,7 +2010,7 @@ Public Class clsDBObjects
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		Dim lsMsg As String = ""
 		Dim lbOK As Boolean
-		lbOK = c.InsertThings(obj.FormValue, obj.TableName, obj.ID, obj.LLNodeID, obj.Name, obj.Description, obj.Code)
+		lbOK = c.InsertThings(obj.FormValue, obj.TableName, obj.ID, obj.llNodeID, obj.Name, obj.Description, obj.Code)
 		If lbOK = False Then
 			obj.ErrorMessage = lsMsg
 		End If
@@ -2034,16 +2034,16 @@ Public Class clsDBObject
 	Inherits clsBase
     'Public Property Description As String
     Public Property HideLists As Boolean
-    'Private Property LLNodeID As Long
+	'Private Property llNodeID As Long
 
-    Public Sub New()
-		LLNodeID = System.Web.HttpContext.Current.Session("NodeID")
+	Public Sub New()
+		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 	Public Overrides Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		Dim lsMsg As String = ""
 		Dim lbOK As Boolean
-		lbOK = c.InsertThings(FormValue, TableName, ID, LLNodeID, Name, Description, Code)
+		lbOK = c.InsertThings(FormValue, TableName, ID, llNodeID, Name, Description, Code)
 		If lbOK = False Then
 			ErrorMessage = lsMsg
 
@@ -2051,7 +2051,7 @@ Public Class clsDBObject
 	End Sub
 	Public Overloads Function Update(obj As clsDBObject) As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdateThings(FormValue, LLNodeID, obj.Name, obj.Description, obj.Code, obj.ID, obj.TableName, obj.Active)
+		c.UpdateThings(FormValue, llNodeID, obj.Name, obj.Description, obj.Code, obj.ID, obj.TableName, obj.Active)
 		If c.msErrorMsg <> "" Then
 			Update = 0
 			ErrorMessage = c.msErrorMsg
@@ -2091,7 +2091,7 @@ Public Class clsDBObject
 				Case "CreateUserName".ToUpper
 					CreateUserName = kvp.Value
 				Case "llNodeID".ToUpper
-					LLNodeID = kvp.Value
+					llNodeID = kvp.Value
 				Case "NodeID".ToUpper
 					NodeID = kvp.Value
 				Case "ImageUrl".ToUpper

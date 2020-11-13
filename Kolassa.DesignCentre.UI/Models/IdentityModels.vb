@@ -18,9 +18,11 @@ Public Class ApplicationUser
         Return userIdentity
     End Function
 
+
     Public Function GenerateUserIdentityAsync(manager As ApplicationUserManager) As Task(Of ClaimsIdentity)
         Return Task.FromResult(GenerateUserIdentity(manager))
     End Function
+    Public Property NodeID As Integer
 End Class
 
 Public Class ApplicationDbContext

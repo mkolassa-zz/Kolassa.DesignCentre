@@ -11,7 +11,7 @@ Public Class frmUnits
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         '*** Put user code to initialize the page here
         System.Threading.Thread.Sleep(500)
-        Session("NodeID") = 1
+        ' Session("NodeID") = 1 '2020 AUG
         If IsPostBack Then
 			' response.write(Session("msFilter"))
 			Return
@@ -201,7 +201,7 @@ Public Class frmUnits
     End Sub
 
     Protected Sub odsUnitTypes_Selecting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.ObjectDataSourceSelectingEventArgs) Handles odsUnitTypes.Selecting
-        If Session("NodeID") Is Nothing Then Session("NodeID") = 1
+        If Session("NodeID") Is Nothing Then Session("NodeID") = 0
         Dim lsNodeID As String = Session("NodeID")
         e.InputParameters("llNodeID") = lsNodeID
         e.InputParameters("lsWhere") = ""
@@ -213,7 +213,7 @@ Public Class frmUnits
     End Sub
 
     Protected Sub odsDepositConditions_Selecting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.ObjectDataSourceSelectingEventArgs) Handles odsDepositConditions.Selecting
-        If Session("NodeID") Is Nothing Then Session("NodeID") = 1
+        If Session("NodeID") Is Nothing Then Session("NodeID") = 0
         Dim lsNodeID As String = Session("NodeID")
         e.InputParameters("llNodeID") = lsNodeID
         e.InputParameters("lsWhere") = ""
@@ -224,7 +224,7 @@ Public Class frmUnits
     End Sub
 
     Protected Sub odsTiers_Selecting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.ObjectDataSourceSelectingEventArgs) Handles odsTiers.Selecting
-        If Session("NodeID") Is Nothing Then Session("NodeID") = 1
+        If Session("NodeID") Is Nothing Then Session("NodeID") = 0
         Dim lsNodeID As String = Session("NodeID")
         e.InputParameters("llNodeID") = lsNodeID
         e.InputParameters("lsWhere") = ""
@@ -235,7 +235,7 @@ Public Class frmUnits
     End Sub
 
     Protected Sub OdsFloors_Selecting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.ObjectDataSourceSelectingEventArgs) Handles OdsFloors.Selecting
-        If Session("NodeID") Is Nothing Then Session("NodeID") = 1
+        If Session("NodeID") Is Nothing Then Session("NodeID") = 0
         Dim lsNodeID As String = Session("NodeID")
         e.InputParameters("llNodeID") = lsNodeID
         e.InputParameters("lsWhere") = ""

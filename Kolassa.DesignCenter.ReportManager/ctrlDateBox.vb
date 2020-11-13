@@ -87,11 +87,12 @@ Public Class ctrlDateBox
         CustomValidator1.ID = "CustomValidator1"
 
 
-		AddHandler DropDownList1.TextChanged, AddressOf DropDownList1_TextChanged
+        AddHandler DropDownList1.TextChanged, AddressOf DropDownList1_TextChanged
         AddHandler UpdatePanel1.DataBinding, AddressOf UpdatePanel1_DataBinding
         AddHandler CustomValidator1.ServerValidate, AddressOf CustomValidator1_ServerValidate
 
-		Controls.Add(lblFieldName)
+        UpdatePanel1.Controls.Add(fGetFieldButton)
+        UpdatePanel1.Controls.Add(lblFieldName)
         Controls.Add(DropDownList1)
         Controls.Add(UpdatePanel1)
         UpdatePanel1.ContentTemplateContainer.Controls.Add(lblField1)
@@ -125,7 +126,7 @@ Public Class ctrlDateBox
         lblField2.RenderControl(writer)
         UpdatePanel1.RenderControl(writer)
 
-		On Error GoTo 0
+        On Error GoTo 0
         'AddAttributesToRender(writer)
         'writer.AddAttribute(HtmlTextWriterAttribute.Cellpadding, "1")
         'writer.RenderBeginTag(HtmlTextWriterTag.Table)

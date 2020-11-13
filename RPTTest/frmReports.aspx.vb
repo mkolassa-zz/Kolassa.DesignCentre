@@ -31,8 +31,8 @@
     Private Sub _Default_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Me.IsPostBack Or 1 = 1 Then
         End If
-        Session("NodeID") = 1
-        Session("ProjectID") = "742d682d-278f-4cf3-b527-c9115c5028a7"
+        If Session("NodeID") Is Nothing Then Session("NodeID") = 0
+        'Session("ProjectID") = "742d682d-278f-4cf3-b527-c9115c5028a7"
     End Sub
 
     Private Sub _Default_PreInit(sender As Object, e As EventArgs) Handles Me.Init

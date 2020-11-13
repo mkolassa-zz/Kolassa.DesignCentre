@@ -68,6 +68,7 @@ Public Class ctrlCheckBox
         '  uPanel1.Triggers.Add(trig)
         lblField1 = New Label
         lblField1.ID = "lblField1"
+        lblField1.CssClass = "form-check-label"
         lblField2 = New Label
         lblField2.ID = "lblField2"
         lblField2.Visible = False
@@ -80,7 +81,7 @@ Public Class ctrlCheckBox
         If mrptCtrl.ValidationTitle <> "" Then ctrlField1.Attributes.Add("title", mrptCtrl.ValidationTitle)
 
 
-        ctrlField1.CssClass = "form-control border-0 form-control-sm"
+        ctrlField1.CssClass = "form-control border-0 form-control-sm form-control-input"
         ctrlField2 = New CheckBox
         ctrlField2.ID = "ctrlField2"
         ctrlField2.CssClass = "form-control border-0 form-control-sm"

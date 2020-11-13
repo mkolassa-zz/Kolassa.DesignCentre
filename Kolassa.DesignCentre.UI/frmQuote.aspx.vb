@@ -981,11 +981,11 @@ ph1Status_Error:
         Dim l As Literal = Master.FindControl("LitPageInfo")
         If Not l Is Nothing And Not Session("QuoteID") Is Nothing Then l.Text = "QuoteID: " & Session("QuoteID")
         litID.Text = Session("QuoteID")
-        If Session("NodeID") Is Nothing Then Session("NodeID") = 1
-        'If Session("UnitType") Is Nothing Then
-        '	Session("UnitType") = "R134A"
-        'End If	
-        If Session("Project") Is Nothing Then
+		If Session("NodeID") Is Nothing Then Session("NodeID") = 0
+		'If Session("UnitType") Is Nothing Then
+		'	Session("UnitType") = "R134A"
+		'End If	
+		If Session("Project") Is Nothing Then
             pnlButtons.Visible = False
         Else
             pnlButtons.Visible = True
@@ -1207,9 +1207,11 @@ ph1Status_Error:
 	Private Sub frmQuote_LoadComplete(sender As Object, e As EventArgs) Handles Me.LoadComplete
 		sCheckPhaseComplete()
 		If txtSelectedItemID Is Nothing Then Exit Sub
+		If Session("NodeID") = 0 Then Exit Sub
 		loadPage() 'Stop
 		txtPhaseID.Attributes.Add("readonly", "readonly")
 		txtPhaseName.Attributes.Add("readonly", "readonly")
+
 		ctrlCommunications.DataBind()
 		CtrlAdjustments.DataBind()
 		Me.ctrlPayments.DataBind()

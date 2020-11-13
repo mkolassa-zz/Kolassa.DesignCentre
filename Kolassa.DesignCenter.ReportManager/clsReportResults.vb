@@ -28,7 +28,7 @@ Public Class ReportResults
     Dim liCol As New ListItemCollection
     Dim lblViewName As Label
     Public liReportID As Integer
-
+    Public SearchCriteria As String
     Dim lblField1 As Label
     Dim lblField2 As Label
     Dim ctrlField1 As DropDownList
@@ -48,7 +48,8 @@ Public Class ReportResults
 
         lblViewName = New Label
         lblViewName.ID = "lblViewName"
-
+        lblViewName.Text = "The View"
+        lblViewName.CssClass = "pad-all"
         '*** LOAD VIEWS DDL
         '*** Get Views From Database
         pHeading = New Panel
@@ -136,13 +137,17 @@ Public Class ReportResults
 
         gv.ID = "gvResults"
         gv.AutoGenerateColumns = False
+
+
         '*** Add Columns to the COLUMN DEFINITION GridView
         gv.Columns.Add(bfFieldName)
+
         gv.Columns.Add(bfColumnName)
         gv.Columns.Add(chkVisible)
         gv.Columns.Add(bfColumnFormat)
         gv.PageSize = 20
         '    gv.Attributes("data-reportdesc") = ReportDescription
+        gv.RowStyle.CssClass = "clickable-row"
 
         If gvPageNum > 0 Then gv.PageIndex = gvPageNum
         gv.AllowPaging = True
@@ -151,6 +156,7 @@ Public Class ReportResults
         gv.EmptyDataText = "There is nothing to display!!"
         AddHandler gv.Sorting, AddressOf gv_Sorting
         AddHandler gv.PageIndexChanging, AddressOf gv_PageIndexChanging
+        AddHandler gv.RowDataBound, AddressOf gv_RowDataBound
 
         '*** Add Controls to Main Panel for View Name
         'btnSave = New Button
@@ -436,7 +442,7 @@ Public Class ReportResults
             End If
         End If
 
-        WhereClause = ReportWhereClause()
+        WhereClause = ReportWhereClause() & SearchCriteria
         '*** Get WHERE CLAUSE
         If WhereClause Is Nothing Then
             WhereClause = " 1=1 "
@@ -483,7 +489,7 @@ Public Class ReportResults
 
                             End If
                         End If
-                            gv.Columns.Add(bf)
+                        gv.Columns.Add(bf)
                     End If
                 Next
             Else
@@ -495,7 +501,24 @@ Public Class ReportResults
                     gv.Columns.Add(bf)
                 Next
             End If
+
+            If gv.Columns.Count > 0 Then
+                gv.DataKeyNames = New String() {"ID"}
+                Dim cf As CommandField = New CommandField
+                cf.ShowEditButton = False
+                cf.ShowDeleteButton = True
+                cf.DeleteImageUrl = "~/images/delete.png"
+                cf.ControlStyle.CssClass = " del table-hover"
+                cf.ShowCancelButton = True
+                gv.Columns.Add(cf)
+            End If
         End If
+
+        '  <asp:TemplateField HeaderText="Name">
+        '    <ItemTemplate>
+        '       <label id="lbl" data-id="<%# Eval("ID") %>"><%# Eval("Name") %></label>
+        '      </ItemTemplate>
+
 
         '     gv = Me.Page.FindControl("gvResults1")
         gv.DataSource = dtv
@@ -505,6 +528,17 @@ Public Class ReportResults
         Catch e As Exception
             Debug.Print(e.Message)
         End Try
+    End Sub
+    Sub gv_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If (e.Row.RowType = DataControlRowType.DataRow) Then
+            Dim lsID As String = e.Row.DataItem("ID").ToString()
+
+            Dim cell As TableCellCollection = e.Row.Cells
+            Dim l As New Label
+            l.ID = "lbl"
+            l.Attributes.Add("data-id", lsID)
+            cell(0).Controls.Add(l)
+        End If
     End Sub
     Protected Sub btnSave_Click(ByVal sender As Object, ByVal e As System.EventArgs) 'Handles DropDownList1.TextChanged
         Debug.Print("<ctrlReportColumns_btnSave_CLick>")
@@ -550,9 +584,9 @@ Public Class ReportResults
 
 
 
-    Public Function fGetDataset(lsSQL As String, lsWHere As String) As DataSet
+    Public Function fGetDataset(lsSQL As String, lsWhere As String) As DataSet
         Dim c As New clsDataLoader
-        fGetDataset = c.LoadReportResults(lsSQL, lsWHere, liReportID)
+        fGetDataset = c.LoadReportResults(lsSQL, lsWhere, liReportID)
     End Function
     Public Function GetColumns() As DataSet
         '*** Gets the Columns from the VIew Columns Table
@@ -563,6 +597,11 @@ Public Class ReportResults
         GetColumns = c.LoadReportViewColumns(lsView)
 
     End Function
+
+    Private Sub ReportResults_PreRender(sender As Object, e As EventArgs) Handles Me.PreRender
+
+    End Sub
+
     Public Property GetViewID As Guid
         Get
             Dim lsTemp, lsViewID As String
@@ -601,7 +640,7 @@ Public Class ReportResults
     '    Dim gridHTML As String = sw.ToString().Replace("""", "'").Replace(System.Environment.NewLine, "")
     '    Dim sb As New StringBuilder()
 
-    '    sb.Append("<script type = 'text/javascript'>")
+    '    sb.Append("<script type='text/javascript'>")
     '    sb.Append("window.onload = new function(){")
     '    sb.Append("var printWin = window.open('', '', 'left=0")
     '    sb.Append(",top=0,width=1000,height=600,status=0');")
@@ -630,7 +669,7 @@ Public Class ReportResults
     '    Dim gridHTML As String = sw.ToString().Replace("""", "'").Replace(System.Environment.NewLine, "")
     '    Dim sb As New StringBuilder()
 
-    '    sb.Append("<script type = 'text/javascript'>")
+    '    sb.Append("<script type='text/javascript'>")
     '    sb.Append("window.onload = new function(){")
     '    sb.Append("var printWin = window.open('', '', 'left=0")
     '    sb.Append(",top=0,width=1000,height=1000,status=0');")
