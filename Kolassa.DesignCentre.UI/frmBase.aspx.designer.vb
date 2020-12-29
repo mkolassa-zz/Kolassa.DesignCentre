@@ -14,6 +14,15 @@ Option Explicit On
 Partial Public Class frmBase
 
     '''<summary>
+    '''lblReportLabel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReportLabel As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''lnkGetWhereClause control.
     '''</summary>
     '''<remarks>
@@ -21,15 +30,6 @@ Partial Public Class frmBase
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lnkGetWhereClause As Global.System.Web.UI.WebControls.LinkButton
-
-    '''<summary>
-    '''imgLoadColumns control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents imgLoadColumns As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
     '''lnkdPrintPage control.
@@ -50,6 +50,15 @@ Partial Public Class frmBase
     Protected WithEvents lnkPrintAll As Global.System.Web.UI.WebControls.LinkButton
 
     '''<summary>
+    '''lnkShowColumns control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lnkShowColumns As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
     '''lnkExport control.
     '''</summary>
     '''<remarks>
@@ -57,6 +66,42 @@ Partial Public Class frmBase
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lnkExport As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
+    '''cmdNewrec control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdNewrec As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
+    '''txtSearch control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtSearch As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''lblSearch control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSearch As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''cmdSearch control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdSearch As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''ReportContainer1 control.
@@ -149,78 +194,6 @@ Partial Public Class frmBase
     Protected WithEvents lblTitle As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''txtSearch control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtSearch As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''lblSearch control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblSearch As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''cmdSearch control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents cmdSearch As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''cmdExcelexp control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents cmdExcelexp As Global.System.Web.UI.WebControls.LinkButton
-
-    '''<summary>
-    '''cmdNewrec control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents cmdNewrec As Global.System.Web.UI.WebControls.LinkButton
-
-    '''<summary>
-    '''LinkButton1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents LinkButton1 As Global.System.Web.UI.WebControls.LinkButton
-
-    '''<summary>
-    '''grdData control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents grdData As Global.System.Web.UI.WebControls.GridView
-
-    '''<summary>
-    '''odsData control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents odsData As Global.System.Web.UI.WebControls.ObjectDataSource
-
-    '''<summary>
     '''pnlData control.
     '''</summary>
     '''<remarks>
@@ -228,6 +201,15 @@ Partial Public Class frmBase
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlData As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblReportFormLabel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReportFormLabel As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''upData control.
@@ -257,13 +239,13 @@ Partial Public Class frmBase
     Protected WithEvents rptBase As Global.Kolassa.DesignCenter.ReportManager.ReportContainer
 
     '''<summary>
-    '''uprgBase control.
+    '''updateProgress control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uprgBase As Global.System.Web.UI.UpdateProgress
+    Protected WithEvents updateProgress As Global.System.Web.UI.UpdateProgress
 
     '''<summary>
     '''cmdSaveRecord control.
@@ -293,15 +275,6 @@ Partial Public Class frmBase
     Protected WithEvents cmdLoad As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
-    '''txtID control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtID As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
     '''cmdUPData control.
     '''</summary>
     '''<remarks>
@@ -309,4 +282,22 @@ Partial Public Class frmBase
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdUPData As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''cmdDelData control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdDelData As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''txtID control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtID As Global.System.Web.UI.WebControls.TextBox
 End Class

@@ -8,19 +8,21 @@
 
 
 
-<asp:Content ID=Content1 runat=server ContentPlaceHolderID="MainContent" >
-	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-	<link href="Content/chartist.min.css" rel="stylesheet" />
+<asp:Content ID=frmProjectContent runat=server ContentPlaceHolderID="MainContent" >
+	<script src="https://www.gstatic.com/charts/loader.js"></script>
+	<script>
+		google.charts.load('current', { packages: ['corechart'] });
+		//google.charts.setOnLoadCallback(drawChart);
+	</script>
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-	<script src="Scripts/chartist.min.js"></script>
+
   
 	<h5><asp:label ID="lblProject" runat="server" text ="Project Dashboard for" />  <%= Session("ProjectName") %> </h5>
 	<div style="padding-top: 0px;">
 
 <asp:Label runat="server" ID="lblProjectHomePageFor"  ></asp:Label> 
 	<div class="card-group">
-		<div class="card border-secondary mb-6" style="max-width: 180rem;">
+		<div class="card border-light mb-6" style="max-width: 180rem;">
 			<div class="card-body text-secondary">
 				<h5 class="card-title"><%= Session("ProjectName") %></h5>
 				<div id="projectAddress">
@@ -30,72 +32,67 @@
 					<nav class="nav nav-pills nav-fill">
 						<a class="nav-item nav-link active" href="frmQuote.aspx?search=true">Quote Lookup</a>
 					</nav>
+                    <div id="calendar_basic" style="padding-top:40px"></div>
 				</div>
 			</div>
 		</div>
 
 
 
-		<div class="card border-secondary mb-6" style="max-width: 180rem;">
+		<div class="card border-light mb-6" style="max-width: 180rem;">
 			<div class="card-body text-secondary">
-				<p class="card-text">Project Location</p>
-				<div id="map_div" style="width: 400px; height: 400px"></div>
+				<h5 class="card-title">Project Location</h5>
+				<!-- div id="map_div" style="width: 400px; height: 400px"></!-->
+					<div class="mapouter"><div class="gmap_canvas">
+						<iframe width="600" height="300" id="gmap_canvas" 
+							src="https://maps.google.com/maps?q=Trafalgar%20Square%20London%20England&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+							frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
+						</iframe>
+						
+	                 </div>
+					<style>.mapouter{position:relative;text-align:right;height:100px;width:600px;}.gmap_canvas {overflow:hidden;background:none!important;height:500px;width:400px;}</style>
+				</div>
 			</div>
 		</div>
 	</div>
-<%-- 
-	<div class="card-group">
-		<div class="card border-secondary mb-6" style="max-width: 180rem;">
-			<div class="card-body text-secondary">
+ 
+		<div class="card-group">
+			<div class="card border-light mb-12" style="max-width: 180rem;">
+				<div class="card-body text-secondary" style="resize: both; overflow: auto;">
 					<p class="card-text">
-						<!-- uc1:ctrlGoogleChartPie ID="ctrlGoogleChartPie1" runat="server" xvaluemember="QuoteStatus" title="Quotes By Status" subtitle="Count" yvaluemembers ="QuoteCount" SQL="select QuoteStatus, Count(QUoteSTatus) as QuoteCount 	from v_QuoteLookup where 1=1 and PROJECTGUID Group By QuoteStatus " / -->
+						<uc1:ctrlGoogleChartPie  ID="ctrlGoogleChartPie1" runat="server" xvaluemember="chartlabel" title="Quotes By Status" subtitle="Count" yvaluemembers ="chartdata" SQL="select QuoteStatus, Count(QUoteSTatus) as QuoteCount 	from v_QuoteLookup where 1=1 and PROJECTGUID Group By QuoteStatus " />
 				</div>
 			</div>
-		<div class="card border-secondary mb-6" style="max-width: 180rem;">
-			<div class="card-body text-secondary">
+		<div class="card border-light mb-12" style="max-width: 180rem;">
+			<div class="card-body text-secondary" style="resize: both; overflow: auto;">
 					<p class="card-text">
-						<!-- uc1:ctrlGoogleChartPie ID="ctrlGoogleChartPie2" runat="server" xvaluemember="CustomerState" title="Customers By State" subtitle="Count" yvaluemembers ="StateCount" SQL="select Customerstate, Count(customerstate) as StateCount 	from tblCustomers where 1=1 and NODEGUID Group By customerstate " / -->
-				</div>
-			</div>
-	</div>
---%>
-		<div class="container">
-			<div class="row">
-				<div class="ct-chart ct-golden-section col" >
-					<div class="card" style="width: 18rem;">
-						<div class="card-body">
-							<h5 class="card-title">Units By Availability</h5>
-							<p class="card-text" id="firstchart">Units Sold Vs Unsold</p>
-							<a href="#" class="card-link">Card link</a>
-							<a href="#" class="card-link">Another link</a>
-						</div>
-					</div>
-				</div>
-				<div class="ct-chart ct-golden-section col" id="ChartCard1">
-					<div class="card" style="width: 18rem;">
-						<div class="card-body">
-							<h5 class="card-title">Sales By Year</h5>
-							<p class="card-text" id="chart1">Units Sold Over time.</p>
-							<a href="#" class="card-link">Card link</a>
-							<a href="#" class="card-link">Another link</a>
-						</div>
-					</div>
-				</div>
-				<div class="ct-chart ct-golden-section col" id="cardchart2">
-					<div class="card" style="width: 18rem;">
-						<div class="card-body">
-							<h5 class="card-title">Sales By Associate</h5>
-							<p class="card-text" id="chart2">Units Sold By Associate.</p>
-							<a href="#" class="card-link">Card link</a>
-							<a href="#" class="card-link">Another link</a>
-						</div>
-					</div>
-					</div>
+						<uc1:ctrlGoogleChartPie ID="ctrlGoogleChartPie2"  runat="server" xvaluemember="chartlabel" title="Customers By State" subtitle="Count" yvaluemembers ="chartdata" SQL="select Customerstate, Count(customerstate) as StateCount 	from tblCustomers where 1=1 and NODEGUID Group By customerstate " />
 				</div>
 			</div>
 		</div>
+		<div class="card-group">
+			<div class="card border-light mb-12" style="max-width: 180rem;">
+				<div class="card-body text-secondary" style="resize: both; overflow: auto;">
+				
+						<uc1:ctrlGoogleChartPie  ID="ctrlGoogleChartPie3" runat="server" xvaluemember="chartlabel" title="Quotes By Status" subtitle="Count" yvaluemembers ="chartdata" SQL="select QuoteStatus, Count(QUoteSTatus) as QuoteCount 	from v_QuoteLookup where 1=1 and PROJECTGUID Group By QuoteStatus " />
+				</div>
+			</div>
+		<div class="card border-light mb-12" style="max-width: 180rem;">
+			<div class="card-body text-secondary" style="resize: both; overflow: auto;">
+					<p class="card-text">
+						<uc1:ctrlGoogleChartPie ID="ctrlGoogleChartPie4"  runat="server" xvaluemember="chartlabel" title="Customers By State" subtitle="Count" yvaluemembers ="chartdata" SQL="select Customerstate, Count(customerstate) as StateCount 	from tblCustomers where 1=1 and NODEGUID Group By customerstate " />
+				</div>
+			</div>
+		</div>
+	</div>
 	<!-- Gantt Chart -->
-	<div id="chart_div"></div>
+    <div class="card border-light mb-12" style="max-width: 180rem;">
+			<div class="card-body text-secondary" style="resize: both; overflow: auto;">
+					<h5 class="card-text">Upcoming Scheduled Activities</h5>
+							<div id="chart_div" class="card-body"></div>
+				</div>
+			</div>
+
 
 	<!-- LOCATION -->
 	<!--	<div class="card border-secondary mb-6" style="max-width: 180rem;">
@@ -238,9 +235,9 @@
        var options = {
 		  mapType: 'styledMap',
           mapType: "normal",
-        showTooltip: true,
-        showInfoWindow: true,
-        useMapTypeControl: true,
+          showTooltip: true,
+          showInfoWindow: true,
+          useMapTypeControl: true,
           icons: {
             default: {
               normal: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/48/Map-Marker-Marker-Outside-Chartreuse-icon.png',
@@ -249,63 +246,10 @@
           }
         };
 
-        var map = new google.visualization.Map(document.getElementById('map_div'));
-        map.draw(data, options);
+      //  var map = new google.visualization.Map(document.getElementById('map_div'));
+     //   map.draw(data, options);
       }
 
-//CHARTIST
-	  var self = $(this);
-	  var pData = [];
-	  pData[0] = 6 //$("#ddlyear").val();
-	  var jsonData = JSON.stringify({ pData: pData });
-	  $.ajax({
-		  type: "POST",
-		  url: "dccharts.asmx/getCityPopulation",
-		  data: jsonData,
-		  contentType: "application/json; charset=utf-8",
-		  dataType: "json",
-		  success: OnSuccess_,
-		  error: OnErrorCall_
-	  });
-	  function OnSuccess_(response) {
-		  var aData = response.d;
-		  var arrLabels = [], arrSeries = [];
-		  $.map(aData, function (item, index) {
-			  arrLabels.push(item.city_name);
-			  arrSeries.push(item.population);
-		  });
-		  var data = {
-			  labels: arrLabels,
-			  series: arrSeries
-		 }
-                 // This is themain part, where we set data and create PIE CHART
-		  	var options = {
-			  width: 200,
-			  height: 200
-			}
-		 new Chartist.Pie('#firstchart', data, options);
-	}
-	  
-	  function OnErrorCall_(response) {
-	        alert("Whoops something went wrong!");
-	  }
-	//	e.preventDefault();
-	// END CHARTIST
-		  // Initialize a Line chart in the container with the ID chart1
-	var options = {
-  width: 200,
-  height: 200
-};
-  new Chartist.Line('#chart1', {
-    labels: [2016, 2017, 2018, 2019],
-    series: [[100, 10, 180, 20]]
-  }, options);
-
-  // Initialize a Line chart in the container with the ID chart2
-  new Chartist.Bar('#chart2', {
-    labels: [1, 2, 3, 4],
-    series: [[51, 12,28, 3]]
-  }, options);
 
 //GOOGLE GANTT CHART
     google.charts.load('current', { 'packages': ['gantt'] });
@@ -322,8 +266,8 @@
 
         $.ajax({
             type: "POST",
-            url: "dccharts.asmx/GetGanttDates",
-            data: jsonData,
+            url: "dccharts.asmx/GetGanttDates?Node=<%= session("NodeID") %>",
+            data: "",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: OnGanttSuccess_,
@@ -378,11 +322,91 @@
             google.visualization.events.addListener(chart, 'select', selectHandler);
        
 			chart.draw(data, options);
-        }
+		}
+		function OnErrorCall_(response) { alert('Error in Gantt'); }
     }
 
+    google.charts.load("current", { packages: ["calendar"] });
+    google.charts.setOnLoadCallback(drawChartCal);
 
- </script>
+    function drawChartCal() {
+        var dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({ type: 'date', id: 'Date' });
+        dataTable.addColumn({ type: 'number', id: 'Won/Loss' });
+        dataTable.addRows([
+            [new Date(2020, 6, 3), 37032],
+            [new Date(2020, 6, 4), 38024],
+            [new Date(2020, 6, 5), 38024],
+            [new Date(2020, 6, 6), 38108],
+            [new Date(2020, 6, 7), 38229],
+            [new Date(2020, 6, 9), 38177],
+            [new Date(2020, 6, 10), 38705],
+            [new Date(2020, 6, 12), 38210],
+            [new Date(2020, 6, 13), 38029],
+            [new Date(2020, 6, 19), 38823],
+            [new Date(2020, 6, 23), 38345],
+            [new Date(2020, 6, 24), 38436],
+            [new Date(2020, 7, 3), 37032],
+            [new Date(2020, 7, 4), 38024],
+            [new Date(2020, 7, 5), 38024],
+            [new Date(2020, 7, 6), 38108],
+            [new Date(2020, 7, 7), 38229],
+            [new Date(2020, 7, 9), 38177],
+            [new Date(2020, 7, 10), 38705],
+            [new Date(2020, 7, 12), 38210],
+            [new Date(2020, 7, 13), 38029],
+            [new Date(2020, 7, 19), 38823],
+            [new Date(2020, 7, 23), 38345],
+            [new Date(2020, 7, 24), 38436],
+            [new Date(2020, 8, 3), 37032],
+            [new Date(2020, 8, 4), 38024],
+            [new Date(2020, 8, 5), 38024],
+            [new Date(2020, 8, 6), 38108],
+            [new Date(2020, 8, 7), 38229],
+            [new Date(2020, 8, 9), 38177],
+            [new Date(2020, 8, 10), 38705],
+            [new Date(2020, 8, 12), 38210],
+            [new Date(2020, 8, 13), 38029],
+            [new Date(2020, 8, 19), 38823],
+            [new Date(2020, 8, 23), 38345],
+            [new Date(2020, 8, 24), 38436],
+            [new Date(2020, 9, 3), 37032],
+            [new Date(2020, 9, 4), 38024],
+            [new Date(2020, 9, 5), 38024],
+            [new Date(2020, 9, 6), 38108],
+            [new Date(2020, 9, 7), 38229],
+            [new Date(2020, 9, 9), 38177],
+            [new Date(2020, 9, 10), 38705],
+            [new Date(2020, 9, 12), 38210],
+            [new Date(2020, 9, 13), 38029],
+            [new Date(2020, 9, 19), 38823],
+            [new Date(2020, 9, 23), 38345],
+            [new Date(2020, 9, 24), 38436],
+            [new Date(2020, 10, 3), 37032],
+            [new Date(2020, 10, 4), 38024],
+            [new Date(2020, 10, 5), 38024],
+            [new Date(2020, 10, 6), 38108],
+            [new Date(2020, 10, 7), 38229],
+            [new Date(2020, 10, 9), 38177],
+            [new Date(2020, 10, 10), 38705],
+            [new Date(2020, 10, 12), 38210],
+            [new Date(2020, 10, 13), 38029],
+            [new Date(2020, 10, 19), 38823],
+            [new Date(2020, 10, 23), 38345],
+            [new Date(2020, 10, 24), 38436],
+            [new Date(2020, 10, 30), 38447]
+        ]);
+
+        var chart = new google.visualization.Calendar(document.getElementById('calendar_basic'));
+
+        var options = {
+            title: "Selections By Date",
+            height: 350,
+        };
+
+        chart.draw(dataTable, options);
+    }
+</script>
     
   
     </asp:Content>

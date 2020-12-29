@@ -16,7 +16,15 @@ Public Class ctrlCheckBox
     Dim ctrlField2 As CheckBox
     Dim CustomValidator1 As CustomValidator
     Dim trig As AsyncPostBackTrigger
-
+    Public Overrides Property ControlPanelcss() As String
+        Get
+            ControlPanelcss = msControlPanelcss
+        End Get
+        Set(sValue As String)
+            msControlPanelcss = sValue
+            'uPanel1.Attributes.Add("class", sValue)
+        End Set
+    End Property
     'Public Sub New(rpt As ReportControl)
     'Me.ID = rpt.ControlName
     '    miListItems = rpt.ListItems
@@ -36,6 +44,7 @@ Public Class ctrlCheckBox
 
         lblFieldName = New Label
         lblFieldName.ID = "lblFieldName"
+        lblFieldName.Visible = False
         DropDownList1 = New DropDownList
         DropDownList1.ID = "DropDownList1"
         DropDownList1.CssClass = "my-1 mr-sm-2"
@@ -68,7 +77,7 @@ Public Class ctrlCheckBox
         '  uPanel1.Triggers.Add(trig)
         lblField1 = New Label
         lblField1.ID = "lblField1"
-        lblField1.CssClass = "form-check-label"
+        lblField1.CssClass = "d-none " 'form-check-label"
         lblField2 = New Label
         lblField2.ID = "lblField2"
         lblField2.Visible = False
@@ -89,6 +98,7 @@ Public Class ctrlCheckBox
         lblFieldName.AssociatedControlID = ctrlField1.ID
         lblField1.AssociatedControlID = ctrlField1.ID
         lblField1.Attributes.Add("for", ctrlField1.ClientID)
+        lblField1.Attributes.Add("class", "d-none")
         lblField2.AssociatedControlID = ctrlField2.ID
         CustomValidator1 = New CustomValidator
         CustomValidator1.ID = "CustomValidator1"
@@ -97,14 +107,21 @@ Public Class ctrlCheckBox
         AddHandler uPanel1.DataBinding, AddressOf UpdatePanel1_DataBinding
         AddHandler CustomValidator1.ServerValidate, AddressOf CustomValidator1_ServerValidate
 
-        Controls.Add(lblFieldName)
-        Controls.Add(DropDownList1)
+
+
+        uPanel1.Controls.Add(fGetFieldButton)
+        uPanel1.Controls.Add(fGetFieldDeleteButton)
+
+        uPanel1.Controls.Add(lblFieldName)
+        uPanel1.Controls.Add(DropDownList1)
         Controls.Add(uPanel1)
         uPanel1.Controls.Add(lblField1)
+        lblField1.CssClass = "d-none"
         uPanel1.Controls.Add(ctrlField1)
         uPanel1.Controls.Add(lblField2)
         uPanel1.Controls.Add(ctrlField2)
         uPanel1.Controls.Add(CustomValidator1)
+        uPanel1.Attributes.Add("class", msControlPanelcss)
         '      Controls.Clear()
         '      Dim li As ListItem
         '      lblFieldName = New Label
@@ -200,7 +217,7 @@ Public Class ctrlCheckBox
 
     Protected Overrides Sub RenderSubControls(writer As HtmlTextWriter)
         On Error Resume Next
-        lblFieldName.RenderControl(writer)
+        ' lblFieldName.RenderControl(writer)
         lblField1.RenderControl(writer)
         lblField2.RenderControl(writer)
         uPanel1.RenderControl(writer)
@@ -233,7 +250,7 @@ Public Class ctrlCheckBox
                 Else
                     ctrlField1.Checked = False
                 End If
-                Debug.Print("CTRLCheckBox Set Fields: " & lblFieldName.Text & " Value: " & ctrlField1.Checked.ToString)
+                'debug.print("CTRLCheckBox Set Fields: " & lblFieldName.Text & " Value: " & ctrlField1.Checked.ToString)
             Next
         End If
     End Sub
@@ -241,7 +258,7 @@ Public Class ctrlCheckBox
     Private Sub ctrlCheckBox_DataBinding(sender As Object, e As EventArgs) Handles Me.DataBinding
         On Error Resume Next
         SetFields(Me.DropDownList1.Text, Me.DropDownList1.SelectedValue)
-        Debug.Print("<ctrlCheckBox_DataBinding Checked=" & ctrlField1.Checked & " />")
+        'debug.print("<ctrlCheckBox_DataBinding Checked=" & ctrlField1.Checked & " />")
     End Sub
     'Public Event DateSelected As DateSelectedEventHandler
     'Protected Overridable Sub onDateSelection(e As DateSelectedEventArgs)

@@ -1,5 +1,4 @@
 ﻿<%@ Control Language="vb" AutoEventWireup="false"  CodeBehind="ctrlImages.ascx.vb"  Inherits="Kolassa.DesignCentre.UI.ctrlImages"  %>
-<!-- % @  Register assembly="Telerik.Web.UI" namespace="Telerik.Web.UI" tagprefix="telerik" % !-->
 
 
 <%@ Register Src="~/Controls/ctrlImageNew.ascx" TagPrefix="uc1" TagName="ctrlImageNew" %>

@@ -462,7 +462,7 @@
 				<p class="card-text">
 				<asp:Repeater ID="Repeater1" runat="server" DataSourceID="odsQuotes">
 					<ItemTemplate>
-						<asp:Label runat="server" ID="lblCustomerName" Text='<%# Eval("CustomerName") %>' CssClass="card-subtitle font-weight-bold" /><br />
+						<asp:Label runat="server" ID="lblName" Text='<%# Eval("CustomerName") %>' CssClass="card-subtitle font-weight-bold" /><br />
 						<asp:Label runat="server" ID="lblUnitName"     Text='<%# Eval("UnitName") %>' /><br />
 						<asp:Label runat="server" ID="lblUnitTypeName" Text='<%# Eval("UnitTypeName") %>' /><br />
 						<asp:Label runat="server" ID="lblUnitTypeDesc" Text='<%# Eval("UnitTypeDescription") %>' />

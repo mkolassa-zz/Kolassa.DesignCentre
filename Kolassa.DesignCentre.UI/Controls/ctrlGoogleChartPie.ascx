@@ -6,75 +6,32 @@
 
 
 <div class="card border-primary mb-6" >
-  <div class="card-body">
-   <div id="divCheckbox" style="display: flex;">
-	  <h5 class="card-title"><asp:Label ID="lblTitle" runat="server" Text="Title" /></h5>
-    <h6 class="card-subtitle mb-6 text-muted">
-		<asp:Label ID="lblSubTitle" runat="server" Text="SubTitle" />Subtitle</h6>
-		<asp:DropDownList ID="DropDownList1" AutoPostBack="true" runat="server" Visible ="true">
-		</asp:DropDownList>
-	  <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#datamodal"><i class="fa fa-table"></i></button>
+	<div class="card-body">
+     
+		<div id="divHeader" >
+		<div class="d-flex justify-content-between"><h5 class="card-title"><asp:Label ID="lblTitle" runat="server" Text="Title" /></h5>
+            <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#datamodal<%= divChart.ClientID %>"><i class="fa fa-table"></i></button>
+            <asp:DropDownList CssClass="form-control-sm" ID="ddlChartType" AutoPostBack="true" runat="server" Visible ="true">		</asp:DropDownList>
+			
 
-		<asp:Chart ID="Chart1" runat="server" DataSourceID="ObjectDataSource1" Palette="Pastel" RenderType="ImageTag" 
-		 ImageLocation="#NOGUIDPARAM"	ImageStorageMode="UseHttpHandler" ImageType="Png" >
-			<Series>
-				<asp:Series Name="Series1" ChartType="Pie"></asp:Series>
-			</Series>
-			<ChartAreas>
-				<asp:ChartArea Name="ChartArea1">
-					<axisx Title="X Axis" />
-					<AxisY Title="Y Axis" />
-				</asp:ChartArea>
-				
-			</ChartAreas>
-		</asp:Chart>
-</div>
-	  <asp:Panel ID="divChart" runat="server"></asp:Panel>
-  <div id="chart_div" style="width:500px;height:400px"> </div>
-	    <div id="chart_div2" style="width:500px;height:400px"> </div>
-                <%-- Here Chart Will Load --%>
+		</div>	
+			<h6 class="card-subtitle mb-6 text-muted"><asp:Label ID="lblSubTitle" runat="server" Text="SubTitle" /></h6>		
+		</div>
 
-	  Ya   <!-- script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></!-->
-    <script type="text/javascript">
-		google.charts.load('current', { packages: ['corechart'] });
-		google.charts.setOnLoadCallback(drawStuff);
+		<asp:Panel ID="divChart" runat="server"></asp:Panel>
 
-		function drawStuff() {
-			var data = new google.visualization.DataTable();
-			data.addColumn('string', 'Topping');
-			data.addColumn('number', 'Slices');
-			data.addRows([
-				['Mushrooms', 3],
-				['Onions', 1],
-				['Olives', 1],
-				['Zucchini', 1],
-				['Pepperoni', 2]
-			]);
+		<%-- Here Chart Will Load --%>
 
-			// Set chart options
-			var options = {
-				'title': 'How Much Pizza I Ate Last Night',
-				'width': 400,
-				'height': 300
-			};
-
-			// Instantiate and draw our chart, passing in some options.
-			var chart = new google.visualization.ColumnChart(document.getElementById('chartdiv'));
-			chart.draw(data, options);
-		};	
-    </script> no
-           
-
-	  <asp:TextBox ID="ltScripts" runat="server" />
+	  <asp:TextBox ID="ltScripts" runat="server" CssClass="d-none" />
   </div>
 </div>   
 
   
 
-	<!-- THIS IS THE PANEL FOR DATA -->
+	<!-- ******  THIS IS THE PANEL FOR DATA ******* -->
 	<asp:Panel Runat="server" ID="pnlData"   Visible = "true">
 		<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR SEARCHING FOR A QUOTE -->
-		<div class="modal fade" id="datamodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal fade" id="datamodal<%= divChart.ClientID %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		  <div class="modal-dialog" role="document">
 			<div class="modal-content">
 			  <div class="modal-header">
@@ -83,50 +40,58 @@
 					  <span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				<div class="modal-body">
-				<asp:GridView ID="GridView1" runat="server" DataSourceID="ObjectDataSource1">
-</asp:GridView>
-					<asp:textbox ID="txtSQL" runat="server"  Width="327px" Visible="true" />
-				</div>
+				<asp:panel ID="div_table" runat="server" class="modal-body">
+					
+				</asp:panel>
 			  <div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-
 			  </div>
 			</div>
 		  </div>
 		</div>
 	</asp:Panel>
-	<!-- END QUOTE LOOKUP PANEL -->
-<asp:ObjectDataSource ID="ObjectDataSource1" runat="server" SelectMethod="LoadAdhoc" TypeName="Kolassa.DesignCentre.Data.clsSelectDataLoader">
-    <SelectParameters>
-        <asp:SessionParameter Name="llNodeID" SessionField="NodeID" Type="Int64" />
-        <asp:ControlParameter ControlID="txtSQL" Name="lsSQL" PropertyName="Text" Type="String" />
-        <asp:Parameter Name="lbActive" Type="Boolean" DefaultValue="true" />
-        <asp:Parameter Name="lsID" Type="String" />
-        <asp:Parameter Name="lsObjectID" Type="String" />
-    </SelectParameters>
-</asp:ObjectDataSource>
+	<!-- ******** END QUOTE LOOKUP PANEL ********* -->
 
 
-            <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+<script>
+	var e = 5;
+    function drawChart() {
+        dataTable = google.visualization.arrayToDataTable([
+            ['Year', 'Sales', 'Expenses'],
+            ['2004', 1000, 400],
+            ['2005', 1170, 460],
+            ['2006', 660, 1120],
+            ['2007', 1030, 540]
+        ]);
+
+        options = {
+            title: 'Company Performance',
+            hAxis: { title: 'Year', titleTextStyle: { color: 'red' } }
+        };
+
+        chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(dataTable, options);
+    }
+</script>
+
  
             <script>
-                var chartData; // globar variable for hold chart data
-                google.load("visualization", "1", { packages: ["corechart"] });
- 
+                var chartData<%= divChart.ClientID %>; // global variable for hold chart data
+              
                 // Here We will fill chartData
- 
                 $(document).ready(function () {
            
                     $.ajax({
-                        url: "webmethods.aspx/GetChartData",
+                      //  url: "webmethods.aspx/GetChartData",
+                        url: "<%= data_url %>&charttype=<%= ddlChartType.SelectedItem.Text %>" ,
                         data: "",
                         dataType: "json",
                         type: "POST",
                         contentType: "application/json; chartset=utf-8",
 						success: function (data) {
 							//alert("Data Loading" + data.d);
-                            chartData = data.d;
+                            chartData<%= divChart.ClientID %> = data.d;
                         },
                         error: function () {
                             alert("Error loading data! Please try again.");
@@ -139,19 +104,42 @@
                 });
  
  
-				function drawChart<%= divChart.ClientID %>() {
-                    var data = google.visualization.arrayToDataTable(chartData);
- 
+                function drawChart<%= divChart.ClientID %>() {
+                    google.load('visualization', 'current', { 'packages': ['corechart'] });
+                    var gv = google.visualization;
+                    var dt = gv.arrayToDataTable(chartData<%= divChart.ClientID %>);
+                    var data<%= divChart.ClientID %> = google.visualization.arrayToDataTable(chartData<%= divChart.ClientID %>);
                     var options = {
-                        title: "Company Revenue",
-                        pointSize: 12
+                       // title: "Company Revenue",
+                        pointSize: 10,
+                        'height': 400,
+                        <%= ChartOptions %> 
                     };
- 
-					var pieChart = new google.visualization.<%= DropDownList1.SelectedItem.Text %>Chart(document.getElementById('<%= divChart.ClientID %>'));
-                    pieChart.draw(data, options);
- 
+					var googleChart = new google.visualization.<%= ddlChartType.SelectedItem.Text %>Chart(document.getElementById('<%= divChart.ClientID %>'));
+                    googleChart.draw(data<%= divChart.ClientID %>, options);
+                    google.charts.load('current', { 'packages': ['table'] });
+                    google.charts.setOnLoadCallback(drawTable<%= divChart.ClientID %>);
+
+                    var table = new google.visualization.Table(document.getElementById('<%= div_table.ClientID %>'));
+
+                    table.draw(data<%= divChart.ClientID %>, { showRowNumber: true, width: '100%', height: '100%' });
                 }
- 
+
+               
+
+                function drawTable<%= divChart.ClientID %>() {
+                //    var data = new google.visualization.DataTable();
+                //    data.addColumn('string', 'Name');
+                //    data.addColumn('number', 'Salary');
+                //    data.addColumn('boolean', 'Full Time Employee');
+                //    data.addRows([
+                //        ['Mike', { v: 10000, f: '$10,000' }, true],
+                 //       ['Jim', { v: 8000, f: '$8,000' }, false],
+                //        ['Alice', { v: 12500, f: '$12,500' }, true],
+                //        ['Bob', { v: 7000, f: '$7,000' }, true]
+                //    ]);
+
+                }
             </script>
 
 

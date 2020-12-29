@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class Default1
-    
+
     '''<summary>
     '''RadMenu1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class Default1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadMenu1 As Global.Telerik.Web.UI.RadMenu
-    
+
     '''<summary>
     '''RadSkinManager1 control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class Default1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadSkinManager1 As Global.Telerik.Web.UI.RadSkinManager
-    
+
     '''<summary>
     '''RadAjaxManager1 control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class Default1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadAjaxManager1 As Global.Telerik.Web.UI.RadAjaxManager
-    
+
     '''<summary>
     '''RadAjaxLoadingPanel1 control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class Default1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadAjaxLoadingPanel1 As Global.Telerik.Web.UI.RadAjaxLoadingPanel
-    
+
     '''<summary>
     '''Image1 control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class Default1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents Image1 As Global.System.Web.UI.WebControls.Image
-    
+
     '''<summary>
     '''rgMaster control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class Default1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rgMaster As Global.Telerik.Web.UI.RadGrid
-    
+
     '''<summary>
     '''RadGrid2 control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class Default1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadGrid2 As Global.Telerik.Web.UI.RadGrid
-    
+
     '''<summary>
     '''ctrlSubObjects1 control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class Default1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ctrlSubObjects1 As Global.Kolassa.DesignCentre.UI.ctrlSubObjects
-    
+
     '''<summary>
     '''pnl control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class Default1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnl As Global.System.Web.UI.UpdatePanel
-    
+
     '''<summary>
     '''Button1 control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class Default1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents Button1 As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''UpdateProgress1 control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class Default1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents UpdateProgress1 As Global.System.Web.UI.UpdateProgress
-    
+
     '''<summary>
     '''odsContact control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class Default1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents odsContact As Global.System.Web.UI.WebControls.ObjectDataSource
-    
+
     '''<summary>
     '''odsContact0 control.
     '''</summary>
@@ -129,7 +129,7 @@ Partial Public Class Default1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents odsContact0 As Global.System.Web.UI.WebControls.ObjectDataSource
-    
+
     '''<summary>
     '''odsCustomer control.
     '''</summary>

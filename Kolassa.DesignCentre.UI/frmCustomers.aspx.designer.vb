@@ -47,7 +47,34 @@ Partial Public Class frmCustomers
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents cmdExcel As Global.System.Web.UI.WebControls.ImageButton
+    Protected WithEvents cmdExcel As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
+    '''cmdNewCustomer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdNewCustomer As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
+    '''cmdNewCust control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdNewCust As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''cmdNewRec control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdNewRec As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''grdCustomers control.

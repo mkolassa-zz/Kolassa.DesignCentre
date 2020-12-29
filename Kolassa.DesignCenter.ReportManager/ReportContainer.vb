@@ -2,7 +2,7 @@
 Imports System.ComponentModel
 Imports System.Drawing
 Imports System.Data
-
+Imports System.Diagnostics
 <DefaultProperty("Text"), ToolboxData("<{0}:ReportContainer runat=server></{0}:ReportContainer>")>
 Public Class ReportContainer
     Inherits CompositeControl
@@ -27,10 +27,11 @@ Public Class ReportContainer
 	Dim tbl As Table
 	Dim tblRow As TableRow
 	Dim tblCell As TableCell
-	Dim btn As Button
+    Dim btn As Button
+    Dim cmdNewField, cmdEditMode As LinkButton
     Dim mbDebug As Boolean
     Dim mbShowRFPanel ' *** SHowHides RFMODAL
-
+    Dim EditMode As Boolean
     Public ReportDescription As String
     Public NodeID As Long
 	Public ProjectID As String
@@ -88,12 +89,17 @@ Public Class ReportContainer
         End Set
     End Property
     Protected Overrides Sub RecreateChildControls()
-        Debug.Print("<RecreateChildControls>")
+        'debug.print("<RecreateChildControls>")
         EnsureChildControls()
-        Debug.Print("</RecreateChildControls>")
+        'debug.print("</RecreateChildControls>")
+    End Sub
+    Protected Sub cmdEditMode_Click()
+        EditMode = True
+        Me.Attributes("EditMode") = "True"
+
     End Sub
     Protected Overrides Sub CreateChildControls()
-        Debug.Print("<ReportContainer_CreateChildControls>")
+        'debug.print("<ReportContainer_CreateChildControls>")
         Dim ctrlid As String
         Dim lsHidden As String = ""
         Dim p As Page
@@ -106,6 +112,7 @@ Public Class ReportContainer
         End If
         Controls.Clear()
 
+        '*** Create the Control Config tool for editing fields on forms
         ctrlRMFieldEditor = New mycontrol_
         ctrlRMFieldEditor.ID = "ReportManagerFieldEditor"
         ctrlRMFieldEditor.Attributes.Clear()
@@ -138,21 +145,46 @@ Public Class ReportContainer
 
         upHeader = New Panel
         upHeader.ID = "upHeader"
+
+        '*** Create the Panel to hold the Dynamic Controls
         up1 = New Panel
         up1.ID = "up1"
         up1.Attributes.Remove("style") '202009
+
+        '*** Create the Panel for Holding the Category Dropdown and the Report List
+        '*** Hidden for Form Creation
         up2 = New Panel 'UpdatePanel
         up2.ID = "up2"
-
-
-
         AddHandler up2.Load, AddressOf UP2Load
+
         txtDebug = New TextBox
         txtDebug.ID = "txtDebug"
+        txtDebug.CssClass = "d-none"
+
         litmsg = New Literal
-        litmsg.ID = "litmsg"
-        Debug.Print("<Clear control='litmessage' />")
-        litmsg.Text = "" '<B>This is the litmsg control</B>"
+        litmsg.ID = "litmsg"     'debug.print("<Clear control='litmessage' />")
+        litmsg.Text = "" 'ReportDescription '<B>This is the litmsg control</B>"
+
+        '*** For an Administrator, They should see the New Field Button to Add
+        '*** a field to the form
+        If 2 = 2 Then
+            cmdEditMode = New LinkButton
+            cmdEditMode.ID = "cmdEditMode"
+            cmdEditMode.Text = "<i class='fa fa-cog float-right'></i>"
+            AddHandler cmdEditMode.Click, AddressOf cmdEditMode_Click
+            up1.Controls.Add(cmdEditMode)
+        End If
+
+        cmdNewField = New LinkButton
+        cmdNewField.ID = "cmdNewField"
+        cmdNewField.Text = "<i class='fa fa-plus'></i>"
+        AddHandler cmdNewField.Click, AddressOf cmdNewfield_Click
+        If Me.Attributes("EditMode") = "True" Then
+            cmdNewField.Visible = True
+        Else
+            cmdNewField.Visible = False
+        End If
+        up1.Controls.Add(cmdNewField)
 
         '   asyncPostBackTrigger1 = New AsyncPostBackTrigger
         '   asyncPostBackTrigger1.ControlID = "cboReportCategory"
@@ -181,13 +213,12 @@ Public Class ReportContainer
         lstReports.DisplayMode = BulletedListDisplayMode.HyperLink
         lstReports.DataTextField = "ReportName"
         lstReports.CssClass = "list-group-item list-group-item-action borderless"
-
         lstReports.ID = "lstReports"
-        '	lstReports.Height = 400
-        '		lstReports.AutoPostBack = True
+        'lstReports.Height = 400
+        'lstReports.AutoPostBack = True
         'lstReports.AlternatingItemTemplate = New StringTemplate(lsA)
         'lstReports.LayoutTemplate = New StringTemplate(lsL)
-        'l'stReports.EditItemTemplate = New StringTemplate(lsd)
+        'lstReports.EditItemTemplate = New StringTemplate(lsd)
         'lstReports.EmptyDataTemplate = New StringTemplate(lsE)
         'lstReports.InsertItemTemplate = New StringTemplate(lsN)
         'lstReports.SelectedItemTemplate = New StringTemplate(lsS)
@@ -198,7 +229,6 @@ Public Class ReportContainer
         lsDatKeyName = "ReportID"
         lsDataKeyNames = lsDatKeyName.Split(",")
 
-
         'lstReports.DataKeyNames = lsDataKeyNames
         AddHandler lstReports.Load, AddressOf lstReports_Load
         AddHandler lstReports.SelectedIndexChanged, AddressOf lstReports_SelectedIndexChanged
@@ -208,33 +238,27 @@ Public Class ReportContainer
         tbl = New Table
         tbl.ID = "tbl"
         tbl.Attributes.Add("style", "width:100%")
+
         tblRow = New TableRow
         tblRow.ID = "tblRow"
         tblCell = New TableCell
         tblCell.ID = "tblCell"
+
         '  UpdateProgress1 = New UpdateProgress
         '  UpdateProgress1.ID = "UpdateProgress1"
         LoadImage = New System.Web.UI.WebControls.Image
         LoadImage.ImageUrl = "images/Loading.gif"
         '  UpdateProgress1.Controls.Add(LoadImage)
 
-
         'upHeader.Controls.Add(cboReportCategory)
-
         'upHeader.Controls.Add(btn)
         upHeader.Controls.Add(txtDebug)
         upHeader.Controls.Add(litmsg)
-
-
-
-
-
 
         'updatePanel2.Triggers.Add(asyncPostBackTrigger1)
         'up2.Triggers.Add(asyncPostbackTrigger2)
 
         up2.CssClass = "form-group"
-
         up2.Controls.Add(cboReportCategory)
         up2.Controls.Add(lstReports) 'up2.ContentTemplateContainer.Controls.Add(lstReports) '20190315
         up2.Controls.Add(txtReportID)
@@ -257,13 +281,23 @@ Public Class ReportContainer
         ' Controls.Add(UpdateProgress1)
         'UpdateProgress1.Controls.Add(LoadImage)
 
+        '*** Get the Report Definition
         ReportContainer_Load()
+
+        '*** Get All the Controls to be added
         lstReports_Load()
 
+        '*** Add All the Controls 
         CreateChildControlsSub()
 
-        Debug.Print("</ReportContainer_CreateChildControls>")
+        'debug.print("</ReportContainer_CreateChildControls>")
 
+    End Sub
+    Sub cmdNewfield_Click()
+        '*** Create a new row for this report in the tblReportFields table
+        '     Stop
+        Dim c As New clsDataLoader
+        c.InsertReportField(miReportID)
     End Sub
     Sub setPanelVisibility()
         '*** Identify if the Control that caused the postback was "cmdPopulateFieldvalues"
@@ -280,12 +314,15 @@ Public Class ReportContainer
         Dim ctrlRMFieldEditor As mycontrol_ = cp.Parent.FindControl("ReportManagerFieldEditor")
 
         '*** If UP1 Does not exist, exit, cuz the Container is not right
+
         If cp Is Nothing Then Exit Sub
+        'If cp Is Nothing Then Exit Sub
         Dim rfe As Panel = ctrlRMFieldEditor.FindControl("pnlRF-modal")
         ' rfe = Page.FindControl("rfmodal")
         If Not rfe Is Nothing Then
             rfe.Attributes.Remove("style")
             If Not cp Is Nothing Then
+                cp.Attributes.Remove("style")
                 cp.Attributes.Remove("style")
                 If ctrlname.Contains("cmdPopulateFieldValues") Then
                     '   cp.Attributes.Add("style", "visibility:hidden") '202009
@@ -312,32 +349,32 @@ Public Class ReportContainer
 
     End Sub
     Protected Sub UP2Load()
-        Debug.Print("<UP2Load>")
+        'debug.print("<UP2Load>")
         If ReportID = 0 Then
             ReportID = f_GetReportID()
         End If
         If ReportID > 0 Then
             up2_Load(Val(txtReportID.Text), False)
         End If
-        Debug.Print("</UP2Load>")
+        'debug.print("</UP2Load>")
     End Sub
-	Protected Sub d_Load()
-        Debug.Print("<d_Load />")
+    Protected Sub d_Load()
+        'debug.print("<d_Load />")
         '	Stop
     End Sub
-	'********* RENDER THE CONTROLS  ********************
-	Protected Overrides Sub Render(writer As HtmlTextWriter)
-        Debug.Print("<ReportContainer_Render>")
+    '********* RENDER THE CONTROLS  ********************
+    Protected Overrides Sub Render(writer As HtmlTextWriter)
+        'debug.print("<ReportContainer_Render>")
         If upHeader Is Nothing Then Exit Sub
         AddAttributesToRender(writer)
-		writer.AddAttribute(HtmlTextWriterAttribute.Cellpadding, "1")
+        writer.AddAttribute(HtmlTextWriterAttribute.Cellpadding, "1")
 
-		writer.RenderBeginTag(HtmlTextWriterTag.Span)
-		'cboReportCategory.RenderControl(writer)
-		'litmsg.RenderControl(writer)
-		'btn.RenderControl(writer)
-		upHeader.CssClass = "col-12"
-		upHeader.RenderControl(writer)
+        writer.RenderBeginTag(HtmlTextWriterTag.Span)
+        'cboReportCategory.RenderControl(writer)
+        'litmsg.RenderControl(writer)
+        'btn.RenderControl(writer)
+        upHeader.CssClass = "col-12"
+        upHeader.RenderControl(writer)
 
         updatePanel1.RenderControl(writer)
 
@@ -348,6 +385,11 @@ Public Class ReportContainer
         Else
             ctrlRMFieldEditor.Visible = False
             up1.Visible = True
+            If Me.Attributes("EditMode") = "True" Then
+                cmdNewField.Visible = True
+            Else
+                cmdNewField.Visible = False
+            End If
         End If
         If Not ctrlRMFieldEditor Is Nothing Then ctrlRMFieldEditor.RenderControl(writer)
 
@@ -361,45 +403,45 @@ Public Class ReportContainer
         writer.RenderEndTag() ' </span>
 
 
-		RenderSubControls(writer)
+        RenderSubControls(writer)
         ReportContainer_Load() 'Me, New EventArgs)
-        Debug.Print("</ReportContainer_Render>")
+        'debug.print("</ReportContainer_Render>")
     End Sub
 
 
-	Protected Overridable Sub CreateChildControlsSub()
+    Protected Overridable Sub CreateChildControlsSub()
 
-	End Sub
-	Sub btn_click()
-		Debug.Print("btnClick" + Now.ToShortTimeString)
-	End Sub
-	Protected Overridable Sub RenderSubControls(writer As HtmlTextWriter)
+    End Sub
+    Sub btn_click()
+        'debug.print("btnClick" + Now.ToShortTimeString)
+    End Sub
+    Protected Overridable Sub RenderSubControls(writer As HtmlTextWriter)
 
-	End Sub
+    End Sub
 
-	'***********************************************************
-	'**** CodeBehind
-	'***********************************************************
-	Dim mdlDataLoader As New clsDataLoader
-	Dim mcReports As New Collection
-	Dim mcReportCategories As New Collection
-	Dim msReportCategoryType As String = ""
-	Public ReportOut As String = ""
-	Public miReportID As Integer
-	Dim msOpenArgs As String
-	Dim msCnStr As String
-	Dim mb_UseFilter As Boolean
+    '***********************************************************
+    '**** CodeBehind
+    '***********************************************************
+    Dim mdlDataLoader As New clsDataLoader
+    Dim mcReports As New Collection
+    Dim mcReportCategories As New Collection
+    Dim msReportCategoryType As String = ""
+    Public ReportOut As String = ""
+    Public miReportID As Integer
+    Dim msOpenArgs As String
+    Dim msCnStr As String
+    Dim mb_UseFilter As Boolean
     Dim rptCtrls As ReportControls
 
     Public ReportControl As ReportControl
-	Dim msWhereClause As String = ""
+    Dim msWhereClause As String = ""
 
-	Public Sub New()
+    Public Sub New()
 
-	End Sub
+    End Sub
 
-	Public Property WhereClause() As String
-		Get
+    Public Property WhereClause() As String
+        Get
             If rptCtrls.Count > 0 Then
                 WhereClause = msWhereClause
                 WhereClause = f_CreateWhereClause(True)
@@ -407,13 +449,13 @@ Public Class ReportContainer
             Else
                 WhereClause = ""
             End If
-            Debug.Print("<PropertyGet WhereClause='" & WhereClause & "'/>")
+            'debug.print("<PropertyGet WhereClause='" & WhereClause & "'/>")
         End Get
-		Set(ByVal value As String)
+        Set(ByVal value As String)
 
-		End Set
-	End Property
-	Public Property ReportID() As Integer
+        End Set
+    End Property
+    Public Property ReportID() As Integer
         Get
             Dim lsreport As String
             If txtReportID Is Nothing Then
@@ -421,12 +463,12 @@ Public Class ReportContainer
             Else
                 lsreport = txtReportID.Text
             End If
-            Debug.Print("<PropertyGet ReportID='" & Val(lsreport) & "'/>")
+            'debug.print("<PropertyGet ReportID='" & Val(lsreport) & "'/>")
             Return Val(lsreport)
 
         End Get
         Set(ByVal value As Integer)
-            Debug.Print("<PropertySet ReportID='" & value & "'/>")
+            'debug.print("<PropertySet ReportID='" & value & "'/>")
             If txtReportID Is Nothing Then
             Else
                 txtReportID.Text = value
@@ -435,99 +477,104 @@ Public Class ReportContainer
             miReportID = value
         End Set
     End Property
-	Public Property ReportCategoryType() As String
-		Get
-			ReportCategoryType = System.Web.HttpContext.Current.Session("msReportCategoryType")
+    Public Property ReportCategoryType() As String
+        Get
+            ReportCategoryType = System.Web.HttpContext.Current.Session("msReportCategoryType")
             If ReportCategoryType Is Nothing Then
                 ReportCategoryType = System.Web.HttpContext.Current.Request.QueryString("objType")
             End If
-            Debug.Print("<PropertyGet ReportCategoryTYpe='" & ReportCategoryType & "'/>")
+            'debug.print("<PropertyGet ReportCategoryTYpe='" & ReportCategoryType & "'/>")
         End Get
-		Set(ByVal value As String)
-			System.Web.HttpContext.Current.Session("msReportCategoryType") = value
-		End Set
-	End Property
+        Set(ByVal value As String)
+            System.Web.HttpContext.Current.Session("msReportCategoryType") = value
+        End Set
+    End Property
 
-	Public Property ReportName() As String
-		Get
-            If f_GetReportID() = "" Then
+    Public Property ReportName() As String
+        Get
+            If f_GetReportID().ToString = "" Then
                 ReportName = ""
                 ReportDescription = ""
             Else
-                ReportName = lstReports.BulletImageUrl
-                ReportDescription = lstReports.DataTextField
+                If lstReports Is Nothing Then
+                    ReportName = ""
+                Else
+                    ReportName = lstReports.BulletImageUrl
+                    ReportDescription = lstReports.DataTextField
+                End If
+
             End If
-            Debug.Print("<PropertyGet ReportName='" & ReportName & "'/>")
+            'debug.print("<PropertyGet ReportName='" & ReportName & "'/>")
         End Get
-		Set(ByVal value As String)
+        Set(ByVal value As String)
 
-		End Set
-	End Property
+        End Set
+    End Property
 
 
-	Protected Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
+    Protected Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
         '*** Load All the Data sets used by the control
-        Debug.Print("<ReportContainer_Page_init>")
+        'debug.print("<ReportContainer_Page_init>")
 
 
         Dim lsobjType As String = ""
-		lsobjType = System.Web.HttpContext.Current.Request("objType")
-		System.Web.HttpContext.Current.Session("objType") = lsobjType
-		If lsobjType = ReportCategoryType Then
-		Else
-			ReportCategoryType = lsobjType
-		End If
+        lsobjType = System.Web.HttpContext.Current.Request("objType")
+        System.Web.HttpContext.Current.Session("objType") = lsobjType
+        If lsobjType = ReportCategoryType Then
+        Else
+            ReportCategoryType = lsobjType
+        End If
 
 
-		If System.Web.HttpContext.Current.Session("mdlDataLoader") Is Nothing Then
-			mdlDataLoader = New clsDataLoader
-			mdlDataLoader.LoadReportCategories(lsobjType)
-			If mdlDataLoader.mdsReportCategories.Tables.Count > 0 And lsobjType <> "" Then
-				If mdlDataLoader.mdsReportCategories.Tables(0).Rows.Count > 0 Then
-					miCategoryPassThrough = mdlDataLoader.mdsReportCategories.Tables(0).Rows(0)("ReportCategoryID")
-				End If
-			End If
+        If System.Web.HttpContext.Current.Session("mdlDataLoader") Is Nothing Then
+            mdlDataLoader = New clsDataLoader
+            mdlDataLoader.LoadReportCategories(lsobjType)
+            If mdlDataLoader.mdsReportCategories.Tables.Count > 0 And lsobjType <> "" Then
+                If mdlDataLoader.mdsReportCategories.Tables(0).Rows.Count > 0 Then
+                    miCategoryPassThrough = mdlDataLoader.mdsReportCategories.Tables(0).Rows(0)("ReportCategoryID")
+                End If
+            End If
 
-			mdlDataLoader.LoadAllControls()
-			System.Web.HttpContext.Current.Session("mdlDataLoader") = mdlDataLoader
-		End If
-		mdlDataLoader = System.Web.HttpContext.Current.Session("mdlDataLoader")
+            mdlDataLoader.LoadAllControls()
+            System.Web.HttpContext.Current.Session("mdlDataLoader") = mdlDataLoader
+        End If
+        mdlDataLoader = System.Web.HttpContext.Current.Session("mdlDataLoader")
 
-		If System.Web.HttpContext.Current.Session("rptCtrls") Is Nothing Then
-			rptCtrls = New ReportControls
-			rptCtrls.Load()
-			System.Web.HttpContext.Current.Session("rptctrls") = rptCtrls
-		End If
+        If System.Web.HttpContext.Current.Session("rptCtrls") Is Nothing Then
+            rptCtrls = New ReportControls
+            rptCtrls.Load()
+            System.Web.HttpContext.Current.Session("rptctrls") = rptCtrls
+        End If
 
-		rptCtrls = System.Web.HttpContext.Current.Session("rptCtrls")
-		mcReports = System.Web.HttpContext.Current.Session("Reports")
-        Debug.Print("</ReportContainer_Page_init>")
+        rptCtrls = System.Web.HttpContext.Current.Session("rptCtrls")
+        mcReports = System.Web.HttpContext.Current.Session("Reports")
+        'debug.print("</ReportContainer_Page_init>")
     End Sub
-	Private Sub me_load() Handles Me.Load
-        Debug.Print("<me_load />")
+    Private Sub me_load() Handles Me.Load
+        'debug.print("<me_load />")
     End Sub
-	Private Sub ReportContainer_Load() 'ByVal sender As Object, ByVal e As System.EventArgs) 'Handles Me.Load
-        Debug.Print("<ReportContainer_Load>")
+    Private Sub ReportContainer_Load() 'ByVal sender As Object, ByVal e As System.EventArgs) 'Handles Me.Load
+        'debug.print("<ReportContainer_Load>")
         Dim lstitm As ListItem
-		Dim rptcat As ReportCategory
+        Dim rptcat As ReportCategory
 
 
-		'*** Was there a Form Name Passed?
-		msOpenArgs = HttpContext.Current.Request("objType")
+        '*** Was there a Form Name Passed?
+        msOpenArgs = HttpContext.Current.Request("objType")
 
-		'*** If No Categories in cbo, load them from database
-		If Me.cboReportCategory.Items.Count <= 0 Then
-			ReportContainer_LoadCategories()
-			For Each rptcat In mcReportCategories
-				If msOpenArgs Is Nothing Then msOpenArgs = ""
-				If Len(msOpenArgs) = 0 Or rptcat.CategoryDescription.ToUpper = msOpenArgs.ToUpper Then
-					lstitm = New ListItem
-					lstitm.Value = rptcat.CategoryID
-					lstitm.Text = rptcat.CategoryDescription
-					cboReportCategory.Items.Add(lstitm)
-					lstitm = Nothing
-				End If
-			Next
+        '*** If No Categories in cbo, load them from database
+        If Me.cboReportCategory.Items.Count <= 0 Then
+            ReportContainer_LoadCategories()
+            For Each rptcat In mcReportCategories
+                If msOpenArgs Is Nothing Then msOpenArgs = ""
+                If Len(msOpenArgs) = 0 Or rptcat.CategoryDescription.ToUpper = msOpenArgs.ToUpper Then
+                    lstitm = New ListItem
+                    lstitm.Value = rptcat.CategoryID
+                    lstitm.Text = rptcat.CategoryDescription
+                    cboReportCategory.Items.Add(lstitm)
+                    lstitm = Nothing
+                End If
+            Next
 
 
             '*** Load ALL THE Report Controls into the ReportControls Collection
@@ -539,28 +586,28 @@ Public Class ReportContainer
                     mbLoadControls = True
                 End If
             End If
-            If mbloadcontrols = True Then
+            If mbLoadControls = True Then
                 rptCtrls = New ReportControls
                 rptCtrls.Load()
             End If
             lstReports.Items.Clear()
             txtReportID.Text = ""
-		End If
+        End If
 
-        Debug.Print("</ReportContainer_Load>")
+        'debug.print("</ReportContainer_Load>")
     End Sub
     Private Sub ReportContainer_LoadCategories()
         Try
-            Debug.Print("<ReportContainer_LoadCategories>")
+            'debug.print("<ReportContainer_LoadCategories>")
             If Me.cboReportCategory.Items.Count > 0 Then
-                Debug.Print("<msg ms='Categories already exist, exit without doing anything' />")
+                'debug.print("<msg ms='Categories already exist, exit without doing anything' />")
 
             Else
 
                 '*** Should I reload mdlDataLoader.mdsReportCategories? 
                 Dim ds As DataSet = mdlDataLoader.mdsReportCategories
                 Dim ReportCategoryName As String = ""
-                Debug.Print("<c cboReportCategory.SelectedValue=" & cboReportCategory.SelectedValue & "/>")
+                'debug.print("<c cboReportCategory.SelectedValue=" & cboReportCategory.SelectedValue & "/>")
                 '*** Have We loaded the categories from the DB?
                 If Not ds Is Nothing Then
                     ReportCategoryName = ds.Tables("ReportCategoryType").Rows(0)(0)
@@ -627,23 +674,23 @@ Public Class ReportContainer
                 ds = Nothing
 
             End If
-            Debug.Print("</ReportContainer_LoadCategories>")
+            'debug.print("</ReportContainer_LoadCategories>")
         Catch
         End Try
     End Sub
 
 
     Private Sub ResizeContainer(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        Debug.Print("<ResizeContainer />")
+        'debug.print("<ResizeContainer />")
         ' Me.Height = Me.ParentForm.Height - Me.Top - 30
         ' Me.Width = Me.ParentForm.Width - Me.Left - 15
     End Sub
 
     Protected Sub lstReports_Load() 'ByVal sender As Object, ByVal e As System.EventArgs) 'Handles lstReports.Load
-        Debug.Print("<lstReports_Load SelectedReport=" & f_GetReportID() & ">")
+        'debug.print("<lstReports_Load SelectedReport=" & f_GetReportID() & ">")
         Dim cat As New ReportCategory
-		Dim cat2 As New ReportCategory
-		Dim rpt As New Report
+        Dim cat2 As New ReportCategory
+        Dim rpt As New Report
         Dim llistitem As New ListItem
         Dim llBulletedListItem As New ListItem
 
@@ -654,12 +701,12 @@ Public Class ReportContainer
             li = CInt(f_GetReportID())
             ReportID = li
             'Exit Sub ' Maybe take this out 20190314  This might work for forms but not reports
-            Debug.Print("<msg ms='Already Processed this Category' />")
+            'debug.print("<msg ms='Already Processed this Category' />")
         End If
 
         cat = New ReportCategory
-		'*** Find Selected Category
-		llistitem = cboReportCategory.SelectedItem
+        '*** Find Selected Category
+        llistitem = cboReportCategory.SelectedItem
         '*** If there are no categories in the cbo, we can't load Reports
         If llistitem Is Nothing Then ' was Exit Sub 2020
             Exit Sub
@@ -678,8 +725,8 @@ Public Class ReportContainer
         Next
 
         Me.lstReports.Items.Clear()
-		cat.Load()
-		mcReports = cat.GetReports
+        cat.Load()
+        mcReports = cat.GetReports
         ' Session("Reports") = mcReports
 
         Dim lsrpt As String
@@ -707,14 +754,14 @@ Public Class ReportContainer
 
             Me.lstReports.Items.Add(llBulletedListItem) 'llistViewDataItem)
             llistitem = Nothing
-		Next
+        Next
         'On Error Resume Next
         'If lstReports.Items.Count > 0 Then
-        ' Debug.Print("<msg  li=" & li & " />")
+        ' 'debug.print("<msg  li=" & li & " />")
         ' Dim l As ListItem
         ' For Each l In lstReports.Items
         ' If l.Value.ToString = "?rpt=" & Trim(Str(li)) Then
-        ' Debug.Print("<msg   FoundReport=" & li & " />")
+        ' 'debug.print("<msg   FoundReport=" & li & " />")
         ' lstReports.SelectedIndex = li
         ' ReportID = li
         ' Exit For
@@ -727,12 +774,12 @@ Public Class ReportContainer
         If cat.HideReportLists = True Or 1 = 1 Then 'And 1 = 2 Then 'And lstReports.SelectedIndex = -1 And lstReports.Items.Count >= 1 Then
             updatePanel2.Visible = False
             If lstReports.Items.Count > 0 Then
-                Debug.Print(" <msg ms='Found Existing Reports in lstReports, Setting SelIndex to 0 if -1 and firing up2_Load' />")
+                'debug.print(" <msg ms='Found Existing Reports in lstReports, Setting SelIndex to 0 if -1 and firing up2_Load' />")
                 ReportID = f_GetReportID()
 
                 up2_Load(ReportID, False)
             Else
-                Debug.Print("<msg ms='Found No Existing Reports in lstReports, Setting SelIndex -1' />")
+                'debug.print("<msg ms='Found No Existing Reports in lstReports, Setting SelIndex -1' />")
                 lstReports.ClearSelection()
                 ReportID = f_GetReportID()
             End If
@@ -746,7 +793,7 @@ Public Class ReportContainer
         '  lstReports.ClearSelection()
         'lstReports.refresh
 
-        Debug.Print("ReportCount-" & lstReports.Items.Count.ToString & "</lstReports_Load>")
+        'debug.print("ReportCount-" & lstReports.Items.Count.ToString & "</lstReports_Load>")
     End Sub
     Public Function f_GetReportID() As Long
         Dim rptID As Long
@@ -761,13 +808,15 @@ Public Class ReportContainer
             If ds.Tables.Count > 0 Then
                 If ds.Tables(0).Rows.Count > 0 Then
                     rptID = ds.Tables(0).Rows(0)("ReportID")
+                    ReportDescription = ds.Tables(0).Rows(0)("ReportDescription")
+                    ReportName = ds.Tables(0).Rows(0)("ReportName")
                     If IsDBNull(ds.Tables(0).Rows(0)("TableName")) Then
                         TableName = "NoTable"
                     Else
                         TableName = ds.Tables(0).Rows(0)("TableName")
                     End If
                 End If
-                    Return rptID
+                Return rptID
             End If
 
         End If
@@ -781,7 +830,7 @@ Public Class ReportContainer
                 '     lstReports.SelectedIndex = 0
             End If
         End If
-        Debug.Print(" <msg lstReports_SelectedIndex ='" & lstReports.SelectedIndex & "' />")
+        'debug.print(" <msg lstReports_SelectedIndex ='" & lstReports.SelectedIndex & "' />")
         rptID = IIf(lstReports.SelectedValue = "", 0, lstReports.SelectedValue)
         If rptID = 0 Then
             rptID = System.Web.HttpContext.Current.Request.QueryString("rpt")
@@ -808,21 +857,22 @@ Public Class ReportContainer
         Return rptID
     End Function
     Function f_CreateWhereClause(ByVal lbUseFilter As Boolean) As String
-        Debug.Print("<f_CreateWhereClause>")
+
+        'debug.print("<f_CreateWhereClause>")
         f_CreateWhereClause = ""
         Dim lsSQL As String = ""
         Dim liControlCount As Integer
         Dim ctrl As Control
         'Dim p As Panel
         Dim lsType As String = ""
-		Dim lsTag As String = ""
-		Dim rpt As Report
-		Dim rptCtrl As ReportControl
-		Dim lsDescription As String = ""
-		Dim lsCtrlName As String = ""
-		sUpdateControls()
-		Dim tbl As Table
-		Try
+        Dim lsTag As String = ""
+        Dim rpt As Report
+        Dim rptCtrl As ReportControl
+        Dim lsDescription As String = ""
+        Dim lsCtrlName As String = ""
+        sUpdateControls()
+        Dim tbl As Table
+        Try
             tbl = Me.FindControl("tbl")
             ' Exit Function
             If lbUseFilter = True Then
@@ -831,34 +881,34 @@ Public Class ReportContainer
                     f_CreateWhereClause = " 1=1 "
                 Else
 
-                    Debug.Print("<FindControlsOnForm ms=" & tbl.Controls(0).Controls(0).Controls.Count.ToString & " >")
+                    'debug.print("<FindControlsOnForm ms=" & tbl.Controls(0).Controls(0).Controls.Count.ToString & " >")
 
                     For Each ctrl In tbl.Controls(0).Controls(0).Controls(0).Controls
                         '*** Iterate through All Controls for this Report
-                        Debug.Print("<Typename t='" & TypeName(ctrl) & ctrl.ID & "' />")
+                        'debug.print("<Typename t='" & TypeName(ctrl) & ctrl.ID & "' />")
 
                         '*************************************************************************
                         '*** Check For Mandatory Fields.  They are designated be the Back Color
                         '*************************************************************************
                         lsCtrlName = ctrl.ID
-                        Debug.Print("<msg ms='checking for Manadatory Fileds ReportContainer f_createwherechause' />")
-                        Debug.Print("<msg ms='FindByName: " & ctrl.ID & "' />")
+                        'debug.print("<msg ms='checking for Manadatory Fileds ReportContainer f_createwherechause' />")
+                        'debug.print("<msg ms='FindByName: " & ctrl.ID & "' />")
                         rptCtrl = rptCtrls.FindByName(lsCtrlName)
-                        Debug.Print("<msg ms='Found: " & rptCtrl.FieldName & "' />")
+                        'debug.print("<msg ms='Found: " & rptCtrl.FieldName & "' />")
                         lsType = TypeName(ctrl)
                         lsTag = IIf(Nothing = (rptCtrl.Type), "", rptCtrl.Type)
                         If lsType <> "Label" And lsTag = "ReportControl" Then
 
                             If rptCtrl.Required And (IsDBNull(rptCtrl.Value) Or rptCtrl.Value = "" Or rptCtrl.Value = "-1") Then
                                 '*If ctrl.BackColor = Color.Red And (IsDBNull(ctrl.Text) Or ctrl.Text = "" Or ctrl.Text = "-1") Then
-                                Debug.Print("<msg ms='Required Field  " & rptCtrl.FieldName & " must be filled' />")
+                                'debug.print("<msg ms='Required Field  " & rptCtrl.FieldName & " must be filled' />")
                                 f_CreateWhereClause = "Cancel"
                                 ctrl.Focus()
                                 Exit Function
                             End If
                         End If
                     Next
-                    Debug.Print("</FindControlsOnForm>")
+                    'debug.print("</FindControlsOnForm>")
                 End If
                 Dim liCounter As Integer
                 '***************************************************************
@@ -894,7 +944,7 @@ Public Class ReportContainer
 
                         ReportOut = ReportOut & "</td></tr>"
                         lsSQL = lsSQL & ReportControl.SQL
-                        Debug.Print("Control " & ReportControl.ControlName & " SQL: " & ReportControl.SQL)
+                        'debug.print("Control " & ReportControl.ControlName & " SQL: " & ReportControl.SQL)
                         ' End If
                     End If
                 Next
@@ -911,43 +961,43 @@ Public Class ReportContainer
             Else
                 'response.write("No Criteria")
                 f_CreateWhereClause = ""
-			End If
+            End If
 
-			f_CreateWhereClause = lsSQL
+            f_CreateWhereClause = lsSQL
 CreateWhere_Exit:
 
-            Debug.Print("<SQL>" & lsSQL & "</SQL></f_CreateWhereClause>")
+            'debug.print("<SQL>" & lsSQL & "</SQL></f_CreateWhereClause>")
             Exit Function
-		Catch err As Exception
-			Debug.Print(err.Message)
-			'  Dim st As StackTrace = New StackTrace(Err, True)
-			'// Get the top stack frame
-			' Dim frame As StackFrame = st.GetFrame(0)
-			' // Get the line number from the stack frame
-			'Dim line As Long = frame.GetFileLineNumber()
-			'response.write(err.Message)
-		Finally
-			'Resume CreateWhere_Exit
-		End Try
-	End Function
-	Function f_LoadFromObject() As List(Of KeyValuePair(Of String, String))
-        Debug.Print("<f_LoadFromObject text='Loading Controls from Object'>")
+        Catch err As Exception
+            'debug.print(err.Message)
+            '  Dim st As StackTrace = New StackTrace(Err, True)
+            '// Get the top stack frame
+            ' Dim frame As StackFrame = st.GetFrame(0)
+            ' // Get the line number from the stack frame
+            'Dim line As Long = frame.GetFileLineNumber()
+            'response.write(err.Message)
+        Finally
+            'Resume CreateWhere_Exit
+        End Try
+    End Function
+    Function f_LoadFromObject() As List(Of KeyValuePair(Of String, String))
+        'debug.print("<f_LoadFromObject text='Loading Controls from Object'>")
         f_LoadFromObject = New List(Of KeyValuePair(Of String, String))
-		Dim lsSQL As String = ""
+        Dim lsSQL As String = ""
 
         'Dim p As Panel
         Dim lsType As String = ""
-		Dim lsTag As String = ""
-		Dim rpt As Report
-		Dim lsDescription As String = ""
-		Dim lsCtrlName As String = ""
-		Dim tbl As Table
+        Dim lsTag As String = ""
+        '     Dim rpt As Report
+        Dim lsDescription As String = ""
+        Dim lsCtrlName As String = ""
+        Dim tbl As Table
 
-		sUpdateControls()
-		Try
-			tbl = Me.FindControl("tbl")
+        sUpdateControls()
+        Try
+            tbl = Me.FindControl("tbl")
 
-            Debug.Print("<controlcount count='" & tbl.Controls(0).Controls(0).Controls.Count.ToString & "' />")
+            'debug.print("<controlcount count='" & tbl.Controls(0).Controls(0).Controls.Count.ToString & "' />")
 
 
 
@@ -958,56 +1008,56 @@ CreateWhere_Exit:
             '***************************************************************
 
 
-
-            rpt = FindReportByID(Val(txtReportID.Text))
-            rpt.LoadControls("")
-			sUpdateControls() '*** Updates rptCtrls with updated Ctrl Values
-
-			For Each ReportControl In rpt.Controls
-                Debug.Print("<ReportControl controlName='" & ReportControl.ControlName & "' />")
+            '***** 2020 DEC - These might not be necessary.  Get Values from rptctrls instead
+            ' rpt = FindReportByID(Val(txtReportID.Text))
+            ' rpt.LoadControls("")
+            ' sUpdateControls() '*** Updates rptCtrls with updated Ctrl Values
+            'For Each ReportControl In rpt.Controls
+            For Each ReportControl In rptCtrls
+                'debug.print("<ReportControl controlName='" & ReportControl.ControlName & "' />")
                 'For Each ReportControl In tbl.Controls(0).Controls(0).Controls
 
                 For liCounter = 1 To ReportControl.SelectedItems.Count
-					ReportOut = ReportOut & "" & ReportControl.SelectedItems(liCounter).ToString & "<br />"
-				Next
-				ReportOut = ReportOut & "</td><td valign='top'>"
-				For liCounter = 1 To ReportControl.SelectedItems2.Count
-					ReportOut = ReportOut & "" & ReportControl.SelectedItems2(liCounter).ToString & "<br />"
-				Next
+                    ReportOut = ReportOut & "" & ReportControl.SelectedItems(liCounter).ToString & "<br />"
+                Next
+                ReportOut = ReportOut & "</td><td valign='top'>"
+                For liCounter = 1 To ReportControl.SelectedItems2.Count
+                    ReportOut = ReportOut & "" & ReportControl.SelectedItems2(liCounter).ToString & "<br />"
+                Next
 
-				ReportOut = ReportOut & "</td></tr>"
-				lsSQL = lsSQL & ReportControl.SQL
-				'* Get Ordered pairs of FieldName and value for form values
-				' Loop over pairs.
-				For Each pair As KeyValuePair(Of String, String) In ReportControl.FormValue
-					' Get key.
-					Dim key As String = pair.Key
-					' Get value.
-					Dim value As String = pair.Value
+                ReportOut = ReportOut & "</td></tr>"
+                lsSQL = lsSQL & ReportControl.SQL
+                '* Get Ordered pairs of FieldName and value for form values
+                ' Loop over pairs.
+                For Each pair As KeyValuePair(Of String, String) In ReportControl.FormValue
+                    ' Get key.
+                    Dim key As String = pair.Key
+                    ' Get value.
+                    Dim value As String = pair.Value
                     ' Display.
-                    Debug.Print("<" & key & " val=" & value & " />")
+                    'debug.print("<" & key & " val=" & value & " />")
                     f_LoadFromObject.Add(New KeyValuePair(Of String, String)(key, value))
-				Next
+                Next
 
-			Next
+            Next
 
-			'*** Cut Last AND off the Where Clause
-			If lsSQL.Length > 4 Then
-				lsSQL = lsSQL.Substring(0, lsSQL.Length - 4)
-			Else
-				lsSQL = ""
-			End If
+            '*** Cut Last AND off the Where Clause
+            If lsSQL.Length > 4 Then
+                lsSQL = lsSQL.Substring(0, lsSQL.Length - 4)
+            Else
+                lsSQL = ""
+            End If
 
-			ReportOut = "<table>" & ReportOut & "</table><br />SQL:<br/>"
+            ReportOut = "<table>" & ReportOut & "</table><br />SQL:<br/>"
 
 
 
 
 LoadFromObject_Exit:
-            Debug.Print("</f_LoadFromObject>")
+            'debug.print("</f_LoadFromObject>")
             Exit Function
-		Catch err As Exception
-            Debug.Print("<error>" & err.Message & "</error>")
+        Catch err As Exception
+            'debug.print("<error>" & err.Message & "</error>")
             '  Dim st As StackTrace = New StackTrace(Err, True)
             '// Get the top stack frame
             ' Dim frame As StackFrame = st.GetFrame(0)
@@ -1015,12 +1065,12 @@ LoadFromObject_Exit:
             'Dim line As Long = frame.GetFileLineNumber()
             'response.write(err.Message)
         Finally
-			'Resume CreateWhere_Exit
-		End Try
-	End Function
+            'Resume CreateWhere_Exit
+        End Try
+    End Function
     Function f_setFromDataRow(ds As DataSet) As List(Of KeyValuePair(Of String, String))
-        Debug.Print("<ReportContainer.f_setFromDataRow>")
-        Debug.Print("<msg ms='Loading Controls from Object' />")
+        'debug.print("<ReportContainer.f_setFromDataRow>")
+        'debug.print("<msg ms='Loading Controls from Object' />")
         f_setFromDataRow = New List(Of KeyValuePair(Of String, String))
         Dim lsSQL As String = ""
         Dim dr As DataRow
@@ -1037,7 +1087,7 @@ LoadFromObject_Exit:
             tbl = Me.FindControl("tbl")
             '*** How Many Controls are in the Report Control Right Now?
             '*** Each Control is in a single table cell
-            Debug.Print("<controlcount>" & tbl.Controls(0).Controls(0).Controls.Count.ToString & "</controlcount>")
+            'debug.print("<controlcount>" & tbl.Controls(0).Controls(0).Controls.Count.ToString & "</controlcount>")
 
             '***************************************************************
             '*** Build Report Criteria
@@ -1080,11 +1130,11 @@ LoadFromObject_Exit:
             sUpdateUIControls(rpt)
 
 LoadFromObject_Exit:
-            Debug.Print("</ReportContainer.f_setFromDataRow>")
+            'debug.print("</ReportContainer.f_setFromDataRow>")
             Exit Function
         Catch err As Exception
             'Stop
-            Debug.Print("<f_setFromDataRowError error='" & err.Message & "' />")
+            'debug.print("<f_setFromDataRowError error='" & err.Message & "' />")
             '  Dim st As StackTrace = New StackTrace(Err, True)
             '// Get the top stack frame
             ' Dim frame As StackFrame = st.GetFrame(0)
@@ -1096,68 +1146,68 @@ LoadFromObject_Exit:
         End Try
     End Function
     Function nz(ByVal lv As VariantType, ByVal lvv As VariantType) As VariantType
-		If IsDBNull(lv) Then
-			nz = lvv
-		Else
-			nz = lv
-		End If
-	End Function
-	Public Sub sDispose()
-        Debug.Print("<sDispose>")
+        If IsDBNull(lv) Then
+            nz = lvv
+        Else
+            nz = lv
+        End If
+    End Function
+    Public Sub sDispose()
+        'debug.print("<sDispose>")
         Dim liCount As Integer = 1
-		Dim ctrl As Control
-		Dim rptctrl As New ReportControl
-		Dim lsCtrlName As String = ""
+        Dim ctrl As Control
+        Dim rptctrl As New ReportControl
+        Dim lsCtrlName As String = ""
 
-		Do While liCount > 0
+        Do While liCount > 0
 
-			liCount = 0
-			For Each ctrl In Me.Controls
-				If ctrl Is Nothing Then
-					lsCtrlName = ""
-				Else
-					lsCtrlName = ctrl.ID
-				End If
-				If lsCtrlName Is Nothing Then
-					lsCtrlName = ""
-				End If
-				'  txtDebug.Text = txtDebug.Text & Chr(13) & Chr(10) & lsCtrlName & " " '& ctrl.
-				If lsCtrlName <> "" Then
-					rptctrl = rptCtrls.FindByName(lsCtrlName)
-					If rptctrl Is Nothing Then
-						' If ctrl.Tag = "ReportControl" Then
-					Else
-						If lsCtrlName.ToLower <> "ctrltextbox1" And lsCtrlName.ToLower <> "ph" And lsCtrlName.ToLower <> "ctrlbase" And lsCtrlName.ToLower <> "cboreportcategory" And lsCtrlName.ToLower <> "litmsg" And lsCtrlName.ToLower <> "txtdebug" And lsCtrlName.ToLower <> "lstreports" Then
-							' response.write("Disposing of " & ctrl.Name)
-							liCount = liCount + 1
-							ctrl.Dispose()
-						End If
-					End If
-				End If
-				rptctrl = Nothing
-			Next
-		Loop
+            liCount = 0
+            For Each ctrl In Me.Controls
+                If ctrl Is Nothing Then
+                    lsCtrlName = ""
+                Else
+                    lsCtrlName = ctrl.ID
+                End If
+                If lsCtrlName Is Nothing Then
+                    lsCtrlName = ""
+                End If
+                '  txtDebug.Text = txtDebug.Text & Chr(13) & Chr(10) & lsCtrlName & " " '& ctrl.
+                If lsCtrlName <> "" Then
+                    rptctrl = rptCtrls.FindByName(lsCtrlName)
+                    If rptctrl Is Nothing Then
+                        ' If ctrl.Tag = "ReportControl" Then
+                    Else
+                        If lsCtrlName.ToLower <> "ctrltextbox1" And lsCtrlName.ToLower <> "ph" And lsCtrlName.ToLower <> "ctrlbase" And lsCtrlName.ToLower <> "cboreportcategory" And lsCtrlName.ToLower <> "litmsg" And lsCtrlName.ToLower <> "txtdebug" And lsCtrlName.ToLower <> "lstreports" Then
+                            ' response.write("Disposing of " & ctrl.Name)
+                            liCount = liCount + 1
+                            ctrl.Dispose()
+                        End If
+                    End If
+                End If
+                rptctrl = Nothing
+            Next
+        Loop
 
-		liCount = liCount
+        liCount = liCount
 
-        Debug.Print("</sDispose>")
+        'debug.print("</sDispose>")
     End Sub
     Function getControlFromName(ByRef containerObj As Object, ByVal name As String) As Control
-        Debug.Print("<getControlFromName><obj>" & containerObj.ToString & "</obj><name>" & name & "<name>")
+        'debug.print("<getControlFromName><obj>" & containerObj.ToString & "</obj><name>" & name & "<name>")
         Try
             Dim tempCtrl As Control
             For Each tempCtrl In containerObj.Controls
-                ' Debug.Print(tempCtrl.Name)
+                ' 'debug.print(tempCtrl.Name)
                 If tempCtrl.ID.ToUpper.Trim = name.ToUpper.Trim Then
                     Return tempCtrl
-                    Debug.Print("<found>" & name & "</found></getControlFromName>")
+                    'debug.print("<found>" & name & "</found></getControlFromName>")
                     Exit Function
                 End If
             Next tempCtrl
         Catch ex As Exception
-            Debug.Print("<error>" & Err.Description & "</error>")
+            'debug.print("<error>" & Err.Description & "</error>")
         End Try
-        Debug.Print("</getControlFromName>")
+        'debug.print("</getControlFromName>")
         Return Nothing
     End Function
 
@@ -1167,13 +1217,13 @@ LoadFromObject_Exit:
         '*** This should allow users to build user controls easier
         'Exit Sub
         Try
-            Debug.Print("<ReportContainer.sUpdateUIControls>")
+            'debug.print("<ReportContainer.sUpdateUIControls>")
             Dim ctrl As Control
             Dim ctrlb As ctrlBase
             ' Dim rpt As Report
             Dim p As Panel
             Dim rptctrl As ReportControl
-            Dim rptctrl2 As ReportControl
+            'Dim rptctrl2 As ReportControl
 
 
             '*** Get the Report ID and Set the Report object
@@ -1184,14 +1234,14 @@ LoadFromObject_Exit:
 
             '** Find the UI Control Table on Container
             tbl = Me.FindControl("tbl")
-            Debug.Print("<msg count='" & tbl.Controls(0).Controls(0).Controls(0).Controls.Count.ToString & "' />")
+            'debug.print("<msg count='" & tbl.Controls(0).Controls(0).Controls(0).Controls.Count.ToString & "' />")
 
             For Each rptctrl In rpt.Controls
                 '*** Iterate through all UI Controls, looking for controls
                 For Each p In tbl.Controls(0).Controls(0).Controls
                     For Each ctrl In p.Controls
 
-                        'Debug.Print("<msg ms='sUpdateControls:Up2-" & ctrl.ID & " Value:" & ctrl.ToString & "' />")
+                        ''debug.print("<msg ms='sUpdateControls:Up2-" & ctrl.ID & " Value:" & ctrl.ToString & "' />")
                         ''*** Controls capable of Criteria have a ReportControl Tag
                         'rptctrl2 = Nothing
                         'rptctrl2 = rpt.Controls.FindByName(ctrl.ID)
@@ -1227,11 +1277,11 @@ LoadFromObject_Exit:
             'rptctrls = rpt.Controls
 
         Catch err As Exception
-            Debug.Print("<error>" & err.Message & "</error>") '& frame.ToString)
+            'debug.print("<error>" & err.Message & "</error>") '& frame.ToString)
         Finally
-            Debug.Print("<End ReportContainer.sUpdateControls />")
+            'debug.print("<End ReportContainer.sUpdateControls />")
         End Try
-        Debug.Print("</ReportContainer.sUpdateUIControls>")
+        'debug.print("</ReportContainer.sUpdateUIControls>")
     End Sub
 
     Private Sub sUpdateControls()
@@ -1240,7 +1290,7 @@ LoadFromObject_Exit:
         '*** This should allow users to build user controls easier
         'Exit Sub
         Try
-            Debug.Print("<ReportContainer.sUpdateControls>")
+            'debug.print("<ReportContainer.sUpdateControls>")
             Dim ctrl As Control
             Dim ctrlb As ctrlBase
             Dim rpt As Report
@@ -1255,7 +1305,7 @@ LoadFromObject_Exit:
 
             '*** Iterate through all UI Controls, looking for controls with Criteria
             tbl = Me.FindControl("tbl")
-            Debug.Print("<msg count='" & tbl.Controls(0).Controls(0).Controls(0).Controls.Count.ToString & "' />")
+            'debug.print("<msg count='" & tbl.Controls(0).Controls(0).Controls(0).Controls.Count.ToString & "' />")
             For Each p In tbl.Controls(0).Controls(0).Controls
                 For Each ctrl In p.Controls
                     If 2 = 1 Then
@@ -1284,11 +1334,13 @@ LoadFromObject_Exit:
                                     rptctrl.DataType = ctrlb.DataType
                                     If ctrlb.SelectedItems.Count > 0 Then
                                         rptctrl.SelectedItems = ctrlb.SelectedItems
+                                        'debug.print("Control " & rptctrl.ControlName & " Set to: " & rptctrl.SelectedItems(1).ToString)
                                         rptctrl.SelectedItems2 = ctrlb.SelectedItems2
                                     End If
                                     rptctrl.Enabled = True
-                                    Else
-                                        rptctrl.DataOperator = Nothing
+                                    Exit For '2020-12-23
+                                Else
+                                    rptctrl.DataOperator = Nothing
                                     rptctrl.DataType = Nothing
                                     If rptctrl.SelectedItems.Count > 0 Then
                                         rptctrl.SelectedItems.Clear()
@@ -1309,15 +1361,15 @@ LoadFromObject_Exit:
             rptCtrls = rpt.Controls
 
         Catch err As Exception
-            Debug.Print("<error>" & err.Message & "</error>") '& frame.ToString)
+            'debug.print("<error>" & err.Message & "</error>") '& frame.ToString)
         Finally
-            Debug.Print("<End ReportContainer.sUpdateControls />")
+            'debug.print("<End ReportContainer.sUpdateControls />")
         End Try
-        Debug.Print("</ReportContainer.sUpdateControls>")
+        'debug.print("</ReportContainer.sUpdateControls>")
     End Sub
 
     Private Sub sUpdateChildren(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        Debug.Print("<sUpdateChildren sender='" & sender.ToString & "' />")
+        'debug.print("<sUpdateChildren sender='" & sender.ToString & "' />")
         GoTo Exit_Cmdrunreport_Click
         '*** Updates the List Controls That depend on this object for Criteria
         '*** Example: Kids Listbox would be refilled everytime a new Value was selected from
@@ -1349,6 +1401,7 @@ LoadFromObject_Exit:
                     rptctrl.DataOperator = (ctrlb.DataOperator)
                     rptctrl.DataType = ctrlb.DataType
                     rptctrl.SelectedItems = ctrlb.SelectedItems
+                    'debug.print("Control " & rptctrl.Value)
                     rptctrl.SelectedItems2 = ctrlb.SelectedItems2
                     rptctrl.Enabled = True
                     For Each childctrl In rptctrl.ControlChildren
@@ -1369,11 +1422,11 @@ LoadFromObject_Exit:
         Next
 
 Exit_Cmdrunreport_Click:
-        Debug.Print("</sUpdateChildren>")
+        'debug.print("</sUpdateChildren>")
         Exit Sub
 
 Err_Cmdrunreport_Click:
-        Debug.Print("<error>" & Err.Description & "</error>")
+        'debug.print("<error>" & Err.Description & "</error>")
         If Err.Number <> 2501 Then
             'response.write(Err.Description & " - " & Err.Number)
         End If
@@ -1383,7 +1436,7 @@ Err_Cmdrunreport_Click:
 
 
     Sub SetChildListItems(ByVal lsControlName As String, ByVal lsSQL As String)
-        Debug.Print("<SetChildListItems controlname='" & lsControlName & "' ><SQL>" & lsSQL & "</SQL>")
+        'debug.print("<SetChildListItems controlname='" & lsControlName & "' ><SQL>" & lsSQL & "</SQL>")
         Dim rptctrl As ReportControl
         Dim lsRowSource As String = ""
         Dim ctrl As ctrlBase
@@ -1420,50 +1473,51 @@ Err_Cmdrunreport_Click:
                 ctrl.RefreshLists()
             End If
         Next
-        Debug.Print("</SetChildListItems>")
+        'debug.print("</SetChildListItems>")
     End Sub
 
     Sub debugThis(ByVal msg As String)
-		If mbDebug = True Then
-			If msg = "Clear" Then
-				litmsg.Text = ""
-			Else
-				litmsg.Text = litmsg.Text & msg & "<br/>" '  Chr(13) & Chr(10)
-			End If
-		End If
-	End Sub
+        If mbDebug = True Then
+            If msg = "Clear" Then
+                litmsg.Text = ""
+            Else
+                litmsg.Text = litmsg.Text & msg & "<br/>" '  Chr(13) & Chr(10)
+            End If
+        End If
+    End Sub
     Protected Sub lstReports_SelectedIndexChanged() Handles Me.Init
-        Debug.Print("<lstReport_SelectedIndexChanged>")
+        'debug.print("<lstReport_SelectedIndexChanged>")
         Dim lsValue As String = ""
         If Not lstReports Is Nothing Then lsValue = lstReports.SelectedValue
-        Debug.Print("<msg lstReports.selectedValue= '" & lsValue & "' />")
+        'debug.print("<msg lstReports.selectedValue= '" & lsValue & "' />")
         If lstReports Is Nothing Then
-            Debug.Print("There Are no Report in the Listbox Loaded")
+            'debug.print("There Are no Report in the Listbox Loaded")
         Else
-            Debug.Print("<msg lstReports_SelectedIndexChanged='Changed to " & lstReports.SelectedValue & "' />")
+            'debug.print("<msg lstReports_SelectedIndexChanged='Changed to " & lstReports.SelectedValue & "' />")
         End If
         ReportID = f_GetReportID()
 
         '   CreateChildControls() 'up2_Load(ReportID, True) ' *** THis guy was commented out for FOrms
-        Debug.Print("</lstReport_SelectedIndexChanged>")
+        'debug.print("</lstReport_SelectedIndexChanged>")
     End Sub
     Protected Sub cboReportCategory_Changed()
-        Debug.Print("<cboReportCategory_Changed>")
+        'debug.print("<cboReportCategory_Changed>")
         lstReports_Load()
-        ShowMessage("Aww, password is wrong", "Error")
-        Debug.Print("</cboReportCategory_Changed>")
+        '   ShowMessage("Argh, password is wrong", "Error")
+        'debug.print("</cboReportCategory_Changed>")
     End Sub
 
     Protected Sub up2_Load(liReportID As Integer, lbForce As Boolean) 'ByVal sender As Object, ByVal e As System.EventArgs) 'Handles up2.Load
         Dim createDiv As Panel ' System.Web.UI.HtmlControls.HtmlGenericControl
-        Debug.Print("<ReportContainer.up2_load reportID='" & liReportID & "' >")
+        createDiv = Nothing
+        'debug.print("<ReportContainer.up2_load reportID='" & liReportID & "' >")
         If iTimeThrough > 0 Then 'And lbForce = False Then
-            Debug.Print("<msg ms='Controls only get added on the first time through or Force through Selecteditemchanged. so Exit up2.' />")
-            Debug.Print("</ReportContainer.up2_load>")
+            'debug.print("<msg ms='Controls only get added on the first time through or Force through Selecteditemchanged. so Exit up2.' />")
+            'debug.print("</ReportContainer.up2_load>")
             Exit Sub
         End If
         iTimeThrough = iTimeThrough + 1 'Without exiting, this would empty all controls
-        Dim strScript As String = "Alert('Yes');"
+        Dim strScript As String = "" ' "var testvar ='alert(''Yes'')';"
         If Not Page Is Nothing Then
             If (Not Page.ClientScript.IsStartupScriptRegistered("clientScript")) Then
                 Page.ClientScript.RegisterStartupScript(Me.GetType, "clientScript", strScript, True)
@@ -1488,11 +1542,11 @@ Err_Cmdrunreport_Click:
 
         '*** Load NON Graphical Report Control Objects
         reportCtrls = rpt.LoadControls(msCnStr)
-        Debug.Print("<rptReportControls LoadControls='" & msCnStr & "' />")
+        'debug.print("<rptReportControls LoadControls='" & msCnStr & "' />")
 
         '*** Load Graphical User Control Report Objects
         For Each ReportControl In reportCtrls
-            Debug.Print("<ReportControl Type='" & ReportControl.Type & "' />")
+            'debug.print("<ReportControl Type='" & ReportControl.Type & "' />")
             Select Case UCase(ReportControl.Type)
                 Case "DATEBOX"
                     ctrl = New ctrlDateBox(ReportControl) 'ctrlTextBox '(ReportControl)
@@ -1502,9 +1556,9 @@ Err_Cmdrunreport_Click:
                     ctrl.mrptCtrl = ReportControl
                 Case "CHECKBOX"
                     ctrl = New ctrlCheckBox(ReportControl)
-                    Debug.Print("<ctrl FieldName='" & ctrl.FieldName & "' />")
+                    'debug.print("<ctrl FieldName='" & ctrl.FieldName & "' />")
                     ctrl.mrptCtrl = ReportControl
-                    Debug.Print("<msg Desc='" & ctrl.FieldName & "' />")
+                    'debug.print("<msg Desc='" & ctrl.FieldName & "' />")
                         ''  ctrl = New ctrlListbox(ReportControl)
                         'ctrl = LoadControl("ctrlCheckBox.ascx")
                         'ctrl.mrptCtrl = ReportControl
@@ -1518,9 +1572,9 @@ Err_Cmdrunreport_Click:
                     ctrl.mrptCtrl = ReportControl
             End Select
             If ctrl Is Nothing Then
-                Debug.Print("<CTRL ID='Nothing' />")
+                'debug.print("<CTRL ID='Nothing' />")
             Else
-                Debug.Print("<CTRL ID='" & ctrl.ID & "' />")
+                'debug.print("<CTRL ID='" & ctrl.ID & "' />")
             End If
             '    AddHandler  ctrl.Leave, AddressOf sUpdateChildren
             ctrl.Tag = "ReportControl"
@@ -1531,27 +1585,59 @@ Err_Cmdrunreport_Click:
             ctrl.CssClass = "CustomControl"
             If ReportControl IsNot Nothing Then
                 '  On Error Resume Next
-                createDiv = New Panel 'System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
-                createDiv.ID = "div" & ctrl.ID
-                'createDiv.InnerHtml = " I'm a div, from code behind "
-                createDiv.Attributes("class") = "form-group"
+                '*** Does the Control have a Specific Container name
+                If ReportControl.ReportControlContainerName <> "" Then
+                    Dim liSize As Integer = ReportControl.ReportControlColumnSize
+                    If liSize < 1 Then liSize = 1
+                    If liSize > 12 Then liSize = 12
+                    ctrl.ControlPanelcss = ("form-group col-md-" & Trim(liSize.ToString))
+                    '   ctrl.ControlStyle = "form-group col-md-" & Trim(liSize.ToString)
+                    '***    Yes, Does the Container DIV Exist?
+                    For Each p As Panel In tblCell.Controls
+                        If p.ID = "div" & ReportControl.ReportControlContainerName Then
+                            '*** Yes, Panel already exists, we dont need to create a new one, just add to this one
+                            createDiv = p
+                            Exit For
+                        End If
+                    Next
+                    If createDiv Is Nothing Then
+                        '***        No,  Create the Container Name based on the Controls Container Name and Get that Container
+                        createDiv = New Panel
+                        createDiv.ID = "div" & ReportControl.ReportControlContainerName
+                        createDiv.Attributes("class") = "form-row"
+                        tblCell.Controls.Add(createDiv)
+                    End If
+                Else
+                    '***    No, Create the Container Name Based on the Control Name and get THAT Container
+                    createDiv = New Panel 'System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+                    createDiv.ID = "div" & ctrl.ID
+                    createDiv.Attributes("class") = "form-group"
+                    'createDiv.InnerHtml = " I'm a div, from code behind "
+                    tblCell.Controls.Add(createDiv)
+                End If
+
+
                 '*** Lets try to set the values here
                 'ctrl.setValues()
                 '*******************
+                If Me.Attributes("EditMode") = "True" Then
+                    ctrl.EditMode = True
+                End If
                 createDiv.Controls.Add(ctrl)
-                tblCell.Controls.Add(createDiv)
+
                 ctrl.SetFields("", "") '*** Try it here
                 On Error GoTo 0
                 ctrl = Nothing
+                createDiv = Nothing
             End If
         Next
 
         EnsureChildControls()
-        Debug.Print("</ReportContainer.up2_load>")
+        'debug.print("</ReportContainer.up2_load>")
     End Sub
 
     Function FindReportByID(ByVal llReportID As Long) As Report
-        Debug.Print("<FindReportByID ID='" & llReportID & "'>")
+        'debug.print("<FindReportByID ID='" & llReportID & "'>")
         Dim rpt As Report
         If Not mcReports Is Nothing Then
 
@@ -1559,7 +1645,7 @@ Err_Cmdrunreport_Click:
                 If llReportID = rpt.ReportID Then
                     FindReportByID = rpt
                     ReportDescription = rpt.ReportDescription
-                    Debug.Print("<FoundReport ID='" & llReportID & "'/></FindReportByID'>")
+                    'debug.print("<FoundReport ID='" & llReportID & "'/></FindReportByID'>")
                     Exit Function
                 End If
             Next
@@ -1574,24 +1660,24 @@ Err_Cmdrunreport_Click:
                 FindReportByID.TableName = ds.Tables(0).Rows(0)("TableName")
             End If
         End If
-        Debug.Print("</FindReportByID>")
+        'debug.print("</FindReportByID>")
     End Function
-	Public Sub Refresh()
-        Debug.Print("<ReportContainer.Refresh>")
+    Public Sub Refresh()
+        ' 'debug.print("<ReportContainer.Refresh>")
         msWhereClause = f_CreateWhereClause(True)
-        Debug.Print("<WhereClause>" & msWhereClause & "</WhereClause>")
-        Debug.Print("</ReportContainer.Refresh>")
+        ''debug.print("<WhereClause>" & msWhereClause & "</WhereClause>")
+        ''debug.print("</ReportContainer.Refresh>")
     End Sub
 
-	Private Sub ReportContainer_DataBinding(sender As Object, e As EventArgs) Handles Me.DataBinding
-        Debug.Print("<ReportContainer_dataBinding>")
+    Private Sub ReportContainer_DataBinding(sender As Object, e As EventArgs) Handles Me.DataBinding
+        'debug.print("<ReportContainer_dataBinding>")
         Dim d As DropDownList = cboReportCategory
-        Debug.Print("<val DropdownSelectedValue='" & d.SelectedValue & "' />")
-        Debug.Print("</ReportContainer_dataBinding>")
+        'debug.print("<val DropdownSelectedValue='" & d.SelectedValue & "' />")
+        'debug.print("</ReportContainer_dataBinding>")
     End Sub
 
     Private Sub ReportContainer_Unload(sender As Object, e As EventArgs) Handles Me.Unload
-        Debug.Print("<Unload SelectedValue='" & f_GetReportID() & "' />")
+        'debug.print("<Unload SelectedValue='" & f_GetReportID() & "' />")
     End Sub
     Public Sub ShowMessage(Message As String, lsType As String)
         'Show Bootstrap Message
@@ -1603,15 +1689,15 @@ Err_Cmdrunreport_Click:
 
     '*** Thise is my attempt to get the child control to raise an event here for clicking the edit Field Button each control should have
     Protected Overrides Function OnBubbleEvent(ByVal sender As Object, ByVal e As EventArgs) As Boolean
-
+        Dim lsControlText As String = ""
+        Dim cmd As Button
+        Dim lnk As LinkButton
         '*** Bubbled up, Tell control NOT to rerender the Form Controls so we can show the Field Manager form
 
 
-        setPanelVisibility()
 
         If TypeOf e Is CommandEventArgs Or TypeOf e Is EventArgs Then
             Dim cp As Panel = Me.FindControl("up1")
-            '     Dim ctrlRMFieldEditor As mycontrol_ = Me.FindControl("ctrlRMFieldEditor")
             Dim rfe As mycontrol_ = cp.FindControl("ReportManagerFieldEditor")
             If Not rfe Is Nothing Then
                 If Not cp Is Nothing Then
@@ -1622,28 +1708,54 @@ Err_Cmdrunreport_Click:
                     Dim llcontrolNum As Long = 0
                     Dim lsFieldID As String = ""
 
-                    If TypeOf (sender) Is Button Then
-                        Dim cmd As Button = sender 'Return False
-                        Dim keys As IEnumerator = cmd.Attributes.Keys.GetEnumerator()
-                        Dim liCounter As Integer = 1
-                        Dim Key As String
-                        While keys.MoveNext
-                            Key = keys.Current
-                            Select Case Key
-                                Case "data-reportid" : lsReportID = cmd.Attributes(Key)
-                                Case "data-reportcontrolfieldnumid" : llcontrolNum = cmd.Attributes(Key)
-                                Case "data-reportcontrolfieldid" : lsFieldID = cmd.Attributes(Key)
-                            End Select
-                        End While
+                    If TypeOf (sender) Is Button Or TypeOf (sender) Is LinkButton Then
+                        If TypeOf (sender) Is Button Then
+                            cmd = sender 'Return False
+                            lsControlText = cmd.ID
+                            Dim keys As IEnumerator = cmd.Attributes.Keys.GetEnumerator()
+                            Dim liCounter As Integer = 1
+                            Dim Key As String
+                            While keys.MoveNext
+                                Key = keys.Current
+                                Select Case Key
+                                    Case "data-reportid" : lsReportID = cmd.Attributes(Key)
+                                    Case "data-reportcontrolfieldnumid" : llcontrolNum = cmd.Attributes(Key)
+                                    Case "data-reportcontrolfieldid" : lsFieldID = cmd.Attributes(Key)
+                                End Select
+                            End While
+
+                        End If
+                        If TypeOf (sender) Is LinkButton Then
+                            lnk = sender 'Return False
+                            lsControlText = lnk.ID
+                            ' If lnk.ID = "cmdNewField" Then Return False
+                            Dim keys As IEnumerator = lnk.Attributes.Keys.GetEnumerator()
+                            Dim liCounter As Integer = 1
+                            Dim Key As String
+                            While keys.MoveNext
+                                Key = keys.Current
+                                Select Case Key
+                                    Case "data-reportid" : lsReportID = lnk.Attributes(Key)
+                                    Case "data-reportcontrolfieldnumid" : llcontrolNum = lnk.Attributes(Key)
+                                    Case "data-reportcontrolfieldid" : lsFieldID = lnk.Attributes(Key)
+                                End Select
+                            End While
+
+                        End If
+                        If lsControlText.ToUpper.Contains("POPULATE") Then
+                            setPanelVisibility()
+
+                        ElseIf lsControlText.ToUpper.Contains("DELETE") Then
+                            Dim c As New clsDataLoader
+                            c.DeleteReportField(lsFieldID)
+                            Me.DataBind()
+                        End If
+                        '**** Refresh the Main Panel
+                        Dim llReportID As Long = Val(lsReportID)
+                        rfe.LoadForm(llReportID, llcontrolNum, lsFieldID)
+                        'debug.print(Me.Controls.Count)
                     End If
 
-
-                    Dim llReportID As Long = Val(lsReportID)
-
-
-
-                    rfe.LoadForm(llReportID, llcontrolNum, lsFieldID)
-                    Debug.Print(Me.Controls.Count)
                     'Stop the bubbling of the CommandEventArgs
                     Return True
                 End If
@@ -1655,6 +1767,8 @@ Err_Cmdrunreport_Click:
         'let the bubbling proceed unmolested...
         Return False
     End Function
+
+
 
 
 

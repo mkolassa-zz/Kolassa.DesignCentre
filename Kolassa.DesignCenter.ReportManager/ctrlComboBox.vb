@@ -15,12 +15,20 @@ Public Class ctrlComboBox
     Dim ctrlField2 As DropDownList
     Dim CustomValidator1 As CustomValidator
     Dim trig As AsyncPostBackTrigger
-    Dim txttest1 As TextBox
+    ' Dim txttest1 As TextBox
     Dim msSelectedItem As String
-
+    Public Overrides Property ControlPanelcss() As String
+        Get
+            ControlPanelcss = msControlPanelcss
+        End Get
+        Set(sValue As String)
+            msControlPanelcss = sValue
+            '   uPanel1.Attributes.Add("class", sValue)
+        End Set
+    End Property
 
     Protected Overrides Sub CreateChildControlsSub()
-        Debug.Print("<clsComboBox.CreateChildControlsSub>")
+        'debug.print("<clsComboBox.CreateChildControlsSub>")
         Controls.Clear()
 
 
@@ -73,8 +81,8 @@ Public Class ctrlComboBox
 
         ctrlField1.ID = "ctrlField1"
         ctrlField1.CssClass = "form-control form-control-sm"
-        txttest1 = New TextBox
-        txttest1.ID = "txtTest1"
+        '   txttest1 = New TextBox
+        ' txttest1.ID = "txtTest1"
         ctrlField2 = New DropDownList
         ctrlField2.ID = "ctrlField2"
         ctrlField2.CssClass = "form-control form-control-sm"
@@ -89,7 +97,12 @@ Public Class ctrlComboBox
 
 
         Controls.Add(lblFieldName)
-        Controls.Add(fGetFieldButton)
+
+
+        uPanel1.ContentTemplateContainer.Controls.Add(fGetFieldButton)
+        uPanel1.ContentTemplateContainer.Controls.Add(fGetFieldDeleteButton)
+
+
         Controls.Add(DropDownList1)
         Controls.Add(uPanel1)
 
@@ -98,15 +111,16 @@ Public Class ctrlComboBox
 
         uPanel1.ContentTemplateContainer.Controls.Add(lblField1)
         uPanel1.ContentTemplateContainer.Controls.Add(ctrlField1)
-        uPanel1.ContentTemplateContainer.Controls.Add(txttest1)
+        '  uPanel1.ContentTemplateContainer.Controls.Add(txttest1)
 
         uPanel1.ContentTemplateContainer.Controls.Add(lblField2)
         uPanel1.ContentTemplateContainer.Controls.Add(ctrlField2)
         uPanel1.ContentTemplateContainer.Controls.Add(CustomValidator1)
+        uPanel1.Attributes.Add("class", msControlPanelcss)
         '  SetFields(Me.DropDownList1.Text, Me.DropDownList1.SelectedValue)
 
         SetVisibility()
-        Debug.Print("</clsComboBox.CreateChildControlsSub>")
+        'debug.print("</clsComboBox.CreateChildControlsSub>")
     End Sub
     Protected Overrides Sub RecreateChildControls()
         EnsureChildControls()
@@ -157,14 +171,14 @@ Public Class ctrlComboBox
             List2Source = malist2Values
         End Get
         Set(ByVal value As Array)
-            Debug.Print("<clsComboBox.Set.List2Source>")
+            'debug.print("<clsComboBox.Set.List2Source>")
             malist2Values = value
             '         RefreshList2()
-            Debug.Print("</clsComboBox.Set.List2Source>")
+            'debug.print("</clsComboBox.Set.List2Source>")
         End Set
     End Property
     Public Overrides Sub refreshLists()
-        Debug.Print("<clsComboBox.refreshLists>")
+        'debug.print("<clsComboBox.refreshLists>")
         Dim rli As New ReportListItem
         Dim li As New ListItem
         '*** Clear the Items from the List
@@ -190,10 +204,10 @@ Public Class ctrlComboBox
             'End If
             li = Nothing
         Next
-        Debug.Print("</clsComboBox.refreshLists>")
+        'debug.print("</clsComboBox.refreshLists>")
     End Sub
     Public Overrides Sub ForceValidation()
-        Debug.Print("<ctrlComboBox.ForceValidation>")
+        'debug.print("<ctrlComboBox.ForceValidation>")
         Dim lsReason As String = ""
         Dim liCounter As Integer
         Dim liSelectedIndices(1) As Integer
@@ -256,14 +270,14 @@ Public Class ctrlComboBox
                     miSelectedItem2.Value = CStr(ctrlField2.Items(liSelectedIndices2(liCounter)).Value)
                     miSelectedItem2.Description = CStr(ctrlField2.Items(liSelectedIndices2(liCounter)).Text)
                     mcSelectedItems2.Add(miSelectedItem2)
-                    ' System.Diagnostics.Debug.Print(mcSelectedItems(0). & " " & mcSelectedItems2.Count)
+                    ' System.Diagnostics.'debug.print(mcSelectedItems(0). & " " & mcSelectedItems2.Count)
                 End If
             Next
         End If
 
 
         mbValid = Validate()
-        Debug.Print("</ctrlComboBox.ForceValidation>")
+        'debug.print("</ctrlComboBox.ForceValidation>")
     End Sub
     Public Sub New()
         mrptCtrl = New ReportControl
@@ -272,14 +286,14 @@ Public Class ctrlComboBox
         mrptCtrl = lrptctrl
     End Sub
     Protected Sub UpdatePanel1_DataBinding(ByVal sender As Object, ByVal e As System.EventArgs) 'Handles UpdatePanel1.DataBinding
-        Debug.Print("<clsComboBox.UpdatePanel1_DataBinding>")
+        'debug.print("<clsComboBox.UpdatePanel1_DataBinding>")
         SetFields(Me.DropDownList1.Text, Me.DropDownList1.SelectedValue)
         If msSelectedItem = "" Then
             '*** There is no Value
         Else
             ctrlField1.SelectedValue = msSelectedItem
         End If
-        Debug.Print("</clsComboBox.UpdatePanel1_DataBinding>")
+        'debug.print("</clsComboBox.UpdatePanel1_DataBinding>")
     End Sub
     Protected Sub Pagie_iLoad(ByVal sender As Object, ByVal e As System.EventArgs) 'Handles Me.Load
         '  On Error Resume Next
@@ -287,17 +301,17 @@ Public Class ctrlComboBox
         refreshLists()
     End Sub
     Protected Sub DropDownList1_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) 'Handles DropDownList1.TextChanged
-        Debug.Print("<clsComboBox.DropDownList1_TextChanged>")
+        'debug.print("<clsComboBox.DropDownList1_TextChanged>")
         SetFields(Me.DropDownList1.Text, Me.DropDownList1.SelectedValue)
-        Debug.Print("</clsComboBox.DropDownList1_TextChanged>")
+        'debug.print("</clsComboBox.DropDownList1_TextChanged>")
     End Sub
     Protected Sub CustomValidator1_ServerValidate(ByVal source As Object, ByVal args As System.Web.UI.WebControls.ServerValidateEventArgs) 'Handles CustomValidator1.ServerValidate
-        Debug.Print("<clsComboBox.CustomValidator1_ServerValidate>")
+        'debug.print("<clsComboBox.CustomValidator1_ServerValidate>")
         mbValid = False
         ForceValidation()
         args.IsValid = mbValid
         CustomValidator1.ErrorMessage = msValidationReason
-        Debug.Print("</clsComboBox.CustomValidator1_ServerValidate>")
+        'debug.print("</clsComboBox.CustomValidator1_ServerValidate>")
     End Sub
 
     Public Overrides Sub SetFields(lsOption As String, lsValue As String)
@@ -312,9 +326,9 @@ Public Class ctrlComboBox
                     For Each lstItem In ctrlField1.Items
                         If lstItem.Value = lrli.Value And lrli.Value <> "--" Then
                             lstItem.Selected = True
-                            Debug.Print("CTRLComboBox Set Fields: " & lblFieldName.Text & " Value: " & ctrlField1.Text)
+                            'debug.print("CTRLComboBox Set Fields: " & lblFieldName.Text & " Value: " & ctrlField1.Text)
                             ctrlField1.Items.FindByValue(lrli.Value).Selected = True
-                            txttest1.Text = ctrlField1.SelectedValue
+                            '  txttest1.Text = ctrlField1.SelectedValue
                             msSelectedItem = ctrlField1.SelectedValue
                             lstSelectedItem = ctrlField1.SelectedItem
                             lstSelectedItem.Selected = True
@@ -331,7 +345,7 @@ Public Class ctrlComboBox
     Private Sub ctrlComboBox_DataBinding(sender As Object, e As EventArgs) Handles Me.DataBinding
         On Error Resume Next
         '       SetFields(Me.DropDownList1.Text, Me.DropDownList1.SelectedValue) ' Trying this 20201101
-        Debug.Print("<ctrlComboBox_DataBinding selectedindex=" & ctrlField1.SelectedIndex & " />")
+        'debug.print("<ctrlComboBox_DataBinding selectedindex=" & ctrlField1.SelectedIndex & " />")
     End Sub
 
 

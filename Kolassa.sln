@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29123.88
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Kolassa.DesignCenter.ReportManager", "Kolassa.DesignCenter.ReportManager\Kolassa.DesignCenter.ReportManager.vbproj", "{6B356DD9-6DD2-4FCF-AAC4-CAF1BBFEA785}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Kolassa.DesignCenter.Web.UI", "Kolassa.DesignCenter.Web.UI\Kolassa.DesignCenter.Web.UI.vbproj", "{9D0C7CFD-1C10-4A30-9CC0-7C17482ED3E0}"
-EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Kolassa.DesignCentre.Data", "Kolassa.DesignCentre.Data\Kolassa.DesignCentre.Data.vbproj", "{E6E51BE8-19F2-4C68-8106-8C0AFAC40D62}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Kolassa.DesignCentre.UI", "Kolassa.DesignCentre.UI\Kolassa.DesignCentre.UI.vbproj", "{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}"
@@ -14,8 +12,6 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Kolassa.DesignCentre.UI", "
 		{6B356DD9-6DD2-4FCF-AAC4-CAF1BBFEA785} = {6B356DD9-6DD2-4FCF-AAC4-CAF1BBFEA785}
 		{E6E51BE8-19F2-4C68-8106-8C0AFAC40D62} = {E6E51BE8-19F2-4C68-8106-8C0AFAC40D62}
 	EndProjectSection
-EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "RPTTest", "RPTTest\RPTTest.vbproj", "{B316CD93-AB03-478C-8EBD-05C4F7AE737C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +23,6 @@ Global
 		{6B356DD9-6DD2-4FCF-AAC4-CAF1BBFEA785}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B356DD9-6DD2-4FCF-AAC4-CAF1BBFEA785}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B356DD9-6DD2-4FCF-AAC4-CAF1BBFEA785}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9D0C7CFD-1C10-4A30-9CC0-7C17482ED3E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D0C7CFD-1C10-4A30-9CC0-7C17482ED3E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9D0C7CFD-1C10-4A30-9CC0-7C17482ED3E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9D0C7CFD-1C10-4A30-9CC0-7C17482ED3E0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E6E51BE8-19F2-4C68-8106-8C0AFAC40D62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E6E51BE8-19F2-4C68-8106-8C0AFAC40D62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6E51BE8-19F2-4C68-8106-8C0AFAC40D62}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,10 +31,6 @@ Global
 		{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B316CD93-AB03-478C-8EBD-05C4F7AE737C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B316CD93-AB03-478C-8EBD-05C4F7AE737C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B316CD93-AB03-478C-8EBD-05C4F7AE737C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B316CD93-AB03-478C-8EBD-05C4F7AE737C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

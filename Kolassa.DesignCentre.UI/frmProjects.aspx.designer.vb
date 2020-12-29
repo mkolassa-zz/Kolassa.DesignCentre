@@ -32,6 +32,42 @@ Partial Public Class frmProjects
     Protected WithEvents lblProjectHomePageFor As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''ctrlGoogleChartPie1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ctrlGoogleChartPie1 As Global.Kolassa.DesignCentre.UI.CtrlGoogleChartPie
+
+    '''<summary>
+    '''ctrlGoogleChartPie2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ctrlGoogleChartPie2 As Global.Kolassa.DesignCentre.UI.CtrlGoogleChartPie
+
+    '''<summary>
+    '''ctrlGoogleChartPie3 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ctrlGoogleChartPie3 As Global.Kolassa.DesignCentre.UI.CtrlGoogleChartPie
+
+    '''<summary>
+    '''ctrlGoogleChartPie4 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ctrlGoogleChartPie4 As Global.Kolassa.DesignCentre.UI.CtrlGoogleChartPie
+
+    '''<summary>
     '''UpdatePanel1 control.
     '''</summary>
     '''<remarks>

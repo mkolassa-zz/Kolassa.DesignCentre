@@ -27,7 +27,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TypeScriptToolsVersion>2.5</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>4.0</TypeScriptToolsVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -39,6 +39,19 @@
     <DocumentationFile>WebForms_Basic.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
     <PlatformTarget>x86</PlatformTarget>
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
+    <TypeScriptModuleKind />
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -62,9 +75,6 @@
     </Reference>
     <Reference Include="AspNet.ScriptManager.jQuery, Version=3.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AspNet.ScriptManager.jQuery.3.4.1\lib\net45\AspNet.ScriptManager.jQuery.dll</HintPath>
-    </Reference>
-    <Reference Include="ClassLibrary1, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebUI.1.0.6.1\lib\net40\ClassLibrary1.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
@@ -253,38 +263,6 @@
       <HintPath>..\packages\Microsoft.AspNet.FriendlyUrls.Core.1.0.2\lib\net45\Microsoft.AspNet.FriendlyUrls.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Telerik.Web.Spreadsheet">
-      <HintPath>..\lib\RCAJAX\2020.1.114.45.Trial\AdditionalLibraries\Bin45\Telerik.Web.Spreadsheet.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Telerik.Web.UI">
-      <HintPath>..\lib\RCAJAX\2020.1.114.45.Trial\Telerik.Web.UI.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Telerik.Web.UI.Skins">
-      <HintPath>..\lib\RCAJAX\2020.1.114.45.Trial\Telerik.Web.UI.Skins.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Telerik.Windows.Documents.Core">
-      <HintPath>..\lib\RCAJAX\2020.1.114.45.Trial\AdditionalLibraries\Bin45\Telerik.Windows.Documents.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Telerik.Windows.Documents.Flow">
-      <HintPath>..\lib\RCAJAX\2020.1.114.45.Trial\AdditionalLibraries\Bin45\Telerik.Windows.Documents.Flow.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Telerik.Windows.Documents.Spreadsheet">
-      <HintPath>..\lib\RCAJAX\2020.1.114.45.Trial\AdditionalLibraries\Bin45\Telerik.Windows.Documents.Spreadsheet.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml">
-      <HintPath>..\lib\RCAJAX\2020.1.114.45.Trial\AdditionalLibraries\Bin45\Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Telerik.Windows.Zip">
-      <HintPath>..\lib\RCAJAX\2020.1.114.45.Trial\AdditionalLibraries\Bin45\Telerik.Windows.Zip.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
     </Reference>
@@ -356,21 +334,21 @@
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\fontawesome-all.css" />
     <Content Include="Content\fontawesome-all.min.css" />
+    <Content Include="Content\helpstyle.css" />
     <Content Include="Content\materialize.css" />
     <Content Include="Content\materialize.min.css" />
+    <Content Include="Content\owl.carousel.min.css" />
     <Content Include="Content\prettify.css" />
     <Content Include="Content\sidebar.css" />
     <Content Include="Content\Site.css" />
-    <Content Include="Controls\ctrlContacts.ascx" />
+    <Content Include="Controls\ctrlImageNew.ascx" />
     <Content Include="Controls\ctrlSelectedUpgrades.ascx" />
-    <Content Include="Controls\ctrlSubObjects.ascx" />
     <Content Include="Controls\ctrlUpgradeItems.ascx" />
     <Content Include="Controls\ctrlPayments.ascx" />
     <Content Include="Controls\ctrlAdjustments.ascx" />
     <Content Include="Controls\ctrlContactEntry.ascx" />
     <Content Include="Controls\ctrlCustomers.ascx" />
     <Content Include="Controls\ctrlGoogleChartPie.ascx" />
-    <Content Include="Controls\ctrlImageNew.ascx" />
     <Content Include="Controls\ctrlCommunications.ascx" />
     <Content Include="Controls\ctrlImages.ascx" />
     <Content Include="Controls\ctrlCustomerList.ascx" />
@@ -379,8 +357,8 @@
     <Content Include="Controls\ctrlQuoteLookup.ascx" />
     <Content Include="dccharts.asmx" />
     <Content Include="Default.aspx" />
-    <Content Include="Default1.aspx" />
-    <Content Include="Default2.aspx" />
+    <Content Include="fonts\dc_fonts.css" />
+    <Content Include="fonts\designcenter.svg" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="frmReports.aspx" />
     <Content Include="images\download.png" />
@@ -403,7 +381,6 @@
     <Content Include="flickr\Flickr.aspx" />
     <Content Include="flickr\Flickr.aspx.cs" />
     <Content Include="flickr\Site.master.cs" />
-    <Content Include="frmAdjustments.aspx" />
     <Content Include="frmBase.aspx" />
     <Content Include="frmRooms.aspx" />
     <Content Include="frmCustomers.aspx" />
@@ -433,6 +410,7 @@
     <Content Include="Scripts\esm\popper-utils.min.js" />
     <Content Include="Scripts\esm\popper.js" />
     <Content Include="Scripts\esm\popper.min.js" />
+    <Content Include="Scripts\helpmain.js" />
     <Content Include="Scripts\index.js.flow" />
     <Content Include="Scripts\esm\popper.min.js.map" />
     <Content Include="Scripts\esm\popper.js.map" />
@@ -451,7 +429,11 @@
     <Content Include="fonts\fontawesome-webfont.woff" />
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\designcenter.ttf" />
+    <Content Include="fonts\designcenter.eot" />
+    <Content Include="fonts\designcenter.woff" />
     <None Include="My Project\PublishProfiles\Design Centre dc.pubxml" />
+    <None Include="My Project\PublishProfiles\FTPProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -460,6 +442,7 @@
     <Content Include="Scripts\materialize.js" />
     <Content Include="Scripts\materialize.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\owl.carousel.min.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
     <Content Include="Scripts\popper.js" />
@@ -799,11 +782,11 @@
     </Compile>
     <Compile Include="App_Code\BootstrapAlerts.vb" />
     <Compile Include="App_Code\clsObjects.vb" />
-    <Compile Include="Controls\ctrlContacts.ascx.designer.vb">
-      <DependentUpon>ctrlContacts.ascx</DependentUpon>
+    <Compile Include="Controls\ctrlImageNew.ascx.designer.vb">
+      <DependentUpon>ctrlImageNew.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ctrlContacts.ascx.vb">
-      <DependentUpon>ctrlContacts.ascx</DependentUpon>
+    <Compile Include="Controls\ctrlImageNew.ascx.vb">
+      <DependentUpon>ctrlImageNew.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controls\ctrlSelectedUpgrades.ascx.designer.vb">
@@ -811,13 +794,6 @@
     </Compile>
     <Compile Include="Controls\ctrlSelectedUpgrades.ascx.vb">
       <DependentUpon>ctrlSelectedUpgrades.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\ctrlSubObjects.ascx.designer.vb">
-      <DependentUpon>ctrlSubObjects.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ctrlSubObjects.ascx.vb">
-      <DependentUpon>ctrlSubObjects.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controls\ctrlUpgradeItems.ascx.designer.vb">
@@ -830,20 +806,6 @@
     <Compile Include="dccharts.asmx.vb">
       <DependentUpon>dccharts.asmx</DependentUpon>
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Default1.aspx.designer.vb">
-      <DependentUpon>Default1.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Default1.aspx.vb">
-      <DependentUpon>Default1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Default2.aspx.designer.vb">
-      <DependentUpon>Default2.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Default2.aspx.vb">
-      <DependentUpon>Default2.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="frmReports.aspx.designer.vb">
       <DependentUpon>frmReports.aspx</DependentUpon>
@@ -936,13 +898,6 @@
       <DependentUpon>ctrlGoogleChartPie.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Controls\ctrlImageNew.ascx.designer.vb">
-      <DependentUpon>ctrlImageNew.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ctrlImageNew.ascx.vb">
-      <DependentUpon>ctrlImageNew.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="Controls\ctrlCommunications.ascx.designer.vb">
       <DependentUpon>ctrlCommunications.ascx</DependentUpon>
     </Compile>
@@ -991,13 +946,6 @@
     </Compile>
     <Compile Include="Default.aspx.designer.vb">
       <DependentUpon>Default.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="frmAdjustments.aspx.designer.vb">
-      <DependentUpon>frmAdjustments.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="frmAdjustments.aspx.vb">
-      <DependentUpon>frmAdjustments.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="frmBase.aspx.designer.vb">
       <DependentUpon>frmBase.aspx</DependentUpon>

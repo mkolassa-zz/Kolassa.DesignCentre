@@ -14,8 +14,14 @@ Public Class frmProjects
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         '*** Put user code to initialize the page here
         Page.Form.Enctype = "multipart/form-data"
-        System.Threading.Thread.Sleep(500)
+		System.Threading.Thread.Sleep(500)
+
 		If Session("NodeID") Is Nothing Then Session("NodeID") = 0
+		ctrlGoogleChartPie1.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch001&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
+		ctrlGoogleChartPie2.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch002&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
+		ctrlGoogleChartPie3.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch003&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
+		ctrlGoogleChartPie4.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch004&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
+
 		If IsPostBack Then
 			' response.write(Session("msFilter"))
 			Return
@@ -239,7 +245,7 @@ Public Class frmProjects
             lbl.Text = "File Uploaded Successfully"
         Else
             lbl.ForeColor = System.Drawing.Color.Red
-            lbl.Text = "File format not recognised." _
+            lbl.Text = "File format Not recognised." _
             & " Upload Image/Word/PDF/Excel formats"
         End If
     End Sub
@@ -306,7 +312,7 @@ Public Class frmProjects
 		lsDesc = txtPhaseDescription.Text
 		liSortOrder = Val(txtSortOrder.Text)
 		If lsCode = "" Or lsDesc = "" Then
-			Response.Write("Code and Name are required!")
+			Response.Write("Code And Name are required!")
 			Exit Sub
 		End If
 		c.Active = True
@@ -344,4 +350,8 @@ Public Class frmProjects
 		Return chartData
 
 	End Function
+
+	Private Sub frmProjects_PreRender(sender As Object, e As EventArgs) Handles Me.PreRender
+
+	End Sub
 End Class

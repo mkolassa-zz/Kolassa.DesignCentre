@@ -8,12 +8,19 @@ Public Class ctrlReportColumns
     Inherits ctrlBase
     Dim uPanel1 As UpdatePanel
     Dim gv As GridView
-    Dim btnSave As Button
+    Dim btnSave As LinkButton
+    Dim btnDelete As LinkButton
     Public coldataview As DataView
     Dim lblViewTitle As Label
     ' Dim DropDownList1 As DropDownList
+    Dim txtReportID As TextBox
     Dim txtViewID As TextBox
     Dim txtViewName As TextBox
+    Public ReportID As Long
+    Dim pHeading As Panel
+    Dim pViewType As Panel
+    Dim radViewType As RadioButtonList
+    Public ViewType As String
     '  Dim lblField1 As Label
     '  Dim lblField2 As Label
     '  Dim ctrlField1 As DropDownList
@@ -25,22 +32,29 @@ Public Class ctrlReportColumns
 
 
     Protected Overrides Sub CreateChildControlsSub()
-        Debug.Print("<clsReportColumns.CreateChildControlsSub>")
+        'debug.print("<clsReportColumns.CreateChildControlsSub>")
 
         Controls.Clear()
 
         uPanel1 = New UpdatePanel
         uPanel1.ID = "uPanel1"
         uPanel1.Attributes("class") = "form-group"
+        txtReportID = New TextBox
+        txtReportID.ID = "txtReportID"
+        txtReportID.ReadOnly = True
+        txtReportID.CssClass = "d-none"
+        txtReportID.Text = ReportID
         lblViewTitle = New Label
         lblViewTitle.ID = "lblViewTitle"
         lblViewTitle.AssociatedControlID = "txtViewName"
         lblViewTitle.Text = "View Name"
 
+
         txtViewName = New TextBox
         txtViewName.ID = "txtViewName"
         txtViewName.BackColor = Color.Azure
         txtViewID = New TextBox
+        txtViewName.ToolTip = ReportID
 
         gv = New GridView
         gv.ID = "gvViewColumns"
@@ -59,7 +73,8 @@ Public Class ctrlReportColumns
         Dim txtFieldName As TemplateField = New TemplateField()
         txtFieldName.HeaderText = "Field Name"
         txtFieldName.ItemTemplate = New textBoxTemplateImpl("FieldName", True, False)
-        txtFieldName.ItemStyle.CssClass = ".hidden-xl-down"
+        txtFieldName.ItemStyle.CssClass = "form-control-plaintext" '.hidden-xl-down"
+        txtFieldName.ItemStyle.BorderStyle = BorderStyle.None
         txtFieldName.HeaderStyle.CssClass = ".hidden-xl-down"
 
 
@@ -70,8 +85,7 @@ Public Class ctrlReportColumns
         txtID.HeaderStyle.CssClass = ""
 
 
-        '// Create a CheckBoxField object to indicate whether the author
-        '// Is on contract.
+        '*** Create a CheckBoxField object to indicate if the column is Visible
         Dim chkVisible As TemplateField = New TemplateField()
         chkVisible.ItemTemplate = New CheckBoxTemplateImpl("ColumnVisible")
         'chkVisible. = "tr:hover {background-color: #f5f5f5;}  text-align: center;"
@@ -102,9 +116,12 @@ Public Class ctrlReportColumns
         txtFormat.ItemTemplate = New textBoxTemplateImpl("ColumnFormat", False, False)
         txtFormat.HeaderText = "Format"
 
-        gv.CssClass = "table-sm"
+        gv.CssClass = "table table-sm table-bordered"
         gv.Columns.Add(txtID)
         gv.Columns.Add(txtFieldName)
+        gv.Columns(1).ControlStyle.BorderStyle = BorderStyle.None
+        gv.Columns(1).ItemStyle.BorderStyle = BorderStyle.Inset
+
         gv.Columns.Add(txtColumnName)
         gv.Columns.Add(chkVisible)
         gv.Columns.Add(ddlColumnFormat)
@@ -113,25 +130,58 @@ Public Class ctrlReportColumns
         AddHandler gv.RowDataBound, AddressOf gv_RowDataBound
         AddHandler gv.DataBound, AddressOf gv_Nothing
 
+        '  <div Class="form-check form-check-inline">
+        '    <input Class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+        '    <Label Class="form-check-label" for="inlineRadio1">1</label>
+        '</div>
+        '<div Class="form-check form-check-inline">
+        '<input Class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+        '   <Label Class="form-check-label" for="inlineRadio2">2</label>
+        '</div>
 
-
-        btnSave = New Button
+        radViewType = New RadioButtonList
+        radViewType.Items.Add("User")
+        radViewType.Items.Add("Global")
+        If ViewType = "Global" Then
+            radViewType.SelectedValue = "Global"
+        Else
+            radViewType.SelectedValue = "User"
+        End If
+        radViewType.CssClass = "form-check form-check-inline"
+        radViewType.RepeatDirection = RepeatDirection.Horizontal
+        radViewType.Items(0).Attributes.CssStyle.Add("margin", "5px")
+        radViewType.Items(1).Attributes.CssStyle.Add("margin", "5px")
+        btnSave = New LinkButton
         btnSave.ID = "btnSave"
-        btnSave.Text = "Save"
+        btnSave.Text = "<i class='fas fa-save fa-1x'></i>"
+        btnSave.CssClass = ("btn btn-link")
         AddHandler btnSave.Click, AddressOf btnSave_Click
 
+        btnDelete = New LinkButton
+        btnDelete.ID = "btnDelete"
+        btnDelete.Text = "<i class='fa fa-trash fa-1x' ></i>"
+        btnDelete.CssClass = ("btn btn-link")
+        AddHandler btnDelete.Click, AddressOf btnDelete_Click
 
-        lblViewTitle.CssClass = "form-control"
-        txtViewID.CssClass = "form-control"
+        lblViewTitle.CssClass = "sr-only"
+        txtViewID.CssClass = "d-none form-control sr-only"
         txtViewName.CssClass = "form-control"
-        btnSave.CssClass = ("btn-primary")
-        'Controls.Add(lblFieldName)
-        'Controls.Add(DropDownList1)
-        Controls.Add(btnSave)
-        Controls.Add(txtViewID)
-        Controls.Add(lblViewTitle)
-        Controls.Add(txtViewName)
+        txtViewName.Attributes("placeholder") = "View Name"
 
+
+        pHeading = New Panel
+        pHeading.CssClass = "input-group my-1"
+
+
+        pHeading.Controls.Add(txtReportID)
+        pHeading.Controls.Add(txtViewID)
+        pHeading.Controls.Add(lblViewTitle)
+        pHeading.Controls.Add(txtViewName)
+        pHeading.Controls.Add(radViewType)
+        pHeading.Controls.Add(btnSave)
+        pHeading.Controls.Add(btnDelete)
+
+        Controls.Add(pHeading)
         uPanel1.ContentTemplateContainer.Controls.Add(gv)
         Controls.Add(uPanel1)
         Dim liReportID As Integer = Val(HttpContext.Current.Request("rpt"))
@@ -140,23 +190,23 @@ Public Class ctrlReportColumns
         End If
         gv.DataBind()
 
-        Debug.Print("</clsComboBox.CreateChildControlsSub>")
+        'debug.print("</clsComboBox.CreateChildControlsSub>")
     End Sub
     Protected Sub gv_Nothing()
-        Debug.Print("<DataBoundGV />")
+        'debug.print("<DataBoundGV />")
     End Sub
     Protected Sub gv_RowDataBound(sender As Object, e As GridViewRowEventArgs)
-        Debug.Print("<Binding>" & e.Row.RowType.ToString)
+        'debug.print("<Binding>" & e.Row.RowType.ToString)
         If e.Row.RowType = DataControlRowType.DataRow Then
-
             Dim row As GridViewRow = e.Row
+            row.Cells(0).Text = "<i class='fas fa-bars fa-1x'></i>"
             row.Attributes("ID") = "ROW" & e.Row.RowIndex.ToString()
             row.Attributes("NAME") = "ROW" & e.Row.RowIndex.ToString()
             row.Attributes("Id") = "ROW" & e.Row.RowIndex.ToString()
             row.Attributes("Name") = "ROW" & e.Row.RowIndex.ToString()
             row.ClientIDMode = ClientIDMode.Predictable
         End If
-        Debug.Print("<Binding>" & e.Row.RowType.ToString)
+        'debug.print("<Binding>" & e.Row.RowType.ToString)
     End Sub
 
     Protected Overrides Sub RecreateChildControls()
@@ -165,10 +215,12 @@ Public Class ctrlReportColumns
 
 
     Protected Overrides Sub RenderSubControls(writer As HtmlTextWriter)
-        txtViewID.RenderControl(writer)
-        lblViewTitle.RenderControl(writer)
-        txtViewName.RenderControl(writer)
-        btnSave.RenderControl(writer)
+        '  txtViewID.RenderControl(writer)
+        '  lblViewTitle.RenderControl(writer)
+        '  txtViewName.RenderControl(writer)
+        '  btnSave.RenderControl(writer)
+        '  txtReportID.RenderControl(writer)
+        pHeading.RenderControl(writer)
         uPanel1.RenderControl(writer)
 
     End Sub
@@ -191,14 +243,14 @@ Public Class ctrlReportColumns
     '        List2Source = malist2Values
     '    End Get
     '    Set(ByVal value As Array)
-    '        Debug.Print("<clsComboBox.Set.List2Source>")
+    '        'debug.print("<clsComboBox.Set.List2Source>")
     '        malist2Values = value
     '        '         RefreshList2()
-    '        Debug.Print("</clsComboBox.Set.List2Source>")
+    '        'debug.print("</clsComboBox.Set.List2Source>")
     '    End Set
     'End Property
     'Public Overrides Sub refreshLists()
-    '    Debug.Print("<clsComboBox.refreshLists>")
+    '    'debug.print("<clsComboBox.refreshLists>")
     '    Dim rli As New ReportListItem
     '    Dim li As New ListItem
     '    '*** Clear the Items from the List
@@ -219,10 +271,10 @@ Public Class ctrlReportColumns
     '        'End If
     '        li = Nothing
     '    Next
-    '    Debug.Print("</clsComboBox.refreshLists>")
+    '    'debug.print("</clsComboBox.refreshLists>")
     'End Sub
     'Public Overrides Sub ForceValidation()
-    '    Debug.Print("<clsComboBox.ForceValidation>")
+    '    'debug.print("<clsComboBox.ForceValidation>")
     '    Dim lsReason As String = ""
     '    mcSelectedItems.Clear()
     '    mcSelectedItems2.Clear()
@@ -241,7 +293,7 @@ Public Class ctrlReportColumns
     '    End If
 
     '    mbValid = Validate()
-    '    Debug.Print("</clsComboBox.ForceValidation>")
+    '    'debug.print("</clsComboBox.ForceValidation>")
     'End Sub
     'Public Sub New()
     '    mrptCtrl = New ReportControl
@@ -250,15 +302,16 @@ Public Class ctrlReportColumns
     '    mrptCtrl = lrptctrl
     'End Sub
     'Protected Sub UpdatePanel1_DataBinding(ByVal sender As Object, ByVal e As System.EventArgs) 'Handles UpdatePanel1.DataBinding
-    '    Debug.Print("<clsComboBox.UpdatePanel1_DataBinding>")
+    '    'debug.print("<clsComboBox.UpdatePanel1_DataBinding>")
 
-    '    Debug.Print("</clsComboBox.UpdatePanel1_DataBinding>")
+    '    'debug.print("</clsComboBox.UpdatePanel1_DataBinding>")
     'End Sub
     Protected Sub Pagie_iLoad(ByVal sender As Object, ByVal e As System.EventArgs) 'Handles Me.Load
         '  On Error Resume Next
     End Sub
     Public Sub SetColumns(liReportID As Integer)
         ' coldataview = dv
+        txtReportID.Text = liReportID
         bindColumnsgv(liReportID)
 
     End Sub
@@ -278,12 +331,14 @@ Public Class ctrlReportColumns
         Dim lsViewID As String = ""
         Dim dt As DataTable = New DataTable()
         Dim dtv As New DataTable ' *** Saved View Definition
+
+        txtViewName.Text = ""
         '**********
         '*** Get The Current View ID
         '**********
         lsViewID = GetViewID().ToString
         If lsViewID = "00000000-0000-0000-0000-000000000000" Then
-
+            '*** TThere is no View ID, So this is a NEW View
 
             '*** Load the Rerport Definition and retreive the Select Statement
             If liReportID = 0 Then Exit Sub
@@ -325,16 +380,33 @@ Public Class ctrlReportColumns
                 dr("ColumnFormat") = "" ' gc.DataType.ToString
                 dt.Rows.Add(dr)
             Next
-
+            txtViewID.Text = lsViewID
+            txtViewName.Text = ""
+            txtViewName.Attributes.Add("data-orig", txtViewName.Text)
         Else
             '*** View Definition Does Exist .  Load Columns from there
+            txtViewID.Text = lsViewID
+
             ds = cn.LoadReportViewColumns(lsViewID)
-            If ds.Tables.Count > 0 Then
-                dt = ds.Tables(0)
+            If ds.Tables(0).Rows.Count > 0 Then
+                txtViewName.Text = ds.Tables(0).Rows(0)(0).ToString
+                txtViewName.Attributes.Add("data-orig", txtViewName.Text)
+                ViewType = ds.Tables(0).Rows(0)(1).ToString
+                If txtViewName.Text = "Default" Then
+                    radViewType.SelectedValue = "Global"
+                    radViewType.Items(0).Enabled = False
+                Else
+                    radViewType.SelectedValue = ViewType
+                    radViewType.Items(0).Enabled = True
+                End If
+
+                If ds.Tables.Count > 0 Then
+                    dt = ds.Tables(0)
+                End If
             End If
         End If
 
-        'You can then bind your GridView to the DataTable...
+        '*** You can then bind your GridView to the DataTable...
         gv.DataSource = dt
         gv.DataBind()
 
@@ -347,7 +419,7 @@ Public Class ctrlReportColumns
             For Each s In HttpContext.Current.Request.Form.Keys
                 '*** Are we on the Grid Control
                 If Not s Is Nothing Then
-                    Debug.Print(s.ToString() + ":" + HttpContext.Current.Request.Form(s) + " ")
+                    'debug.print(s.ToString() + ":" + HttpContext.Current.Request.Form(s) + " ")
                     lsTemp = s.ToString
 
                     '*** Get the View ID
@@ -367,7 +439,7 @@ Public Class ctrlReportColumns
     End Property
 
     Protected Sub btnSave_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        Debug.Print("<ctrlReportColumns_btnSave_CLick>")
+        'debug.print("<ctrlReportColumns_btnSave_CLick>")
         Dim liTemp As Integer
         Dim lsTemp As String
         Dim lsRow As String = "0"
@@ -379,56 +451,59 @@ Public Class ctrlReportColumns
         Dim lsViewID As String
         Dim lsViewName As String = ""
         Dim lsFormat As String
+        Dim lsViewNameOrig As String = txtViewName.Attributes("data-orig")
         lsViewID = txtViewID.Text
-
+        ViewType = radViewType.SelectedValue
         'SAVE ROUTINE
-        '   Me.gv.Rows.Count
+
         Dim s As String
         For Each s In HttpContext.Current.Request.Form.Keys
-            '*** Are we on the Grid Control
-            Debug.Print(s.ToString() + ":" + HttpContext.Current.Request.Form(s) + " ")
-            lsTemp = s.ToString
+            If Not IsNothing(s) Then
+                '*** Are we on the Grid Control
+                'debug.print(s.ToString() + ":" + HttpContext.Current.Request.Form(s) + " ")
+                lsTemp = s.ToString
 
-            '*** Get the View ID
-            liTemp = InStr(lsTemp, "ddlView")
-            If liTemp > 0 Then
-                lsViewID = HttpContext.Current.Request.Form(s)
+                '*** Get the View ID
+                liTemp = InStr(lsTemp, "ddlView")
+                If liTemp > 0 Then
+                    lsViewID = HttpContext.Current.Request.Form(s)
 
-            End If
-
-            '*** Get the New View Name if one was entered
-            liTemp = InStr(lsTemp, "ViewName")
-            If liTemp > 0 Then
-                lsViewName = HttpContext.Current.Request.Form(s)
-            End If
-
-            '*** Get the Column Data Values
-            liTemp = InStr(lsTemp, "gvViewColumns$ctl")
-            If liTemp > 0 Then
-                lsTemp = Right(lsTemp, lsTemp.Length - liTemp - 16)
-                Debug.Print(s.ToString() + ":" + HttpContext.Current.Request.Form(s) + " ")
-                lsRow = Left(lsTemp, InStr(lsTemp, "$") - 1)
-                If liRow <> Val(lsRow) Then
-                    liSortOrder = liSortOrder + 1
-                    liRow = Val(lsRow)
                 End If
-                liTemp = InStr(lsTemp, "$")
-                lsval = Right(lsTemp, lsTemp.Length - liTemp)
-                Select Case lsval.ToUpper
-                    Case "ID" : liIndex = 1
-                    Case "FIELDNAME" : liIndex = 2
-                    Case "COLUMNNAME" : liIndex = 3
-                    Case "COLUMNFORMAT", "FORMAT" : liIndex = 4
-                    Case "VISIBLE", "COLUMNVISIBLE" : liIndex = 5
-                    Case Else : liIndex = 6
-                End Select
-                lsVals(Val(lsRow), 0) = liSortOrder
-                lsVals(Val(lsRow), liIndex) = HttpContext.Current.Request.Form(s)
+
+                '*** Get the New View Name if one was entered
+                liTemp = InStr(lsTemp, "ViewName")
+                If liTemp > 0 Then
+                    lsViewName = HttpContext.Current.Request.Form(s)
+                End If
+
+                '*** Get the Column Data Values
+                liTemp = InStr(lsTemp, "gvViewColumns$ctl")
+                If liTemp > 0 Then
+                    lsTemp = Right(lsTemp, lsTemp.Length - liTemp - 16)
+                    'debug.print(s.ToString() + ":" + HttpContext.Current.Request.Form(s) + " ")
+                    lsRow = Left(lsTemp, InStr(lsTemp, "$") - 1)
+                    If liRow <> Val(lsRow) Then
+                        liSortOrder = liSortOrder + 1
+                        liRow = Val(lsRow)
+                    End If
+                    liTemp = InStr(lsTemp, "$")
+                    lsval = Right(lsTemp, lsTemp.Length - liTemp)
+                    Select Case lsval.ToUpper
+                        Case "ID" : liIndex = 1
+                        Case "FIELDNAME" : liIndex = 2
+                        Case "COLUMNNAME" : liIndex = 3
+                        Case "COLUMNFORMAT", "FORMAT" : liIndex = 4
+                        Case "VISIBLE", "COLUMNVISIBLE" : liIndex = 5
+                        Case Else : liIndex = 6
+                    End Select
+                    lsVals(Val(lsRow), 0) = liSortOrder
+                    lsVals(Val(lsRow), liIndex) = HttpContext.Current.Request.Form(s)
+                End If
             End If
         Next
 
         '*** if New Name was entered Set the New View ID to a new GUID
-        If lsViewName <> "" Then
+        If lsViewName <> lsViewNameOrig Then
             lsViewID = ""
         End If
 
@@ -436,8 +511,23 @@ Public Class ctrlReportColumns
         Dim c As New ReportColumns
         c.Columns = New Collection
         Dim r As ReportColumn
+
         Dim liUpperBound As Integer = lsVals.GetUpperBound(0)
+
+        Dim liLowerBound As Integer = 3
         For licounter = 2 To liUpperBound
+            If Not lsVals(licounter, 2) Is Nothing Then
+                liLowerBound = licounter
+                Exit For
+            End If
+        Next
+        For licounter = liUpperBound To 2 Step -1
+            If Not lsVals(licounter, 2) Is Nothing Then
+                liUpperBound = licounter
+                Exit For
+            End If
+        Next
+        For licounter = liLowerBound To liUpperBound
             r = New ReportColumn
             r.ColumnOrder = lsVals(licounter, 0)    '** Sort Order
             r.ID = Guid.NewGuid.ToString            'lsVals(licounter, 1)            '** ID
@@ -448,13 +538,20 @@ Public Class ctrlReportColumns
             r.Format = IIf(lsFormat.ToUpper = "NULL", "", lsFormat)
             r.Visible = If(lsVals(licounter, 5) = "on", True, False) '** Visible
             r.ViewID = lsViewID
-            If r.FieldName Is Nothing Then Exit For
-            c.Columns.Add(r)
+            If Not r.FieldName Is Nothing Then
+                c.Columns.Add(r)
+            End If
+
         Next
 
         c.ViewID = lsViewID
         If lsViewName = "" Then lsViewName = "Default"
         c.ViewName = lsViewName
+        If ReportID = 0 Then
+            ReportID = Val(txtReportID.Text)
+        End If
+        c.ReportID = ReportID
+        c.ViewType = ViewType
         c.Save()
 
 
@@ -468,9 +565,25 @@ Public Class ctrlReportColumns
         'Next
 
         HttpContext.Current.Response.Redirect(HttpContext.Current.Request.Url.AbsoluteUri)
-        Debug.Print("</ctrlReportColumns_btnSave_CLick>")
+        'debug.print("</ctrlReportColumns_btnSave_CLick>")
     End Sub
+    Protected Sub btnDelete_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        'debug.print("<ctrlReportColumns_btnDelete_CLick>")
+        Dim lsViewID As String
 
+        lsViewID = txtViewID.Text
+        If lsViewID = "" Then Exit Sub
+
+        '*** Now we have the View ID and the Control Array, Add the Array as ReportColumn Object Instances
+        Dim c As New ReportColumns
+        c.ViewID = lsViewID
+
+        c.DeleteView()
+
+
+        HttpContext.Current.Response.Redirect(HttpContext.Current.Request.Url.AbsoluteUri)
+        'debug.print("</ctrlReportColumns_btnDelete_CLick>")
+    End Sub
     Private Sub UpdatePreference(locationId As Integer, preference As Integer)
         Dim constr As String = ConfigurationManager.ConnectionStrings("constr").ConnectionString
     End Sub
@@ -581,7 +694,7 @@ Public Class DropDownListTemplateImpl
     End Sub
 
     Private Sub ddl_DataBinding(sender As Object, args As EventArgs)
-        Debug.Print("<BindingDDL>" & sender.ToString)
+        'debug.print("<BindingDDL>" & sender.ToString)
         Dim ddl As DropDownList = DirectCast(sender, DropDownList)
         ddl.ID = String.Format("ddl{0}", ColumnName) & Int(Rnd() * 1000).ToString
         Dim gridViewRow As GridViewRow = DirectCast(ddl.NamingContainer, GridViewRow)
@@ -605,7 +718,7 @@ Public Class DropDownListTemplateImpl
                 Next
             End If
         End If
-        Debug.Print("<BindingDDL>" & sender.ToString)
+        'debug.print("<BindingDDL>" & sender.ToString)
     End Sub
 
 
@@ -615,15 +728,18 @@ Class ReportColumns
     Public Columns As Collection
     Public ViewID As String
     Public ViewName As String = "Default"
+    Public ReportID As Long = 0
+    Public ViewType As String
     Public Sub Save()
         If Columns.Count > 0 Then
             Dim cn As New clsDataLoader
-            If ViewID = "" Then
+            If ViewID = "" Or ViewID = "00000000-0000-0000-0000-000000000000" Then
                 ViewID = Guid.NewGuid.ToString
-                cn.InsertReportView(ViewID, ViewName, "Global", HttpContext.Current.Request.Path, HttpContext.Current.Request.QueryString("rpt"), HttpContext.Current.Session("NodeID"))
+                cn.InsertReportView(ViewID, ViewName, ViewType, HttpContext.Current.Request.Path, ReportID, HttpContext.Current.Session("NodeID"))
             Else
                 '*** Delete the existing DB Records for the View if they already exist
                 cn.DeleteReportViewColumns(ViewID)
+                cn.UpdateReportViewScope(ViewID, ViewType, HttpContext.Current.Session("NodeID"))
             End If
             For Each c As ReportColumn In Columns
                 If Not c.FieldName Is Nothing Then
@@ -632,7 +748,19 @@ Class ReportColumns
             Next
         End If
     End Sub
+    Public Sub DeleteView()
+        'If Columns.Count > 0 Then
+        Dim cn As New clsDataLoader
+        If ViewID = "" Or ViewID = "00000000-0000-0000-0000-000000000000" Then
+            Exit Sub
+        Else
+            '*** Delete the existing DB Records for the View if they already exist
+            cn.DeleteReportView(ViewID)
+        End If
+        '  End If
+    End Sub
 End Class
+
 Class ReportColumn
     Public ViewID As String
 

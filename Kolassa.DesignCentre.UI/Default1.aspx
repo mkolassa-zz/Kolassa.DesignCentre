@@ -1,6 +1,5 @@
 ﻿<%@ Page Title="Home Page" Language="VB" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default1.aspx.vb" Inherits="Kolassa.DesignCentre.UI.Default1" %>
 
-<%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <%@ Register Src="~/Controls/ctrlSubObjects.ascx" TagPrefix="uc1" TagName="ctrlSubObjects" %>
 
 
@@ -8,7 +7,8 @@
 
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <telerik:RadMenu ID="RadMenu1" runat="server"></telerik:RadMenu>
+
+     <telerik:RadMenu ID="RadMenu1" runat="server"></telerik:RadMenu>
     <telerik:radskinmanager ID="RadSkinManager1" runat="server" ShowChooser="true" />
 
     <telerik:radajaxmanager ID="RadAjaxManager1" runat="server">
@@ -94,7 +94,6 @@
         <FilterMenu RenderMode="Lightweight"></FilterMenu>
         <HeaderContextMenu RenderMode="Lightweight"></HeaderContextMenu>
         </telerik:radgrid>
-
         <br />
         <br />
         <h3>Orders details:</h3>

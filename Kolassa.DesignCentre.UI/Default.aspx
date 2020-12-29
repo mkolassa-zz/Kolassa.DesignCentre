@@ -1,6 +1,9 @@
 ﻿<%@ Page Title="Home Page" Language="VB" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.vb" Inherits="Kolassa.DesignCentre.UI._Default" %>
 
-	<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+<%@ Register Src="~/Controls/ctrlImages.ascx" TagPrefix="uc1" TagName="ctrlImages" %>
+
+
+<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 		<asp:LoginView ID="LoginView1" runat="server">
 			<AnonymousTemplate>
 				<div class="jumbotron">
@@ -140,7 +143,8 @@
 
                 </asp:Repeater>
 						</div>
-                    <!-- uc1 :ctrlImages ru nat="ser ver" i d="ctr lImages" / -->
+       <i class="dc dc-Settings"></i>
+                    <uc1:ctrlImages runat="server" id="ctrlImages" />
 			</div>
                 
             <asp:ObjectDataSource ID="odsProjects" runat="server" 

@@ -1,11 +1,11 @@
 ﻿Imports System.IO
-Imports Telerik.Web.UI
+'Imports Te lerik.Web.UI
 Imports Kolassa.DesignCentre.Data
 Public Class ctrlImagesNew
     Inherits System.Web.UI.UserControl
 
     Private Function GetSelectedValue()
-        Dim rg As RadGrid
+        Dim rg As GridView 'RadGrid
         GetSelectedValue = ""
 
         rg = Me.Parent.FindControl("rgMaster")
@@ -20,7 +20,7 @@ Public Class ctrlImagesNew
         End If
         If rg Is Nothing Then
         Else
-            If rg.SelectedItems.Count > 0 Then
+            If rg.SelectedValue > 1 Then ' rg.SelectedItems.Count > 0 Then
                 GetSelectedValue = rg.SelectedValue
             End If
         End If

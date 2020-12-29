@@ -22,6 +22,7 @@ Partial Public Class clsBase
     Public msOperator As String = ""
     Public msDataType As String = ""
     Public miListItems As ReportListItems = New ReportListItems
+    Public EditMode As Boolean
     Public Property ListItems() As ReportListItems
         Get
             ListItems = miListItems

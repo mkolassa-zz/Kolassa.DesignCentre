@@ -32,12 +32,12 @@ Public Class clsContact
 	Public Property UpdateUserName As String
 	Public Property CreateUserName As String
 	Public Property ContactType As String
-	Public Property llNodeID As Long
+
 	Public Property ImageURL As String = "images/people-jerks-shovel.gif"
 
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
-		NodeID = llNodeID
+		NodeID = System.Web.HttpContext.Current.Session("NodeID")
+
 	End Sub
 End Class
 Public Class clsContacts
@@ -51,9 +51,9 @@ Public Class clsContacts
 	End Sub
     Public Sub InsertContacts(obj As clsContact)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.InsertContacts(obj.llNodeID, obj.FirstName, obj.LastName, obj.ParentID, obj.FullAddress, obj.City, obj.StateProvince, obj.PostalCode,
-                         obj.Country, obj.Phone1, obj.Phone2, obj.Email1, obj.Email2, obj.ContactType)
-    End Sub
+		c.InsertContacts(obj.NodeID, obj.FirstName, obj.LastName, obj.ParentID, obj.FullAddress, obj.City, obj.StateProvince, obj.PostalCode,
+						 obj.Country, obj.Phone1, obj.Phone2, obj.Email1, obj.Email2, obj.ContactType)
+	End Sub
     Public Sub UpdateContacts(obj As clsContact)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		c.UpdateContacts(obj.ID, obj.ParentID, obj.FirstName, obj.LastName, obj.FullAddress, obj.City, obj.StateProvince, obj.PostalCode, obj.Country, obj.Phone2, obj.Phone1, obj.Email1, obj.Email2, obj.NodeID,
@@ -63,14 +63,15 @@ End Class
 
 
 Public Class clsCustomer
+	Inherits clsBase
 	Private _CustomerCountry As String
-	Public Property ID As String
-	Public Property CustomerName As String
+	'Public Property ID As String
+	'Public Property NAME As String
 	Public Property CustomerAddress As String
 	Public Property CustomerCity As String
 	Public Property StateProvince As String
 	Public Property Postal_Code As String
-	Public Property ImageURL As String
+	'	Public Overloads Property ImageURL As String
 	Public Property CustomerCountry As String
 		Get
 			Return _CustomerCountry
@@ -80,32 +81,93 @@ Public Class clsCustomer
 		End Set
 	End Property
 	Public Property CustomerPhone2 As String
-	Public Property CustomerPhone As String
-	Public Property CustomerEmail As String
-	Public Property NodeID As Integer
+	Public Overloads Property CustomerPhone As String
+	Public Overloads Property CustomerEmail As String
+	Public Overloads Property NodeID As Integer
 	Public Property CustomerType As String
 	Public Property CustomerActive As Boolean
 	Public Property CustomerCreateDate As Date
 	Public Property CustomerCreateUser As String
 	Public Property CustomerUpdateDate As Date
 	Public Property CustomerUpdateUser As String
-	Public Property UpdateUserName As String
-	Public Property CreateUserName As String
-	Private Property llNodeID As Long
+	'Public Property UpdateUserName As String
+	'	Public Property CreateUserName As String
+	Public Overrides Sub processFormValues()
+		Dim lsString As String = ""
+		For Each kvp As KeyValuePair(Of String, String) In FormValue
+			lsString = lsString & Chr(13) & Chr(10) & kvp.Key & kvp.Value
+			Select Case kvp.Key.ToUpper
+				Case "ID"
+					ID = kvp.Value
+				Case "CODE"
+					Code = kvp.Value
+
+				Case "CustomerAddress".ToUpper
+					CustomerAddress = kvp.Value
+				Case "CustomerCity".ToUpper
+					CustomerCity = kvp.Value
+				Case "CustomerActive".ToUpper
+					CustomerActive = kvp.Value
+				Case "StateProvince".ToUpper, "CustomerState".ToUpper
+					StateProvince = kvp.Value
+				Case "Postal_Code".ToUpper, "CustomerPostalCode".ToUpper
+					Postal_Code = kvp.Value
+				Case "CustomerEmail".ToUpper
+					CustomerEmail = kvp.Value
+				Case "CustomerPhone".ToUpper
+					CustomerPhone = kvp.Value
+				Case "CustomerCountry".ToUpper
+					CustomerCountry = kvp.Value
+
+				Case "NAME"
+					Name = kvp.Value
+				Case "Description".ToUpper
+					Description = kvp.Value
+				Case "Active".ToUpper
+					Active = kvp.Value
+					CustomerActive = kvp.Value
+				Case "CreateDate".ToUpper
+					CreateDate = kvp.Value
+				Case "CreateUser".ToUpper
+					CreateUser = kvp.Value
+				Case "UpdateDate".ToUpper
+					UpdateDate = kvp.Value
+				Case "UpdateUser".ToUpper
+					UpdateUser = kvp.Value
+				Case "UpdateUserName".ToUpper
+					UpdateUserName = kvp.Value
+				Case "CreateUserName".ToUpper
+					CreateUserName = kvp.Value
+				Case "llNodeID".ToUpper, "NODEID"
+					NodeID = kvp.Value
+				Case "NodeID".ToUpper
+					NodeID = kvp.Value
+				Case "ImageUrl".ToUpper
+					ImageURL = kvp.Value
+			End Select
+
+		Next
+		If ID = "" Then
+			Insert()
+		Else
+			Update()
+		End If
+		lsString = lsString
+	End Sub
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NodeID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
-	Public Sub Delete() 'ID As String)
+	Public Overrides Sub Delete() 'ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.DeleteCustomers(ID, llNodeID)
+		c.DeleteCustomers(ID, NodeID)
 	End Sub
-	Public Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
+	Public Overrides Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.InsertCustomers(llNodeID, CustomerName, CustomerAddress, CustomerCity, StateProvince, Postal_Code, CustomerPhone, CustomerEmail, CustomerCountry)
+		c.InsertCustomers(NodeID, Name, CustomerAddress, CustomerCity, StateProvince, Postal_Code, CustomerPhone, CustomerEmail, CustomerCountry)
 	End Sub
-	Public Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
+	Public Overrides Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdateCustomers(NodeID, CustomerName, CustomerAddress, CustomerCity, CustomerActive, StateProvince, Postal_Code, CustomerEmail,
+		c.UpdateCustomers(NodeID, Name, CustomerAddress, CustomerCity, CustomerActive, StateProvince, Postal_Code, CustomerEmail,
 						  CustomerPhone, CustomerCountry, ID)
 		Update = 1
 	End Function
@@ -117,7 +179,7 @@ Public Class clsCustomer
 		Dim colName As String
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		If ID = "" Then ID = lsObjectID
-		ds = c.LoadCustomers(llNodeID, "", 0, ID, "", "")
+		ds = c.LoadCustomers(NodeID, "", 0, ID, "", "")
 
 
 		For Each row As DataRow In ds.Tables(0).Rows
@@ -130,7 +192,7 @@ Public Class clsCustomer
 					colName = UCase(column.ColumnName)
 					Select Case colName
 						Case "ID" : ID = row.Item(column).ToString
-						Case "CUSTOMERNAME" : CustomerName = row.Item(column)
+						Case "Name" : Name = row.Item(column)
 						Case "CUSTOMERADDRESS" : CustomerAddress = row.Item(column)
 						Case "CUSTOMERCITY" : CustomerCity = row.Item(column)
 						Case "CUSTOMERSTATE" : StateProvince = row.Item(column)
@@ -177,9 +239,12 @@ Public Class clsProject
 		If ID = "" Then ID = lsObjectID
 		ds = c.LoadProjects(NodeID, "", Active, ID)
 		'Return ds
+
 		If ds Is Nothing Then
+			GetRecord = False
 			Exit Function
 		End If
+
 		Dim result As New List(Of clsProject)
 		For Each row As DataRow In ds.Tables(0).Rows
 			Dim values As New List(Of Object)
@@ -224,24 +289,24 @@ Public Class clsProject
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		'Dim lsMsg As String
 		Dim lbOK As Boolean
-		lbOK = c.InsertProjects(LLNodeID, Name, Description, ImageUrl, ProjectType, Code)
-		'llNodeID, ObjectID, Name, Active, UnitTypeID, Availalbe, Tier, DepositTypeID)
+		lbOK = c.InsertProjects(NodeID, Name, Description, ImageUrl, ProjectType, Code)
+		'NODEID, ObjectID, Name, Active, UnitTypeID, Availalbe, Tier, DepositTypeID)
 		If lbOK = False Then
 			'lsMsg = obj.ErrorMessage
 		End If
 	End Sub
 	Public Overrides Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdateProjects(LLNodeID, Name, Description, ImageUrl, ProjectType, Active, ID, Code)
+		c.UpdateProjects(NodeID, Name, Description, ImageUrl, ProjectType, Active, ID, Code)
 		Update = 1
 	End Function
 End Class
 Public Class clsCustomers
-	Public llNodeID As Long
+	Public NODEID As Long
 	Public Active As Boolean
 	Public ID As String
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NODEID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 
 	Function GetCustomers(SortExpression As String, SortOrder As String, lsObjectID As String, lbActive As Boolean, lsWhere As String) As DataSet 'IEnumerable(Of clsCustomer)
@@ -251,7 +316,7 @@ Public Class clsCustomers
 		Dim colName As String
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		If ID = "" Then ID = lsObjectID
-		ds = c.LoadCustomers(llNodeID, lsWhere, Active, ID, SortExpression, SortOrder)
+		ds = c.LoadCustomers(NODEID, lsWhere, Active, ID, SortExpression, SortOrder)
 		Return ds
 		Exit Function
 		Dim result As New List(Of clsCustomer)
@@ -265,7 +330,7 @@ Public Class clsCustomers
 					colName = UCase(column.ColumnName)
 					Select Case colName
 						Case "ID" : cust.ID = row.Item(column).ToString
-						Case "CUSTOMERNAME" : cust.CustomerName = row.Item(column)
+						Case "NAME" : cust.Name = row.Item(column)
 						Case "CUSTOMERADDRESS" : cust.CustomerAddress = row.Item(column)
 						Case "CUSTOMERCITY" : cust.CustomerCity = row.Item(column)
 						Case "CUSTOMERSTATE" : cust.StateProvince = row.Item(column)
@@ -294,7 +359,7 @@ Public Class clsCustomers
 		Next
 		'      Return result
 	End Function
-	Function GetRecords(SortExpression As String, SortOrder As String, lsObjectID As String, lbActive As Boolean, llNodeID As Long) As IEnumerable(Of Kolassa.DesignCentre.UI.clsCustomer)
+	Function GetRecords(SortExpression As String, SortOrder As String, lsObjectID As String, lbActive As Boolean, NODEID As Long) As IEnumerable(Of Kolassa.DesignCentre.UI.clsCustomer)
 		Dim ds As New DataSet
 		Dim CustDate As Date
 		Dim cust As New clsCustomer
@@ -302,7 +367,7 @@ Public Class clsCustomers
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		If ID = "" Then ID = lsObjectID
 
-		ds = c.LoadCustomers(llNodeID, "", lbActive, ID, SortExpression, SortOrder)
+		ds = c.LoadCustomers(NODEID, "", lbActive, ID, SortExpression, SortOrder)
 
 		Dim result As New List(Of clsCustomer)
 		For Each row As DataRow In ds.Tables(0).Rows
@@ -315,7 +380,7 @@ Public Class clsCustomers
 					colName = UCase(column.ColumnName)
 					Select Case colName
 						Case "ID" : cust.ID = row.Item(column).ToString
-						Case "CUSTOMERNAME" : cust.CustomerName = row.Item(column)
+						Case "NAME" : cust.Name = row.Item(column)
 						Case "CUSTOMERADDRESS" : cust.CustomerAddress = row.Item(column)
 						Case "CUSTOMERCITY" : cust.CustomerCity = row.Item(column)
 						Case "CUSTOMERSTATE" : cust.StateProvince = row.Item(column)
@@ -350,11 +415,11 @@ Public Class clsCustomers
 	End Sub
 	Public Sub InsertCustomers(obj As clsCustomer) 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.InsertCustomers(llNodeID, obj.CustomerName, obj.CustomerAddress, obj.CustomerCity, obj.StateProvince, obj.Postal_Code, obj.CustomerPhone, obj.CustomerEmail, obj.CustomerCountry)
+		c.InsertCustomers(NODEID, obj.Name, obj.CustomerAddress, obj.CustomerCity, obj.StateProvince, obj.Postal_Code, obj.CustomerPhone, obj.CustomerEmail, obj.CustomerCountry)
 	End Sub
 	Public Function UpdateCustomers(obj As clsCustomer) As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdateCustomers(llNodeID, obj.CustomerName, obj.CustomerAddress, obj.CustomerCity, obj.CustomerActive, obj.StateProvince, obj.Postal_Code, obj.CustomerEmail, obj.CustomerPhone, obj.CustomerCountry, obj.ID)
+		c.UpdateCustomers(NODEID, obj.Name, obj.CustomerAddress, obj.CustomerCity, obj.CustomerActive, obj.StateProvince, obj.Postal_Code, obj.CustomerEmail, obj.CustomerPhone, obj.CustomerCountry, obj.ID)
 		UpdateCustomers = 1
 	End Function
 End Class
@@ -372,12 +437,12 @@ Public Class clsRoom
 	Public Property CustomerCreateUser As String
 	Public Property CustomerUpdateDate As Date
 	Public Property CustomerUpdateUser As String
-    '	Public Property UpdateUserName As String
-    '    Public Property CreateUserName As String
-    '    Private Property llNodeID As Long
-    '    Public Property NodeID As Integer
-    Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+	'	Public Property UpdateUserName As String
+	'    Public Property CreateUserName As String
+	'    Private Property NODEID As Long
+	'    Public Property NodeID As Integer
+	Public Sub New()
+		NodeID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
     Public Overrides Sub Delete() 'ID As String)
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
@@ -385,21 +450,21 @@ Public Class clsRoom
 	End Sub
     Public Overrides Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.InsertRooms(LLNodeID, Code, Name, Description)
+		c.InsertRooms(NodeID, Code, Name, Description)
 	End Sub
     Public Overrides Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdateRooms(LLNodeID, Code, Name, Description, Active, ID)
+		c.UpdateRooms(NodeID, Code, Name, Description, Active, ID)
 		Update = 1
     End Function
 
 End Class
 Public Class clsRooms
-	Public llNodeID As Long
+	Public NODEID As Long
 	Public Active As Boolean
 	Public ID As String
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NODEID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 
 	Function GetRecordData(SortExpression As String, SortOrder As String, lsObjectID As String, lbActive As Boolean, lsWhere As String) As DataSet 'IEnumerable(Of clsCustomer)
@@ -409,7 +474,7 @@ Public Class clsRooms
 		Dim colName As String
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		If ID = "" Then ID = lsObjectID
-		ds = c.LoadRooms(llNodeID, lsWhere, Active, ID)
+		ds = c.LoadRooms(NODEID, lsWhere, Active, ID)
 		Return ds
 		Exit Function
 		Dim result As New List(Of clsCustomer)
@@ -423,7 +488,7 @@ Public Class clsRooms
 					colName = UCase(column.ColumnName)
 					Select Case colName
 						Case "ID" : cust.ID = row.Item(column).ToString
-						Case "CUSTOMERNAME" : cust.CustomerName = row.Item(column)
+						Case "NAME" : cust.Name = row.Item(column)
 						Case "CUSTOMERADDRESS" : cust.CustomerAddress = row.Item(column)
 						Case "CUSTOMERCITY" : cust.CustomerCity = row.Item(column)
 						Case "CUSTOMERSTATE" : cust.StateProvince = row.Item(column)
@@ -452,7 +517,7 @@ Public Class clsRooms
 		Next
 		'      Return result
 	End Function
-	Function GetRecords(SortExpression As String, SortOrder As String, lsObjectID As String, lbActive As Boolean, llNodeID As Long) As IEnumerable(Of Kolassa.DesignCentre.UI.clsRoom)
+	Function GetRecords(SortExpression As String, SortOrder As String, lsObjectID As String, lbActive As Boolean, NODEID As Long) As IEnumerable(Of clsRoom)
 		Dim ds As New DataSet
 		Dim CustDate As Date
 		Dim cust As New clsCustomer
@@ -460,7 +525,7 @@ Public Class clsRooms
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		If ID = "" Then ID = lsObjectID
 
-		ds = c.LoadCustomers(llNodeID, "", lbActive, ID, SortExpression, SortOrder)
+		ds = c.LoadCustomers(NODEID, "", lbActive, ID, SortExpression, SortOrder)
 
 		Dim result As New List(Of clsCustomer)
 		For Each row As DataRow In ds.Tables(0).Rows
@@ -473,7 +538,7 @@ Public Class clsRooms
 					colName = UCase(column.ColumnName)
 					Select Case colName
 						Case "ID" : cust.ID = row.Item(column).ToString
-						Case "CUSTOMERNAME" : cust.CustomerName = row.Item(column)
+						Case "NAME" : cust.Name = row.Item(column)
 						Case "CUSTOMERADDRESS" : cust.CustomerAddress = row.Item(column)
 						Case "CUSTOMERCITY" : cust.CustomerCity = row.Item(column)
 						Case "CUSTOMERSTATE" : cust.StateProvince = row.Item(column)
@@ -504,15 +569,15 @@ Public Class clsRooms
 	End Function
 	Public Sub Delete(obj As clsRoom) 'ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.DeleteRooms(obj.ID, llNodeID)
+		c.DeleteRooms(obj.ID, NODEID)
 	End Sub
 	Public Sub Insert(obj As clsRoom) 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.InsertRooms(llNodeID, obj.Code, obj.Name, obj.Description)
+		c.InsertRooms(NODEID, obj.Code, obj.Name, obj.Description)
 	End Sub
 	Public Function Update(obj As clsRoom) As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdateRooms(llNodeID, obj.Code, obj.Name, obj.Description, obj.Active, obj.ID)
+		c.UpdateRooms(NODEID, obj.Code, obj.Name, obj.Description, obj.Active, obj.ID)
 		Update = 1
 	End Function
 End Class
@@ -535,7 +600,7 @@ Public Class clsQuote
 	Public Property UnitTypeCode As String
 	Public Property UnitTypeName As String
 	Public Property UnitTypeDescription As String
-	Public Property CustomerName As String
+	Public Property Name As String
 	Public Property ProjectID As String
 	Public Sub New()
 		ID = System.Web.HttpContext.Current.Session("QuoteID")
@@ -546,7 +611,8 @@ Public Class clsQuote
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 
 		ds = c.LoadQuotes(NodeID, "", True, ID)
-
+		If ds Is Nothing Then Exit Sub
+		If ds.Tables.Count = 0 Then Exit Sub
 		For Each row As DataRow In ds.Tables(0).Rows
 
 			For Each column As DataColumn In ds.Tables(0).Columns
@@ -572,7 +638,7 @@ Public Class clsQuote
 						Case "UNITTYPECODE" : UNITTYPECODE = row.Item(column).ToString
 						Case "UNITTYPENAME" : UNITTYPENAME = row.Item(column).ToString
 						Case "UNITTYPEDESCRIPTION" : UNITTYPEDESCRIPTION = row.Item(column).ToString
-						Case "CUSTOMERNAME" : CUSTOMERNAME = row.Item(column).ToString
+						Case "CUSTOMERNAME", "NAME" : Name = row.Item(column).ToString
 						Case "OBJECTID" : ProjectID = row.Item(column).ToString
 
 					End Select
@@ -597,7 +663,7 @@ Public Class clsQuote
 	" UnitTypeCode: " & UnitTypeCode & "<br/>" &
 	" UnitTypeName: " & UnitTypeName & "<br/>" &
 	" UnitTypeDescription: " & UnitTypeDescription & "<br/>" &
-	" CustomerName: " & CustomerName
+	" CustomerName: " & Name
 	End Function
 	Public Function InsertQuote() As Boolean
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
@@ -626,30 +692,30 @@ Public Class clsLookup
     Public Property CreateUser As String
     Public Property UpdateDate As Date
     Public Property UpdateUser As String
-    Private llNodeID As Long
-    Public Sub New()
-        llNodeID = System.Web.HttpContext.Current.Session("NodeID")
-        NodeID = llNodeID
-    End Sub
+
+	Public Sub New()
+		NodeID = System.Web.HttpContext.Current.Session("NodeID")
+
+	End Sub
 End Class
 
 Public Class clsLookups
-	Public llNodeID As Long
+	Public NODEID As Long
 	Public Active As Boolean
 	Public ID As String
 	Public lsCategory As String
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NODEID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 
-	Function GetRecords(LookupID As String, ParentID As String, lookupType As String, id As Long, llNodeID As Long) As DataSet 'IEnumerable(Of clsCustomer)
+	Function GetRecords(LookupID As String, ParentID As String, lookupType As String, id As Long, NODEID As Long) As DataSet 'IEnumerable(Of clsCustomer)
 		Dim ds As New DataSet
 		Dim CreateDate As DateTime
 		Dim Lookup As New clsLookup
 		Dim colName As String
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 
-		ds = c.LoadLookups(llNodeID, ParentID, LookupID, "", lookupType, Active, id)
+		ds = c.LoadLookups(NODEID, ParentID, LookupID, "", lookupType, Active, id)
 		Return ds
 		Exit Function
 		Dim result As New List(Of clsLookup)
@@ -666,8 +732,8 @@ Public Class clsLookups
 						Case "PARENTID" : Lookup.ParentID = row.Item(column)
 						Case "LOOKUPID" : Lookup.LookupID = row.Item(column)
 						Case "LOOKUPCATEGORY" : Lookup.LookupCategory = row.Item(column)
-                        Case "DESCRIPTION" : Lookup.DESCRIPTION = row.Item(column)
-                        Case "LOOKUPVALUE" : Lookup.LookupValue = row.Item(column)
+						Case "DESCRIPTION" : Lookup.DESCRIPTION = row.Item(column)
+						Case "LOOKUPVALUE" : Lookup.LookupValue = row.Item(column)
 						Case "SORTORDER" : Lookup.SortOrder = row.Item(column)
 						Case "NODEID" : Lookup.NodeID = row.Item(column)
 						Case "ACTIVE" : Lookup.Active = row.Item(column)
@@ -693,12 +759,12 @@ Public Class clsLookups
 	End Sub
 	Public Sub InsertRecords(obj As clsLookup) 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-        c.InsertLookups(llNodeID, obj.ID, obj.ParentID, obj.LookupCategory, obj.SortOrder, obj.DESCRIPTION, obj.LookupValue)
-    End Sub
+		c.InsertLookups(NODEID, obj.ID, obj.ParentID, obj.LookupCategory, obj.SortOrder, obj.DESCRIPTION, obj.LookupValue)
+	End Sub
 	Public Function UpdateRecords(obj As clsLookup) As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-        c.UpdateLookups(llNodeID, obj.ID, obj.ParentID, obj.LookupCategory, obj.DESCRIPTION, obj.LookupValue, obj.SortOrder, obj.Active, obj.LookupID)
-        UpdateRecords = 1
+		c.UpdateLookups(NODEID, obj.ID, obj.ParentID, obj.LookupCategory, obj.DESCRIPTION, obj.LookupValue, obj.SortOrder, obj.Active, obj.LookupID)
+		UpdateRecords = 1
 	End Function
 End Class
 
@@ -807,12 +873,12 @@ Public Class clsSelectedItem
     Public Property AdditionalFileToPrint2 As String
 
     Public Property Level As String = "" ' Tells whether this is coming from the Project (Setting up Phases) or Quote
-    ' Levels is important because at the Project Level we do not modify the Quote Level Fields
-    Private Property llNodeID As Long
+	' Levels is important because at the Project Level we do not modify the Quote Level Fields
+	Private Property NODEID As Long
 
-    Public Sub New()
-        llNodeID = System.Web.HttpContext.Current.Session("NodeID")
-    End Sub
+	Public Sub New()
+		NODEID = System.Web.HttpContext.Current.Session("NodeID")
+	End Sub
     Public Sub Delete() 'ID As String)
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
         c.DeleteRequestedUpgrades(ID)
@@ -822,15 +888,15 @@ Public Class clsSelectedItem
 
         Dim lbOK As Boolean
         If OptionID = "" Then
-            '	lbOK = c.InsertRequestedUpgradesCustom( llNodeID, "", ObjectID, OptionID, Quantity)
-        Else
-            lbOK = c.InsertRequestedUpgrades(llNodeID, "", ObjectID, OptionID, Quantity)
-        End If
+			'	lbOK = c.InsertRequestedUpgradesCustom( NODEID, "", ObjectID, OptionID, Quantity)
+		Else
+			lbOK = c.InsertRequestedUpgrades(NODEID, "", ObjectID, OptionID, Quantity)
+		End If
     End Sub
     Public Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-        c.UpdateRequestedUpgrades(ID, llNodeID, Adjustments, Comments, Quantity)
-        Update = 1
+		c.UpdateRequestedUpgrades(ID, NODEID, Adjustments, Comments, Quantity)
+		Update = 1
     End Function
 End Class
 Public Class clsSelectedItems
@@ -843,77 +909,77 @@ Public Class clsSelectedItems
      OptionStatus As String, Standard As String, AdditionalFileToPrint1 As String,
      AdditionalFileToPrint2 As String, lbActive As Boolean, UnitTypeID As String,
      ID As String
-    Private Property llNodeID As Long
-    Function GetRecords(lsWhere As String, lsID As String, lsObjectID As String, llNodeID As Long) As IEnumerable(Of clsUpgradeOption) 'DataSet
-        Dim ds As New DataSet
-        Dim CustDate As Date
-        Dim cObject As New clsSelectedItem
-        Dim colName As String
+	Private Property NODEID As Long
+	Function GetRecords(lsWhere As String, lsID As String, lsObjectID As String, NODEID As Long) As IEnumerable(Of clsUpgradeOption) 'DataSet
+		Dim ds As New DataSet
+		Dim CustDate As Date
+		Dim cObject As New clsSelectedItem
+		Dim colName As String
+		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+		ID = lsID
+		If ID = "" Then ID = lsObjectID
+		ds = c.LoadRequestedUpgrades(NODEID, "", "", lsObjectID, lsWhere, True, lsID)
+		'Return ds
+		'Exit Function
+		Dim result As New List(Of clsUpgradeOption)
+		For Each row As DataRow In ds.Tables(0).Rows
+			Dim values As New List(Of Object)
+			cObject = New clsSelectedItem
+			For Each column As DataColumn In ds.Tables(0).Columns
+				If row.IsNull(column) Then
+					values.Add(Nothing)
+				Else
+					colName = UCase(column.ColumnName)
+					Select Case colName
+						'Case "UNITTYPE": cObject.unit = row.Item(column)
+						Case "LOCATION" : cObject.RoomDescription = row.Item(column)
+						Case "UPGRADECATEGORY" : cObject.UpgradeCategory = row.Item(column).ToString.Trim
+						Case "UPGRADELEVEL" : cObject.UpgradeClass = row.Item(column).ToString.Trim
+						Case "DESCRIPTION" : cObject.UpgradeDescription = row.Item(column).ToString.Trim
+						Case "MODELORSTYLE" : cObject.StyleDescription = row.Item(column).ToString.Trim
+
+						Case "LEADVENDOR" : cObject.LeadVendor = row.Item(column).ToString.Trim
+						Case "CUSTOMERPRICE" : cObject.CustomerPrice = row.Item(column)
+						'Case "DEVELOPERPRICE": cObject. = row.Item(column)
+					'	Case "TOVENDORPRICE": cObject.v = row.Item(column)
+						Case "BUILDINGPHASE" : cObject.BuildingPhase = row.Item(column)
+						Case "PRICINGREVNUMBER" : cObject.PricingRevNumber = row.Item(column)
+						'Case "OPTIONSTATUS": cObject.s = row.Item(column)
+						Case "STANDARD" : cObject.Standard = row.Item(column).ToString.Trim
+						Case "ADDITIONALFILETOPRINT1" : cObject.AdditionalFileToPrint1 = row.Item(column).ToString.Trim
+						Case "ADDITIONALFILETOPRINT2" : cObject.AdditionalFileToPrint2 = row.Item(column).ToString.Trim
+
+						'Case "UNITTYPEID" : cObject.u = row.Item(column)
+
+						Case "ID" : cObject.ID = row.Item(column).ToString.Trim
+						Case "NAME" : cObject.Name = row.Item(column).ToString.Trim
+						Case "OBJECTID" : cObject.ObjectID = row.Item(column).ToString.Trim
+						Case "CODE" : cObject.Code = row.Item(column).ToString.Trim
+						Case "COMMENTS" : cObject.Comments = row.Item(column).ToString.Trim
+
+						'Case "NODEID" : cObject.NodeID = row.Item(column)
+						Case "SORTORDER" : cObject.SortOrder = row.Item(column)
+						Case "ACTIVE" : cObject.Active = row.Item(column)
+						Case "CREATEDATE"
+							CustDate = row.Item(column)
+							If CustDate > DateAdd("d", -100000, Now) Then cObject.CreateDate = CustDate
+						Case "CREATEUSER" : cObject.CreateUser = row.Item(column).ToString.Trim
+						Case "UPDATEDATE" : cObject.UpdateDate = row.Item(column)
+							CustDate = row.Item(column)
+							If CustDate > DateAdd("d", -100000, Now) Then cObject.UpdateDate = CustDate
+						Case "UPDATEUSER" : cObject.UpdateUser = row.Item(column).ToString.Trim
+
+					End Select
+				End If
+			Next
+			result.Add(New clsUpgradeOption) 'cObject)
+		Next
+		Return result
+	End Function
+	Public Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-        ID = lsID
-        If ID = "" Then ID = lsObjectID
-        ds = c.LoadRequestedUpgrades(llNodeID, "", "", lsObjectID, lsWhere, True, lsID)
-        'Return ds
-        'Exit Function
-        Dim result As New List(Of clsUpgradeOption)
-        For Each row As DataRow In ds.Tables(0).Rows
-            Dim values As New List(Of Object)
-            cObject = New clsSelectedItem
-            For Each column As DataColumn In ds.Tables(0).Columns
-                If row.IsNull(column) Then
-                    values.Add(Nothing)
-                Else
-                    colName = UCase(column.ColumnName)
-                    Select Case colName
-                        'Case "UNITTYPE": cObject.unit = row.Item(column)
-                        Case "LOCATION" : cObject.RoomDescription = row.Item(column)
-                        Case "UPGRADECATEGORY" : cObject.UpgradeCategory = row.Item(column).ToString.Trim
-                        Case "UPGRADELEVEL" : cObject.UpgradeClass = row.Item(column).ToString.Trim
-                        Case "DESCRIPTION" : cObject.UpgradeDescription = row.Item(column).ToString.Trim
-                        Case "MODELORSTYLE" : cObject.StyleDescription = row.Item(column).ToString.Trim
-
-                        Case "LEADVENDOR" : cObject.LeadVendor = row.Item(column).ToString.Trim
-                        Case "CUSTOMERPRICE" : cObject.CustomerPrice = row.Item(column)
-                        'Case "DEVELOPERPRICE": cObject. = row.Item(column)
-                    '	Case "TOVENDORPRICE": cObject.v = row.Item(column)
-                        Case "BUILDINGPHASE" : cObject.BuildingPhase = row.Item(column)
-                        Case "PRICINGREVNUMBER" : cObject.PricingRevNumber = row.Item(column)
-                        'Case "OPTIONSTATUS": cObject.s = row.Item(column)
-                        Case "STANDARD" : cObject.Standard = row.Item(column).ToString.Trim
-                        Case "ADDITIONALFILETOPRINT1" : cObject.AdditionalFileToPrint1 = row.Item(column).ToString.Trim
-                        Case "ADDITIONALFILETOPRINT2" : cObject.AdditionalFileToPrint2 = row.Item(column).ToString.Trim
-
-                        'Case "UNITTYPEID" : cObject.u = row.Item(column)
-
-                        Case "ID" : cObject.ID = row.Item(column).ToString.Trim
-                        Case "NAME" : cObject.Name = row.Item(column).ToString.Trim
-                        Case "OBJECTID" : cObject.ObjectID = row.Item(column).ToString.Trim
-                        Case "CODE" : cObject.Code = row.Item(column).ToString.Trim
-                        Case "COMMENTS" : cObject.Comments = row.Item(column).ToString.Trim
-
-                        'Case "NODEID" : cObject.NodeID = row.Item(column)
-                        Case "SORTORDER" : cObject.SortOrder = row.Item(column)
-                        Case "ACTIVE" : cObject.Active = row.Item(column)
-                        Case "CREATEDATE"
-                            CustDate = row.Item(column)
-                            If CustDate > DateAdd("d", -100000, Now) Then cObject.CreateDate = CustDate
-                        Case "CREATEUSER" : cObject.CreateUser = row.Item(column).ToString.Trim
-                        Case "UPDATEDATE" : cObject.UpdateDate = row.Item(column)
-                            CustDate = row.Item(column)
-                            If CustDate > DateAdd("d", -100000, Now) Then cObject.UpdateDate = CustDate
-                        Case "UPDATEUSER" : cObject.UpdateUser = row.Item(column).ToString.Trim
-
-                    End Select
-                End If
-            Next
-            result.Add(New clsUpgradeOption) 'cObject)
-        Next
-        Return result
-    End Function
-    Public Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
-        Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-        c.UpdateRequestedUpgrades(ID, llNodeID, Adjustments, Comments, Quantity)
-        Update = 1
+		c.UpdateRequestedUpgrades(ID, NODEID, Adjustments, Comments, Quantity)
+		Update = 1
     End Function
 End Class
 Public Class clsUpgradeOption
@@ -935,88 +1001,88 @@ Public Class clsUpgradeOptions
 	 OptionStatus As String, Standard As String, AdditionalFileToPrint1 As String,
 	 AdditionalFileToPrint2 As String, lbActive As Boolean, UnitTypeID As String,
 	 ID As String
-	Private Property llNodeID As Long
+	Private Property NODEID As Long
 
-    Function GetRecords(lsWhere As String, lsID As String, lsObjectID As String, llNodeID As Long) As IEnumerable(Of clsUpgradeOption) 'DataSet
-        Dim ds As New DataSet
-        Dim CustDate As Date
-        Dim cObject As New clsSelectedItem
-        Dim colName As String
-        Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-        ID = lsID
-        If ID = "" Then ID = lsObjectID
-        ds = c.LoadRequestedUpgrades(llNodeID, "", "", lsObjectID, lsWhere, True, lsID)
-        'Return ds
-        'Exit Function
-        Dim result As New List(Of clsUpgradeOption)
-        For Each row As DataRow In ds.Tables(0).Rows
-            Dim values As New List(Of Object)
-            cObject = New clsSelectedItem
-            For Each column As DataColumn In ds.Tables(0).Columns
-                If row.IsNull(column) Then
-                    values.Add(Nothing)
-                Else
-                    colName = UCase(column.ColumnName)
-                    Select Case colName
-                        'Case "UNITTYPE": cObject.unit = row.Item(column)
-                        Case "LOCATION" : cObject.RoomDescription = row.Item(column)
-                        Case "UPGRADECATEGORY" : cObject.UpgradeCategory = row.Item(column).ToString.Trim
-                        Case "UPGRADELEVEL" : cObject.UpgradeClass = row.Item(column).ToString.Trim
-                        Case "DESCRIPTION" : cObject.UpgradeDescription = row.Item(column).ToString.Trim
-                        Case "MODELORSTYLE" : cObject.StyleDescription = row.Item(column).ToString.Trim
+	Function GetRecords(lsWhere As String, lsID As String, lsObjectID As String, NODEID As Long) As IEnumerable(Of clsUpgradeOption) 'DataSet
+		Dim ds As New DataSet
+		Dim CustDate As Date
+		Dim cObject As New clsSelectedItem
+		Dim colName As String
+		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+		ID = lsID
+		If ID = "" Then ID = lsObjectID
+		ds = c.LoadRequestedUpgrades(NODEID, "", "", lsObjectID, lsWhere, True, lsID)
+		'Return ds
+		'Exit Function
+		Dim result As New List(Of clsUpgradeOption)
+		For Each row As DataRow In ds.Tables(0).Rows
+			Dim values As New List(Of Object)
+			cObject = New clsSelectedItem
+			For Each column As DataColumn In ds.Tables(0).Columns
+				If row.IsNull(column) Then
+					values.Add(Nothing)
+				Else
+					colName = UCase(column.ColumnName)
+					Select Case colName
+						'Case "UNITTYPE": cObject.unit = row.Item(column)
+						Case "LOCATION" : cObject.RoomDescription = row.Item(column)
+						Case "UPGRADECATEGORY" : cObject.UpgradeCategory = row.Item(column).ToString.Trim
+						Case "UPGRADELEVEL" : cObject.UpgradeClass = row.Item(column).ToString.Trim
+						Case "DESCRIPTION" : cObject.UpgradeDescription = row.Item(column).ToString.Trim
+						Case "MODELORSTYLE" : cObject.StyleDescription = row.Item(column).ToString.Trim
 
-                        Case "LEADVENDOR" : cObject.LeadVendor = row.Item(column).ToString.Trim
-                        Case "CUSTOMERPRICE" : cObject.CustomerPrice = row.Item(column)
-                        'Case "DEVELOPERPRICE": cObject. = row.Item(column)
-                    '	Case "TOVENDORPRICE": cObject.v = row.Item(column)
-                        Case "BUILDINGPHASE" : cObject.BuildingPhase = row.Item(column)
-                        Case "PRICINGREVNUMBER" : cObject.PricingRevNumber = row.Item(column)
-                        'Case "OPTIONSTATUS": cObject.s = row.Item(column)
-                        Case "STANDARD" : cObject.Standard = row.Item(column).ToString.Trim
-                        Case "ADDITIONALFILETOPRINT1" : cObject.AdditionalFileToPrint1 = row.Item(column).ToString.Trim
-                        Case "ADDITIONALFILETOPRINT2" : cObject.AdditionalFileToPrint2 = row.Item(column).ToString.Trim
+						Case "LEADVENDOR" : cObject.LeadVendor = row.Item(column).ToString.Trim
+						Case "CUSTOMERPRICE" : cObject.CustomerPrice = row.Item(column)
+						'Case "DEVELOPERPRICE": cObject. = row.Item(column)
+					'	Case "TOVENDORPRICE": cObject.v = row.Item(column)
+						Case "BUILDINGPHASE" : cObject.BuildingPhase = row.Item(column)
+						Case "PRICINGREVNUMBER" : cObject.PricingRevNumber = row.Item(column)
+						'Case "OPTIONSTATUS": cObject.s = row.Item(column)
+						Case "STANDARD" : cObject.Standard = row.Item(column).ToString.Trim
+						Case "ADDITIONALFILETOPRINT1" : cObject.AdditionalFileToPrint1 = row.Item(column).ToString.Trim
+						Case "ADDITIONALFILETOPRINT2" : cObject.AdditionalFileToPrint2 = row.Item(column).ToString.Trim
 
-                        'Case "UNITTYPEID" : cObject.u = row.Item(column)
+						'Case "UNITTYPEID" : cObject.u = row.Item(column)
 
-                        Case "ID" : cObject.ID = row.Item(column).ToString.Trim
-                        Case "NAME" : cObject.Name = row.Item(column).ToString.Trim
-                        Case "OBJECTID" : cObject.ObjectID = row.Item(column).ToString.Trim
-                        Case "CODE" : cObject.Code = row.Item(column).ToString.Trim
-                        Case "COMMENTS" : cObject.Comments = row.Item(column).ToString.Trim
+						Case "ID" : cObject.ID = row.Item(column).ToString.Trim
+						Case "NAME" : cObject.Name = row.Item(column).ToString.Trim
+						Case "OBJECTID" : cObject.ObjectID = row.Item(column).ToString.Trim
+						Case "CODE" : cObject.Code = row.Item(column).ToString.Trim
+						Case "COMMENTS" : cObject.Comments = row.Item(column).ToString.Trim
 
-                        'Case "NODEID" : cObject.NodeID = row.Item(column)
-                        Case "SORTORDER" : cObject.SortOrder = row.Item(column)
-                        Case "ACTIVE" : cObject.Active = row.Item(column)
-                        Case "CREATEDATE"
-                            CustDate = row.Item(column)
-                            If CustDate > DateAdd("d", -100000, Now) Then cObject.CreateDate = CustDate
-                        Case "CREATEUSER" : cObject.CreateUser = row.Item(column).ToString.Trim
-                        Case "UPDATEDATE" : cObject.UpdateDate = row.Item(column)
-                            CustDate = row.Item(column)
-                            If CustDate > DateAdd("d", -100000, Now) Then cObject.UpdateDate = CustDate
-                        Case "UPDATEUSER" : cObject.UpdateUser = row.Item(column).ToString.Trim
+						'Case "NODEID" : cObject.NodeID = row.Item(column)
+						Case "SORTORDER" : cObject.SortOrder = row.Item(column)
+						Case "ACTIVE" : cObject.Active = row.Item(column)
+						Case "CREATEDATE"
+							CustDate = row.Item(column)
+							If CustDate > DateAdd("d", -100000, Now) Then cObject.CreateDate = CustDate
+						Case "CREATEUSER" : cObject.CreateUser = row.Item(column).ToString.Trim
+						Case "UPDATEDATE" : cObject.UpdateDate = row.Item(column)
+							CustDate = row.Item(column)
+							If CustDate > DateAdd("d", -100000, Now) Then cObject.UpdateDate = CustDate
+						Case "UPDATEUSER" : cObject.UpdateUser = row.Item(column).ToString.Trim
 
-                    End Select
-                End If
-            Next
-            result.Add(New clsUpgradeOption) 'cObject)
-        Next
-        Return result
-    End Function
+					End Select
+				End If
+			Next
+			result.Add(New clsUpgradeOption) 'cObject)
+		Next
+		Return result
+	End Function
 
-    Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+	Public Sub New()
+		NODEID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 	Public Sub Delete() 'ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-        c.DeleteUpgradeOptions(ID, llNodeID)
-    End Sub
+		c.DeleteUpgradeOptions(ID, NODEID)
+	End Sub
 	Public Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 
 		Dim lbOK As Boolean
 
-		lbOK = c.InsertUpgradeOptions(llNodeID, UnitType,
+		lbOK = c.InsertUpgradeOptions(NODEID, UnitType,
 	 Location, UpgradeCategory, UpgradeLevel,
 	 Description, ModelOrStyle, Comments,
 	 LeadVendor, CustomerPrice, DeveloperPrice,
@@ -1028,7 +1094,7 @@ Public Class clsUpgradeOptions
 	End Sub
 	Public Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdateUpgradeOptions(llNodeID, UnitType,
+		c.UpdateUpgradeOptions(NODEID, UnitType,
 	 Location, UpgradeCategory, UpgradeLevel,
 	 Description, ModelOrStyle, Comments,
 	 LeadVendor, CustomerPrice, DeveloperPrice,
@@ -1074,9 +1140,9 @@ Public Class clsPhase
 	Public Property ErrorMessage As String
 	Public Property Level As String = "" ' Tells whether this is coming from the Project (Setting up Phases) or Quote
 	' Levels is important because at the Project Level we do not modify the Quote Level Fields
-	Private Property llNodeID As Long
+
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NodeID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 	Public Sub Delete() 'ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
@@ -1086,22 +1152,22 @@ Public Class clsPhase
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 
 		Dim lbOK As Boolean
-		lbOK = c.InsertPhases(ObjectID, llNodeID, Name, Description, Image, ProjectType, Code, ErrorMessage, SortOrder)
+		lbOK = c.InsertPhases(ObjectID, NodeID, Name, Description, Image, ProjectType, Code, ErrorMessage, SortOrder)
 
 	End Sub
 	Public Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdatePhases(llNodeID, Name, Description, Image, ProjectType, Active, ID, Code, PhaseStatus, PhaseTargetDate, PhaseCompleteDate, Level, SortOrder)
+		c.UpdatePhases(NodeID, Name, Description, Image, ProjectType, Active, ID, Code, PhaseStatus, PhaseTargetDate, PhaseCompleteDate, Level, SortOrder)
 		Update = 1
 	End Function
 End Class
 
 Public Class clsPhases
-	Public llNodeID As Long
+	Public NODEID As Long
 	Public Active As Boolean
 	Public ID As String
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NODEID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 
 	Function GetRecords(SortExpression As String, SortOrder As String, lsObjectID As String) As IEnumerable(Of clsPhase) 'DataSet
@@ -1181,10 +1247,10 @@ Public Class clsUnit
 	Public Property Image As String
 
 	Public Property Level As String = "" ' Tells whether this is coming from the Project (Setting up Phases) or Quote
-    ' Levels is important because at the Project Level we do not modify the Quote Level Fields
-    'Private Property llNodeID As Long
-    Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+	' Levels is important because at the Project Level we do not modify the Quote Level Fields
+	'Private Property NODEID As Long
+	Public Sub New()
+		NodeID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 	Public Overrides Sub Delete() 'ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
@@ -1194,27 +1260,27 @@ Public Class clsUnit
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		'Dim lsMsg As String
 		Dim lbOK As Boolean
-		lbOK = c.InsertUnits(llNodeID, ObjectID, Name, Active, UnitTypeID, Availalbe, Tier, DepositTypeID)
+		lbOK = c.InsertUnits(NodeID, ObjectID, Name, Active, UnitTypeID, Availalbe, Tier, DepositTypeID)
 		If lbOK = False Then
 			'lsMsg = obj.ErrorMessage
 		End If
 	End Sub
 	Public Overrides Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdateUnits(llNodeID, Name, FloorID, UnitTypeID, Availalbe, 0, Tier, DepositTypeID, Active, ID)
+		c.UpdateUnits(NodeID, Name, FloorID, UnitTypeID, Availalbe, 0, Tier, DepositTypeID, Active, ID)
 		Update = 1
 	End Function
 End Class
 
 Public Class clsUnits
-	Public llNodeID As Long
+	Public NODEID As Long
 	Public Active As Boolean
 	Public ID As String
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NODEID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 
-	Function GetRecords(lsWhere As String, ByVal lsID As String, lsObjectID As String, llNodeID As Long) As IEnumerable(Of clsUnit) 'DataSet
+	Function GetRecords(lsWhere As String, ByVal lsID As String, lsObjectID As String, NODEID As Long) As IEnumerable(Of clsUnit) 'DataSet
 		Dim ds As New DataSet
 		Dim CustDate As Date
 		Dim cObject As New clsUnit
@@ -1222,7 +1288,7 @@ Public Class clsUnits
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		If lsObjectID = "" Then lsObjectID = "11112222-3333-4444-5555-666677778888"
 		lsWhere = " q.unitid Is null "
-		ds = c.LoadUnits(llNodeID, lsWhere, True, lsObjectID, lsID)
+		ds = c.LoadUnits(NODEID, lsWhere, True, lsObjectID, lsID)
 		'Return ds
 		'Exit Function
 
@@ -1272,14 +1338,14 @@ Public Class clsUnits
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		Dim lsMsg As String
 		Dim lbOK As Boolean
-		lbOK = c.InsertUnits(llNodeID, obj.ObjectID, obj.Name, obj.Active, obj.UnitTypeID, obj.Availalbe, obj.Tier, obj.DepositTypeID)
+		lbOK = c.InsertUnits(NODEID, obj.ObjectID, obj.Name, obj.Active, obj.UnitTypeID, obj.Availalbe, obj.Tier, obj.DepositTypeID)
 		If lbOK = False Then
 			lsMsg = obj.ErrorMessage
 		End If
 	End Sub
 	Public Function Update(obj As clsUnit) As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdateUnits(llNodeID, obj.Name, obj.FloorID, obj.UnitTypeID, obj.Availalbe, 0, obj.Tier, obj.DepositTypeID, obj.Active, obj.ID)
+		c.UpdateUnits(NODEID, obj.Name, obj.FloorID, obj.UnitTypeID, obj.Availalbe, 0, obj.Tier, obj.DepositTypeID, obj.Active, obj.ID)
 		Update = 1
 	End Function
 End Class
@@ -1310,15 +1376,15 @@ Public Class clsPayment
 	Public Property ErrorMessage As String
 	Public Property Level As String = "" ' Tells whether this is coming from the Project (Setting up Phases) or Quote
 	' Levels is important because at the Project Level we do not modify the Quote Level Fields
-	Private Property llNodeID As Long
+
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NodeID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 	Public Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		Dim lsMsg As String = ""
 		Dim lbOK As Boolean
-		lbOK = c.InsertPayments(llNodeID, ObjectID, PaymentDueDate, PaymentDueAmount, ActualPaymentDate, ActualPaymentAmount, CheckNumber, PaymentComment, BuildingPhase, PaymentType)
+		lbOK = c.InsertPayments(NodeID, ObjectID, PaymentDueDate, PaymentDueAmount, ActualPaymentDate, ActualPaymentAmount, CheckNumber, PaymentComment, BuildingPhase, PaymentType)
 		If lbOK = False Then
 			ErrorMessage = lsMsg
 		End If
@@ -1326,11 +1392,11 @@ Public Class clsPayment
 End Class
 
 Public Class clsPayments
-	Public llNodeID As Long
+	Public NODEID As Long
 	Public Active As Boolean
 	Public ID As String
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NODEID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 
 	Function GetRecords(lsWhere As String, ByVal lsID As String, lsObjectID As String, llNodeID As Long) As IEnumerable(Of clsPayment) 'DataSet
@@ -1341,7 +1407,7 @@ Public Class clsPayments
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		If lsObjectID = "" Then lsObjectID = "11112222-3333-4444-5555-666677778888"
 		lsWhere = " "
-		ds = c.LoadPayments(llNodeID, lsWhere, lsObjectID, lsID, True)
+		ds = c.LoadPayments(NODEID, lsWhere, lsObjectID, lsID, True)
 		'Return ds
 		'Exit Function
 
@@ -1395,14 +1461,14 @@ Public Class clsPayments
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		Dim lsMsg As String = ""
 		Dim lbOK As Boolean
-		lbOK = c.InsertPayments(llNodeID, obj.ObjectID, obj.PaymentDueDate, obj.PaymentDueAmount, obj.ActualPaymentDate, obj.ActualPaymentAmount, obj.CheckNumber, obj.PaymentComment, obj.BuildingPhase, obj.paymentType)
+		lbOK = c.InsertPayments(NODEID, obj.ObjectID, obj.PaymentDueDate, obj.PaymentDueAmount, obj.ActualPaymentDate, obj.ActualPaymentAmount, obj.CheckNumber, obj.PaymentComment, obj.BuildingPhase, obj.PaymentType)
 		If lbOK = False Then
 			obj.ErrorMessage = lsMsg
 		End If
 	End Sub
 	Public Function Update(obj As clsPayment) As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdatePayments(obj.ID, llNodeID, obj.ObjectID, obj.PaymentDueDate,
+		c.UpdatePayments(obj.ID, NODEID, obj.ObjectID, obj.PaymentDueDate,
 						 obj.PaymentDueAmount, obj.ActualPaymentDate, obj.ActualPaymentAmount,
 						 obj.CheckNumber, obj.PaymentComment, obj.BuildingPhase, obj.PaymentType, obj.Active)
 		Update = 1
@@ -1422,14 +1488,15 @@ Public Class clsBase
 	Public Property UpdateUser As String
 	Public Property UpdateUserName As String
 	Public Property CreateUserName As String
-	Public Property llNodeID As Long
+
 	Public Property NodeID As Integer
 	Public Property ImageUrl As String
 	Public FormValue As List(Of KeyValuePair(Of String, String))
 	Public Property ErrorMessage As String
 	Public Property TableName As String
+	Public Property EditMode As Boolean
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NodeID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 	Public Overridable Sub processFormValues()
 		Dim lsString As String = ""
@@ -1446,20 +1513,20 @@ Public Class clsBase
 					Description = kvp.Value
 				Case "Active".ToUpper
 					Active = kvp.Value
-				Case "CreateDate.toupper"
+				Case "CreateDate".ToUpper
 					CreateDate = kvp.Value
 				Case "CreateUser".ToUpper
 					CreateUser = kvp.Value
 				Case "UpdateDate".ToUpper
 					UpdateDate = kvp.Value
-				Case "UpdateUser.toupper"
+				Case "UpdateUser".ToUpper
 					UpdateUser = kvp.Value
 				Case "UpdateUserName".ToUpper
 					UpdateUserName = kvp.Value
 				Case "CreateUserName".ToUpper
 					CreateUserName = kvp.Value
-				Case "llNodeID".ToUpper
-					llNodeID = kvp.Value
+				Case "llNodeID".ToUpper, "NODEID"
+					NodeID = kvp.Value
 				Case "NodeID".ToUpper
 					NodeID = kvp.Value
 				Case "ImageUrl".ToUpper
@@ -1474,13 +1541,13 @@ Public Class clsBase
 		End If
 		lsString = lsString
 	End Sub
-	Public Overridable Sub Delete() 'ID As String)
+	Public Overridable Sub Delete()
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		c.DeleteBase(ID, NodeID)
 	End Sub
 	Public Overridable Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.InsertBase(llNodeID, Name, Description, ImageUrl, Code)
+		c.InsertBase(NodeID, Name, Description, ImageUrl, Code)
 	End Sub
 	Public Overridable Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
@@ -1488,7 +1555,7 @@ Public Class clsBase
 		If Active Then
 			lsActive = "1"
 		End If
-		c.UpdateBase(llNodeID, Name, Description, ImageUrl, "", lsActive, ID, Code)
+		c.UpdateBase(NodeID, Name, Description, ImageUrl, "", lsActive, ID, Code)
 
 		Update = 1
 	End Function
@@ -1496,12 +1563,12 @@ Public Class clsBase
 End Class
 Public Class clsBases
 	Public objType As String
-	Public llNodeID As Long
+	Public NODEID As Long
 	Public Active As Boolean
 	Public ID As String
 
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NODEID = System.Web.HttpContext.Current.Session("NodeID")
 		objType = System.Web.HttpContext.Current.Session("objType")
 		If objType Is Nothing Or objType = "" Then objType = "Units"
 	End Sub
@@ -1510,7 +1577,7 @@ Public Class clsBases
 		Select Case lsObjType.ToUpper
 			Case "ROOMS" : GetObject = New clsRoom
 			Case "UNITS" : GetObject = New clsDBObject 'clsUnit
-			'Case "UNITTYPES" : GetObject = New clsunittype
+			Case "CUSTOMERS" : GetObject = New clsCustomer
 			'Case "FLOORS" : GetObject = New clsfloor
 			'Case "VENDORS" : GetObject = New clsvendor
 			'Case "UNITPROFILES" : GetObject = New clsun
@@ -1546,23 +1613,23 @@ Public Class clsBases
 
 		If ID = "" Then ID = lsObjectID
 		Select Case objType.ToUpper
-			Case "ROOMS" : ds = c.LoadRooms(llNodeID, lsWhere, Active, ID)
-			Case "UNITS" : ds = c.LoadUnits(llNodeID, lsWhere, Active, "", ID) 'FIX THIS
-			Case "UNITTYPES" : ds = c.LoadUnitTypes(llNodeID, lsWhere, Active, ID)
-			Case "FLOORS" : ds = c.LoadFloors(llNodeID, lsWhere, Active, ID)
-			Case "VENDORS" : ds = c.LoadVendors(llNodeID, lsWhere, Active, ID)
-			Case "UNITPROFILES" : ds = c.LoadUnitProfiles(llNodeID, lsWhere, Active, ID)
-			Case "UNITTIERS" : ds = c.LoadTiers(llNodeID, lsWhere, Active, ID)
-			Case "PROJECTS" : ds = c.LoadProjects(llNodeID, lsWhere, Active, ID)
-			Case "LOGINS" : ds = c.LoadLogins(llNodeID, lsWhere, Active, ID)
-			Case "DEPOSITCONDITIONS" : ds = c.LoadDepositConditions(llNodeID, lsWhere, Active, ID)
-			Case "COMPANYINFO" : ds = c.LoadCompanyInfo(llNodeID, lsWhere, Active, ID)
-			Case "REPORTCATEGORIES" : ds = c.LoadReportCategories(llNodeID, lsWhere, Active, ID)
-			Case "REPORTDESCRIPTIONS" : ds = c.LoadThings(llNodeID, lsWhere, Active, ID, "tblReportDescriptions")
-			Case "BASE" : ds = c.LoadBase(llNodeID, lsWhere, Active, ID)
+			Case "ROOMS" : ds = c.LoadRooms(NODEID, lsWhere, Active, ID)
+			Case "UNITS" : ds = c.LoadUnits(NODEID, lsWhere, Active, "", ID) 'FIX THIS
+			Case "UNITTYPES" : ds = c.LoadUnitTypes(NODEID, lsWhere, Active, ID)
+			Case "FLOORS" : ds = c.LoadFloors(NODEID, lsWhere, Active, ID)
+			Case "VENDORS" : ds = c.LoadVendors(NODEID, lsWhere, Active, ID)
+			Case "UNITPROFILES" : ds = c.LoadUnitProfiles(NODEID, lsWhere, Active, ID)
+			Case "UNITTIERS" : ds = c.LoadTiers(NODEID, lsWhere, Active, ID)
+			Case "PROJECTS" : ds = c.LoadProjects(NODEID, lsWhere, Active, ID)
+			Case "LOGINS" : ds = c.LoadLogins(NODEID, lsWhere, Active, ID)
+			Case "DEPOSITCONDITIONS" : ds = c.LoadDepositConditions(NODEID, lsWhere, Active, ID)
+			Case "COMPANYINFO" : ds = c.LoadCompanyInfo(NODEID, lsWhere, Active, ID)
+			Case "REPORTCATEGORIES" : ds = c.LoadReportCategories(NODEID, lsWhere, Active, ID)
+			Case "REPORTDESCRIPTIONS" : ds = c.LoadThings(NODEID, lsWhere, Active, ID, "tblReportDescriptions")
+			Case "BASE" : ds = c.LoadBase(NODEID, lsWhere, Active, ID)
 			Case Else
 				stable = GetTableNameFromObjType()
-				ds = c.LoadThings(llNodeID, lsWhere, Active, ID, stable)
+				ds = c.LoadThings(NODEID, lsWhere, Active, ID, stable)
 		End Select
 
 		If ds Is Nothing Then ds = New DataSet
@@ -1588,7 +1655,7 @@ Public Class clsBases
 					colName = UCase(column.ColumnName)
 					Select Case colName
 						Case "ID" : cust.ID = row.Item(column).ToString
-						Case "CUSTOMERNAME" : cust.CustomerName = row.Item(column)
+						Case "CUSTOMERNAME", "NAME" : cust.Name = row.Item(column)
 						Case "CUSTOMERADDRESS" : cust.CustomerAddress = row.Item(column)
 						Case "CUSTOMERCITY" : cust.CustomerCity = row.Item(column)
 						Case "CUSTOMERSTATE" : cust.StateProvince = row.Item(column)
@@ -1628,8 +1695,8 @@ Public Class clsBases
 			Return False
 		End If
 	End Function
-	Overridable Function DeleteRecordData(sTable As String, llNodeID As Long, ID As Guid) As Boolean
-		Dim o As clsBase
+	Overridable Function DeleteRecordData(sTable As String, NODEID As Long, ID As Guid) As Boolean
+		'Dim o As clsBase
 		Dim ds As New DataSet
 		Dim cust As New clsCustomer
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
@@ -1639,35 +1706,35 @@ Public Class clsBases
 			If isGUID(lsid) = False Then
 				Exit Function
 			End If
-			If llNodeID = 0 Then
+			If NODEID = 0 Then
 
 				'Exit Function
 			End If
 			Select Case objType.ToUpper
-				Case "ROOMS" : DeleteRecordData = c.DeleteRooms(lsid, llNodeID)
-				Case "UNITS" : DeleteRecordData = c.DeleteUnits(lsid, llNodeID) 'FIX THIS
-				Case "UNITTYPES" : DeleteRecordData = c.DeleteUnitTypes(lsid, llNodeID)
-				Case "FLOORS" : DeleteRecordData = c.DeleteFloors(lsid, llNodeID)
-				Case "VENDORS" : DeleteRecordData = c.DeleteVendors(lsid, llNodeID)
-				Case "UNITPROFILES" : DeleteRecordData = c.DeleteUnitProfiles(lsid, llNodeID)
+				Case "ROOMS" : DeleteRecordData = c.DeleteRooms(lsid, NODEID)
+				Case "UNITS" : DeleteRecordData = c.DeleteUnits(lsid, NODEID) 'FIX THIS
+				Case "UNITTYPES" : DeleteRecordData = c.DeleteUnitTypes(lsid, NODEID)
+				Case "FLOORS" : DeleteRecordData = c.DeleteFloors(lsid, NODEID)
+				Case "VENDORS" : DeleteRecordData = c.DeleteVendors(lsid, NODEID)
+				Case "UNITPROFILES" : DeleteRecordData = c.DeleteUnitProfiles(lsid, NODEID)
 				'Case "UNITTIERS" : DeleteRecordData = c.DeleteUnittiers(llNodelsID, lsWhere, Active, ID)
-				Case "PROJECTS" : DeleteRecordData = c.DeleteProjects(lsid, llNodeID)
-				Case "LOGINS" : DeleteRecordData = c.DeleteLogins(lsid, llNodeID)
-				Case "DEPOSITCONDITIONS" : DeleteRecordData = c.DeleteDepositConditions(lsid, llNodeID)
-				Case "COMPANYINFO" : DeleteRecordData = c.DeleteCompanyInfo(lsid, llNodeID)
-				Case "REPORTCATEGORIES" : DeleteRecordData = c.DeleteReportCategory(lsid, llNodeID)
-				Case "REPORTDESCRIPTIONS" : DeleteRecordData = c.DeleteThings(lsid, "tblReportDescriptions", llNodeID)
-				Case "BASE" : DeleteRecordData = c.DeleteBase(lsid, llNodeID)
+				Case "PROJECTS" : DeleteRecordData = c.DeleteProjects(lsid, NODEID)
+				Case "LOGINS" : DeleteRecordData = c.DeleteLogins(lsid, NODEID)
+				Case "DEPOSITCONDITIONS" : DeleteRecordData = c.DeleteDepositConditions(lsid, NODEID)
+				Case "COMPANYINFO" : DeleteRecordData = c.DeleteCompanyInfo(lsid, NODEID)
+				Case "REPORTCATEGORIES" : DeleteRecordData = c.DeleteReportCategory(lsid, NODEID)
+				Case "REPORTDESCRIPTIONS" : DeleteRecordData = c.DeleteThings(lsid, "tblReportDescriptions", NODEID)
+				Case "BASE" : DeleteRecordData = c.DeleteBase(lsid, NODEID)
 				Case Else
 					sTable = GetTableNameFromObjType()
-					DeleteRecordData = c.DeleteThings(sTable, lsid, llNodeID)
+					DeleteRecordData = c.DeleteThings(sTable, lsid, NODEID)
 			End Select
 		Catch
 			Dim msERR As String = "<Error>" & Err.Description & "</Error>"
 		End Try
 
 	End Function
-	Public Overridable Function GetRecords(SortExpression As String, SortOrder As String, lsObjectID As String, lbActive As Boolean, llNodeID As Long) As IEnumerable(Of Kolassa.DesignCentre.UI.clsRoom)
+	Public Overridable Function GetRecords(SortExpression As String, SortOrder As String, lsObjectID As String, lbActive As Boolean, NODEID As Long) As IEnumerable(Of Kolassa.DesignCentre.UI.clsRoom)
 		Dim ds As New DataSet
 		Dim CustDate As Date
 		Dim cust As New clsCustomer
@@ -1675,7 +1742,7 @@ Public Class clsBases
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		If ID = "" Then ID = lsObjectID
 
-		ds = c.LoadCustomers(llNodeID, "", lbActive, ID, SortExpression, SortOrder)
+		ds = c.LoadCustomers(NODEID, "", lbActive, ID, SortExpression, SortOrder)
 
 		Dim result As New List(Of clsCustomer)
 		For Each row As DataRow In ds.Tables(0).Rows
@@ -1688,7 +1755,7 @@ Public Class clsBases
 					colName = UCase(column.ColumnName)
 					Select Case colName
 						Case "ID" : cust.ID = row.Item(column).ToString
-						Case "CUSTOMERNAME" : cust.CustomerName = row.Item(column)
+						Case "CUSTOMERNAME", "NAME" : cust.NAME = row.Item(column)
 						Case "CUSTOMERADDRESS" : cust.CustomerAddress = row.Item(column)
 						Case "CUSTOMERCITY" : cust.CustomerCity = row.Item(column)
 						Case "CUSTOMERSTATE" : cust.StateProvince = row.Item(column)
@@ -1723,11 +1790,11 @@ Public Class clsBases
 	End Sub
 	Public Overridable Sub Insert(obj As clsBase) 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.InsertBase(llNodeID, obj.Name, obj.Description, obj.ImageUrl, obj.Code)
+		c.InsertBase(NODEID, obj.Name, obj.Description, obj.ImageUrl, obj.Code)
 	End Sub
 	Public Overridable Function Update(obj As clsBase) As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdateBase(llNodeID, obj.Name, obj.Description, obj.ImageUrl, "", obj.Active, obj.ID, obj.Code)
+		c.UpdateBase(NODEID, obj.Name, obj.Description, obj.ImageUrl, "", obj.Active, obj.ID, obj.Code)
 		Update = 1
 	End Function
 End Class
@@ -1764,15 +1831,15 @@ Public Class clsAdjustment
 	Public Property ErrorMessage As String
 	Public Property Level As String = "" ' Tells whether this is coming from the Project (Setting up Phases) or Quote
 	' Levels is important because at the Project Level we do not modify the Quote Level Fields
-	Private Property llNodeID As Long
+
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NodeID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 	Public Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		Dim lsMsg As String = ""
 		Dim lbOK As Boolean
-		lbOK = c.InsertAdjustments(llNodeID, ObjectID, AdjustmentAmount, AdjustmentReason, BuildingPhase, AdjustmentDate)
+		lbOK = c.InsertAdjustments(NodeID, ObjectID, AdjustmentAmount, AdjustmentReason, BuildingPhase, AdjustmentDate)
 		If lbOK = False Then
 			ErrorMessage = lsMsg
 		End If
@@ -1780,11 +1847,11 @@ Public Class clsAdjustment
 End Class
 
 Public Class clsAdjustments
-	Public llNodeID As Long
+	Public NODEID As Long
 	Public Active As Boolean
 	Public ID As String
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NODEID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 
 	Function GetRecords(lsWhere As String, ByVal lsID As String, lsObjectID As String, llNodeID As Long) As IEnumerable(Of clsAdjustment) 'DataSet
@@ -1795,7 +1862,7 @@ Public Class clsAdjustments
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		If lsObjectID = "" Then lsObjectID = "11112222-3333-4444-5555-666677778888"
 		lsWhere = " "
-		ds = c.LoadAdjustments(llNodeID, lsWhere, lsObjectID, lsID, True)
+		ds = c.LoadAdjustments(NODEID, lsWhere, lsObjectID, lsID, True)
 		'Return ds
 		'Exit Function
 
@@ -1849,14 +1916,14 @@ Public Class clsAdjustments
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		Dim lsMsg As String = ""
 		Dim lbOK As Boolean
-		lbOK = c.InsertAdjustments(llNodeID, obj.ObjectID, obj.AdjustmentAmount, obj.AdjustmentReason, obj.BuildingPhase, obj.AdjustmentDate)
+		lbOK = c.InsertAdjustments(NODEID, obj.ObjectID, obj.AdjustmentAmount, obj.AdjustmentReason, obj.BuildingPhase, obj.AdjustmentDate)
 		If lbOK = False Then
 			obj.ErrorMessage = lsMsg
 		End If
 	End Sub
 	Public Function Update(obj As clsAdjustment) As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdateAdjustments(llNodeID, obj.ID, obj.ObjectID, obj.AdjustmentDate,
+		c.UpdateAdjustments(NODEID, obj.ID, obj.ObjectID, obj.AdjustmentDate,
 						 obj.AdjustmentReason, obj.AdjustmentAmount, 1,
 						  obj.Active, 1)
 		Update = 1
@@ -1924,10 +1991,10 @@ Public Class clsReportCategories
 	Inherits clsBases
 
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NODEID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 
-	Public Overloads Function GetRecords(lsWhere As String, ByVal lsID As String, lsObjectID As String, llNodeID As Long) As IEnumerable(Of clsReportCategory) 'DataSet
+	Public Overloads Function GetRecords(lsWhere As String, ByVal lsID As String, lsObjectID As String, NODEID As Long) As IEnumerable(Of clsReportCategory) 'DataSet
 		Dim ds As New DataSet
 		Dim CustDate As Date
 		Dim cObject As New clsReportCategory
@@ -2004,9 +2071,9 @@ Public Class clsReportCategory
 	Public Property ReportCategoryType As String
 	Public Property ReportCategoryID As Long
 	Public Property HideLists As Boolean
-	'Private Property llNodeID As Long
+	'Private Property NODEID As Long
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NodeID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 	Public Overrides Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
@@ -2031,10 +2098,10 @@ Public Class clsDBObjects
 	Inherits clsBases
 
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NODEID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 
-	Public Overloads Function GetRecords(lsWhere As String, ByVal lsID As String, lsObjectID As String, llNodeID As Long, lsTableName As String) As IEnumerable(Of clsDBObject) 'DataSet
+	Public Overloads Function GetRecords(lsWhere As String, ByVal lsID As String, lsObjectID As String, NODEID As Long, lsTableName As String, lbActive As Boolean) As IEnumerable(Of clsDBObject) 'DataSet
 		Dim ds As New DataSet
 		Dim CustDate As Date
 		Dim cObject As New clsDBObject
@@ -2042,7 +2109,7 @@ Public Class clsDBObjects
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		If lsObjectID = "" Then lsObjectID = "11112222-3333-4444-5555-666677778888"
 		lsWhere = " "
-		ds = c.LoadThings(llNodeID, lsWhere, True, lsID, lsTableName)
+		ds = c.LoadThings(NODEID, lsWhere, lbActive, lsID, lsTableName)
 		'Return ds
 		'Exit Function
 
@@ -2095,7 +2162,7 @@ Public Class clsDBObjects
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		Dim lsMsg As String = ""
 		Dim lbOK As Boolean
-		lbOK = c.InsertThings(obj.FormValue, obj.TableName, obj.ID, obj.llNodeID, obj.Name, obj.Description, obj.Code)
+		lbOK = c.InsertThings(obj.FormValue, obj.TableName, obj.ID, obj.NodeID, obj.Name, obj.Description, obj.Code)
 		If lbOK = False Then
 			obj.ErrorMessage = lsMsg
 		End If
@@ -2119,23 +2186,34 @@ Public Class clsDBObject
 	Inherits clsBase
     'Public Property Description As String
     Public Property HideLists As Boolean
-	'Private Property llNodeID As Long
+	'Private Property NODEID As Long
 
 	Public Sub New()
-		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
+		NodeID = System.Web.HttpContext.Current.Session("NodeID")
+	End Sub
+
+	Public Overrides Sub Delete()
+		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+
+		c.DeleteThings(TableName, ID, NodeID)
+		If c.msErrorMsg = "" Then
+
+		Else
+			ErrorMessage = c.msErrorMsg
+		End If
 	End Sub
 	Public Overrides Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		Dim lsMsg As String = ""
 		Dim lbOK As Boolean
-		lbOK = c.InsertThings(FormValue, TableName, ID, llNodeID, Name, Description, Code)
+		lbOK = c.InsertThings(FormValue, TableName, ID, NodeID, Name, Description, Code)
 		If lbOK = False Then
 			ErrorMessage = lsMsg
 		End If
 	End Sub
 	Public Overloads Function Update(obj As clsDBObject) As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdateThings(FormValue, llNodeID, obj.Name, obj.Description, obj.Code, obj.ID, obj.TableName, obj.Active)
+		c.UpdateThings(FormValue, NodeID, obj.Name, obj.Description, obj.Code, obj.ID, obj.TableName, obj.Active)
 		If c.msErrorMsg <> "" Then
 			Update = 0
 			ErrorMessage = c.msErrorMsg
@@ -2183,7 +2261,7 @@ Public Class clsDBObject
 				Case "CreateUserName".ToUpper
 					CreateUserName = kvp.Value
 				Case "llNodeID".ToUpper
-					llNodeID = kvp.Value
+					NodeID = kvp.Value
 				Case "NodeID".ToUpper
 					NodeID = kvp.Value
 				Case "ImageUrl".ToUpper

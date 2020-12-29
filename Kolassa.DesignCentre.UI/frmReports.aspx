@@ -32,7 +32,7 @@
                 <img class="btn btn-seondary" height="40" data-toggle="modal" data-target="#modalWhere" style="padding-left:20px" src="images/eye.png"/>
             </li>
             <li>
-                <asp:ImageButton ID="imgLoadColumns" runat="server" ImageUrl="~/images/tools.png" style="padding-left:20px;padding-right:20px; padding-top:12px; height:30px"  OnClick="lnkLoadColumns_click"   data-toggle="modal" data-target="#loadMe" ToolTip="Edit Views"/>
+                <asp:ImageButton ID="imgLoadColumns1" runat="server" ImageUrl="~/images/tools.png" style="padding-left:20px;padding-right:20px; padding-top:12px; height:30px"  OnClick="lnkLoadColumns_click"   data-toggle="modal" data-target="#loadMe" ToolTip="Edit Views"/>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" style="padding-left:20;pxpadding-right:20px;" href="#" id="navbarDropdown" 
@@ -127,7 +127,7 @@
             </Triggers>
      </asp:UpdatePanel>
 
-<div class="modal fade" id="loadMe" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel">
+<div class="modal fade" id="loadMe" tabindex="-1" role="dialog" aria-labelledby="Label">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-body text-center">
@@ -206,7 +206,7 @@
             $('#<%=pnlMessage.ClientID %>').append('<div id="alert_div" style="margin: 0 0.5%; -webkit-box-shadow: 3px 4px 6px #999;" class="alert fade in ' + cssclass + '"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>' + messagetype + '!</strong> <span>' + message + '</span></div>');
         }
     </script>
-    //	<s cript src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></s>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 

@@ -22,7 +22,7 @@
         ReportResults.Attributes("data-reportdesc") = ReportContainer1.ReportDescription
         ReportResults.Attributes("data-reportwheredesc") = ReportContainer1.ReportOut
         ReportResults.ReportDesc = ReportContainer1.ReportDescription
-        ShowMessage("Aww, password is wrong", "Error")
+        ShowMessage("Darn, password is wrong", "Error")
     End Sub
     Public Sub ShowMessage(Message As String, lsType As String)
         'Show Bootstrap Message

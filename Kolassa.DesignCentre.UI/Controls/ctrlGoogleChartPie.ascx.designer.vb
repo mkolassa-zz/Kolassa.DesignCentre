@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class CtrlGoogleChartPie
-    
+
     '''<summary>
     '''lblTitle control.
     '''</summary>
@@ -21,7 +21,16 @@ Partial Public Class CtrlGoogleChartPie
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblTitle As Global.System.Web.UI.WebControls.Label
-    
+
+    '''<summary>
+    '''ddlChartType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlChartType As Global.System.Web.UI.WebControls.DropDownList
+
     '''<summary>
     '''lblSubTitle control.
     '''</summary>
@@ -30,25 +39,7 @@ Partial Public Class CtrlGoogleChartPie
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblSubTitle As Global.System.Web.UI.WebControls.Label
-    
-    '''<summary>
-    '''DropDownList1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents DropDownList1 As Global.System.Web.UI.WebControls.DropDownList
-    
-    '''<summary>
-    '''Chart1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents Chart1 As Global.System.Web.UI.DataVisualization.Charting.Chart
-    
+
     '''<summary>
     '''divChart control.
     '''</summary>
@@ -57,7 +48,7 @@ Partial Public Class CtrlGoogleChartPie
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents divChart As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''ltScripts control.
     '''</summary>
@@ -66,7 +57,7 @@ Partial Public Class CtrlGoogleChartPie
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ltScripts As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''pnlData control.
     '''</summary>
@@ -75,31 +66,13 @@ Partial Public Class CtrlGoogleChartPie
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlData As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
-    '''GridView1 control.
+    '''div_table control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents GridView1 As Global.System.Web.UI.WebControls.GridView
-    
-    '''<summary>
-    '''txtSQL control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtSQL As Global.System.Web.UI.WebControls.TextBox
-    
-    '''<summary>
-    '''ObjectDataSource1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ObjectDataSource1 As Global.System.Web.UI.WebControls.ObjectDataSource
+    Protected WithEvents div_table As Global.System.Web.UI.WebControls.Panel
 End Class

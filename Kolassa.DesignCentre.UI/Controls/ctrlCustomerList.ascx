@@ -59,7 +59,7 @@ $(document).ready(function() {
 		<Columns>
 			
 			<asp:BoundField DataField="ID" HeaderText="ID" Visible="False" />
-			<asp:BoundField DataField="CustomerName" HeaderText="Name" />
+			<asp:BoundField DataField="Name" HeaderText="Name" />
 			<asp:BoundField DataField="CustomerCity" HeaderText="City" />
 			<asp:BoundField DataField="StateProvince" HeaderText="State" />
 			<asp:ImageField DataImageUrlField="ImageURL">

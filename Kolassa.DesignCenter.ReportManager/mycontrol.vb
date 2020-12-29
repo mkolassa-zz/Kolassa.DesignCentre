@@ -5,13 +5,14 @@ Imports System.Drawing
 Public Class mycontrol_
     Inherits CompositeControl
 
-
+    Dim l, r As New ListItemCollection
     Dim cmdrfSave As Button
     Dim cmdrfClose As Button
-    Dim txtRFReportID, txtRFSortOrder, txtRFReportControl, txtRFNodeID, txtRFValidation, txtRFValidationPatern, txtValidationTitle, txtrfTableName, txtRFFieldName, txtRFFieldLength, txtRFFieldTitle, txtRFID, txtRFName As TextBox
+    'Dim txtRFReportID, txtRFReportControl As textbox
+    Dim txtRFContainerName, txtRFColumnSize, txtRFSortOrder, txtRFNodeID, txtRFValidation, txtRFValidationPatern, txtValidationTitle, txtrfTableName, txtRFFieldName, txtRFFieldLength, txtRFFieldTitle, txtRFID, txtRFName As TextBox
     Dim chkRFRequired, chkRFActive, chkrfReadOnly As CheckBox
-    Dim cboFieldType As DropDownList
-
+    Dim cboFieldType, cboRFReportControl, cboRFReportID As DropDownList
+    Dim div1, div2, div3, div4, div5, div6, div7, div8, div9 As System.Web.UI.HtmlControls.HtmlGenericControl
     Dim p, p1 As New Panel
     Dim lbl As New Label
 
@@ -44,7 +45,28 @@ Public Class mycontrol_
     End Sub
     Public Sub LoadForm(ReportNum As Long, ControlNum As Long, FieldID As String)
         Dim c As New clsDataLoader
+        Dim lic, lir As ListItem
         Dim ds As DataSet = c.LoadReportControls(ReportNum, ControlNum, FieldID)
+        If l.Count = 0 Then
+            cboRFReportControl.Items.Clear()
+            Dim dsAllControls As DataSet = c.LoadAllControls()
+            For Each r As DataRow In dsAllControls.Tables(0).Rows
+                lic = New ListItem(r("ControlName"), r("ControlID"))
+                l.Add(lic)
+                cboRFReportControl.Items.Add(lic)
+            Next
+        End If
+        If r.Count = 0 Then
+            cboRFReportID.Items.Clear()
+            Dim dsAllReports As DataSet = c.LoadReports(0, "ALLREPORTS", 0)
+            For Each rr As DataRow In dsAllReports.Tables(0).Rows
+                lir = New ListItem(rr("ReportName"), rr("ReportID"))
+                l.Add(lir)
+                cboRFReportID.Items.Add(lir)
+            Next
+        End If
+        '   cboRFReportControl.DataSource = l
+        ' cboRFReportControl.DataBind()
         Dim dr As DataRow
         Dim dt As DataTable
         If txtRFFieldName Is Nothing Then Exit Sub '  *** Form is not Active on the screen
@@ -54,7 +76,11 @@ Public Class mycontrol_
                 dr = dt.Rows(0)
                 txtRFID.Text = Trim(IIf(IsDBNull(dr("ReportControlFieldID")), "", dr("ReportControlFieldID").ToString))
                 txtRFID.ToolTip = "Report Control ID: " & Trim(IIf(IsDBNull(dr("ID")), "", dr("ID").ToString))
-                txtRFReportID.Text = Trim(IIf(IsDBNull(dr("ReportID")), "", dr("ReportID")))
+                '   txtRFReportID.Text = Trim(IIf(IsDBNull(dr("ReportID")), "", dr("ReportID")))
+                Dim lsReportID As String = Trim(IIf(IsDBNull(dr("ReportID")), "", dr("ReportID")))
+                For Each i As ListItem In cboRFReportID.Items
+                    If i.Value = lsReportID Then cboRFReportID.SelectedValue = i.Value
+                Next
                 txtRFFieldName.Text = Trim(IIf(IsDBNull(dr("FieldName")), "", dr("FieldName")))
                 txtrfTableName.Text = Trim(IIf(IsDBNull(dr("TableName")), "", dr("TableName")))
 
@@ -66,8 +92,15 @@ Public Class mycontrol_
                 txtValidationTitle.Text = Trim(IIf(IsDBNull(dr("FieldValidationTitle")), "", dr("FieldValidationTitle")))
                 txtRFValidationPatern.Text = Trim(IIf(IsDBNull(dr("FieldValidationPattern")), "", dr("FieldValidationPattern")))
                 txtRFValidation.Text = Trim(IIf(IsDBNull(dr("Validation")), "", dr("Validation")))
+                txtRFContainerName.Text = Trim(IIf(IsDBNull(dr("ContainerName")), "", dr("ContainerName")))
+                txtRFCOlumnSize.Text = Trim(IIf(IsDBNull(dr("ColumnSize")), "", dr("ColumnSize")))
+                '   txtRFReportControl.Text = Trim(IIf(IsDBNull(dr("ReportControl")), "", dr("ReportControl")))
+                Dim lsReportControlID As String = Trim(IIf(IsDBNull(dr("ReportControl")), "", dr("ReportControl")))
+                For Each i As ListItem In cboRFReportControl.Items
+                    If i.Value = lsReportControlID Then cboRFReportControl.SelectedValue = i.Value
+                Next
+                '      cboRFReportControl.SelectedItem = Trim(IIf(IsDBNull(dr("ReportControl")), "", dr("ReportControl")))
 
-                txtRFReportControl.Text = Trim(IIf(IsDBNull(dr("ReportControl")), "", dr("ReportControl")))
                 txtRFSortOrder.Text = Trim(IIf(IsDBNull(dr("SortOrder")), "0", dr("SortOrder")))
                 Dim lsReadonly As String = IIf(IsDBNull(dr("FieldReadOnly")), "0", dr("FieldReadOnly"))
                 chkrfReadOnly.Checked = IIf(Trim(lsReadonly) = "0", False, True)
@@ -90,7 +123,7 @@ Public Class mycontrol_
         cmdrfSave = New Button
         cmdrfSave.ID = "cmdrfSave"
         cmdrfSave.Text = "Save"
-        cmdrfSave.CssClass = "btn btn-primary btn-sm"
+        cmdrfSave.CssClass = "btn btn-primary btn-sm px-1"
         '  cmdrfSave.OnClientClick = "ShowDivSaveRecord('block')"
         cmdrfSave.Attributes.Add("onmousedown", "document.getElementById('divsaverecord').style.display = 'block';")
         AddHandler cmdrfSave.Click, AddressOf cmdrfSave_click
@@ -100,22 +133,44 @@ Public Class mycontrol_
         cmdrfClose.ID = "cmdrfClose"
         cmdrfClose.Attributes.Add("onmousedown", "document.getElementById('divsaverecord').style.display = 'block';")
         cmdrfClose.Text = "Close"
-        cmdrfClose.CssClass = "btn btn-secondary btn-sm"
+        cmdrfClose.CssClass = "btn btn-secondary btn-sm px-1"
         Controls.Add(cmdrfClose)
 
         p = New Panel
         p.ID = "pnlRF-modal"
-        p.CssClass = "form form-group"
+        p.CssClass = "form"
         p.TabIndex = "-1"
         p.Attributes.Add("role", "dialog")
         p.Attributes.Add("aria-hidden", "true")
 
-        txtRFReportID = New TextBox
-        txtRFReportID.CssClass = lsClass
+        '*** Create form Rows
+        div1 = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+        div2 = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+        div3 = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+        div4 = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+        div5 = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+        div6 = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+        div7 = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+        div8 = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+        div9 = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+        div1.Attributes("class") = "form-row"
+        div2.Attributes("class") = "form-row"
+        div3.Attributes("class") = "form-row"
+        div4.Attributes("class") = "form-row"
+        div5.Attributes("class") = "form-row"
+        div6.Attributes("class") = "form-row"
+        div7.Attributes("class") = "form-row"
+        div8.Attributes("class") = "form-row"
+        div9.Attributes("class") = "form-row"
 
-        txtRFReportControl = New TextBox
-        txtRFReportControl.ID = "txtrfReportControlID"
-        txtRFReportControl.CssClass = lsClass
+        '   txtRFReportID = New TextBox
+        '  txtRFReportID.CssClass = lsClass
+        cboRFReportID = New DropDownList
+        cboRFReportID.CssClass = lsClass
+
+        ' txtRFReportControl = New TextBox
+        ' txtRFReportControl.ID = "txtrfReportControlID"
+        ' txtRFReportControl.CssClass = lsClass
 
         txtRFNodeID = New TextBox
         txtRFNodeID.CssClass = lsClass
@@ -165,11 +220,24 @@ Public Class mycontrol_
         txtRFName.CssClass = lsClass
         txtRFName.ID = "txtRFName"
 
+        txtRFContainerName = New TextBox
+        txtRFContainerName.CssClass = lsClass
+        txtRFContainerName.ID = "txtRFContainerName"
+        txtRFColumnSize = New TextBox
+        txtRFColumnSize.CssClass = lsClass
+        txtRFColumnSize.ID = "txtRFColumnSize"
+        txtRFColumnSize.Attributes("Type") = "number"
+        txtRFColumnSize.Attributes("min") = "1"
+        txtRFColumnSize.Attributes("max") = "12"
         chkRFRequired = New CheckBox
         chkRFRequired.ID = "chkRFRequired"
 
         chkRFActive = New CheckBox
         chkRFActive.ID = "chkRFActive"
+        cboRFReportControl = New DropDownList
+        cboRFReportControl.ID = "cboRFReportControl"
+        cboRFReportControl.CssClass = lsClass
+
 
         cboFieldType = New DropDownList
         cboFieldType.ID = "cboFieldType"
@@ -191,21 +259,32 @@ Public Class mycontrol_
 
 
 
-        p.Controls.Add(fGetLabel("Report", txtRFReportID, "txt"))
-        p.Controls.Add(fGetLabel("Report Control", txtRFReportControl, "txt"))
-        p.Controls.Add(fGetLabel("Node", txtRFNodeID, "txt"))
-        p.Controls.Add(fGetLabel("Validation", txtRFValidation, "txt"))
-        p.Controls.Add(fGetLabel("Validation Pattern", txtRFValidationPatern, "txt"))
-        p.Controls.Add(fGetLabel("Validation Title", txtValidationTitle, "txt"))
-        p.Controls.Add(fGetLabel("Table Name", txtrfTableName, "txt"))
-        p.Controls.Add(fGetLabel("FIeld Name", txtRFFieldName, "txt"))
-        p.Controls.Add(fGetLabel("Length", txtRFFieldLength, "txt"))
-        p.Controls.Add(fGetLabel("Title", txtRFFieldTitle, "txt"))
-        p.Controls.Add(fGetLabel("Field ID", txtRFID, "txt"))
-        p.Controls.Add(fGetLabel("Name", txtRFName, "txt"))
-        p.Controls.Add(fGetLabel("Field Type", cboFieldType, "txt"))
-        p.Controls.Add(fGetLabel("Sort Order", txtRFSortOrder, "txt"))
-
+        ' p.Controls.Add(fGetLabel("Report", txtRFReportID, "txt"))
+        div1.Controls.Add(fGetLabel("Report", cboRFReportID, "txt"))
+        '  p.Controls.Add(fGetLabel("Report Control", txtRFReportControl, "txt"))
+        div1.Controls.Add(fGetLabel("Report Control", cboRFReportControl, "txt"))
+        div2.Controls.Add(fGetLabel("Node", txtRFNodeID, "txt"))
+        div2.Controls.Add(fGetLabel("Validation", txtRFValidation, "txt"))
+        div3.Controls.Add(fGetLabel("Validation Pattern", txtRFValidationPatern, "txt"))
+        div3.Controls.Add(fGetLabel("Validation Title", txtValidationTitle, "txt"))
+        div4.Controls.Add(fGetLabel("Table Name", txtrfTableName, "txt"))
+        div4.Controls.Add(fGetLabel("FIeld Name", txtRFFieldName, "txt"))
+        div5.Controls.Add(fGetLabel("Length", txtRFFieldLength, "txt"))
+        div5.Controls.Add(fGetLabel("Title", txtRFFieldTitle, "txt"))
+        div6.Controls.Add(fGetLabel("Field ID", txtRFID, "txt"))
+        div6.Controls.Add(fGetLabel("Name", txtRFName, "txt"))
+        div7.Controls.Add(fGetLabel("Field Type", cboFieldType, "txt"))
+        div7.Controls.Add(fGetLabel("Sort Order", txtRFSortOrder, "txt"))
+        div8.Controls.Add(fGetLabel("Container Name", txtRFContainerName, "txt"))
+        div8.Controls.Add(fGetLabel("Column Size (1-12)", txtRFColumnSize, "txt"))
+        p.Controls.Add(div1)
+        p.Controls.Add(div2)
+        p.Controls.Add(div3)
+        p.Controls.Add(div4)
+        p.Controls.Add(div5)
+        p.Controls.Add(div6)
+        p.Controls.Add(div7)
+        p.Controls.Add(div8)
         p1 = New Panel
         p1.CssClass = "form-inline {margin-right:27px;}"
         chkRFActive.CssClass = ".mr-2"
@@ -224,9 +303,9 @@ Public Class mycontrol_
         Dim slen As String = "4"
         If sType = "chk" Then slen = "12"
 
-        span.Attributes("class") = "form-group row"
-        span2.Attributes("class") = "col-sm-" & slen & " col-form-label"
-        span3.Attributes("class") = "col-sm-8"
+        span.Attributes("class") = "form-group col-md-6"
+        span2.Attributes("class") = " col-form-label" '& "col-sm-" & slen 
+        span3.Attributes("class") = "" ' "col-sm-8"
         lbl = New Label
         lbl.CssClass = "form form-label"
         lbl.Text = s
@@ -251,10 +330,11 @@ Public Class mycontrol_
         rf.ValidationTitle = Trim(txtValidationTitle.Text)
         rf.ValidationPattern = Trim(txtRFValidationPatern.Text)
         rf.Validation = Trim(txtRFValidation.Text)
-        rf.ReportID = Trim(txtRFReportID.Text)
-        rf.ReportControl = Trim(txtRFReportControl.Text)
+        rf.ReportID = Trim(cboRFReportID.Text)
+        rf.ReportControl = Trim(cboRFReportControl.SelectedValue)
         rf.SortOrder = Trim(txtRFSortOrder.Text)
-
+        rf.containerName = Trim(txtRFContainerName.Text)
+        rf.columnsize = Trim(txtRFColumnSize.Text)
         rf.FieldReadOnly = IIf(chkrfReadOnly.Checked, 1, 0)
         rf.Active = IIf(chkRFActive.Checked = True, 1, 0)
         rf.Required = IIf(chkRFRequired.Checked = True, 1, 0)

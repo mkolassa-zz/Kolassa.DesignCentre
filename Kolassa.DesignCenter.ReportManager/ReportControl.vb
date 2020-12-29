@@ -42,6 +42,7 @@ Public Class ReportCategory
 			rpt.EntityType = dr("EntityType")
             rpt.TableName = If(IsDBNull(dr("tablename")), "", dr("tablename"))
             rpt.SelectStatement = If(IsDBNull(dr("SelectStatement")), "", dr("SelectStatement"))
+            rpt.SearchClause = If(IsDBNull(dr("SearchClause")), "", dr("SearchClause"))
             mcReports.Add(rpt)
         Next
 
@@ -121,6 +122,7 @@ Public Class Report
 	Dim msReportName As String
     Public ReportType As String
     Public SelectStatement As String
+    Public SearchClause As String
     Dim mlEntityType As Integer
 	Dim mbUseFilter As Boolean
     Dim rptControls As ReportControls
@@ -218,29 +220,29 @@ Public Class Report
         mbUseFilter = True
     End Sub
 	Public Function LoadControls(ByVal cnStr As String) As ReportControls
-        Debug.Print("<ReportControl.LoadControls>Load All Controls From Database")
+        'debug.print("<ReportControl.LoadControls>Load All Controls From Database")
         '*** Load All Controls for this Report
         Dim rptCtrl As ReportControl
 
-		'*** Start New Control Collection
-		rptControls = New ReportControls
+        '*** Start New Control Collection
+        rptControls = New ReportControls
 
-		'*** Create Dataset and Get the list of Controls
-		Dim ds As Data.DataSet = mdlDataLoader.LoadReportControls(mlReportID)
-		Dim dt As Data.DataTable = ds.Tables("ReportControls")
-		Dim dr As Data.DataRow
-		Dim lsMsg As String = ""
-		'*** Iterate through the control Records, Create the Control object
-		'*** and add the controls to the Collection
-		For Each dr In dt.Rows
-			rptCtrl = New ReportControl
-			rptCtrl.ControlFieldType = CStr(dr("ControlFieldType"))
-            rptCtrl.ControlName = If(dr("FieldName") Is DBNull.Value, dr("ControlName"), If(Trim(dr("FieldName")) = "", dr("ControlName"), dr("FieldName")))
+        '*** Create Dataset and Get the list of Controls
+        Dim ds As Data.DataSet = mdlDataLoader.LoadReportControls(mlReportID)
+        Dim dt As Data.DataTable = ds.Tables("ReportControls")
+        Dim dr As Data.DataRow
+        Dim lsMsg As String = ""
+        '*** Iterate through the control Records, Create the Control object
+        '*** and add the controls to the Collection
+        For Each dr In dt.Rows
+            rptCtrl = New ReportControl
+            rptCtrl.ControlFieldType = CStr(dr("ControlFieldType"))
+            rptCtrl.ControlName = If(dr("FieldName") Is DBNull.Value, dr("ControlName"), If(Trim(dr("FIeldName")) = "", dr("ControlName"), dr("FieldName")))
             rptCtrl.Description = If(dr("FieldTitle") Is DBNull.Value, dr("ControlDescription"), If(Trim(dr("FieldTitle")) = "", dr("ControlDescription"), dr("FieldTitle")))
             rptCtrl.FieldDescription = If(dr("FieldTitle") Is DBNull.Value, dr("ControlFieldDescription"), If(Trim(dr("FieldTitle")) = "", dr("ControlFieldDescription"), dr("FieldTitle")))
             rptCtrl.FieldName = If(dr("FieldName") Is DBNull.Value, dr("ControlFieldName"), If(Trim(dr("FieldName")) = "", dr("ControlFieldName"), dr("FieldName")))
             rptCtrl.Type = dr("ControlType")
-			rptCtrl.ConnectionString = "" 'cnStr
+            rptCtrl.ConnectionString = "" 'cnStr
             rptCtrl.Required = dr("Required")
 
             rptCtrl.ReportID = dr("ReportID")                                    'ID for the Report (Number)
@@ -248,44 +250,44 @@ Public Class Report
             rptCtrl.ReportControlNumID = dr("ReportControl")                     'ID for the Control (Number)
             rptCtrl.ReportControlFieldID = dr("ReportControlFieldID").ToString   'ID for the Control FIeld Instance (GUID)
 
-
-
+            If Not dr("ContainerName") Is DBNull.Value Then rptCtrl.ReportControlContainerName = Trim(dr("ContainerName"))
+            If Not dr("ColumnSize") Is DBNull.Value Then rptCtrl.ReportControlColumnSize = Trim(dr("ColumnSize"))
 
             If Not dr("ControlValidationPattern") Is DBNull.Value Then rptCtrl.ValidationPattern = Trim(dr("ControlValidationPattern"))
-			If Not dr("FieldValidationPattern") Is DBNull.Value Then rptCtrl.ValidationPattern = Trim(dr("FieldValidationPattern"))
-			If Not dr("ControlValidationTitle") Is DBNull.Value Then rptCtrl.ValidationTitle = Trim(dr("ControlValidationTitle"))
-			If Not dr("FieldValidationTitle") Is DBNull.Value Then rptCtrl.ValidationTitle = Trim(dr("FieldValidationTitle"))
-			If Not dr("FieldReadOnly") Is DBNull.Value Then rptCtrl.Read_Only = Trim(dr("FieldReadOnly"))
-			If Not dr("FieldLength") Is DBNull.Value Then
-				If dr("FieldLength") > 0 Then rptCtrl.FieldLength = Trim(dr("FieldLength"))
-			End If
+            If Not dr("FieldValidationPattern") Is DBNull.Value Then rptCtrl.ValidationPattern = Trim(dr("FieldValidationPattern"))
+            If Not dr("ControlValidationTitle") Is DBNull.Value Then rptCtrl.ValidationTitle = Trim(dr("ControlValidationTitle"))
+            If Not dr("FieldValidationTitle") Is DBNull.Value Then rptCtrl.ValidationTitle = Trim(dr("FieldValidationTitle"))
+            If Not dr("FieldReadOnly") Is DBNull.Value Then rptCtrl.Read_Only = Trim(dr("FieldReadOnly"))
+            If Not dr("FieldLength") Is DBNull.Value Then
+                If dr("FieldLength") > 0 Then rptCtrl.FieldLength = Trim(dr("FieldLength"))
+            End If
             'If Not dr("FieldName") Is DBNull.Value Then rptCtrl.FieldName = Trim(dr("FieldName"))
             'If Not dr("TableName") Is DBNull.Value Then rptCtrl.tableName = Trim(dr("TableName"))
-            'Debug.Print (rptCtrl.Type & rptCtrl.FieldName)
+            ''debug.print (rptCtrl.Type & rptCtrl.FieldName)
             If Not IsDBNull(dr("ControlSQL")) Then
-				rptCtrl.RowSource = dr("ControlSQL")
-			Else
-				rptCtrl.RowSource = ""
-			End If
-			'  Dim liCounter As Integer = 0
-			' Dim liCols As Integer = dt.Columns.Count - 1
-			'For liCounter = 0 To liCols
-			'lsMsg = lsMsg & (dt.Columns(liCounter).ColumnName & dr(liCounter)) & ":      "
-			'Next
-			'  lsMsg = lsMsg & Chr(13) & Chr(10)
+                rptCtrl.RowSource = dr("ControlSQL")
+            Else
+                rptCtrl.RowSource = ""
+            End If
+            '  Dim liCounter As Integer = 0
+            ' Dim liCols As Integer = dt.Columns.Count - 1
+            'For liCounter = 0 To liCols
+            'lsMsg = lsMsg & (dt.Columns(liCounter).ColumnName & dr(liCounter)) & ":      "
+            'Next
+            '  lsMsg = lsMsg & Chr(13) & Chr(10)
 
-			'*** Load Other Sub Components for each control
-			rptCtrl.LoadControlChildren()
-			rptCtrl.LoadListItems()
+            '*** Load Other Sub Components for each control
+            rptCtrl.LoadControlChildren()
+            rptCtrl.LoadListItems()
 
-			rptControls.Add(rptCtrl)
-		Next
-		Debug.Print("Controls Added 'Report.LoadControls'")
-		System.Web.HttpContext.Current.Session("rptctrls") = rptControls ' 1/11/18
-		Message = lsMsg
+            rptControls.Add(rptCtrl)
+        Next
+        'debug.print("Controls Added 'Report.LoadControls'")
+        System.Web.HttpContext.Current.Session("rptctrls") = rptControls ' 1/11/18
+        Message = lsMsg
         '*** Return the Control Collection
         LoadControls = rptControls
-        Debug.Print("</ReportControl.LoadControls>")
+        'debug.print("</ReportControl.LoadControls>")
     End Function
 End Class
 
@@ -299,12 +301,12 @@ Public Class ReportControls
     End Sub
     Public Function FindByName(ByVal lsName As String) As ReportControl
         Dim rptctrl As ReportControl
-		' response.write("ReportControl-FindByName-FindByName - " & lsName)
-		For Each rptctrl In Me.List
+        ' response.write("ReportControl-FindByName-FindByName - " & lsName)
+        For Each rptctrl In Me.List
             If rptctrl.ControlName = lsName Then
                 FindByName = rptctrl
-				'   response.write("ReportControl-FindByName-Found Iterator")
-				Exit Function
+                '   response.write("ReportControl-FindByName-Found Iterator")
+                Exit Function
             End If
         Next
         FindByName = New ReportControl
@@ -349,8 +351,8 @@ Public Class ReportControl
     Dim mcSelectedItems As Collection = New Collection
     Dim mcSelectedItems2 As Collection = New Collection
     Dim moSelectedItem As ReportListItem = New ReportListItem
-	Dim msTableName As String
-	Dim msFieldName As String
+    Dim msTableName As String
+    Dim msFieldName As String
     Dim msFieldDescription As String
     Dim mbEnabled As Boolean = False
     Dim msParent As String
@@ -362,16 +364,18 @@ Public Class ReportControl
     Public ReportID As Long = 0
     Public ReportControlFieldNumID As Long = 0      'Nemeric Field for the ReportControl to Field COmbo
     Public ReportControlNumID As Long = 0       'Numeric Value for Report Control Instance
+    Public ReportControlContainerName As String = ""
+    Public ReportControlColumnSize As Integer = 12 ' 1-12 based on Bootstrap column numbers
 
     Dim msControlConnectionString As String = ""
     Dim msControlRowSource As String = "" '*** SQL used to fill the Control
     Dim msOperator As String = ""
     Dim msDataType As String = ""
-	Dim mbRequired As Boolean = False
-	Dim mbReadOnly As Boolean = False
-	Dim mbFieldLength As Integer
-	Protected msValidationPattern As String = ""
-	Protected msValidationTitle As String = ""
+    Dim mbRequired As Boolean = False
+    Dim mbReadOnly As Boolean = False
+    Dim mbFieldLength As Integer
+    Protected msValidationPattern As String = ""
+    Protected msValidationTitle As String = ""
 
     Public Sub New()
         'Stop
@@ -459,7 +463,7 @@ Public Class ReportControl
         End Get
         Set(ByVal value As Collection)
             '     If msFieldName = "UnitTypeID" Then Stop
-            Debug.Print("<" & msFieldName & " Value=" & value(1).ToString & " />")
+            'debug.print("<" & msFieldName & " Value=" & value(1).ToString & " />")
             mcSelectedItems = value
             'response.write(value.ToString)
         End Set
@@ -567,21 +571,21 @@ Public Class ReportControl
 				FormValue.Add(New KeyValuePair(Of String, String)(msFieldName, lsValue))
 
                 If lsValue <> "" And lsValue <> "--" Then
-                    Select Case msControlFieldType
-                        Case "DateBox", "Date"
+                    Select Case msControlFieldType.ToUpper
+                        Case "DATEBOX", "DATE", "DATETIME", "DATETIMELOCAL"
                             If lsValue2 = "" Then
                                 SQL = SQL & "[" & msFieldName & "] " & fGetOperator(msOperator) & " #" & CDate(lsValue).ToString & "# Or "
                             Else
                                 SQL = SQL & "([" & msFieldName & "] >= #" & CDate(lsValue).ToString & "# And [" & msFieldName & "] <= #" & CDate(lsValue2).ToString & "#) Or "
                             End If
 
-                        Case "Text"
+                        Case "TEXT"
                             If lsValue2 = "" Then
                                 SQL = SQL & "[" & msFieldName & "] " & fGetOperator(msOperator) & " '" & lsValue & "' OR "
                             Else
                                 SQL = SQL & "([" & msFieldName & "] >= '" & lsValue & "' and [" & msFieldName & "] <= '" & lsValue2 & "') OR "
                             End If
-                        Case "Number", "Integer", "Double", "Currency", "Boolean"
+                        Case "NUMBER", "INTEGER", "DOUBLE", "CURRENCY", "BOOLEA"
                             If lsValue2 = "" Then
                                 SQL = SQL & "[" & msFieldName & "] " & fGetOperator(msOperator) & " " & lsValue & " OR "
                             Else

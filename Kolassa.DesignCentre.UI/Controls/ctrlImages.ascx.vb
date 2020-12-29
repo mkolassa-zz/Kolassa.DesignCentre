@@ -1,5 +1,5 @@
 ﻿Imports System.IO
-Imports Telerik.Web.UI
+'Imports T'elerik.Web.UI
 Public Class ctrlImages
     Inherits System.Web.UI.UserControl
 
@@ -14,7 +14,7 @@ Public Class ctrlImages
 
 
 	Protected Sub ObjectDataSource1_Selecting(sender As Object, e As ObjectDataSourceSelectingEventArgs) Handles odsImages.Selecting
-		Dim rg As Telerik.Web.UI.RadGrid
+		Dim rg As GridView 'T elerik.Web.UI.RadGrid
 		rg = Me.Parent.FindControl("rgMaster")
 		If rg Is Nothing Then
 			rg = Me.Parent.Parent.FindControl("rgMaster")

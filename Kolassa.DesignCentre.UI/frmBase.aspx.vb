@@ -1,9 +1,15 @@
 Imports System.IO
+Imports System.Diagnostics
 Partial Class frmBase
 	Inherits System.Web.UI.Page
 	Private mbBindData As Boolean = True
 	Private miTimesLoaded As Integer
 	Private mlRecordCount As Long
+
+
+	Protected Sub lnkShowColumns_Click(sender As Object, e As EventArgs) Handles lnkShowColumns.Click
+		LoadColumnModal()
+	End Sub
 	Private Sub ShowMessage(Message As String, type As String)
 		Dim m As String = fTakeOutQuotes(Message)
 		Dim t As String = fTakeOutQuotes(type)
@@ -23,48 +29,44 @@ Partial Class frmBase
 		If mlRecordCount = 0 Then
 			Exit Sub
 		End If
-		Dim iRows = grdData.Rows.Count
-		If iRows = 0 Then
-			mbBindData = True
-		Else
-			mbBindData = False
-		End If
+		'Dim iRows = grdData.Rows.Count
+		'If iRows = 0 Then
+		'	mbBindData = True
+		'Else
+		'	mbBindData = False
+		'End If
 		miTimesLoaded = miTimesLoaded + 1
-		'Put user creode to initialize the page here
+		'Put user code to initialize the page here
 		'rebindGrid()
-		Dim asyncpb As Boolean '= upData.IsInPartialRendering
+		'Dim asyncpb As Boolean '= upData.IsInPartialRendering
 		Session("objType") = Request.QueryString("objType")
+
 		Exit Sub
-		If IsPostBack And Not asyncpb Then
-			rebindGrid()
-			Return
-		End If
-
 	End Sub
-	Sub rebindGrid()
-		Try
-			Dim ls As String
-			If txtSearch.Text.Trim = "" Then
-				lblSearch.Text = ""
-			Else
-				ls = " SearchText like '%" & Replace(txtSearch.Text, "'", "''") & "%'"
-				lblSearch.Text = ls
-			End If
+	'Sub rebindGrid()
+	'	Try
+	'		Dim ls As String
+	'		If txtSearch.Text.Trim = "" Then
+	'			lblSearch.Text = ""
+	'		Else
+	'			ls = " SearchText like '%" & Replace(txtSearch.Text, "'", "''") & "%'"
+	'			lblSearch.Text = ls
+	'		End If
 
-			odsData.DataBind()
+	'		odsData.DataBind()
 
-			grdData.DataBind()
-		Catch
-			ShowMessage(Err.Description, "Error")
-		End Try
-	End Sub
-	Protected Sub grd_SelectedIndexChanged(sender As Object, e As EventArgs) Handles grdData.SelectedIndexChanged
-		'Stop
-		Dim liNothing As Integer
-		For liNothing = 1 To 10
-			Debug.Print("Hey")
-		Next
-	End Sub
+	'		grdData.DataBind()
+	'	Catch
+	'		ShowMessage(Err.Description, "Error")
+	'	End Try
+	'End Sub
+	'Protected Sub grd_SelectedIndexChanged(sender As Object, e As EventArgs) Handles grdData.SelectedIndexChanged
+	'	'Stop
+	'	Dim liNothing As Integer
+	'	For liNothing = 1 To 10
+	'		'debug.print("Hey")
+	'	Next
+	'End Sub
 	Protected Sub cmd_cmdSQL(s As Object, e As EventArgs) Handles cmdSQL.Click
 		Try
 			Dim lsSQL As String = rptBase.f_CreateWhereClause(True)
@@ -85,14 +87,47 @@ Partial Class frmBase
 			LoadRecord(s)
 			Exit Sub
 		Catch
-			Debug.Print(Err.Description)
+			'debug.print(Err.Description)
 		End Try
 	End Sub
 	Protected Sub cmdUPData_Click(sender As Object, e As EventArgs) Handles cmdUPData.Click
-		'Stop
 		Dim s As String
 		s = txtID.Text
 		LoadRecord(s)
+	End Sub
+	Protected Sub cmdDelData_Click(sender As Object, e As EventArgs) Handles cmdDelData.Click
+		Dim s As String
+		s = txtID.Text
+		DeleteRecord(s)
+		ReportResults.bindgv()
+	End Sub
+	Sub DeleteRecord(s As String)
+		rptBase.debugThis("<frmBase.DeleteRecords>" & s)
+		Try
+			Dim c As New clsBases
+			Dim co As New clsBase
+			Dim ds As DataSet
+			If s = "" Then
+				ds = New DataSet
+			Else
+				Dim sWhere = "ID = '" & s & "'" ') '" & txtID.Text & "'"
+				ds = c.GetRecordData("", "", s, Request.QueryString("objType"), True, sWhere, rptBase.TableName)
+				co = c.GetObject(Request.QueryString("objType"))
+				co.TableName = "tbl" & Request.QueryString("objType")
+				co.ID = s
+				co.Delete()
+			End If
+
+			rptBase.f_setFromDataRow(ds)
+			rptBase.TableName = ds.Tables(0).TableName 'MAYBE PUT THIS BACK rptBase.ReportControl.TableName
+			'** The following line is needed to populate the controls on the ReportContainer
+			rptBase.DataBind()
+			rptBase.debugThis("Debug This")
+		Catch
+			rptBase.debugThis("<Err>" & Err.Description & "</Err>")
+			ShowMessage(Err.Description, "Error")
+		End Try
+		rptBase.debugThis("</frmBase.DeleteRecords>" & s)
 	End Sub
 	Sub LoadRecord(s As String)
 		rptBase.debugThis("<frmBase.LoadRecords>" & s)
@@ -105,6 +140,7 @@ Partial Class frmBase
 				Dim sWhere = "ID = '" & s & "'" ') '" & txtID.Text & "'"
 				ds = c.GetRecordData("", "", s, Request.QueryString("objType"), True, sWhere, rptBase.TableName)
 			End If
+
 			rptBase.f_setFromDataRow(ds)
 			'rptBase.DataBind()
 			rptBase.TableName = ds.Tables(0).TableName 'MAYBE PUT THIS BACK rptBase.ReportControl.TableName
@@ -128,8 +164,10 @@ Partial Class frmBase
 		Else
 			If rptBase.ReportCategoryType <> Request.QueryString("objType") Then
 				rptBase.ReportCategoryType = Request.QueryString("objType")
+
 			End If
 		End If
+		lblReportLabel.Text = rptBase.ReportName
 		rptBase.debugThis("</frmBase Init>")
 	End Sub
 	'
@@ -177,15 +215,15 @@ Partial Class frmBase
 
 
 
-    Protected Sub grdData_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles grdData.PageIndexChanging
-		grdData.PageIndex = e.NewPageIndex
-		grdData.DataBind()
-	End Sub
+	'Protected Sub grdData_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles grdData.PageIndexChanging
+	'	grdData.PageIndex = e.NewPageIndex
+	'	grdData.DataBind()
+	'End Sub
 	Protected Sub SaveRecord(sender As Object, e As EventArgs) Handles cmdSaveRecord.Click
 		Dim cBases As New clsBases
 		Dim o As New clsBase
 
-		Debug.Print("Where Clause: " & rptBase.f_CreateWhereClause(False))
+		'debug.print("Where Clause: " & rptBase.f_CreateWhereClause(False))
 		rptBase.Refresh()
 
 		If rptBase.f_LoadFromObject.Count = 0 Then
@@ -207,16 +245,17 @@ Partial Class frmBase
 			ShowMessage("Record Saved Successfully", "Success")
 		End If
 		mbBindData = True
+		ReportResults.bindgv()
 		'rebindGrid()
 	End Sub
 
-	Protected Sub odsData_Selecting(sender As Object, e As ObjectDataSourceSelectingEventArgs) ' Handles odsData.Selecting
-		If mbBindData Or grdData.Rows.Count = 0 Then
-			mbBindData = False
-		Else
-			e.Cancel = True
-		End If
-	End Sub
+	'Protected Sub odsData_Selecting(sender As Object, e As ObjectDataSourceSelectingEventArgs) ' Handles odsData.Selecting
+	'	If mbBindData Or grdData.Rows.Count = 0 Then
+	'		mbBindData = False
+	'	Else
+	'		e.Cancel = True
+	'	End If
+	'End Sub
 	Protected Sub cmdLoad_Click(sender As Object, e As EventArgs) Handles cmdLoad.Click
 		Dim c As New clsBases
 		Dim ds As DataSet
@@ -231,6 +270,8 @@ Partial Class frmBase
 	End Sub
 
 	Private Sub frmBase_LoadComplete(sender As Object, e As EventArgs) Handles Me.LoadComplete
+		lblReportLabel.Text = rptBase.ReportDescription
+		lblReportFormLabel.Text = rptBase.ReportDescription & " Entry Form"
 		If IsPostBack Then
 		Else
 			If rptBase Is Nothing Then
@@ -245,35 +286,39 @@ Partial Class frmBase
 
 
 
-	Private Sub odsData_Selected(sender As Object, e As ObjectDataSourceStatusEventArgs) Handles odsData.Selected
-		'Stop
-		Dim la As DataSet
+	'Private Sub odsData_Selected(sender As Object, e As ObjectDataSourceStatusEventArgs) Handles odsData.Selected
+	'	'Stop
+	'	Dim la As DataSet
 
-		la = e.ReturnValue
-		If la Is Nothing Then
-			'ShowMessage("There Seems to be a Problem")
-			Exit Sub
-		End If
-		mlRecordCount = la.Tables.Count
-	End Sub
+	'	la = e.ReturnValue
+	'	If la Is Nothing Then
+	'		'ShowMessage("There Seems to be a Problem")
+	'		Exit Sub
+	'	End If
+	'	mlRecordCount = la.Tables.Count
+	'End Sub
 
 	Private Sub txtSearch_TextChanged(sender As Object, e As EventArgs) Handles txtSearch.TextChanged
-		rebindGrid()
+		'rebindGrid()
 		If txtSearch.Text.Length > 1 Then
 			ReportResults.SearchCriteria = " SearchText like '%" & fTakeOutQuotes(txtSearch.Text) & "%' "
 		End If
 		ReportResults.bindgv()
 	End Sub
 
-    Protected Sub cmdExcelexp_Click(sender As Object, e As EventArgs) Handles cmdExcelexp.Click
-        ExportToExcel()
-    End Sub
+	'	Protected Sub cmdExcelexp_Click(sender As Object, e As EventArgs) Handles cmdExcelexp.Click
+	'		ExportToExcel()
+	'	End Sub
 	'********* From frmReports
 	Protected Overrides Sub LoadViewState(savedState As Object)
 
 	End Sub
-	Protected Sub lnkLoadColumns_Click(sender As Object, e As EventArgs)
-		ctrlReportColumns1.SetColumns(Val(Request.QueryString("rpt")))
+
+	Sub LoadColumnModal()
+		Dim liReportID = ReportContainer1.f_GetReportID
+
+		ctrlReportColumns1.SetColumns(liReportID)
+		ctrlReportColumns1.ReportID = liReportID
 		Dim title As String = "Columns"
 		Dim body As String = ""
 		ClientScript.RegisterStartupScript(Me.GetType(), "Popup", "ShowPopup('" & title & "', '" & body & "');", True)
@@ -299,7 +344,7 @@ Partial Class frmBase
 		ReportResults.Attributes("data-reportdesc") = ReportContainer1.ReportDescription
 		ReportResults.Attributes("data-reportwheredesc") = ReportContainer1.ReportOut
 		ReportResults.ReportDesc = ReportContainer1.ReportDescription
-		ShowMessage("Aww, password is wrong", "Error")
+		'	ShowMessage("Aww, password is wrong", "Error")
 	End Sub
 	'Public Sub ShowMessage(Message As String, lsType As String)
 	'	'Show Bootstrap Message
@@ -357,7 +402,8 @@ Partial Class frmBase
 		sb.AppendLine("printWin.focus();")
 		sb.AppendLine("printWin.print();")
 		sb.AppendLine("setTimeout(function(){window.close();}, 1); /* In fact timeout doesn't start until print dialog closes */")
-		sb.Append("printWin.close();};")
+		'	sb.Append("printWin.close();")
+		sb.Append("};")
 		sb.Append("</script>")
 		Page.ClientScript.RegisterStartupScript(Me.GetType(), "GridPrint", sb.ToString())
 		gv.PagerSettings.Visible = True
@@ -393,8 +439,9 @@ Partial Class frmBase
 
 		sb.AppendLine("printWin.focus();")
 		sb.AppendLine("printWin.print();")
-		sb.AppendLine("setTimeout(function(){window.close();}, 1); /* In fact timeout doesn't start until print dialog closes */")
-		sb.AppendLine("printWin.close();};")
+		'		sb.AppendLine("setTimeout(function(){window.close();}, 1); /* In fact timeout doesn't start until print dialog closes */")
+		'	sb.AppendLine("printWin.close();")
+		sb.AppendLine("};")
 		sb.Append("</script>")
 		Page.ClientScript.RegisterStartupScript(Me.[GetType](), "GridPrint", sb.ToString())
 		gv.AllowPaging = True
@@ -431,5 +478,9 @@ Partial Class frmBase
 			Page.Response.Flush()
 			Page.Response.[End]()
 		End Using
+	End Sub
+
+	Private Sub cmdSearch_Click(sender As Object, e As EventArgs) Handles cmdSearch.Click
+
 	End Sub
 End Class

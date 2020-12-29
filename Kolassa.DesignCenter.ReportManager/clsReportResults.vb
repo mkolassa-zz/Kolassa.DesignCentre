@@ -7,18 +7,18 @@ Imports System.IO
 Public Class ReportResults
     Inherits ctrlBase
     Public ds As DataSet
+    Public SQL As String
+    Public WhereClause, SearchClause As String
+    Public liReportID As Integer
+    Public SearchCriteria As String
+    Public coldataview As DataView
 
     Dim gvPageNum As Long
     Dim pHeading As Panel
     Dim uPanelResults, uPanelControls As UpdatePanel
     Dim upPrgResults As UpdateProgress
-    Public SQL As String
-    Public WhereClause As String
-    ' Public WhereDesc As String
-    'Public ReportDescription As String
     Dim Sorting As String
     Dim gv As GridView
-    Public coldataview As DataView
     Dim lblFieldName As Label
     Dim lblWhere As Label
     Dim DropDownList1 As DropDownList
@@ -27,8 +27,6 @@ Public Class ReportResults
     Dim li As ListItem
     Dim liCol As New ListItemCollection
     Dim lblViewName As Label
-    Public liReportID As Integer
-    Public SearchCriteria As String
     Dim lblField1 As Label
     Dim lblField2 As Label
     Dim ctrlField1 As DropDownList
@@ -36,36 +34,52 @@ Public Class ReportResults
     Dim CustomValidator1 As CustomValidator
     Dim trig, trigView, trigControl As AsyncPostBackTrigger
     Dim cn As clsDataLoader
-    Dim img As ImageButton
-
+    Dim imgSort As ImageButton
+    Dim lnkDel As LinkButton
+    Dim radShowAll As RadioButtonList
+    Public ShowAll As String
+    ' Public WhereDesc As String
+    'Public ReportDescription As String
     ' Dim btnSave As Button 'Doing this at the page level
     'Dim btnMike As Button
     'Dim btnPrintAllPages, btnPrintCurrentPage, btnExportToExcel As Button
 
     Protected Overrides Sub CreateChildControlsSub()
-        Debug.Print("<clsReportResults.CreateChildControlsSub>")
+        'debug.print("<clsReportResults.CreateChildControlsSub>")
         Controls.Clear() '*** Clear all Controls from collection
 
         lblViewName = New Label
         lblViewName.ID = "lblViewName"
         lblViewName.Text = "The View"
-        lblViewName.CssClass = "pad-all"
+        lblViewName.CssClass = "d-none input-group-prepend"
         '*** LOAD VIEWS DDL
         '*** Get Views From Database
         pHeading = New Panel
-        pHeading.CssClass = "pad-all"
+        pHeading.CssClass = "input-group my-1"
         lblView = New Label
         lblView.Text = "View: "
-        lblView.CssClass = "pad-right"
+        lblView.CssClass = "input-group-text"
         ddlView = New DropDownList
         ddlView.ID = "ddlView"
-        ddlView.CssClass = "selectpicker Padding:3px;"
+        ddlView.CssClass = "custom-select selectpicker Padding:3px;"
         ddlView.Text = "Default"
         ddlView.ViewStateMode = ViewStateMode.Enabled
         ddlView.AutoPostBack = True
         AddHandler ddlView.SelectedIndexChanged, AddressOf ddlView_SelectedIndexChange
-
-
+        radShowAll = New RadioButtonList
+        radShowAll.Items.Add("Active Only")
+        radShowAll.Items.Add("All")
+        If ShowAll = "All" Then
+            radShowAll.SelectedValue = "All"
+        Else
+            radShowAll.SelectedValue = "Active Only"
+        End If
+        radShowAll.CssClass = "form-check form-check-inline"
+        radShowAll.RepeatDirection = RepeatDirection.Horizontal
+        radShowAll.Items(0).Attributes.CssStyle.Add("margin", "5px")
+        radShowAll.Items(1).Attributes.CssStyle.Add("margin", "5px")
+        radShowAll.AutoPostBack = True
+        AddHandler radShowAll.SelectedIndexChanged, AddressOf radShowAll_SelectedIndexChange
         If cn Is Nothing Then
             cn = New clsDataLoader
         End If
@@ -84,6 +98,7 @@ Public Class ReportResults
         End If
         pHeading.Controls.Add(lblView)
         pHeading.Controls.Add(ddlView)
+        pHeading.Controls.Add(radShowAll)
         '*** End LOAD View DDL
         lblWhere = New Label
         lblWhere.ID = "lblWhere"
@@ -133,7 +148,7 @@ Public Class ReportResults
 
         '*** Create the GridView
         gv = New GridView
-        gv.CssClass = "table table-hover"
+        gv.CssClass = "table table-hover table-sm table-bordered"
 
         gv.ID = "gvResults"
         gv.AutoGenerateColumns = False
@@ -141,7 +156,6 @@ Public Class ReportResults
 
         '*** Add Columns to the COLUMN DEFINITION GridView
         gv.Columns.Add(bfFieldName)
-
         gv.Columns.Add(bfColumnName)
         gv.Columns.Add(chkVisible)
         gv.Columns.Add(bfColumnFormat)
@@ -157,7 +171,7 @@ Public Class ReportResults
         AddHandler gv.Sorting, AddressOf gv_Sorting
         AddHandler gv.PageIndexChanging, AddressOf gv_PageIndexChanging
         AddHandler gv.RowDataBound, AddressOf gv_RowDataBound
-
+        AddHandler gv.RowCommand, AddressOf gv_Delete
         '*** Add Controls to Main Panel for View Name
         'btnSave = New Button
         'btnSave.ID = "btnSaveVuew"
@@ -232,15 +246,24 @@ Public Class ReportResults
         Try
             gv.DataBind()
         Catch
-            Debug.Print(Err.Description)
+            'debug.print(Err.Description)
         End Try
 
-        Debug.Print("</clsReportResults.CreateChildControlsSub>")
+        'debug.print("</clsReportResults.CreateChildControlsSub>")
+    End Sub
+    Protected Sub gv_Delete(sender As Object, e As GridViewCommandEventArgs)
+        'Stop
     End Sub
     Protected Sub ddlView_SelectedIndexChange(ByVal sender As Object, ByVal e As System.EventArgs) 'Handles DropDownList1.TextChanged
-        Debug.Print("<ddlView_SelectedIndexChanged>" & ddlView.SelectedValue)
+        'debug.print("<ddlView_SelectedIndexChanged>" & ddlView.SelectedValue)
         '     bindgv()
-        Debug.Print("</ddlView_SelectedIndexChanged>")
+        'debug.print("</ddlView_SelectedIndexChanged>")
+    End Sub
+    Protected Sub radShowAll_SelectedIndexChange(ByVal sender As Object, ByVal e As System.EventArgs) 'Handles DropDownList1.TextChanged
+        'debug.print("<radShowAll_SelectedIndexChanged>" & radShowAll.SelectedValue)
+        ShowAll = radShowAll.SelectedValue
+        bindgv()
+        'debug.print("</radShowAll_SelectedIndexChanged>")
     End Sub
     Protected Overrides Sub RecreateChildControls()
         EnsureChildControls()
@@ -266,18 +289,18 @@ Public Class ReportResults
         For Each col In gv.Columns
             If (col.SortExpression = sortfield) Then
                 index = gv.Columns.IndexOf(col)
-                img = New ImageButton
-                img.CssClass = ".height:10px;"
+                imgSort = New ImageButton
+                imgSort.CssClass = ".height:10px;"
                 If direction = SortDirection.Ascending Then
                     gv.Columns(index).HeaderText = gv.Columns(index).HeaderText & " V"
                     '     gv.Columns(index).HeaderStyle.CssClass = "btn btn-outline-primary"
-                    img.ImageUrl = "~/images/sort-" + "asc" + ".png"
+                    imgSort.ImageUrl = "~/images/sort-" + "asc" + ".png"
                 Else
                     gv.Columns(index).HeaderText = gv.Columns(index).HeaderText & " ^"
                     '      gv.Columns(index).HeaderStyle.CssClass = "btn btn-outline-danger"
-                    img.ImageUrl = "~/images/sort-" + "desc" + ".png"
+                    imgSort.ImageUrl = "~/images/sort-" + "desc" + ".png"
                 End If
-                gv.HeaderRow.Cells(index).Controls.Add(img)
+                gv.HeaderRow.Cells(index).Controls.Add(imgSort)
             End If
         Next
     End Sub
@@ -348,14 +371,14 @@ Public Class ReportResults
             List2Source = malist2Values
         End Get
         Set(ByVal value As Array)
-            Debug.Print("<clsComboBox.Set.List2Source>")
+            'debug.print("<clsComboBox.Set.List2Source>")
             malist2Values = value
             '         RefreshList2()
-            Debug.Print("</clsComboBox.Set.List2Source>")
+            'debug.print("</clsComboBox.Set.List2Source>")
         End Set
     End Property
     Public Overrides Sub refreshLists()
-        Debug.Print("<clsComboBox.refreshLists>")
+        'debug.print("<clsComboBox.refreshLists>")
         Dim rli As New ReportListItem
         Dim li As New ListItem
         '*** Clear the Items from the List
@@ -376,10 +399,10 @@ Public Class ReportResults
             'End If
             li = Nothing
         Next
-        Debug.Print("</clsComboBox.refreshLists>")
+        'debug.print("</clsComboBox.refreshLists>")
     End Sub
     Public Overrides Sub ForceValidation()
-        Debug.Print("<clsComboBox.ForceValidation>")
+        'debug.print("<clsComboBox.ForceValidation>")
         Dim lsReason As String = ""
         mcSelectedItems.Clear()
         mcSelectedItems2.Clear()
@@ -398,7 +421,7 @@ Public Class ReportResults
         End If
 
         mbValid = Validate()
-        Debug.Print("</clsComboBox.ForceValidation>")
+        'debug.print("</clsComboBox.ForceValidation>")
     End Sub
     Public Sub New()
         mrptCtrl = New ReportControl
@@ -407,9 +430,9 @@ Public Class ReportResults
         mrptCtrl = lrptctrl
     End Sub
     Protected Sub UpdatePanel1_DataBinding(ByVal sender As Object, ByVal e As System.EventArgs) 'Handles UpdatePanel1.DataBinding
-        Debug.Print("<clsComboBox.UpdatePanel1_DataBinding>")
+        'debug.print("<clsComboBox.UpdatePanel1_DataBinding>")
 
-        Debug.Print("</clsComboBox.UpdatePanel1_DataBinding>")
+        'debug.print("</clsComboBox.UpdatePanel1_DataBinding>")
     End Sub
     Protected Sub Pagie_iLoad(ByVal sender As Object, ByVal e As System.EventArgs) 'Handles Me.Load
         '  On Error Resume Next
@@ -419,11 +442,12 @@ Public Class ReportResults
         bindgv()
 
     End Sub
-    Sub bindgv()
+    Public Sub bindgv()
+        '*** Binds the Main Gridview Columns and Data
         Dim ds As New DataSet
         Dim dsCol As DataSet
         Dim dr As DataRow
-        '  Dim g As GridView
+        Dim lsSearchClause As String = ""
         Dim dc As DataColumn
         Dim dtv As DataTable
         Dim dt As DataTable
@@ -438,6 +462,7 @@ Public Class ReportResults
                     If IsDBNull(dr("SelectStatement")) Then Exit Sub
                     SQL = dr("SelectStatement")
                     ' SQL = "Select * from vQuote"
+                    SearchClause = IIf(IsDBNull(dr("SearchClause")), "", dr("Searchclause"))
                 End If
             End If
         End If
@@ -447,12 +472,21 @@ Public Class ReportResults
         If WhereClause Is Nothing Then
             WhereClause = " 1=1 "
         End If
+        If WhereClause = "" Then
+            WhereClause = " 1=1 AND NodeID = " & HttpContext.Current.Session("NodeID") & " "
+        Else
+            WhereClause = WhereClause & " AND NodeID = " & HttpContext.Current.Session("NodeID") & " "
+        End If
+        If radShowAll.SelectedValue = "All" Then
+        Else
+            WhereClause = WhereClause & "  and Active=1 "
+        End If
         If Sorting = "" Then
         Else
             WhereClause = WhereClause & Sorting
         End If
         lblWhere.Text = ReportWhereDesc
-        ds = fGetDataset(SQL, WhereClause)
+        ds = fGetDataset(SQL, WhereClause, SearchClause)
         If ds Is Nothing Then Exit Sub
         If ds.Tables.Count = 0 Then
             Exit Sub
@@ -468,6 +502,20 @@ Public Class ReportResults
             If dt.Rows.Count > 0 Then
                 '*** Yes we have a view
                 gv.Columns.Clear()
+                If dsCol.Tables(0).Rows.Count > 0 Then
+                    gv.DataKeyNames = New String() {"ID"}
+                    Dim cf As CommandField = New CommandField
+                    'cf.ShowEditButton = True
+                    '    cf.ShowDeleteButton = True
+                    '   cf.DeleteImageUrl = "~/images/delete.png"
+                    cf.ControlStyle.CssClass = " del table-hover"
+                    cf.ShowCancelButton = True
+                    Dim itmTmpF As New TemplateField
+                    itmTmpF.ItemTemplate = New LinkColumn
+                    gv.Columns.Add(itmTmpF)
+                    'gv.Columns.Add(cf)
+
+                End If
                 For Each dr In dsCol.Tables(0).Rows
                     If dr("columnVisible") = True Then
                         Dim bf As BoundField = New BoundField()
@@ -502,16 +550,7 @@ Public Class ReportResults
                 Next
             End If
 
-            If gv.Columns.Count > 0 Then
-                gv.DataKeyNames = New String() {"ID"}
-                Dim cf As CommandField = New CommandField
-                cf.ShowEditButton = False
-                cf.ShowDeleteButton = True
-                cf.DeleteImageUrl = "~/images/delete.png"
-                cf.ControlStyle.CssClass = " del table-hover"
-                cf.ShowCancelButton = True
-                gv.Columns.Add(cf)
-            End If
+
         End If
 
         '  <asp:TemplateField HeaderText="Name">
@@ -526,7 +565,7 @@ Public Class ReportResults
             gv.DataBind()
             If gvPageNum > 0 Then gv.PageIndex = gvPageNum
         Catch e As Exception
-            Debug.Print(e.Message)
+            'debug.print(e.Message)
         End Try
     End Sub
     Sub gv_RowDataBound(sender As Object, e As GridViewRowEventArgs)
@@ -538,12 +577,18 @@ Public Class ReportResults
             l.ID = "lbl"
             l.Attributes.Add("data-id", lsID)
             cell(0).Controls.Add(l)
+            Dim lnk As LinkButton
+            lnk = cell(0).FindControl("lnkDel")
+            If Not lnk Is Nothing Then
+                lnk.CommandArgument = lsID
+                lnk.Attributes.Add("data-id", lsID)
+            End If
         End If
     End Sub
     Protected Sub btnSave_Click(ByVal sender As Object, ByVal e As System.EventArgs) 'Handles DropDownList1.TextChanged
-        Debug.Print("<ctrlReportColumns_btnSave_CLick>")
+        'debug.print("<ctrlReportColumns_btnSave_CLick>")
         'SAVE ROUTINE
-        Debug.Print("</ctrlReportColumns_btnSave_CLick>")
+        'debug.print("</ctrlReportColumns_btnSave_CLick>")
     End Sub
     Public Property ReportWhereClause()
         Get
@@ -574,7 +619,7 @@ Public Class ReportResults
         gv.PageIndex = e.NewPageIndex
         bindgv()
         'gvPageNum = e.NewPageIndex
-        Debug.Print(e.NewPageIndex)
+        'debug.print(e.NewPageIndex)
         'gv.SetPageIndex(e.NewPageIndex)
     End Sub
     Protected Sub gv_PageIndexChanged(sender As Object, e As GridViewPageEventArgs)
@@ -584,9 +629,9 @@ Public Class ReportResults
 
 
 
-    Public Function fGetDataset(lsSQL As String, lsWhere As String) As DataSet
+    Public Function fGetDataset(lsSQL As String, lsWhere As String, SearchClause As String) As DataSet
         Dim c As New clsDataLoader
-        fGetDataset = c.LoadReportResults(lsSQL, lsWhere, liReportID)
+        fGetDataset = c.LoadReportResults(lsSQL, lsWhere, liReportID, SearchClause)
     End Function
     Public Function GetColumns() As DataSet
         '*** Gets the Columns from the VIew Columns Table
@@ -610,7 +655,7 @@ Public Class ReportResults
             For Each s In HttpContext.Current.Request.Form.Keys
                 '*** Are we on the Grid Control
                 If Not s Is Nothing Then
-                    Debug.Print(s.ToString() + ":" + HttpContext.Current.Request.Form(s) + " ")
+                    'debug.print(s.ToString() + ":" + HttpContext.Current.Request.Form(s) + " ")
                     lsTemp = s.ToString
 
                     '*** Get the View ID
@@ -729,9 +774,36 @@ Public Class ReportResults
 End Class
 
 Public Class KolassaProgressTemplate : Implements ITemplate
-
+    '*** When implementing the ITemplate interface, you must
+    '*** implement the InstantiateIn method. The FormView
+    '*** control calls this method to create the template's content. 
     Public Sub InstantiateIn(ByVal container As Control) Implements Web.UI.ITemplate.InstantiateIn
-        ' This is empty.
+        '*** Create the child controls contained in the template.
     End Sub
 
+End Class
+Public Class LinkColumn : Implements ITemplate
+
+    Public Sub InstantiateIn(container As Control) Implements ITemplate.InstantiateIn
+        'Throw New NotImplementedException()
+        Dim lnkDel As LinkButton = New LinkButton
+
+        AddHandler lnkDel.DataBinding, AddressOf l_Databinding
+        lnkDel.ID = "lnkDel"
+
+        container.Controls.Add(lnkDel)
+    End Sub
+    Private Sub l_Databinding(sender As Object, e As EventArgs)
+        Dim l As LinkButton = sender
+        Dim gvr As GridViewRow = l.NamingContainer
+        Dim drv As DataRowView = gvr.DataItem
+
+        If drv("Active").ToString.ToUpper = "TRUE" Then
+            l.Text = "<i class='dc dc-bin del table-hover' ></i>"
+            l.CommandName = "gv_delete"
+        Else
+            l.Text = ""
+            l.CommandName = ""
+        End If
+    End Sub
 End Class

@@ -1,4 +1,4 @@
-﻿Option Strict Off
+﻿
 Imports System.ComponentModel
 Imports System.Drawing
 
@@ -91,7 +91,7 @@ Public Class ctrlDateBox
         AddHandler UpdatePanel1.DataBinding, AddressOf UpdatePanel1_DataBinding
         AddHandler CustomValidator1.ServerValidate, AddressOf CustomValidator1_ServerValidate
 
-        UpdatePanel1.Controls.Add(fGetFieldButton)
+        'UpdatePanel1.Controls.Add(fGetFieldButton)
         UpdatePanel1.Controls.Add(lblFieldName)
         Controls.Add(DropDownList1)
         Controls.Add(UpdatePanel1)

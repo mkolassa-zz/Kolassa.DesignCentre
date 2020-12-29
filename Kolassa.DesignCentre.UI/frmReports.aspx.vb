@@ -22,7 +22,7 @@
         ReportResults.Attributes("data-reportdesc") = ReportContainer1.ReportDescription
         ReportResults.Attributes("data-reportwheredesc") = ReportContainer1.ReportOut
         ReportResults.ReportDesc = ReportContainer1.ReportDescription
-        ShowMessage("Aww, password is wrong", "Error")
+        ShowMessage("Rats, password is wrong", "Error")
     End Sub
     Public Sub ShowMessage(Message As String, lsType As String)
         'Show Bootstrap Message
@@ -37,7 +37,7 @@
 
     Private Sub _Default_PreInit(sender As Object, e As EventArgs) Handles Me.Init
 
-        If ReportContainer1.ReportID = -10 Then
+        If ReportContainer1.ReportID = 15 Or ReportContainer1.ReportID = 0 Then
             If Request.QueryString("rpt") = "" Then
                 ReportResults.liReportID = 15 ' Take this out takethisout
             Else
@@ -89,7 +89,7 @@
         sb.AppendLine("printWin.focus();")
         sb.AppendLine("printWin.print();")
         sb.AppendLine("setTimeout(function(){window.close();}, 1); /* In fact timeout doesn't start until print dialog closes */")
-        sb.Append("printWin.close();};")
+        '    sb.Append("printWin.close();};")
         sb.Append("</script>")
         Page.ClientScript.RegisterStartupScript(Me.GetType(), "GridPrint", sb.ToString())
         gv.PagerSettings.Visible = True

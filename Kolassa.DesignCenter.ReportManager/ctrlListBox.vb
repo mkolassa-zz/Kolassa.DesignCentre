@@ -15,11 +15,19 @@ Public Class ctrlListBox
     Dim ctrlField2 As ListBox
     Dim CustomValidator1 As CustomValidator
     Dim trig As AsyncPostBackTrigger
-
+    Public Overrides Property ControlPanelcss() As String
+        Get
+            ControlPanelcss = msControlPanelcss
+        End Get
+        Set(sValue As String)
+            msControlPanelcss = sValue
+            '  uPanel1.Attributes.Add("class", sValue)
+        End Set
+    End Property
     Protected Overrides Sub CreateChildControlsSub()
         mcSelectedItems.Clear()
         mcSelectedItems2.Clear()
-        Debug.Print("<ctrlListbox.CreateChildControls>")
+        'debug.print("<ctrlListbox.CreateChildControls>")
         Controls.Clear()
         Dim li As ListItem
         Dim liCol As New ListItemCollection
@@ -75,7 +83,12 @@ Public Class ctrlListBox
         AddHandler CustomValidator1.ServerValidate, AddressOf CustomValidator1_ServerValidate
 
         Controls.Add(lblFieldName)
-        Controls.Add(fGetFieldButton)
+
+
+        uPanel1.ContentTemplateContainer.Controls.Add(fGetFieldButton)
+        uPanel1.ContentTemplateContainer.Controls.Add(fGetFieldDeleteButton)
+
+
         Controls.Add(DropDownList1)
 
 
@@ -85,9 +98,9 @@ Public Class ctrlListBox
         uPanel1.ContentTemplateContainer.Controls.Add(lblField2)
         uPanel1.ContentTemplateContainer.Controls.Add(ctrlField2)
         uPanel1.ContentTemplateContainer.Controls.Add(CustomValidator1)
-
+        uPanel1.Attributes.Add("class", msControlPanelcss)
         '  SetFields(Me.DropDownList1.Text, Me.DropDownList1.SelectedValue)
-        Debug.Print("</ctrlListbox.CreateChildControls>")
+        'debug.print("</ctrlListbox.CreateChildControls>")
     End Sub
     Protected Overrides Sub RecreateChildControls()
         EnsureChildControls()
@@ -95,7 +108,7 @@ Public Class ctrlListBox
 
 
     Protected Overrides Sub RenderSubControls(writer As HtmlTextWriter)
-        Debug.Print("<ctrlListbox.RenderSubControls>")
+        'debug.print("<ctrlListbox.RenderSubControls>")
         '       On Error Resume Next
         DropDownList1.RenderControl(writer)
         lblFieldName.RenderControl(writer)
@@ -104,7 +117,7 @@ Public Class ctrlListBox
         uPanel1.RenderControl(writer)
         On Error GoTo 0
 
-        Debug.Print("</ctrlListbox.RenderSubControls>")
+        'debug.print("</ctrlListbox.RenderSubControls>")
     End Sub
 
 
@@ -130,7 +143,7 @@ Public Class ctrlListBox
         End Set
     End Property
     Public Overrides Sub refreshLists()
-        Debug.Print("<ctrlListbox.Refreshlists>")
+        'debug.print("<ctrlListbox.Refreshlists>")
         If mbRefreshList = False Then Exit Sub
         Dim rli As New ReportListItem
         Dim li As New ListItem
@@ -165,10 +178,10 @@ Public Class ctrlListBox
         Else
             ctrlField1.SelectionMode = ListSelectionMode.Multiple
         End If
-        Debug.Print("</ctrlListbox.Refreshlists>")
+        'debug.print("</ctrlListbox.Refreshlists>")
     End Sub
     Public Overrides Sub ForceValidation()
-        Debug.Print("<ctrlListbox.ForceValidation>")
+        'debug.print("<ctrlListbox.ForceValidation>")
         Dim lsReason As String = ""
         Dim liCounter As Integer
         Dim liSelectedIndices(1000) As Integer
@@ -228,51 +241,51 @@ Public Class ctrlListBox
                 miSelectedItem2.Value = CStr(ctrlField2.Items(liSelectedIndices2(liCounter)).Value)
                 miSelectedItem2.Description = CStr(ctrlField2.Items(liSelectedIndices2(liCounter)).Text)
                 mcSelectedItems2.Add(miSelectedItem2)
-                ' System.Diagnostics.Debug.Print(mcSelectedItems(0). & " " & mcSelectedItems2.Count)
+                ' System.Diagnostics.'debug.print(mcSelectedItems(0). & " " & mcSelectedItems2.Count)
             Next
         End If
 
         mbValid = Validate()
-        Debug.Print("</ctrlListbox.ForceValidation>")
+        'debug.print("</ctrlListbox.ForceValidation>")
     End Sub
     Public Sub New()
-        Debug.Print("<ctrlListbox.New />")
+        'debug.print("<ctrlListbox.New />")
         mrptCtrl = New ReportControl
     End Sub
     Public Sub New(ByRef lrptctrl As ReportControl)
         mrptCtrl = lrptctrl
     End Sub
     Protected Sub UpdatePanel1_DataBinding(ByVal sender As Object, ByVal e As System.EventArgs) 'Handles uPanel.DataBinding
-        Debug.Print("<ctrlListbox.DataBinding>")
+        'debug.print("<ctrlListbox.DataBinding>")
         SetFields(Me.DropDownList1.Text, Me.DropDownList1.SelectedValue)
-        Debug.Print("</ctrlListbox.DataBinding>")
+        'debug.print("</ctrlListbox.DataBinding>")
     End Sub
     Protected Sub iPagei_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        Debug.Print("<ctrlListbox.iPagei_load>")
+        'debug.print("<ctrlListbox.iPagei_load>")
         Try
             uPanel1.DataBind()
             refreshLists()
         Catch
-            Debug.Print("<err msg=" & Err.Description & "</err>")
+            'debug.print("<err msg=" & Err.Description & "</err>")
         End Try
-        Debug.Print("</ctrlListbox.iPagei_load>")
+        'debug.print("</ctrlListbox.iPagei_load>")
     End Sub
     Protected Sub DropDownList1_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) ' Handles DropDownList1.TextChanged
-        Debug.Print("<ctrlListbox.DropDownList1_TextChanged>")
+        'debug.print("<ctrlListbox.DropDownList1_TextChanged>")
         Try
             SetFields(Me.DropDownList1.Text, Me.DropDownList1.SelectedValue)
         Catch
-        Debug.Print("<err msg=" & Err.Description & "</err>")
+            'debug.print("<err msg=" & Err.Description & "</err>")
         End Try
-        Debug.Print("</ctrlListbox.DropDownList1_TextChanged>")
+        'debug.print("</ctrlListbox.DropDownList1_TextChanged>")
     End Sub
     Protected Sub CustomValidator1_ServerValidate(ByVal source As Object, ByVal args As System.Web.UI.WebControls.ServerValidateEventArgs) ' Handles CustomValidator1.ServerValidate
-        Debug.Print("<ctrlListbox.CustomValidator1_ServerValidate>")
+        'debug.print("<ctrlListbox.CustomValidator1_ServerValidate>")
         mbValid = False
         ForceValidation()
         args.IsValid = mbValid
         CustomValidator1.ErrorMessage = msValidationReason
-        Debug.Print("</ctrlListbox.CustomValidator1_ServerValidate>")
+        'debug.print("</ctrlListbox.CustomValidator1_ServerValidate>")
     End Sub
 
     Public Overrides Sub SetFields(lsOption As String, lsValue As String)
@@ -285,7 +298,7 @@ Public Class ctrlListBox
                 For Each lstItem In ctrlField1.Items
                     If lstItem.Value = lrli.Value Then
                         lstItem.Selected = True
-                        Debug.Print("CTRLListBox Set Fields: " & lblFieldName.Text & " Value: " & lstItem.Text)
+                        'debug.print("CTRLListBox Set Fields: " & lblFieldName.Text & " Value: " & lstItem.Text)
                     End If
                 Next
 
@@ -299,51 +312,51 @@ Public Class ctrlListBox
         Dim lsText2 As String = ""
         If UBound(ctrlField1.GetSelectedIndices) >= 0 Then lsText1 = ctrlField1.Items(ctrlField1.GetSelectedIndices(0)).Text
         If UBound(ctrlField2.GetSelectedIndices) >= 0 Then lsText2 = ctrlField2.Items(ctrlField2.GetSelectedIndices(0)).Text
-        System.Diagnostics.Debug.Print(Me.msFieldName)
-        System.Diagnostics.Debug.Print(lsText1 & " " & lsText2)
+        '  System.Diagnostics.'debug.print(Me.msFieldName)
+        ' System.Diagnostics.'debug.print(lsText1 & " " & lsText2)
 
     End Sub
 
     Protected Sub ctrlField2_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs)
-        Debug.Print("<ctrlListbox.ctrlField2_SelectedIndexChanged>")
+        'debug.print("<ctrlListbox.ctrlField2_SelectedIndexChanged>")
         Dim l As ListBox = sender
         '  On Error Resume Next
-        System.Diagnostics.Debug.Print(l.ID & " " & l.GetSelectedIndices(0))
+        '   System.Diagnostics.debug.print(l.ID & " " & l.GetSelectedIndices(0))
 
-        Debug.Print("</ctrlListbox.ctrlField2_SelectedIndexChanged>")
+        'debug.print("</ctrlListbox.ctrlField2_SelectedIndexChanged>")
     End Sub
 
     Private Sub ctrlListBox_ControlUpdated(sender As Object, e As EventArgs) Handles Me.ControlUpdated
         On Error Resume Next
-        Debug.Print("<ctrlListBox_ControlUpdate selectedindex=" & ctrlField1.SelectedIndex & " />")
+        'debug.print("<ctrlListBox_ControlUpdate selectedindex=" & ctrlField1.SelectedIndex & " />")
     End Sub
 
     Private Sub ctrlListBox_DataBinding(sender As Object, e As EventArgs) Handles Me.DataBinding
         On Error Resume Next
-        Debug.Print("<ctrlListBox_DataBinding selectedindex=" & ctrlField1.SelectedIndex & " />")
+        'debug.print("<ctrlListBox_DataBinding selectedindex=" & ctrlField1.SelectedIndex & " />")
     End Sub
 
     Private Sub ctrlListBox_Disposed(sender As Object, e As EventArgs) Handles Me.Disposed
         On Error Resume Next
-        Debug.Print("<ctrlListBox_Disposed selectedindex=" & ctrlField1.SelectedIndex & " />")
+        'debug.print("<ctrlListBox_Disposed selectedindex=" & ctrlField1.SelectedIndex & " />")
     End Sub
 
     Private Sub ctrlListBox_Init(sender As Object, e As EventArgs) Handles Me.Init
         On Error Resume Next
         If Not ctrlField1 Is Nothing Then
-            Debug.Print("<ctrlListBox_Init selectedindex=" & ctrlField1.SelectedIndex & " />")
+            'debug.print("<ctrlListBox_Init selectedindex=" & ctrlField1.SelectedIndex & " />")
         End If
     End Sub
 
 
     Private Sub ctrlListBox_PreRender(sender As Object, e As EventArgs) Handles Me.PreRender
         On Error Resume Next
-        Debug.Print("<ctrlListBox_PreRender selectedindex=" & ctrlField1.SelectedIndex & " />")
+        'debug.print("<ctrlListBox_PreRender selectedindex=" & ctrlField1.SelectedIndex & " />")
     End Sub
 
     Private Sub ctrlListBox_Unload(sender As Object, e As EventArgs) Handles Me.Unload
         On Error Resume Next
-        Debug.Print("<ctrlListBox_Unload selectedindex=" & ctrlField1.SelectedIndex & " />")
+        'debug.print("<ctrlListBox_Unload selectedindex=" & ctrlField1.SelectedIndex & " />")
     End Sub
 End Class
 

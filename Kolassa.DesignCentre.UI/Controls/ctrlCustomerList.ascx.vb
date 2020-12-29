@@ -31,12 +31,12 @@
         Dim c As New clsCustomers
 		Dim llNodeID As Long = Session("NodeID")
         If llNodeID = 0 Then
-            ie = c.GetRecords("CustomerName", "", "", True, 0)
-        Else
+			ie = c.GetRecords("Name", "", "", True, 0)
+		Else
             Dim lsProjectID As String = Session("Project")
             If lsProjectID = "" Then lsProjectID = "11112222-3333-4444-5555-666677778888"
-            ie = c.GetRecords("CustomerName", "", "", True, llNodeID)
-        End If
+			ie = c.GetRecords("Name", "", "", True, llNodeID)
+		End If
         get_Records = ie
 	End Function
 End Class

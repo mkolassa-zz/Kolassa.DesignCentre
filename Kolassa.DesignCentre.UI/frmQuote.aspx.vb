@@ -504,7 +504,9 @@ Err_CustomerID_DblClick:
 
 		Dim d As DropDownList
 		If fvQuote Is Nothing Then Exit Sub
-		If fvQuote.Controls.Count = 0 Then Exit sub
+		'	If odsQuotes.s Then Exit Sub
+		If fvQuote.Controls.Count = 0 Then Exit Sub
+
 		d = fvQuote.FindControl("cmbQuoteStatus")
 		If d Is Nothing Then Exit Sub
 		Dim dP1 As DropDownList = fvQuote.FindControl("cmbPhase1Status")

@@ -80,12 +80,29 @@ Partial Class frmCustomers
 		' Verifies that the control is rendered
 	End Sub
 
-	Protected Sub cmdExcel_Click(sender As Object, e As ImageClickEventArgs) Handles cmdExcel.Click
+	Protected Sub cmdExcel_Click(sender As Object, e As EventArgs) Handles cmdExcel.Click
 		ExportToExcel()
 	End Sub
 
 	Protected Sub grdCustomers_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles grdCustomers.PageIndexChanging
 		grdCustomers.PageIndex = e.NewPageIndex
 		grdCustomers.DataBind()
+	End Sub
+
+	Protected Sub cmdNewCustomer_Click(sender As Object, e As EventArgs) Handles cmdNewCustomer.Click
+		ctrlCustomers1.Insert()
+		ctrlCustomers1.NewCustomerRecord()
+	End Sub
+	Protected Sub cmdNewCust_Click(sender As Object, e As EventArgs) Handles cmdNewCust.Click
+		ctrlCustomers1.Insert()
+		ctrlCustomers1.NewCustomerRecord()
+	End Sub
+	Sub NewCust()
+		ctrlCustomers1.Insert()
+		ctrlCustomers1.NewCustomerRecord()
+	End Sub
+	Protected Sub cmdNewRec_Click(sender As Object, e As EventArgs) Handles cmdNewRec.Click
+		NewCust()
+		Page.ClientScript.RegisterClientScriptBlock(Me.GetType, "none", "<script>popup();</script>", False)
 	End Sub
 End Class

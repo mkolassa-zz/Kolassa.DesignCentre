@@ -46,7 +46,7 @@ Public Class clsDataLoader
 
         lsSQL = "SELECT tblReportDescriptions.ReportID,          " & NL &
                 "       tblReportDescriptions.ReportDescription, " & NL &
-                "       tblReportDescriptions.ReportName,   s.SelectStatement ,     " & NL &
+                "       tblReportDescriptions.ReportName,   s.SelectStatement ,  SearchClause,    " & NL &
                 "       tblReportDescriptions.EntityType, tblReportDescriptions.TableName         " & NL &
                 "FROM   tblReportDescriptions           " & NL &
                 "       Left Join tblReportSQL S on tblReportDescriptions.ReportID = S.ReportID " & NL &
@@ -84,8 +84,8 @@ Public Class clsDataLoader
             lsSQL = "SELECT tblReportDescriptions.ReportID,          " & NL &
                 "       tblReportDescriptions.ReportDescription, " & NL &
                 "       tblReportDescriptions.ReportName,         " & NL &
-                "       tblReportDescriptions.EntityType , tblReportDescriptions.TableName           " & NL &
-                "FROM   tblReportDescriptions  " & NL &
+                "       tblReportDescriptions.EntityType , tblReportDescriptions.TableName ,   s.SearchClause       " & NL &
+                "FROM   tblReportDescriptions Left Join tblReportSQL s on tblReportDescriptions.ReportID = s.ReportID " & NL &
                 "WHERE  tblReportDescriptions.ReportID=" & llReportID & " " & NL &
                 " order by tblReportDescriptions.ReportName ;"
         Else
@@ -93,7 +93,7 @@ Public Class clsDataLoader
                 lsSQL = "SELECT tblReportDescriptions.ReportID,          " & NL &
                     "       tblReportDescriptions.ReportDescription, " & NL &
                     "       tblReportDescriptions.ReportName,   s.SelectStatement ,     " & NL &
-                    "       tblReportDescriptions.EntityType, tblReportDescriptions.TableName         " & NL &
+                    "       tblReportDescriptions.EntityType, tblReportDescriptions.TableName  , s.SearchClause       " & NL &
                     "FROM   tblReportCategoryMap INNER JOIN          " & NL &
                     "       tblReportDescriptions ON                 " & NL &
                     "       tblReportCategoryMap.ReportID = tblReportDescriptions.ReportID " & NL &
@@ -101,13 +101,24 @@ Public Class clsDataLoader
                     "WHERE  tblReportCategoryMap.CategoryID=" & llCategoryID & NL &
                     " order by tblReportDescriptions.ReportName ;"
             Else
-                lsSQL = "SELECT tblReportDescriptions.ReportID,          " & NL &
+                If ReportName = "ALLREPORTS" Then
+
+                    lsSQL = "SELECT tblReportDescriptions.ReportID,          " & NL &
                     "       tblReportDescriptions.ReportDescription, " & NL &
                     "       tblReportDescriptions.ReportName,         " & NL &
                     "       tblReportDescriptions.EntityType , tblReportDescriptions.TableName           " & NL &
                     "FROM   tblReportDescriptions  " & NL &
-                    "WHERE  ReportName='" & ReportName & "'" & NL &
+                    "WHERE  1=1 " & NL &
                     " order by tblReportDescriptions.ReportName ;"
+                Else
+                    lsSQL = "SELECT tblReportDescriptions.ReportID,          " & NL &
+                    "       tblReportDescriptions.ReportDescription, " & NL &
+                    "       tblReportDescriptions.ReportName,         " & NL &
+                    "       tblReportDescriptions.EntityType , tblReportDescriptions.TableName           " & NL &
+                    "FROM   tblReportDescriptions  " & NL &
+                    "WHERE  upper(ReportName)='" & ReportName.ToUpper & "'" & NL &
+                    " order by tblReportDescriptions.ReportName ;"
+                End If
             End If
         End If
         '*** Load a data set.
@@ -126,9 +137,13 @@ Public Class clsDataLoader
         mdsReports = ds
         LoadReports = mdsReports
     End Function
-    Public Function LoadReportResults(ByVal lsSQL As String, lsWhere As String, liReportID As Integer) As DataSet
+    Public Function LoadReportResults(ByVal lsSQL As String, lsWhere As String, liReportID As Integer, Optional SearchClause As String = "") As DataSet
         Dim ds As New DataSet()
-
+        Dim lsSearchClause As String = ""
+        If SearchClause Is Nothing Then
+            SearchClause = ""
+        End If
+        If SearchClause.Length > 3 Then lsSearchClause = SearchClause
         '*** Initialize
         LoadReportResults = Nothing
 
@@ -146,11 +161,14 @@ Public Class clsDataLoader
                     dt = ds.Tables(0)
                     dr = dt.Rows(0)
                     lsSQL = dr("SelectStatement")
+                    lsSearchClause = dr("SearchClause")
+
                 End If
             End If
         End If
+        If lsSearchClause = "" Then lsSearchClause = " isnull([code],' ' ) + isnull( [name],' ') + isnull( [description],' ') "
         lsSQL = Replace(lsSQL, "@WHERE@", lsWhere)
-        lsSQL = Replace(lsSQL, "SearchText", " isnull([code],' ' ) + isnull( [name],' ') + isnull( [description],' ') ")
+        lsSQL = Replace(lsSQL, "SearchText", " " + lsSearchClause + " ")
 
 
         '*** Load a data set.
@@ -188,23 +206,45 @@ Public Class clsDataLoader
 		mdsReportCategories = ds
 		LoadReportCategories = mdsReportCategories
 	End Function
-	Public Function LoadAllControls() As DataSet
-		Dim NL As String = Chr(13) & Chr(10)
-		Dim lsSQL As String
+    Public Function LoadAllControls() As DataSet
+        Dim NL As String = Chr(13) & Chr(10)
+        Dim lsSQL As String
 
-		'*** Initialize
-		LoadAllControls = Nothing
+        '*** Initialize
+        LoadAllControls = Nothing
 
-		lsSQL = "Select * from tblReportControls "
+        lsSQL = "Select * from tblReportControls "
 
 
-		'*** Load a data set.
-		Dim ds As New DataSet()
-		ds = fGetDataset(mscnType, mscnStr, lsSQL, "Controls")
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        ds = fGetDataset(mscnType, mscnStr, lsSQL, "Controls")
 
-		mdsAllControls = ds
-		LoadAllControls = mdsAllControls
-	End Function
+        mdsAllControls = ds
+        LoadAllControls = mdsAllControls
+    End Function
+    Public Function LoadAvailableControlsForForm(liReportID As Integer, liControlID As Integer) As DataSet
+        '*** Since each control has unique name,  eliminate the controls already on the form
+        '*** Might switch this later if I can get the ControlName attribute on the ReportFIeld Table to Drive the control Name
+        Dim NL As String = Chr(13) & Chr(10)
+        Dim lsSQL As String
+
+        '*** Initialize
+        LoadAvailableControlsForForm = Nothing
+
+        lsSQL = "SELECT * FROM tblreportcontrols c left join
+                (Select ReportControl from tblreportfields where reportid=" & liReportID & ") a
+                    On c.controlid = a.ReportControl
+                WHERE a.reportcontrol is null or c.controlID = " & liControlID
+
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        ds = fGetDataset(mscnType, mscnStr, lsSQL, "Controls")
+
+        mdsAllControls = ds
+        LoadAvailableControlsForForm = mdsAllControls
+    End Function
     Public Function LoadReportControls(ByVal llReportID As Long, Optional llControlNum As Long = 0, Optional lsFieldID As String = "") As DataSet
         Dim lscnType As String = "OLEDB"
         Dim lsSQL As String
@@ -240,7 +280,7 @@ Public Class clsDataLoader
         If lsReportID = "" Or lsReportID Is Nothing Then
             lsReportID = ""
         Else
-            lsSQL = lsSQL & " Where ReportID='" & lsReportID & "'"
+            lsSQL = lsSQL & " Where (Type = 'Global' or createuser ='" & fGetUser() & "') and (isnull(NodeID,0) = 0 or NodeID = " & NodeID & ") AND ReportID='" & lsReportID & "'"
         End If
 
         '*** Load a data set.
@@ -276,10 +316,10 @@ Public Class clsDataLoader
         '*** Initialize
         LoadReportViewColumns = Nothing
 
-        lsSQL = "SELECT * " &
-                "FROM   TBLREPORTVIEWCOLUMNS " &
-                "WHERE  ViewID= '" & lsViewID & "' " &
-                "ORDER BY ColumnOrder "
+        lsSQL = "SELECT v.name as viewname, v.type as viewtype, c.* " &
+                "FROM   TBLREPORTVIEWCOLUMNS c INNER JOIN TBLREPORTVIEWS v on v.ID = c.ViewID " &
+                "WHERE  c.ViewID= '" & lsViewID & "' " &
+                "ORDER BY columnvisible desc, ColumnOrder "
 
         '*** Load a data set.
         Dim ds As New DataSet()
@@ -289,6 +329,33 @@ Public Class clsDataLoader
         LoadReportViewColumns = ds
     End Function
 
+    Public Function DeleteReportView(ByVal lsViewID As String) As Boolean
+        Dim lscnType As String = "OLEDB"
+        Dim lsSQL As String
+
+        '*** Initialize
+        DeleteReportView = Nothing
+
+        '*** First Delete the Columns
+        DeleteReportViewColumns(lsViewID)
+
+        '*** Now Delete the Views
+        lsSQL = "Delete " &
+                "FROM   TBLREPORTVIEWS " &
+                "WHERE  ID= '" & lsViewID & "' "
+
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        Dim cmd As New SqlCommand
+        cmd.CommandText = lsSQL
+        Dim c As New Collection
+        c.Add(cmd)
+
+        Dim b As Boolean = fRunSQLCommands(mscnType, mscnStr, c)
+
+        DeleteReportView = True
+    End Function
     Public Function DeleteReportViewColumns(ByVal lsViewID As String) As Boolean
         Dim lscnType As String = "OLEDB"
         Dim lsSQL As String
@@ -310,7 +377,6 @@ Public Class clsDataLoader
 
         Dim b As Boolean = fRunSQLCommands(mscnType, mscnStr, c)
 
-        'mdsReportControls = ds
         DeleteReportViewColumns = True
     End Function
     Public Function InsertReportViewColumns(ByVal lsViewID As String, ByVal lsID As String,
@@ -350,7 +416,8 @@ Public Class clsDataLoader
         InsertReportViewColumns = fExecuteSQLCmd("SQLConnection", lscnStr, msSQLcmd)
     End Function
     Function fGetUser() As String
-        fGetUser = "11111111-2222-3333-4444-555566667777" ' Web.HttpContext.Current.User.Identity.GetUserId()
+        fGetUser = "11111111-2222-3333-4444-555566667777" '
+        fGetUser = Web.HttpContext.Current.User.Identity.GetUserId()
     End Function
     Public Function InsertReportView(ByVal lsViewID As String, ByVal lsName As String,
                                     ByVal lsTYpe As String, ByVal lsForm As String, liReportID As Integer,
@@ -386,6 +453,67 @@ Public Class clsDataLoader
 
         '*** Run The SQL.
         InsertReportView = fExecuteSQLCmd("SQLConnection", lscnStr, msSQLcmd)
+    End Function
+    Public Function InsertReportField(liReportID As Integer) As Boolean
+        Dim lgID As New Guid
+        Dim lsUserID As String = fGetUser()
+        Dim msSQLcmd As SqlCommand
+        lgID = Guid.NewGuid
+        Dim lsSQL As String
+        Dim lscnStr As String = mscnStr
+        Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+        '*** Initialize
+        InsertReportField = False
+        '*** Check for No Selected Category
+        'If llNodeID = 0 Then
+        ' Exit Function
+        ' End If
+
+        lsSQL = "  INSERT INTO [tblReportFields]
+           ([ReportID]           ,[ReportControl]           ,[Fieldtype]           ,[Required]           ,[Active]           ,[NodeID]
+           ,[CreateDate]           ,[Createuser]           ,[UpdateDate]           ,[UpdateUser]           ,[SortOrder]           ,[Validation]
+           ,[FieldValidationPattern]           ,[FieldValidationTitle]           ,[TableName]           ,[FieldName]           ,[FieldReadOnly]
+             ,[ID]           ,[Name])
+     VALUES
+          (@ReportID           ,0           , 'String'           , 0           , 1           ,0
+           ,getdate()           ,@UserID            ,getdate()           ,@UserID           ,0           ,''
+           ,''           ,''           ,''           ,''           ,0           ,newid()           ,'NewField') "
+
+
+
+        msSQLcmd = New SqlCommand
+        msSQLcmd.CommandText = lsSQL
+        msSQLcmd.Parameters.Clear()
+        msSQLcmd.Parameters.AddWithValue("@ReportID", liReportID)
+        msSQLcmd.Parameters.AddWithValue("@UserID", lsCurrentUser)
+
+        '*** Run The SQL.
+        InsertReportField = fExecuteSQLCmd("SQLConnection", lscnStr, msSQLcmd)
+    End Function
+    Public Function UpdateReportViewScope(ByVal lsViewID As String, ByVal lsViewType As String, ByVal liNodeID As Integer) As Boolean
+        Dim lgID As New Guid
+        Dim lsUserID As String = fGetUser()
+        Dim msSQLcmd As SqlCommand
+        lgID = Guid.NewGuid
+        Dim lsSQL As String
+        Dim lscnStr As String = mscnStr
+        Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+        '*** Initialize
+        UpdateReportViewScope = False
+        '*** Check for No Selected Category
+        'If llNodeID = 0 Then
+        ' Exit Function
+        ' End If
+
+        lsSQL = "UPDATE tblReportViews 
+                 SET TYPE = '" & lsViewType & "',  
+                     UPDATEDATE = getdate()
+                 WHERE ID = '" & lsViewID & "' AND NODEID = " & liNodeID & ";"
+        msSQLcmd = New SqlCommand
+        msSQLcmd.CommandText = lsSQL
+
+        '*** Run The SQL.
+        UpdateReportViewScope = fExecuteSQLCmd("SQLConnection", lscnStr, msSQLcmd)
     End Function
     Public Function isGUID(ByVal QFormUID As String) As Boolean
         If QFormUID Is Nothing Then
@@ -433,6 +561,7 @@ fexecuteSQLError:
     End Function
     Function fTakeOutQuotes(ByVal lsStr As String) As String
         lsStr = Replace(lsStr, "script", "scri_pt")
+        lsStr = Replace(lsStr, "descri_ption", "Description")
         lsStr = Replace(lsStr, """", """""")
         lsStr = Replace(lsStr, "'", "''")
         fTakeOutQuotes = Trim(lsStr)
@@ -490,11 +619,11 @@ fexecuteSQLError:
         On Error GoTo LoadListItemsError
 
         If ProjectID Is Nothing Then ProjectID = "11112222-3333-4444-5555-666677778888"
-		LoadListItems = New DataSet
-		'*** Load a data set.
-		lsSQL = lsSQL.Replace("@ProjectID@", ProjectID)
-		lsSQL = lsSQL.Replace("@NodeID@", NodeID)
-		Dim ds As New DataSet()
+        LoadListItems = New DataSet
+        '*** Load a data set.
+        lsSQL = lsSQL.Replace("@ProjectID@", ProjectID)
+        lsSQL = lsSQL.Replace("@NodeID@", NodeID)
+        Dim ds As New DataSet()
         ds = fGetDataset(lscnType, lsCnStr, lsSQL, "ListItems")
 
         mdsListItems = ds
@@ -503,19 +632,19 @@ fexecuteSQLError:
 LoadListItemsExit:
         Exit Function
 LoadListItemsError:
-		Dim t As DataTable
-		t = New DataTable
-		t.Columns.Add("ID")
-		t.Columns.Add("Description")
-		Dim r As DataRow
-		r = t.NewRow
+        Dim t As DataTable
+        t = New DataTable
+        t.Columns.Add("ID")
+        t.Columns.Add("Description")
+        Dim r As DataRow
+        r = t.NewRow
 
-		r(0) = 0
-		r(1) = Err.Description
+        r(0) = 0
+        r(1) = Err.Description
 
-		t.Rows.Add(r)
-		ds.Tables.Add(t)
-        Debug.Print("<error msg='" & Err.Description & "' />")
+        t.Rows.Add(r)
+        ds.Tables.Add(t)
+        'debug.print("<error msg='" & Err.Description & "' />")
         Resume LoadListItemsExit
     End Function
     Public Function LoadChildren(ByVal lsCnStr As String, ByVal lsSQL As String) As DataSet
@@ -534,7 +663,7 @@ LoadListItemsError:
 LoadChildrenExit:
         Exit Function
 LoadChildrenError:
-        Debug.Print("<error msg='" & Err.Description & "' />")
+        'debug.print("<error msg='" & Err.Description & "' />")
         Resume LoadChildrenExit
     End Function
     '  Private Function CheckdbConnection(ByVal lsConnectionType, ByVal lsConnectionString) As Boolean
@@ -556,7 +685,7 @@ LoadChildrenError:
     '     End If
     ' End Function
     Private Function fGetDataset(ByVal lsConnectionType As String, ByVal lsCn As String, ByVal lsSQL As String, ByVal lsTableName As String) As DataSet
-        Debug.Print("<clsDataLoader.fGetDataset>" & lsSQL & "</clsDataLoader.fGetDataset>")
+        'debug.print("<clsDataLoader.fGetDataset>" & lsSQL & "</clsDataLoader.fGetDataset>")
         If lsSQL.Length > 4 Then
             If Right(Trim(lsSQL), 4).ToUpper = " AND" Then
                 lsSQL = Trim(lsSQL)
@@ -575,12 +704,12 @@ LoadChildrenError:
             lsConnectionType = mscnType
             lsCn = mscnStr
         End If
-        'Debug.Print(lsSQL)
+        ''debug.print(lsSQL)
         Select Case lsConnectionType
             Case "SQLConnection"
-				cns = New SqlClient.SqlConnection
-				'	response.write(lsCn)
-				cns.ConnectionString = lsCn
+                cns = New SqlClient.SqlConnection
+                '	response.write(lsCn)
+                cns.ConnectionString = lsCn
                 cns.Open()
                 ' CheckdbConnection("SQLServer", lsCn)
                 '*** Set up a data set command object.
@@ -643,8 +772,67 @@ LoadChildrenError:
 
         LoadReportFields = ds
     End Function
+    Public Function DeleteReportField(ByVal lsID As String) As Boolean
+        Dim lscnType As String = "OLEDB"
+        Dim lsSQL As String
+
+        '*** Initialize
+        DeleteReportField = Nothing
+
+        '*** First Delete the Columns
+        DeleteReportViewColumns(lsID)
+
+        '*** Now Delete the Views
+        lsSQL = "Delete FROM   TBLREPORTFIELDS " &
+                              "WHERE  ID= '" & lsID & "' "
 
 
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        Dim cmd As New SqlCommand
+        cmd.CommandText = lsSQL
+        Dim c As New Collection
+        c.Add(cmd)
+
+        Dim b As Boolean = fRunSQLCommands(mscnType, mscnStr, c)
+
+        DeleteReportField = True
+    End Function
+    Public Function fRFFieldExists(nodeID As Long, fieldname As String, ReportID As String, ReportFieldID As String, controlname As String, ByRef errMessage As String) As Boolean
+        fRFFieldExists = False
+        Dim lsSQL As String
+        lsSQL = "SELECT * From
+                    (SELECT case when isnull(f.name,'')='' then c.controlname else f.name end as theControlname,
+                        case when isnull(f.fieldname,'')='' then c.controlfieldname else f.name end as theFieldname,
+	                    f.reportid, f.NodeID , f.id 
+                     FROM tblReportControls as c inner join tblReportFields f 
+                        on c.ControlID = f.ReportControl ) as A
+                 WHERE A.NodeID=" & nodeID & " and A.ReportID=" & ReportID & " and  A.thecontrolname='" & Trim(controlname) & "' and A.ID !='" & ReportFieldID & "'"
+        Dim ds As New DataSet()
+        ds = fGetDataset("SQLConnection", mscnStr, lsSQL, "Projects")
+        If ds.Tables.Count > 1 Then
+            If ds.Tables(0).Rows.Count > 0 Then
+                errMessage = "Control Name already exists for this control"
+                Return False
+            End If
+        End If
+        lsSQL = "SELECT * From
+                    (SELECT case when isnull(f.name,'')='' then c.controlname else f.name end as theControlname,
+                        case when isnull(f.fieldname,'')='' then c.controlfieldname else f.name end as theFieldname,
+	                    f.reportid, f.NodeID , f.id 
+                     FROM tblReportControls as c inner join tblReportFields f 
+                        on c.ControlID = f.ReportControl ) as A
+                 WHERE A.NodeID=" & nodeID & " and A.ReportID=" & ReportID & " and  A.thefieldname='" & Trim(fieldname) & "' and A.ID !='" & ReportFieldID & "'"
+        ds = New DataSet()
+        ds = fGetDataset("SQLConnection", mscnStr, lsSQL, "Projects")
+        If ds.Tables.Count > 1 Then
+            If ds.Tables(0).Rows.Count > 0 Then
+                errMessage = "A  Control For this field already exists!"
+                Return False
+            End If
+        End If
+        Return True
+    End Function
 End Class
 Public Class clsReportFields
 
@@ -655,7 +843,7 @@ Public Class clsReportFields
         Dim ds As DataSet = c.LoadReportControls(ReportNum, ControlNum, FieldID)
         Dim dr As DataRow
         Dim dt As DataTable
-        Dim cf As clsReportField
+        Dim cf As New clsReportField
         Dim cFields As Collection = New Collection
         If ds Is Nothing Then Return cFields '  *** Form is not Active on the screen
         If ds.Tables.Count > 0 Then
@@ -709,6 +897,9 @@ Public Class clsReportField
     Public FieldType As String
     Public NodeID As String
     Public SortOrder As Integer = 0
+    Public ContainerName As String = ""
+    Public ColumnSize As Integer = 12
+    Public lsErrorMessage As String
     Public Sub New()
         NodeID = System.Web.HttpContext.Current.Session("NodeID")
     End Sub
@@ -727,6 +918,9 @@ Public Class clsReportField
         'If llNodeID = 0 Then
         ' Exit Function
         ' End If
+        If c.fRFFieldExists(0, FieldName, ReportID, ReportFieldID, Name, lsErrorMessage) Then
+            Return False
+        End If
 
         lsSQL = "INSERT INTO tblReportFields
            ([ReportID]           ,[ReportControl]           ,[Fieldtype]
@@ -734,7 +928,7 @@ Public Class clsReportField
            ,[CreateDate]           ,[Createuser]           ,[UpdateDate]           ,[UpdateUser]
            ,[SortOrder]           ,[Validation]           ,[FieldValidationPattern]           ,[FieldValidationTitle]
            ,[TableName]           ,[FieldName]           ,[FieldReadOnly]           ,[FieldLength]
-           ,[FieldTitle]           ,[ID]           ,[Name])
+           ,[FieldTitle]           ,[ID]           ,[Name], containername, columnsize)
      VALUES
            (@ReportID,
            ,@pReportControl
@@ -756,7 +950,7 @@ Public Class clsReportField
            ,@pFieldLength
            ,@pFieldTitle
            ,@pID
-           ,@pName)"
+           ,@pName,@pContainerName, @pColumnSize)"
 
         msSQLcmd = New SqlCommand
         msSQLcmd.CommandText = lsSQL
@@ -783,7 +977,8 @@ Public Class clsReportField
         msSQLcmd.Parameters.AddWithValue("@pFieldTitle", Title)
         msSQLcmd.Parameters.AddWithValue("@pID", ReportFieldID)
         msSQLcmd.Parameters.AddWithValue("@pName", Name)
-
+        msSQLcmd.Parameters.AddWithValue("@pContainerName", ContainerName)
+        msSQLcmd.Parameters.AddWithValue("@pColumnSize", ColumnSize)
 
         '*** Run The SQL.
         Insert = c.fExecuteSQLCmd("SQLConnection", c.mscnStr, msSQLcmd)
@@ -794,6 +989,7 @@ Public Class clsReportField
         Dim msSQLcmd As SqlCommand
         lgID = Guid.NewGuid
         Dim lsSQL As String
+        lsErrorMessage = ""
 
 
         '*** Initialize
@@ -801,8 +997,10 @@ Public Class clsReportField
         '*** Check for No Selected Category
         'If llNodeID = 0 Then
         ' Exit Function
-        ' End If
-
+        ' End If nodeID As Long, fieldname As String, ReportID As String, ReportFieldID As String, controlname As String, 
+        If c.fRFFieldExists(0, FieldName, ReportID, ReportFieldID, Name, lsErrorMessage) Then
+            Return False
+        End If
         lsSQL = "Update tblReportFields set
                      [ReportID] = @ReportID
                     ,[ReportControl] = @pReportControl
@@ -822,7 +1020,7 @@ Public Class clsReportField
                     ,[FieldLength] =@pFieldLength
                     ,[FieldTitle] = @pFieldTitle
                     ,[ID] = @pID
-                    ,[Name] = @pName
+                    ,[Name] = @pName              ,[ContainerName] = @pContainerName              ,[ColumnSize] = @pColumnSize
                   Where ID = @pID"
 
         msSQLcmd = New SqlCommand
@@ -849,7 +1047,8 @@ Public Class clsReportField
         msSQLcmd.Parameters.AddWithValue("@pID", ReportFieldID)
         msSQLcmd.Parameters.AddWithValue("@pName", Name)
         msSQLcmd.Parameters.AddWithValue("@pUser", c.fGetUser)
-
+        msSQLcmd.Parameters.AddWithValue("@pContainerName", ContainerName)
+        msSQLcmd.Parameters.AddWithValue("@pColumnSize", ColumnSize)
 
         '*** Run The SQL.
         Update = c.fExecuteSQLCmd("SQLConnection", c.mscnStr, msSQLcmd)

@@ -1,7 +1,9 @@
 ﻿Public Class ctrlCustomers
 	Inherits System.Web.UI.UserControl
 	Private msParentID As String
-
+	Public Sub Insert()
+		fvCustomer.ChangeMode(FormViewMode.Insert)
+	End Sub
 	Public Property ParentID() As String
 		Get
 			Return msParentID
@@ -14,7 +16,31 @@
 		End Set
 	End Property
 
+	Public Sub NewCustomerRecord()
+		'Exit Sub
+		'Stop
+		fvCustomer.ChangeMode(FormViewMode.Insert)
+		Exit Sub
+		Dim t As TextBox
+		Dim d As DropDownList
+		Dim l As LiteralControl
+		For Each c As Control In Me.Controls
+			If TypeOf (c) Is TextBox Then
+				t = c
+				t.Text = ""
+			End If
+			If TypeOf (c) Is DropDownList Then
+				d = c
+				d.ClearSelection()
+			End If
+			If TypeOf (c) Is LiteralControl Then
+				l = c
+				l.Text = ""
+			End If
+		Next
 
+
+	End Sub
 
 
 
@@ -30,7 +56,7 @@
 
 
 	Protected Sub odsCustomer_Selecting(sender As Object, e As ObjectDataSourceSelectingEventArgs) Handles odsCustomer.Selecting
-		Dim rg As GridView ' Telerik.Web.UI.RadGrid
+		Dim rg As GridView
 		Dim lsControl As String = "grdCustomers" '"rgMaster"
 		Dim txt As TextBox
 		Dim lsID As String
@@ -66,8 +92,16 @@
 	Protected Sub cmdEdit_Click(sender As Object, e As EventArgs)
 		fvCustomer.ChangeMode(FormViewMode.Edit)
 	End Sub
-
+	Protected Sub cmdInsert_Click(sender As Object, e As EventArgs)
+		fvCustomer.ChangeMode(FormViewMode.Insert)
+	End Sub
 	Protected Sub cmdSaveCustomer_Click(sender As Object, e As EventArgs)
+		SaveRecord("edit")
+	End Sub
+	Protected Sub cmdInsertCustomer_Click(sender As Object, e As EventArgs)
+		SaveRecord("insert")
+	End Sub
+	Sub SaveRecord(lsType As String)
 		Dim c As New clsCustomer
 		Dim t As TextBox
 		Dim lsID As String = ""
@@ -78,15 +112,16 @@
 		Dim l As Literal
 		l = fvCustomer.FindControl("litID")
 		Try
-			If DC.isGUIDString(l.Text) Then
+			If DC.isGUIDString(l.Text) And lsType = "edit" Then
+				lsID = l.Text
 				c.GetCustomer(l.Text)
 			Else
-				lsMessage = "No CustomerID found"
-				Exit Sub
+				lsMessage = "No CustomerID found, lets insert"
+				'Exit Sub
 			End If
 			t = fvCustomer.FindControl("txtCustomerName")
 
-			c.CustomerName = t.Text
+			c.NAME = t.Text
 			t = fvCustomer.FindControl("txtAddress")
 			c.CustomerAddress = t.Text
 
@@ -104,8 +139,14 @@
 
 			t = fvCustomer.FindControl("txtZip")
 			c.Postal_Code = t.Text
+			If DC.isGUIDString(lsID) Then
+				c.Update()
+			Else
+				lsMessage = "No CustomerID found"
+				c.Insert()
+			End If
 
-			c.Update()
+
 			Response.Redirect("~/frmCustomers")
 		Catch ex As Exception
 			lsMessage = Err.Description

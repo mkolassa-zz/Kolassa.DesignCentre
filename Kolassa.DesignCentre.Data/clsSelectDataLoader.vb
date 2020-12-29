@@ -123,17 +123,17 @@ Public Class clsSelectDataLoader
 	End Function
 	Public Function DeleteBase(ByVal RecordID As String, llNodeID As Long) As Boolean
 		Dim lscnStr As String = mscnDefault
-		Dim lsSQL As String = "Update tblBases Set Active=0  WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblBases Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'  WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeleteBase = fRunSQL("SQLConnection", lscnStr, lsSQL)
 	End Function
-	Public Function InsertBase(ByVal llNodeID As Long, ByVal lsName As String, lsDescription As String, ByVal lsImage As String, lsCode As String) As Boolean
+	Public Function InsertBase(ByVal NODEID As Long, ByVal lsName As String, lsDescription As String, ByVal lsImage As String, lsCode As String) As Boolean
 		Dim lsSQL As String
 		Dim lscnStr As String = mscnDefault
 		Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
 		'*** Initialize
 		InsertBase = False
 		'*** Check for No Selected Category
-		If llNodeID = 0 Then
+		If NODEID = 0 Then
 			'response.write("No Project Selectedd")
 			Exit Function
 		End If
@@ -148,18 +148,18 @@ Public Class clsSelectDataLoader
 						  "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
 						  "'" & Now.ToString & "', " & NL &
 						  "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
-						   "1, '" & llNodeID & "'); "
+						   "1, '" & NODEID & "'); "
 		'*** Run The SQL.
 		InsertBase = fRunSQL("SQLConnection", lscnStr, lsSQL)
 	End Function
-	Public Function UpdateBase(ByVal llNodeID As Long, ByVal lsName As String, ByVal lsDescription As String, ByVal lsImage As String, lsProjectType As String, ByVal lsActive As String, ByVal ID As String, lsCode As String) As Boolean
+	Public Function UpdateBase(ByVal NODEID As Long, ByVal lsName As String, ByVal lsDescription As String, ByVal lsImage As String, lsProjectType As String, ByVal lsActive As String, ByVal ID As String, lsCode As String) As Boolean
 		Dim lsSQL As String
 		Dim lscnStr As String = mscnDefault
 		Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
 		'*** Initialize
 		UpdateBase = False
 		'*** Check for No Selected Category
-		If llNodeID = 0 Then
+		If NODEID = 0 Then
 			Exit Function
 		End If
 		lsSQL = "Update tblBases  " &
@@ -206,7 +206,7 @@ Public Class clsSelectDataLoader
 	End Function
 	Public Function DeleteProjects(ByVal RecordID As String, llNodeID As Long) As Boolean
 		Dim lscnStr As String = mscnDefault
-		Dim lsSQL As String = "Update tblProjects Set Active=0   WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblProjects Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'    WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeleteProjects = fRunSQL("SQLConnection", lscnStr, lsSQL)
 	End Function
 	Public Function InsertProjects(ByVal llNodeID As Long, ByVal lsName As String, lsDescription As String, ByVal lsImage As String, ByVal lsProjectType As String, lsCode As String) As Boolean
@@ -287,7 +287,7 @@ Public Class clsSelectDataLoader
 	End Function
 	Public Function DeleteProjectTypes(ByVal RecordID As String, llNodeID As Long) As Boolean
 		Dim lscnStr As String = mscnDefault
-		Dim lsSQL As String = "Update tblProjects Set Active=False   WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblProjects Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'    WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeleteProjectTypes = fRunSQL("SQLConnection", lscnStr, lsSQL)
 	End Function
 	Public Function InsertProjectTypes(ByVal llNodeID As Long, ByVal lsName As String, lsDescription As String, ByVal lsImage As String, ByVal lsProjectType As String, lsCode As String) As Boolean
@@ -365,7 +365,7 @@ Public Class clsSelectDataLoader
 		If isGUID(lsID) Then
 			InsertQuotePhases(lsID, lsCurrentUser)
 		Else
-			lsID = "00001111-1111-2222-3333-444455556666"
+			lsID = "00001111-0000-0000-0000-111122223333"
 		End If
 		lsSQL = "SELECT * " & NL &
 				"FROM v_QuoteLookup                                   " & NL &
@@ -413,7 +413,7 @@ Public Class clsSelectDataLoader
 		LoadAllQuotes = LoadAllQuotes
 	End Function
 	Public Function DeleteQuotes(ByVal RecordID As String, llNodeID As Long) As Boolean
-		Dim lsSQL As String = "Update tblQuotes Set Active=False   WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblQuotes Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'    WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeleteQuotes = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertQuotes(ByVal llNodeID As Long, ByVal lsProjectID As String, ByVal lsCustomerID As String, ByVal lsUnitID As String, ByRef lsID As String) As Boolean
@@ -535,7 +535,7 @@ Public Class clsSelectDataLoader
 			DeleteRequestedUpgrades = False
 			Exit Function
 		End If
-		Dim lsSQL As String = "UPDATE  tblRequestedUpgrades set active = 0  WHERE  ID ='" & RecordID & "'"
+		Dim lsSQL As String = "UPDATE  tblRequestedUpgrades set active = 0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE  ID ='" & RecordID & "'"
 		DeleteRequestedUpgrades = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertRequestedUpgrades(ByVal llNodeID As Long, ByVal lsProjectID As String,
@@ -660,9 +660,9 @@ Public Class clsSelectDataLoader
 			Exit Function
 		End If
 		If lsWhere Is Nothing Then lsWhere = ""
-		lsWhere = Replace(lsWhere, "SearchText", " UPPER( isnull(f.customername,'') + isnull(f.customeraddress ,'') + isnull( f.customercity ,'') + isnull( f.customerstate ,'') + isnull( f.customerpostalcode ,'') + isnull( f.customerCountry ,'') + isnull( f.customerPhone ,'') + isnull( f.Customeremail,''))   ")
+		lsWhere = Replace(lsWhere, "SearchText", " UPPER( isnull(f.Name,'') + isnull(f.customeraddress ,'') + isnull( f.customercity ,'') + isnull( f.customerstate ,'') + isnull( f.customerpostalcode ,'') + isnull( f.customerCountry ,'') + isnull( f.customerPhone ,'') + isnull( f.Customeremail,''))   ")
 		If lsWhere Is Nothing Then lsWhere = ""
-		lsSQL = "Select convert(nvarchar(50), f.ID) As ID, f.CustomerName, f.CustomerAddress, f.CustomerCity, f.CustomerState As StateProvince, f.CustomerPostalCode As Postal_Code , 
+		lsSQL = "Select convert(nvarchar(50), f.ID) As ID, f.Name, f.CustomerAddress, f.CustomerCity, f.CustomerState As StateProvince, f.CustomerPostalCode As Postal_Code , 
                    f.CustomerCountry, f.CustomerPhone, f.CustomerEmail, f.NodeID, f.CustomerType, f.Active As CustomerActive, 
 				   f.CreateDate As CustomerCreateDate, f.CreateUser As CustomerCreateUser, f.UpdateDate As CustomerUpdateDate, f.UpdateUser As CustomerUpdateUser, 
 				   uc.username as CreateUserName, uu.username As UpdateUserName , ci.imageurl 
@@ -682,13 +682,13 @@ Public Class clsSelectDataLoader
 
 		'*** Debugging Start
 		Dim dt As DataTable = ds.Tables.Item("Customers")
-		Dim rowCustomer As DataRow
+		'	Dim rowCustomer As DataRow
 
-		For Each rowCustomer In dt.Rows
-			Dim ls As String = rowCustomer.Item(0).ToString
-			Console.WriteLine("Ya" & ls & "Ya")
-			System.Diagnostics.Debug.Write(ls)
-		Next
+		'For Each rowCustomer In dt.Rows
+		'	Dim ls As String = rowCustomer.Item(0).ToString
+		'	Console.WriteLine("Ya" & ls & "Ya")
+		'	System.Diagnostics.Debug.Write(ls)
+		'Next
 		'*** Debugging End
 
 		mdsCustomers = ds
@@ -696,7 +696,7 @@ Public Class clsSelectDataLoader
 	End Function
 	Public Function DeleteCustomers(ByVal RecordID As String, llNodeID As Long) As Boolean
 		Dim lscnStr As String = mscnDefault
-		Dim lsSQL As String = "Update tblCustomers Set Active=0   WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblCustomers Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'    WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeleteCustomers = fRunSQL("SQLConnection", lscnStr, lsSQL)
 	End Function
 	Public Function InsertCustomers(ByVal llNodeID As Long, ByVal lsName As String, ByVal lsAddress As String,
@@ -715,24 +715,24 @@ Public Class clsSelectDataLoader
 			'response.write("No Project Selectedd")
 			Exit Function
 		End If
-		lsSQL = "INSERT INTO tblCustomers (ID, CustomerName, CustomerAddress, CustomerCity, CustomerState, CustomerPostalCode, CustomerCountry,  CustomerEmail, CustomerPhone, " &
+		lsSQL = "INSERT INTO tblCustomers (ID, Name, CustomerAddress, CustomerCity, CustomerState, CustomerPostalCode, CustomerCountry,  CustomerEmail, CustomerPhone, " &
 				"                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID ) " &
-				"Values ( @CustomerGuid, @CustomerName, @CustomerAddress, @CustomerCity, @CustomerState, @CustomerPostalCode, @CustomerCountry, @CustomerEmail, @CustomerPhone, " & NL &
+				"Values ( @CustomerGuid, @Name, @CustomerAddress, @CustomerCity, @CustomerState, @CustomerPostalCode, @CustomerCountry, @CustomerEmail, @CustomerPhone, " & NL &
 				"         GetDate(), @CurrentUser, GetDate(), @CurrentUser, 1, @CustomerNode );"
 		msSQLcmd = New SqlCommand
 		msSQLcmd.CommandText = lsSQL
 		msSQLcmd.Parameters.Clear()
-		msSQLcmd.Parameters.AddWithValue("@CustomerGuid", fTakeOutQuotes(lgID.ToString))
-		msSQLcmd.Parameters.AddWithValue("@CustomerName", fTakeOutQuotes(lsName))
-		msSQLcmd.Parameters.AddWithValue("@CustomerAddress", fTakeOutQuotes(lsAddress))
-		msSQLcmd.Parameters.AddWithValue("@CustomerCity", fTakeOutQuotes(lsCity))
-		msSQLcmd.Parameters.AddWithValue("@CustomerState", fTakeOutQuotes(lsState))
-		msSQLcmd.Parameters.AddWithValue("@CustomerPostalCode", fTakeOutQuotes(lsPostalCode))
-		msSQLcmd.Parameters.AddWithValue("@CustomerEmail", fTakeOutQuotes(lsemail))
-		msSQLcmd.Parameters.AddWithValue("@CustomerPhone", fTakeOutQuotes(lsPhone))
-		msSQLcmd.Parameters.AddWithValue("@CurrentUser", fTakeOutQuotes(lsCurrentUser))
-		msSQLcmd.Parameters.AddWithValue("@CustomerNode", fTakeOutQuotes(llNodeID))
-		msSQLcmd.Parameters.AddWithValue("@CustomerCountry", fTakeOutQuotes(lsCustomerCountry))
+		msSQLcmd.Parameters.AddWithValue("@CustomerGuid", fTakeOutBadCode(lgID.ToString))
+		msSQLcmd.Parameters.AddWithValue("@Name", fTakeOutBadCode(lsName))
+		msSQLcmd.Parameters.AddWithValue("@CustomerAddress", fTakeOutBadCode(lsAddress))
+		msSQLcmd.Parameters.AddWithValue("@CustomerCity", fTakeOutBadCode(lsCity))
+		msSQLcmd.Parameters.AddWithValue("@CustomerState", fTakeOutBadCode(lsState))
+		msSQLcmd.Parameters.AddWithValue("@CustomerPostalCode", fTakeOutBadCode(lsPostalCode))
+		msSQLcmd.Parameters.AddWithValue("@CustomerEmail", fTakeOutBadCode(lsemail))
+		msSQLcmd.Parameters.AddWithValue("@CustomerPhone", fTakeOutBadCode(lsPhone))
+		msSQLcmd.Parameters.AddWithValue("@CurrentUser", fTakeOutBadCode(lsCurrentUser))
+		msSQLcmd.Parameters.AddWithValue("@CustomerNode", (llNodeID))
+		msSQLcmd.Parameters.AddWithValue("@CustomerCountry", fTakeOutBadCode(lsCustomerCountry))
 		'*** Run The SQL.
 		InsertCustomers = fExecuteSQLCmd("SQLConnection", lscnStr, msSQLcmd)
 	End Function
@@ -864,7 +864,7 @@ Public Class clsSelectDataLoader
 			Exit Function
 		End If
 		lsSQL = "Update tblCustomers  " &
-				"Set CustomerName = @CustomerName, CustomerAddress = @CustomerAddress , CustomerCity= @CustomerCity , " & NL &
+				"Set Name = @Name, CustomerAddress = @CustomerAddress , CustomerCity= @CustomerCity , " & NL &
 						" CustomerState= @CustomerState , CustomerPostalCode= @CustomerPostalCode ," & NL &
 						" CustomerEmail= @CustomerEmail , CustomerPhone= @CustomerPhone , CustomerCountry= @CustomerCountry , " & NL &
 						" UpdateDate= GetDate() , UpdateUser= @CurrentUser , " & NL &
@@ -874,7 +874,7 @@ Public Class clsSelectDataLoader
 		msSQLcmd.CommandText = lsSQL
 		msSQLcmd.Parameters.Clear()
 		msSQLcmd.Parameters.AddWithValue("@ObjectID", fTakeOutQuotes(ObjectID.ToString))
-		msSQLcmd.Parameters.AddWithValue("@CustomerName", fTakeOutQuotes(lsName))
+		msSQLcmd.Parameters.AddWithValue("@Name", fTakeOutQuotes(lsName))
 		msSQLcmd.Parameters.AddWithValue("@CustomerAddress", fTakeOutQuotes(lsAddress))
 		msSQLcmd.Parameters.AddWithValue("@CustomerCity", fTakeOutQuotes(lsCity))
 		msSQLcmd.Parameters.AddWithValue("@CustomerState", fTakeOutQuotes(lsState))
@@ -889,6 +889,37 @@ Public Class clsSelectDataLoader
 		UpdateCustomers = fExecuteSQLCmd("SQLConnection", lscnStr, msSQLcmd)
 		'MyCommand = New SqlCommand("UPDATE SeansMessage SET Message = @TicBoxText WHERE Number = 1", dbConn)
 		'MyCommand.Parameters.AddWithValue("@TicBoxText", TicBoxText.Text)
+	End Function
+	'*******************************************************
+	'*** ChartData
+	'*******************************************************
+	Public Function LoadChartData(ByVal llNodeID As Long, ByVal lsProjectID As String, ByVal lsChartID As String) As DataSet
+		Dim lsSQL As String
+		Dim lscnStr As String = mscnDefault
+		'*** Initialize
+		LoadChartData = Nothing
+		'	llNodeID = 2
+		'If lsWhere = Nothing Then lsWhere = ""
+		'*** Check for No Selected Category
+		If llNodeID = 0 Then
+			'response.write("No Project Selectedd")
+			Exit Function
+		End If
+		lsSQL = "Select ChartSQL , name, description, charttype,isnull(chartoptions,'') as ChartOptions From tblChartDefinitions where code ='" & lsChartID & "'"
+		LoadChartData = fGetDataset("SQLConnection", lscnStr, lsSQL, "ChartDef")
+
+
+		lsSQL = LoadChartData.Tables(0).Rows(0)(0).ToString
+		lsProjectID = lsProjectID.Replace("'", "")
+		lsSQL = lsSQL.Replace("@WHERE@", " a.NodeID =" & llNodeID & " AND a.ProjectID  = '" & lsProjectID & "' ")
+
+		Dim ds As DataSet = fGetDataset("SQLConnection", lscnStr, lsSQL, "ChartData")
+
+		'debug.print(lsChartID & lsSQL & "**TABLES***" & ds.Tables.Count & " ***ROWS*** " & ds.Tables(0).Rows.Count)
+
+		'*** Load a data set.
+		LoadChartData.Tables.Add(ds.Tables(0).Copy)
+
 	End Function
 	'*******************************************************
 	'*** Contacts
@@ -927,7 +958,7 @@ Public Class clsSelectDataLoader
 	End Function
 	Public Function DeleteContacts(ByVal RecordID As String, llNodeID As Long) As Boolean
 		Dim lscnStr As String = mscnDefault
-		Dim lsSQL As String = "Update tblContacts Set Active=0   WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblContacts Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'    WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeleteContacts = fRunSQL("SQLConnection", lscnStr, lsSQL)
 	End Function
 	Public Function InsertContacts(ByVal llNodeID As Long, ByVal lsFirstName As String, ByVal lsLastName As String, lsObjectID As String,
@@ -1124,7 +1155,7 @@ Public Class clsSelectDataLoader
 	End Function
 	Public Function DeletePhases(ByVal RecordID As String, llNodeID As Long) As Boolean
 		Dim lscnStr As String = mscnDefault
-		Dim lsSQL As String = "Update tblProjectPhases Set Active=0   WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblProjectPhases Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'    WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeletePhases = fRunSQL("SQLConnection", lscnStr, lsSQL)
 	End Function
 	Public Function InsertPhases(ByVal lsObjectID As String, ByVal llNodeID As Long, ByVal lsName As String, lsDescription As String, ByVal lsImage As String, ByVal lsProjectType As String, lsCode As String, ByRef lsMessage As String, ByVal liSortOrder As Int16) As Boolean
@@ -1185,7 +1216,7 @@ Public Class clsSelectDataLoader
 			If ldPhaseCompleteDate > Now.AddDays(-10000) Then lsSQL = lsSQL & " PhaseCompleteDate= " & NL & "'" & fTakeOutQuotes(Format(ldPhaseCompleteDate, "yyyy-MM-dd")) & "', "
 			lsSQL = lsSQL & " image= " & NL & "'" & fTakeOutQuotes(lsImage) & "', "
 		End If
-			lsSQL = lsSQL & "UpdateDate=" & NL & "getdate(), " &
+		lsSQL = lsSQL & "UpdateDate=" & NL & "getdate(), " &
 						"UpdateUser=" & NL & "'" & fTakeOutQuotes(lsCurrentUser) & "', " &
 						"Active = " & If(UCase(lsActive) = "TRUE", "1", "0") & " " & NL &
 						" Where ID='" & ID & "';"
@@ -1193,43 +1224,43 @@ Public Class clsSelectDataLoader
 		UpdatePhases = fRunSQL("SQLConnection", lscnStr, lsSQL)
 	End Function
 
-    '****************************************************
-    '*** Quote Rooms
-    Public Function LoadQuoteRooms(ByVal lsID As String, ByVal llNodeID As Long, liPhase As Integer) As DataSet
-        Dim lsSQL As String
-        If isGUID(lsID) = False Then lsID = "00000000-0000-0000-0000-000000000000"
+	'****************************************************
+	'*** Quote Rooms
+	Public Function LoadQuoteRooms(ByVal lsID As String, ByVal llNodeID As Long, liPhase As Integer) As DataSet
+		Dim lsSQL As String
+		If isGUID(lsID) = False Then lsID = "00000000-0000-0000-0000-000000000000"
 
-        '*** Initialize
-        LoadQuoteRooms = Nothing
-        lsSQL = "SELECT tblUnitProfiles.ID UnitProfileID, tblRooms.ID roomid, tblUnitProfiles.ID UnitTypeID
+		'*** Initialize
+		LoadQuoteRooms = Nothing
+		lsSQL = "SELECT tblUnitProfiles.ID UnitProfileID, tblRooms.ID roomid, tblUnitProfiles.ID UnitTypeID
                       , tblRooms.Name as RoomName, tblRooms.Description as RoomDescription
-                      , tblUnits.UnitCode, tblUnitProfiles.Active 
+                      , tblUnits.code as UnitCode, tblUnitProfiles.Active 
                       , concat(rtrim(tblRooms.Description) ,' ',''
                            ,  case when count(R.ID)>0 then 
 					         CONCAT('<span class=""badge badge-primary"">',lTrim(str(Count(R.ID))),'</span>') else ' ' END
                        ) UpgradeCount 
 					, count(r.id) ucount 
                  FROM (tblUnitTypes " &
-                "   INNER JOIN (tblUnitProfiles " &
-                "   INNER JOIN tblRooms ON tblUnitProfiles.RoomID = tblRooms.ID) " &
-                "   ON tblUnitTypes.ID = tblUnitProfiles.UnitTypeID) " &
-                "   INNER JOIN tblUnits ON tblUnitTypes.ID = tblUnits.UnitTypeID " &
-                "   INNER JOIN tblQuote ON tblQUote.UnitID = tblUnits.ID " &
-                "   LEFT  JOIN (Select ru.* from  tblRequestedUpgrades ru where ru.active=1 and ru.buildingphase = " & liPhase & " and QuoteID='" & lsID & "') R ON tblQUote.ID = R.QuoteID and tblRooms.Name = r.RoomDescription " &
-                "WHERE tblQuote.ID='" & lsID & "' and tblQuote.NodeID = " & llNodeID & " " &
-                "Group BY tblUnitProfiles.ID, tblRooms.ID, tblUnitProfiles.ID, tblRooms.Name, tblRooms.Description, tblUnits.UnitCode, tblUnitProfiles.Active ORDER BY tblRooms.Name"
+				"   INNER JOIN (tblUnitProfiles " &
+				"   INNER JOIN tblRooms ON tblUnitProfiles.RoomID = tblRooms.ID) " &
+				"   ON tblUnitTypes.ID = tblUnitProfiles.UnitTypeID) " &
+				"   INNER JOIN tblUnits ON tblUnitTypes.ID = tblUnits.UnitTypeID " &
+				"   INNER JOIN tblQuote ON tblQUote.UnitID = tblUnits.ID " &
+				"   LEFT  JOIN (Select ru.* from  tblRequestedUpgrades ru where ru.active=1 and ru.buildingphase = " & liPhase & " and QuoteID='" & lsID & "') R ON tblQUote.ID = R.QuoteID and tblRooms.Name = r.RoomDescription " &
+				"WHERE tblQuote.ID='" & lsID & "' and tblQuote.NodeID = " & llNodeID & " " &
+				"Group BY tblUnitProfiles.ID, tblRooms.ID, tblUnitProfiles.ID, tblRooms.Name, tblRooms.Description, tblUnits.Code, tblUnitProfiles.Active ORDER BY tblRooms.Name"
 
 
-        '*** Load a data set.
-        Dim ds As New DataSet()
-        ds = fGetDataset(mscnType, mscnStr, lsSQL, "Rooms")
+		'*** Load a data set.
+		Dim ds As New DataSet()
+		ds = fGetDataset(mscnType, mscnStr, lsSQL, "Rooms")
 
-        mdsRooms = ds
-        LoadQuoteRooms = mdsRooms
-    End Function
-    '****************************************************
-    '*** Unit Rooms
-    Public Function LoadUnitRooms(ByVal llNodeID As Long, ByVal lsWhere As String, ByVal lbActive As Boolean, ByVal lsID As String) As DataSet
+		mdsRooms = ds
+		LoadQuoteRooms = mdsRooms
+	End Function
+	'****************************************************
+	'*** Unit Rooms
+	Public Function LoadUnitRooms(ByVal llNodeID As Long, ByVal lsWhere As String, ByVal lbActive As Boolean, ByVal lsID As String) As DataSet
 		Dim lsSQL As String
 		If isGUID(lsID) = False Then lsID = "00000000-0000-0000-0000-000000000000"
 
@@ -1262,81 +1293,81 @@ Public Class clsSelectDataLoader
 		LoadUnitRooms = mdsRooms
 	End Function
 
-    '****************************************************
-    '*** Room Categories
-    Public Function LoadRoomCategories(ByVal llNodeID As Long, ByVal lsUnitType As String, ByVal lsPhase As String, ByVal lsRoom As String, ByVal lsQuoteID As String) As DataSet
-        Dim lsSQL As String
+	'****************************************************
+	'*** Room Categories
+	Public Function LoadRoomCategories(ByVal llNodeID As Long, ByVal lsUnitType As String, ByVal lsPhase As String, ByVal lsRoom As String, ByVal lsQuoteID As String) As DataSet
+		Dim lsSQL As String
 
-        '*** Initialize
-        LoadRoomCategories = Nothing
-        If llNodeID = 0 Or lsUnitType = "" Then Exit Function
-
-
-        '  lsSQL = "SELECT D.UNITTYPEID, C.Name UpgradeCategory, D.Location , D.REQUIRED, R.ID
-        '                 , concat(rtrim(c.categorygrouping),' ',rtrim(C.Name) ,' ', CASE WHEN D.REQUIRED=1 or C.CATREQUIRED=1 THEN '<span class=""badge badge-' + CASE WHEN R.ID is NULL THEN 'danger' ELSE 'success' END + '"">R</span>' ELSE '' END ) CATEGORYNAME
-        '           FROM    TBLUPGRADECATEGORIES C Inner join tblupgradecategorydetails D on C.ID = D.CATEGORYID
-        '                   LEFT JOIN tblRequestedUpgrades R on D.ID = R.OPTIONID and R.QUOTEID = '" & lsQuoteID & "' AND R.ACTIVE=1
-        '           WHERE C.Active = 1 AND D.ACTIVE=1
-        '             AND D.UnitTypeID='" & lsUnitType & "' 
-        '             AND D.BuildingPhase=" & lsPhase & " 
-        '             AND D.Location='" & lsRoom & "'
-        '           ORDER BY C.SORTORDER, D.SORTORDER, C.name;"
-
-        '  lsSQL = "SELECT D.UNITTYPEID, C.Name UpgradeCategory, D.Location , D.REQUIRED, C.CATREQUIRED, B.CATEGORYDETAILID
-        '                 , concat(rtrim(c.categorygrouping),' ',rtrim(C.Name) ,' ', CASE 
-        '  WHEN D.REQUIRED=1 or C.CATREQUIRED=1 
-        '  THEN '<span class=""badge badge-' + CASE WHEN B.thecount is NULL 	THEN 'danger' ELSE 'success' 	END 	+ '"">R</span>' ELSE '' END ) CATEGORYNAME
-        '           FROM    TBLUPGRADECATEGORIES C Inner join tblupgradecategorydetails D on C.ID = D.CATEGORYID
-        '            LEFT JOIN (
-        'SELECT CATEGORYDETAILID, COUNT(*) as thecount
-        '           FROM TBLUPGRADEOPTIONS O
-        '		       INNER JOIN  tblRequestedUpgrades R on O.ID = R.OPTIONID 
-        '			       and R.QUOTEID = '" & lsQuoteID & "' 
-        '				   AND R.ACTIVE=1
-        '		   WHERE 1=1 
-        '		      AND O.ACTIVE=1  
-        '              AND O.UnitTypeID='" & lsUnitType & "' 
-        '                                AND O.BuildingPhase=" & lsPhase & "  
-        '                                AND O.Location='" & lsRoom & "'
-        '	GROUP BY CATEGORYDETAILID
-        '  ) as B on D.ID = B.CATEGORYDETAILID
-        ' WHERE C.Active = 1 AND D.ACTIVE=1
-        '             AND D.UnitTypeID='" & lsUnitType & "' 
-        '             AND D.BuildingPhase=" & lsPhase & " 
-        '             AND D.Location='" & lsRoom & "'
-        '           ORDER BY C.SORTORDER, D.SORTORDER, C.name;"
+		'*** Initialize
+		LoadRoomCategories = Nothing
+		If llNodeID = 0 Or lsUnitType = "" Then Exit Function
 
 
-        lsSQL = "Select * From f_LoadRoomCategories('" & lsUnitType & "', '" & lsRoom & "', '" & lsQuoteID & "', " & lsPhase & ", 0) ORDER BY CATEGORYNAME"
-        '*** Load a data set.
-        Dim ds As New DataSet()
-        ds = fGetDataset(mscnType, mscnStr, lsSQL, "Categories")
+		'  lsSQL = "SELECT D.UNITTYPEID, C.Name UpgradeCategory, D.Location , D.REQUIRED, R.ID
+		'                 , concat(rtrim(c.categorygrouping),' ',rtrim(C.Name) ,' ', CASE WHEN D.REQUIRED=1 or C.CATREQUIRED=1 THEN '<span class=""badge badge-' + CASE WHEN R.ID is NULL THEN 'danger' ELSE 'success' END + '"">R</span>' ELSE '' END ) CATEGORYNAME
+		'           FROM    TBLUPGRADECATEGORIES C Inner join tblupgradecategorydetails D on C.ID = D.CATEGORYID
+		'                   LEFT JOIN tblRequestedUpgrades R on D.ID = R.OPTIONID and R.QUOTEID = '" & lsQuoteID & "' AND R.ACTIVE=1
+		'           WHERE C.Active = 1 AND D.ACTIVE=1
+		'             AND D.UnitTypeID='" & lsUnitType & "' 
+		'             AND D.BuildingPhase=" & lsPhase & " 
+		'             AND D.Location='" & lsRoom & "'
+		'           ORDER BY C.SORTORDER, D.SORTORDER, C.name;"
 
-        mdsRooms = ds
-        LoadRoomCategories = mdsRooms
-    End Function
-    '****************************************************
-    '*** Room Categories
-    Public Function LoadUnfullfilledRequiredItems(ByVal lsPhase As String, ByVal lsRoom As String, ByVal lsQuoteID As String) As DataSet
-        Dim lsSQL As String
+		'  lsSQL = "SELECT D.UNITTYPEID, C.Name UpgradeCategory, D.Location , D.REQUIRED, C.CATREQUIRED, B.CATEGORYDETAILID
+		'                 , concat(rtrim(c.categorygrouping),' ',rtrim(C.Name) ,' ', CASE 
+		'  WHEN D.REQUIRED=1 or C.CATREQUIRED=1 
+		'  THEN '<span class=""badge badge-' + CASE WHEN B.thecount is NULL 	THEN 'danger' ELSE 'success' 	END 	+ '"">R</span>' ELSE '' END ) CATEGORYNAME
+		'           FROM    TBLUPGRADECATEGORIES C Inner join tblupgradecategorydetails D on C.ID = D.CATEGORYID
+		'            LEFT JOIN (
+		'SELECT CATEGORYDETAILID, COUNT(*) as thecount
+		'           FROM TBLUPGRADEOPTIONS O
+		'		       INNER JOIN  tblRequestedUpgrades R on O.ID = R.OPTIONID 
+		'			       and R.QUOTEID = '" & lsQuoteID & "' 
+		'				   AND R.ACTIVE=1
+		'		   WHERE 1=1 
+		'		      AND O.ACTIVE=1  
+		'              AND O.UnitTypeID='" & lsUnitType & "' 
+		'                                AND O.BuildingPhase=" & lsPhase & "  
+		'                                AND O.Location='" & lsRoom & "'
+		'	GROUP BY CATEGORYDETAILID
+		'  ) as B on D.ID = B.CATEGORYDETAILID
+		' WHERE C.Active = 1 AND D.ACTIVE=1
+		'             AND D.UnitTypeID='" & lsUnitType & "' 
+		'             AND D.BuildingPhase=" & lsPhase & " 
+		'             AND D.Location='" & lsRoom & "'
+		'           ORDER BY C.SORTORDER, D.SORTORDER, C.name;"
 
-        '*** Initialize
-        LoadUnfullfilledRequiredItems = Nothing
-        If lsQuoteID = "" Then Exit Function
 
-        lsSQL = "Select * From f_LoadRoomCategories(
+		lsSQL = "Select * From f_LoadRoomCategories('" & lsUnitType & "', '" & lsRoom & "', '" & lsQuoteID & "', " & lsPhase & ", 0) ORDER BY CATEGORYNAME"
+		'*** Load a data set.
+		Dim ds As New DataSet()
+		ds = fGetDataset(mscnType, mscnStr, lsSQL, "Categories")
+
+		mdsRooms = ds
+		LoadRoomCategories = mdsRooms
+	End Function
+	'****************************************************
+	'*** Room Categories
+	Public Function LoadUnfullfilledRequiredItems(ByVal lsPhase As String, ByVal lsRoom As String, ByVal lsQuoteID As String) As DataSet
+		Dim lsSQL As String
+
+		'*** Initialize
+		LoadUnfullfilledRequiredItems = Nothing
+		If lsQuoteID = "" Then Exit Function
+
+		lsSQL = "Select * From f_LoadRoomCategories(
 				(Select u.UnitTypeID from tblQuote q inner join tblunits u on u.id = q.unitid
 				where q.ID = '" & lsQuoteID & "') 
             , '" & lsRoom & "', '" & lsQuoteID & "', " & lsPhase & ", 1) ORDER BY CATEGORYNAME"
-        '*** Load a data set.
-        Dim ds As New DataSet()
-        ds = fGetDataset(mscnType, mscnStr, lsSQL, "Categories")
+		'*** Load a data set.
+		Dim ds As New DataSet()
+		ds = fGetDataset(mscnType, mscnStr, lsSQL, "Categories")
 
-        LoadUnfullfilledRequiredItems = ds
-    End Function
-    '****************************************************
-    '*** Room Category Levels
-    Public Function LoadRoomCategoryLevels(ByVal llNodeID As Long, ByVal lsUnitType As String, ByVal lsPhase As String, ByVal lsRoom As String, ByVal lsCategory As String) As DataSet
+		LoadUnfullfilledRequiredItems = ds
+	End Function
+	'****************************************************
+	'*** Room Category Levels
+	Public Function LoadRoomCategoryLevels(ByVal llNodeID As Long, ByVal lsUnitType As String, ByVal lsPhase As String, ByVal lsRoom As String, ByVal lsCategory As String) As DataSet
 		Dim lsSQL As String
 
 		'*** Initialize
@@ -1371,12 +1402,12 @@ Public Class clsSelectDataLoader
 		LoadRoomCategoryLevelStyles = Nothing
 		If llID = 0 And (llNodeID = 0 Or lsUnitType = "") Then Exit Function
 
-        lsSQL = "SELECT Distinct Description, ModelorStyle as Style, " &
-                   "CustomerPrice, UnitType, UpgradeCategory, " &
-                    "Location, UpgradeLevel, 0 as UpgradeOptionID, ID " &
-                    "FROM tblUpgradeOptions " &
-                    "Where "
-        If llID > 0 Then
+		lsSQL = "SELECT Distinct Description, ModelorStyle as Style, " &
+				   "CustomerPrice, UnitType, UpgradeCategory, " &
+					"Location, UpgradeLevel, 0 as UpgradeOptionID, ID " &
+					"FROM tblUpgradeOptions " &
+					"Where "
+		If llID > 0 Then
 			lsSQL = lsSQL & " UpgradeOptionID = " & llID & ";"
 		Else
 			lsSQL = lsSQL & "( active=1 " &
@@ -1393,13 +1424,13 @@ Public Class clsSelectDataLoader
 		'*** Load a data set.
 		Dim ds As New DataSet()
 		ds = fGetDataset(mscnType, mscnStr, lsSQL, "Categories")
-        'Dim liCount As Integer = ds.Tables(0).Rows.Count
-        mdsRooms = ds
+		'Dim liCount As Integer = ds.Tables(0).Rows.Count
+		mdsRooms = ds
 		LoadRoomCategoryLevelStyles = mdsRooms
 	End Function
 
 	Public Function DeleteRooms(ByVal RecordID As String, llNodeID As Long) As Boolean
-		Dim lsSQL As String = "Update tblRooms Set Active=False  WHERE  NodeID = " & llNodeID & " ID='" & RecordID & "'"
+		Dim lsSQL As String = "Update tblRooms Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE  NodeID = " & llNodeID & " AND ID='" & RecordID & "'"
 		DeleteRooms = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertRooms(ByVal llNodeID As Long, ByVal lsCode As String, ByVal lsName As String, ByVal lsDescription As String) As Boolean
@@ -1462,12 +1493,10 @@ Public Class clsSelectDataLoader
 			'response.write("No Project Selectedd")
 			Exit Function
 		End If
-		lsSQL = "SELECT U.*, T.UnitTypeName + ' ' + R.Name as NAME, T.UnitTypeName + ' ' + R.Name as CODE,T.UnitTypeName + ' ' + R.Name as DESCRIPTION " & NL &
-				"FROM (tblUnitProfiles as U INNER JOIN tblUnitTypes as T on U.UnitTypeID = T.ID )  " & NL &
-				"           INNER JOIN tblRooms as R on U.RoomID = R.ID   " & NL &
-				"WHERE  U.NodeID=" & llNodeID & " " & IIf(lsWhere.Length > 4, " and " & lsWhere, "") &
+		lsSQL = "SELECT * FROM v_UnitProfiles  as a " & NL &
+				"WHERE  NodeID=" & llNodeID & " " & IIf(lsWhere.Length > 4, " and " & lsWhere, "") &
 					IIf(lbActive = True, " and Active = 1 ", "") & " " & NL &
-					IIf(lsID > 0, " OR ID = '" & lsID & "' ", "")
+					IIf(isGUID(lsID), " OR ID = '" & lsID & "' ", "")
 
 
 		'*** Load a data set.
@@ -1478,7 +1507,7 @@ Public Class clsSelectDataLoader
 		LoadUnitProfiles = mdsUnitProfiles
 	End Function
 	Public Function DeleteUnitProfiles(ByVal RecordID As String, llNodeID As Long) As Boolean
-		Dim lsSQL As String = "Update tblUnitProfiles Set Active=False  WHERE NodeID=" & llNodeID & " AND ID='" & RecordID & "'"
+		Dim lsSQL As String = "Update tblUnitProfiles Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE NodeID=" & llNodeID & " AND ID='" & RecordID & "'"
 		DeleteUnitProfiles = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertUnitProfiles(ByVal llNodeID As Long, ByVal lsUnitTypeID As String, ByVal lsRoomID As String) As Boolean
@@ -1567,7 +1596,7 @@ Public Class clsSelectDataLoader
 		LoadFloors = mdsFloors
 	End Function
 	Public Function DeleteFloors(ByVal RecordID As String, llNodeID As Long) As Boolean
-		Dim lsSQL As String = "Update tblFloors Set Active=False  WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblFloors Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeleteFloors = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertFloors(ByVal llNodeID As Long, ByVal lsFloorName As String, ByVal lsFloorDescription As String, ByVal lsBuildinglevel As String) As Boolean
@@ -1671,7 +1700,7 @@ Public Class clsSelectDataLoader
 		LoadCommunications = mdsCommunications
 	End Function
 	Public Function DeleteCommunications(ByVal RecordID As String, llNodeID As Long) As Boolean
-		Dim lsSQL As String = "Delete tblCommunications Set Active=False  WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Delete tblCommunications Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeleteCommunications = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertCommunications(ByVal llNodeID As Long, ByVal lsObjectID As String,
@@ -1743,7 +1772,7 @@ Public Class clsSelectDataLoader
 		LoadAdjustments = mdsCommunications
 	End Function
 	Public Function DeleteAdjustments(ByVal ID As String, llNodeID As Long) As Boolean
-		Dim lsSQL As String = "Update tblAdjustments Set Active=0  WHERE  NodeID=" & llNodeID & " AND ID = '" & ID & "'"
+		Dim lsSQL As String = "Update tblAdjustments Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE  NodeID=" & llNodeID & " AND ID = '" & ID & "'"
 		DeleteAdjustments = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertAdjustments(ByVal llNodeID As Long, ByVal lsObjectID As String,
@@ -1844,7 +1873,7 @@ Public Class clsSelectDataLoader
 		LoadPayments = mdsCommunications
 	End Function
 	Public Function DeletePayments(ByVal RecordID As String, llNodeID As Long) As Boolean
-		Dim lsSQL As String = "Update tblPayments Set Active=0  WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblPayments Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeletePayments = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertPayments(ByVal llNodeID As Long, ByVal lsObjectID As String,
@@ -1940,7 +1969,7 @@ Public Class clsSelectDataLoader
                         Inner Join tbllookups b on a.id = b.parentid
                 Where b.ParentID is not null
                ) Select * from LookupList " & NL &
-				"WHERE (NodeID is null or NodeID=" & llNodeID & " ) " &
+				"WHERE (NodeID is null or NodeID=0 or NodeID=" & llNodeID & " ) " &
 						IIf(lsWhere.Length > 4, " and " & lsWhere, "") & NL &
 					IIf(isGUID(lsLookupID), " and ID=" & lsLookupID, "") & NL &
 					IIf(lbActive = True, " and Active = 1 ", "") & NL &
@@ -1955,61 +1984,61 @@ Public Class clsSelectDataLoader
 	End Function
 
 	Public Function DeleteLookups(ByVal RecordID As String, llNodeID As Long) As Boolean
-		Dim lsSQL As String = "Update tblLookups Set Active=False  WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblLookups Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeleteLookups = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertLookups(ByVal llNodeID As Long, ByVal lsID As String, ByVal lsParentID As String, ByVal lsLookupCategory As String,
-                                 liSortOrder As Integer, lsDESCRIPTION As String, lsLookupValue As String) As Boolean
-        Dim lsSQL As String
-        Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
-        '*** Initialize
-        InsertLookups = False
-        '*** Check for No Selected Category
-        If llNodeID = 0 Then
-            'response.write("No Project Selectedd")
-            Exit Function
-        End If
-        lsSQL = "INSERT INTO tblVendors ( ParentID, LookupID, LookupCategory, LookupDecsription, LookupValue, SortOrder " &
-                "                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID ) " &
-                "Values ( """ & fTakeOutQuotes(lsParentID) & """, " & NL &
-                          "" & fTakeOutQuotes(lsID) & ", " & NL &
-                          """" & fTakeOutQuotes(lsLookupCategory) & """, " & NL &
-                          """" & fTakeOutQuotes(lsDESCRIPTION) & """, " & NL &
-                          """" & fTakeOutQuotes(lsLookupValue) & """, " & NL &
-                            "" & fTakeOutQuotes(liSortOrder) & ", " & NL &
-                          """" & Now.ToString & """, " & NL &
-                          """" & fTakeOutQuotes(lsCurrentUser) & """, " & NL &
-                          """" & Now.ToString & """, " & NL &
-                          """" & fTakeOutQuotes(lsCurrentUser) & """, " & NL &
-                           "true, " & llNodeID & "); "
-        '*** Run The SQL.
-        InsertLookups = fRunSQL(mscnType, mscnStr, lsSQL)
-    End Function
-    Public Function UpdateLookups(ByVal llNodeID As Long, ByVal lsID As String, ByVal lsParentID As String, ByVal lsLookupCategory As String,
-                                  ByVal lsDESCRIPTION As String, ByVal lsLookupValue As String, ByVal liSortOrder As Integer,
-                                  ByVal lsActive As String, ByVal liLookupID As Integer) As Boolean
-        Dim lsSQL As String
-        Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
-        '*** Initialize
-        UpdateLookups = False
-        '*** Check for No Selected Category
-        If llNodeID = 0 Then
-            Exit Function
-        End If
-        lsSQL = "Update tblLookups  " &
-                "Set LookupID = " & fTakeOutQuotes(liLookupID) & ", ID = " & NL &
-                        """" & fTakeOutQuotes(lsID) & """, LookupCategory= " & NL &
-                        """" & fTakeOutQuotes(lsLookupCategory) & """, DESCRIPTION= " & NL &
-                        """" & fTakeOutQuotes(lsDESCRIPTION) & """, LookupValue= " & NL &
-                        """" & fTakeOutQuotes(lsLookupValue) & """, ParentID= " & NL &
-                        """" & fTakeOutQuotes(lsParentID) & """, NodeID= " & NL &
-                        """" & fTakeOutQuotes(llNodeID) & """,  UpdateDate=" & NL &
-                        """" & Now.ToString & """, UpdateUser=" & NL &
-                        """" & fTakeOutQuotes(lsCurrentUser) & """, Active = " & lsActive & NL &
-                 " Where ID=""" & lsID & """;"
-        '*** Run The SQL.
-        UpdateLookups = fRunSQL(mscnType, mscnStr, lsSQL)
-    End Function
+								 liSortOrder As Integer, lsDESCRIPTION As String, lsLookupValue As String) As Boolean
+		Dim lsSQL As String
+		Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+		'*** Initialize
+		InsertLookups = False
+		'*** Check for No Selected Category
+		If llNodeID = 0 Then
+			'response.write("No Project Selectedd")
+			Exit Function
+		End If
+		lsSQL = "INSERT INTO tblVendors ( ParentID, LookupID, LookupCategory, LookupDecsription, LookupValue, SortOrder " &
+				"                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID ) " &
+				"Values ( """ & fTakeOutQuotes(lsParentID) & """, " & NL &
+						  "" & fTakeOutQuotes(lsID) & ", " & NL &
+						  """" & fTakeOutQuotes(lsLookupCategory) & """, " & NL &
+						  """" & fTakeOutQuotes(lsDESCRIPTION) & """, " & NL &
+						  """" & fTakeOutQuotes(lsLookupValue) & """, " & NL &
+							"" & fTakeOutQuotes(liSortOrder) & ", " & NL &
+						  """" & Now.ToString & """, " & NL &
+						  """" & fTakeOutQuotes(lsCurrentUser) & """, " & NL &
+						  """" & Now.ToString & """, " & NL &
+						  """" & fTakeOutQuotes(lsCurrentUser) & """, " & NL &
+						   "true, " & llNodeID & "); "
+		'*** Run The SQL.
+		InsertLookups = fRunSQL(mscnType, mscnStr, lsSQL)
+	End Function
+	Public Function UpdateLookups(ByVal llNodeID As Long, ByVal lsID As String, ByVal lsParentID As String, ByVal lsLookupCategory As String,
+								  ByVal lsDESCRIPTION As String, ByVal lsLookupValue As String, ByVal liSortOrder As Integer,
+								  ByVal lsActive As String, ByVal liLookupID As Integer) As Boolean
+		Dim lsSQL As String
+		Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+		'*** Initialize
+		UpdateLookups = False
+		'*** Check for No Selected Category
+		If llNodeID = 0 Then
+			Exit Function
+		End If
+		lsSQL = "Update tblLookups  " &
+				"Set LookupID = " & fTakeOutQuotes(liLookupID) & ", ID = " & NL &
+						"""" & fTakeOutQuotes(lsID) & """, LookupCategory= " & NL &
+						"""" & fTakeOutQuotes(lsLookupCategory) & """, DESCRIPTION= " & NL &
+						"""" & fTakeOutQuotes(lsDESCRIPTION) & """, LookupValue= " & NL &
+						"""" & fTakeOutQuotes(lsLookupValue) & """, ParentID= " & NL &
+						"""" & fTakeOutQuotes(lsParentID) & """, NodeID= " & NL &
+						"""" & fTakeOutQuotes(llNodeID) & """,  UpdateDate=" & NL &
+						"""" & Now.ToString & """, UpdateUser=" & NL &
+						"""" & fTakeOutQuotes(lsCurrentUser) & """, Active = " & lsActive & NL &
+				 " Where ID=""" & lsID & """;"
+		'*** Run The SQL.
+		UpdateLookups = fRunSQL(mscnType, mscnStr, lsSQL)
+	End Function
 
 
 
@@ -2046,7 +2075,7 @@ Public Class clsSelectDataLoader
 		LoadLogins = mdsLogins
 	End Function
 	Public Function DeleteLogins(ByVal RecordID As Long, llNodeID As Long) As Boolean
-		Dim lsSQL As String = "Update tblLogins Set Active=False  WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblLogins Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeleteLogins = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertLogins(ByVal llNodeID As Long, ByVal lsName As String, ByVal lsContact As String, ByVal lsAbbreviation As String) As Boolean
@@ -2123,7 +2152,7 @@ Public Class clsSelectDataLoader
 		LoadEventLogs = mdsEventLogs
 	End Function
 	Public Function DeleteEventLogs(ByVal RecordID As String, llnodeID As Long) As Boolean
-		Dim lsSQL As String = "Update tblEventLog Set Active=False   WHERE  NodeID=" & llnodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblEventLog Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'    WHERE  NodeID=" & llnodeID & " AND ID = '" & RecordID & "'"
 		DeleteEventLogs = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertEventLogs(ByVal llNodeID As Long, ByVal lsName As String, ByVal lsContact As String, ByVal lsAbbreviation As String) As Boolean
@@ -2171,7 +2200,7 @@ Public Class clsSelectDataLoader
 
 	'****************************************************
 	'*** Deposit Conditions
-	Public Function LoadDepositConditions(ByVal llNodeID As Long, ByVal lsWhere As String, ByVal lbActive As Boolean, ByVal llID As Long) As DataSet
+	Public Function LoadDepositConditions(ByVal llNodeID As Long, ByVal lsWhere As String, ByVal lbActive As Boolean, ByVal ID As String) As DataSet
 		Dim lsSQL As String
 		'llNodeID = 1
 		'*** Initialize
@@ -2190,7 +2219,7 @@ Public Class clsSelectDataLoader
 				"FROM  tblDepositConditions D   " & NL &
 				"WHERE ( NodeID=" & llNodeID & " " & IIf(lsWhere.Length > 4, " And " & lsWhere, "") & NL &
 IIf(lbActive = True, " And Active = 1 ", "") & ")" & NL &
-IIf(llID > 0, " Or DepositTypeID = " & llID & " ", "")
+IIf(isGUID(ID), " OR ID = '" & ID & "' ", "")
 
 		'*** Load a data set.
 		Dim ds As New DataSet()
@@ -2200,7 +2229,7 @@ IIf(llID > 0, " Or DepositTypeID = " & llID & " ", "")
 		LoadDepositConditions = mdsDepositConditions
 	End Function
 	Public Function DeleteDepositConditions(ByVal RecordID As String, llNodeID As Long) As Boolean
-		Dim lsSQL As String = "Update tblDepositConditions Set Active=False   WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblDepositConditions Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'    WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeleteDepositConditions = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertDepositConditions(ByVal llNodeID As Long, ByVal lsUnitName As String, ByVal lsFloorID As String,
@@ -2301,7 +2330,7 @@ IIf(llID > 0, " Or DepositTypeID = " & llID & " ", "")
 		LoadUnits = mdsUnits
 	End Function
 	Public Function DeleteUnits(ByVal RecordID As String, llNodeID As Long) As Boolean
-		Dim lsSQL As String = "Update tblUnits Set Active=0  WHERE NodeID=" & llNodeID & " AND ID='" & RecordID & "'"
+		Dim lsSQL As String = "Update tblUnits Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE NodeID=" & llNodeID & " AND ID='" & RecordID & "'"
 		DeleteUnits = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertUnits(ByVal llNodeID As Long, lsUnitID As String, ByVal lsUnitName As String, ByVal lsFloorID As String,
@@ -2429,7 +2458,7 @@ IIf(llID > 0, " Or DepositTypeID = " & llID & " ", "")
 		LoadTiers = mdsTiers
 	End Function
 	Public Function DeleteTiers(ByVal RecordID As String, llNodeID As Long) As Boolean
-		Dim lsSQL As String = "Update tblUnitTiers Set Active=False  WHERE NodeID=" & llNodeID & " AND ID='" & RecordID & "'"
+		Dim lsSQL As String = "Update tblUnitTiers Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE NodeID=" & llNodeID & " AND ID='" & RecordID & "'"
 		DeleteTiers = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertTiers(ByVal Tier As String, ByVal llNodeID As Long) As Boolean
@@ -2476,7 +2505,7 @@ IIf(llID > 0, " Or DepositTypeID = " & llID & " ", "")
 	'*************************************************
 	'**** Vendors
 	Public Function DeleteVendors(ByVal RecordID As String, llNodeID As Long) As Boolean
-		Dim lsSQL As String = "Update tblVendors Set Active=False  WHERE NodeID=" & llNodeID & " AND ID='" & RecordID & "'"
+		Dim lsSQL As String = "Update tblVendors Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE NodeID=" & llNodeID & " AND ID='" & RecordID & "'"
 		DeleteVendors = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 
@@ -2586,7 +2615,7 @@ IIf(llID > 0, " Or DepositTypeID = " & llID & " ", "")
 		LoadUnitTypes = mdsUnitTypes
 	End Function
 	Public Function DeleteUnitTypes(ByVal RecordID As String, llNodeID As Long) As Boolean
-		Dim lsSQL As String = "Update tblUnitTypes Set Active=False  WHERE NodeID=" & llNodeID & " AND ID='" & RecordID & "'"
+		Dim lsSQL As String = "Update tblUnitTypes Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE NodeID=" & llNodeID & " AND ID='" & RecordID & "'"
 		DeleteUnitTypes = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertUnitTypes(ByVal llNodeID As Long, ByVal lsUnitTypeName As String, ByVal lsUnitTypeDescription As String, ByVal lsSubType As String, ByVal lsLevel As String, ByVal lsModelUnit As String) As Boolean
@@ -2676,7 +2705,7 @@ IIf(llID > 0, " Or DepositTypeID = " & llID & " ", "")
 		LoadCompanyInfo = mdsCompanyInfo
 	End Function
 	Public Function DeleteCompanyInfo(ByVal RecordID As String, llNodeID As Long) As Boolean
-		Dim lsSQL As String = "Update tblCompanyInfo Set Active=False   WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblCompanyInfo Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'    WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeleteCompanyInfo = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertCompanyInfo(ByVal llNodeID As Long, ByVal lsName As String, ByVal lsContact As String, ByVal lsAbbreviation As String) As Boolean
@@ -2758,13 +2787,13 @@ IIf(llID > 0, " Or DepositTypeID = " & llID & " ", "")
 		mdsCustomers = ds
 		LoadUpgradeOptions = mdsCustomers
 	End Function
-    Public Function DeleteUpgradeOptions(ByVal RecordID As String, llNodeID As long) As Boolean
+	Public Function DeleteUpgradeOptions(ByVal RecordID As String, llNodeID As Long) As Boolean
 		If Not isGUID(RecordID) Then
 			DeleteUpgradeOptions = False
 			Exit Function
 		End If
-        Dim lsSQL As String = "UPDATE  tblUpgradeOptions set active = 0  WHERE  ID ='" & RecordID & "' and " & llNodeID & " in (select nodeid from tblUnits where UnitTypeID =  tblupgradeoptions.UnitTypeID)"
-        DeleteUpgradeOptions = fRunSQL(mscnType, mscnStr, lsSQL)
+		Dim lsSQL As String = "UPDATE  tblUpgradeOptions set active = 0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE  ID ='" & RecordID & "' and " & llNodeID & " in (select nodeid from tblUnits where UnitTypeID =  tblupgradeoptions.UnitTypeID)"
+		DeleteUpgradeOptions = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function InsertUpgradeOptions(ByVal llNodeID As Long, UnitType As String,
 	 Location As String, UpgradeCategory As String, UpgradeLevel As String,
@@ -2825,7 +2854,7 @@ IIf(llID > 0, " Or DepositTypeID = " & llID & " ", "")
 	End Function
 
 
-    Public Function UpdateUpgradeOptions(ByVal llNodeID As Long, UnitType As String,
+	Public Function UpdateUpgradeOptions(ByVal llNodeID As Long, UnitType As String,
 	 Location As String, UpgradeCategory As String, UpgradeLevel As String,
 	 Description As String, ModelOrStyle As String, Comments As String,
 	 LeadVendor As String, CustomerPrice As Double, DeveloperPrice As Double,
@@ -2843,7 +2872,7 @@ IIf(llID > 0, " Or DepositTypeID = " & llID & " ", "")
 		End If
 
 
-        lsSQL = "UPDATE tblUpgradeOptions
+		lsSQL = "UPDATE tblUpgradeOptions
 				SET 
 					UnitType        =  '" & fTakeOutQuotes(UnitType) & "', 
 					Location        =  '" & fTakeOutQuotes(Location) & "', 
@@ -2865,8 +2894,8 @@ IIf(llID > 0, " Or DepositTypeID = " & llID & " ", "")
 					UpdateDate  =    getDate(),UpdateUser = '" & fTakeOutQuotes(lsCurrentUser) & "', Active=lsActive,
 					UnitTypeID  =  '" & fTakeOutQuotes(UnitTypeID) & "', 
 				WHERE ID = '" & ID & "' and " & llNodeID & " in and 1 in (select nodeid from tblUnits where UnitTypeID =  tblupgradeoptions.UnitTypeID);"
-        '*** Run The SQL.
-        UpdateUpgradeOptions = fRunSQL(mscnType, mscnStr, lsSQL)
+		'*** Run The SQL.
+		UpdateUpgradeOptions = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	'************* END UPGRADE OPTIONS *********************************
 
@@ -2942,7 +2971,7 @@ IIf(llID > 0, " Or DepositTypeID = " & llID & " ", "")
 		UpdateReportCategory = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function DeleteReportCategory(ByVal RecordID As String, llNodeID As Long) As Boolean
-		Dim lsSQL As String = "Update tblReportCategories Set Active=False   WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblReportCategories Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'    WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeleteReportCategory = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function LoadAllControls() As DataSet
@@ -2952,7 +2981,7 @@ IIf(llID > 0, " Or DepositTypeID = " & llID & " ", "")
 		'*** Initialize
 		LoadAllControls = Nothing
 
-		lsSQL = "Select * from tblReportControls"
+		lsSQL = "Select * from tblReportControls Order by ControlName"
 
 		'*** Load a data set.
 		Dim ds As New DataSet()
@@ -3058,7 +3087,7 @@ LoadChildrenError:
 	End Function
 	Public Function DeleteImages(ByVal RecordID As String, llNodeID As Long) As Boolean
 		Dim lscnStr As String = mscnDefault
-		Dim lsSQL As String = "Update tblImage Set Active=False   WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblImage Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'    WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeleteImages = fRunSQL("SQLConnection", lscnStr, lsSQL)
 	End Function
 	Public Function InsertImages(ByVal lsObjectID As String, ByVal llNodeID As Long, ByVal lsName As String,
@@ -3249,7 +3278,7 @@ LoadChildrenError:
 					Else
 						cmd.Parameters.AddWithValue("updateparam", p.Value)
 					End If
-					Debug.Print(lsSQL & " PARAMVALUE:" & cmd.Parameters(0).SqlValue.ToString & " " & cmd.Parameters(0).Value)
+					'debug.print(lsSQL & " PARAMVALUE:" & cmd.Parameters(0).SqlValue.ToString & " " & cmd.Parameters(0).Value)
 
 					c.Add(cmd)
 			End Select
@@ -3262,7 +3291,7 @@ LoadChildrenError:
 	End Function
 	Public Function DeleteThings(ByVal lsTable As String, ByVal RecordID As String, llNodeID As Long) As Boolean
 		Dim lscnStr As String = mscnDefault
-		Dim lsSQL As String = "Update " & lsTable & " Set Active=False  WHERE  NodeID = " & llNodeID & " ID='" & RecordID & "'"
+		Dim lsSQL As String = "Update " & lsTable & " Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE  NodeID = " & llNodeID & " AND ID='" & RecordID & "'"
 		DeleteThings = fRunSQL("SQLConnection", lscnStr, lsSQL)
 	End Function
 	'  Private Function CheckdbConnection(ByVal lsConnectionType, ByVal lsConnectionString) As Boolean
@@ -3308,7 +3337,7 @@ LoadChildrenError:
 	Private Function fGetDataset(ByVal lsConnectionType As String, ByVal lsCn As String, ByVal lsSQL As String, ByVal lsTableName As String) As DataSet
 		Dim ds As DataSet = New DataSet
 		Try
-			Debug.Print("<fGetDataset>" & lsSQL & "</fGetDataset>")
+			'debug.print("<fGetDataset>" & lsSQL & "</fGetDataset>")
 			'    Threading.Thread.Sleep(5000)
 			Select Case lsConnectionType
 				Case "SQLConnection"
@@ -3335,7 +3364,7 @@ LoadChildrenError:
 					cno.Close()
 			End Select
 		Catch
-			Debug.Print(Err.Description)
+			'debug.print(Err.Description)
 		End Try
 		fGetDataset = ds
 	End Function
@@ -3388,7 +3417,7 @@ LoadChildrenError:
 						trans.Commit()
 					Catch ex As Exception
 						msErrorMsg = ex.Message
-						Debug.Print(msErrorMsg)
+						'debug.print(msErrorMsg)
 						trans.Rollback()
 						fRunSQLCommands = False
 						Exit Function
@@ -3463,7 +3492,7 @@ LoadChildrenError:
 					cns.Open()
 					cms.Connection = cns
 					cms.CommandText = lsSQL
-					Debug.Print("<frunSQL>" & lsSQL & "</frunSQL>")
+					'debug.print("<frunSQL>" & lsSQL & "</frunSQL>")
 					If msSQLParameter IsNot Nothing Then
 						cms.Parameters.Add(msSQLParameter)
 					End If
@@ -3498,7 +3527,12 @@ LoadChildrenError:
 		lsStr = Replace(lsStr, "'", "''")
 		fTakeOutQuotes = Trim(lsStr)
 	End Function
-
+	Function fTakeOutBadCode(ByVal lsStr As String) As String
+		lsStr = Replace(lsStr, "script", "scri_pt")
+		'	lsStr = Replace(lsStr, """", """""")
+		'		lsStr = Replace(lsStr, "'", "''")
+		fTakeOutBadCode = Trim(lsStr)
+	End Function
 	Public Function TrimAll(ByVal TextIn As String, Optional ByVal TrimChar As String = " ", Optional ByVal CtrlChar As String = Chr(0)) As String
 
 		Try ' Replace ALL Duplicate Characters in String with a Single Instance
@@ -3520,151 +3554,151 @@ LoadChildrenError:
 	Public Function fReplaceQuotes(ByVal ls As String) As String
 		fReplaceQuotes = Replace(ls, "'", "''")
 	End Function
-    Function fcheckforIncompatibilities(ByVal lSQuoteID As String, ByVal lsUpgradeOptionID As String) As DataSet
+	Function fcheckforIncompatibilities(ByVal lSQuoteID As String, ByVal lsUpgradeOptionID As String) As DataSet
 
-        Dim lsSQL As String = "Select  [dbo].[fcheckforIncompatibilities]( '" & lSQuoteID & "','" & lsUpgradeOptionID & "')"
+		Dim lsSQL As String = "Select  [dbo].[fcheckforIncompatibilities]( '" & lSQuoteID & "','" & lsUpgradeOptionID & "')"
 
-        '*** Load a data set.
-        Dim ds As New DataSet()
-        ds = fGetDataset(mscnType, mscnStr, lsSQL, "Incompatibilities")
-
-
-        fcheckforIncompatibilities = ds
+		'*** Load a data set.
+		Dim ds As New DataSet()
+		ds = fGetDataset(mscnType, mscnStr, lsSQL, "Incompatibilities")
 
 
-    End Function
-    Function fcheckforIncompatibilitiesOLD(ByVal llQuoteID As Long,
-            ByVal lsRoomDesc As String,
-            ByVal lsUpgradeDesc As String,
-            ByVal lsUpgradeCategory As String,
-            ByVal lsUpgradeClass As String,
-            ByVal lsStyle As String,
-            ByVal llUpgradeOptionID As Long, ByRef lsMsg As String) As Boolean
+		fcheckforIncompatibilities = ds
 
-        fcheckforIncompatibilitiesOLD = False
-        Dim lsUnit As String
-        Dim lsUnitType As String
-        Dim lsSQL As String
-        Dim d As DataSet
 
-        Dim rs As DataTable
-        Dim rs2 As DataTable
-        Dim r As DataRow
-        Dim r2 As DataRow
-        lsSQL = "SELECT tblUnits.UnitName, tblUnitTypes.UnitTypeName, tblQuote.QuoteID
+	End Function
+	Function fcheckforIncompatibilitiesOLD(ByVal llQuoteID As Long,
+			ByVal lsRoomDesc As String,
+			ByVal lsUpgradeDesc As String,
+			ByVal lsUpgradeCategory As String,
+			ByVal lsUpgradeClass As String,
+			ByVal lsStyle As String,
+			ByVal llUpgradeOptionID As Long, ByRef lsMsg As String) As Boolean
+
+		fcheckforIncompatibilitiesOLD = False
+		Dim lsUnit As String
+		Dim lsUnitType As String
+		Dim lsSQL As String
+		Dim d As DataSet
+
+		Dim rs As DataTable
+		Dim rs2 As DataTable
+		Dim r As DataRow
+		Dim r2 As DataRow
+		lsSQL = "SELECT tblUnits.UnitName, tblUnitTypes.UnitTypeName, tblQuote.QuoteID
 				 FROM tblUnitTypes LEFT JOIN (tblUnits LEFT JOIN tblQuote ON tblUnits.UnitID = tblQuote.UnitID) ON 
                       tblUnitTypes.UnitTypeID = tblUnits.UnitTypeID 
                  WHERE tblQuote.QuoteID=" & llQuoteID & ";"
 
-        d = fGetDataset(mscnType, mscnStr, lsSQL, "Comapt")
-        rs = d.Tables(0)
-        lsUnit = rs.Rows(0).Item(0).ToString
-        lsUnitType = rs.Rows(0).Item(1).ToString
+		d = fGetDataset(mscnType, mscnStr, lsSQL, "Comapt")
+		rs = d.Tables(0)
+		lsUnit = rs.Rows(0).Item(0).ToString
+		lsUnitType = rs.Rows(0).Item(1).ToString
 
 
-        Dim liUnit As Integer
-        Dim liSection As Integer
-        Dim lsUnitText As String
-        Dim lsRoomText As String
-        Dim liRoom As Integer
-        Dim liSectionOther As Integer
-        '*** Loop for Unit, Then Unittype
-        For liUnit = 1 To 2
-            If liUnit = 1 Then
-                lsUnitText = " EntityType = 2 and EntityID = '" & lsUnit & "' "
-            Else
-                lsUnitText = " EntityType = 1 and EntityID = '" & lsUnitType & "' "
-            End If
-            '*** Loop for first Section, Then Second
-            For liSection = 1 To 2
-                If liSection = 1 Then
-                    liSectionOther = 2
-                Else
-                    liSectionOther = 1
-                End If
-                '*** Loop For Room
-                For liRoom = 1 To 2
-                    '*** Our Table of INcompats has a first and a second (where the first selction is incomatible with the second
-                    '*** We will loop twice processing all of the First Items then the second
-                    If liRoom = 1 Then
-                        lsRoomText = " Location" & liSection & " = '" & lsRoomDesc & "'  "
-                    Else
-                        lsRoomText = " Location" & liSection & " = '(Anywhere)'  "
-                    End If
-                    '*** Are there any records in the incompatible table for the selection we are looking at?
-                    lsSQL = "Select * from tblIncompatibilities where " & lsUnitText & " AND " & lsRoomText & " 
+		Dim liUnit As Integer
+		Dim liSection As Integer
+		Dim lsUnitText As String
+		Dim lsRoomText As String
+		Dim liRoom As Integer
+		Dim liSectionOther As Integer
+		'*** Loop for Unit, Then Unittype
+		For liUnit = 1 To 2
+			If liUnit = 1 Then
+				lsUnitText = " EntityType = 2 and EntityID = '" & lsUnit & "' "
+			Else
+				lsUnitText = " EntityType = 1 and EntityID = '" & lsUnitType & "' "
+			End If
+			'*** Loop for first Section, Then Second
+			For liSection = 1 To 2
+				If liSection = 1 Then
+					liSectionOther = 2
+				Else
+					liSectionOther = 1
+				End If
+				'*** Loop For Room
+				For liRoom = 1 To 2
+					'*** Our Table of INcompats has a first and a second (where the first selction is incomatible with the second
+					'*** We will loop twice processing all of the First Items then the second
+					If liRoom = 1 Then
+						lsRoomText = " Location" & liSection & " = '" & lsRoomDesc & "'  "
+					Else
+						lsRoomText = " Location" & liSection & " = '(Anywhere)'  "
+					End If
+					'*** Are there any records in the incompatible table for the selection we are looking at?
+					lsSQL = "Select * from tblIncompatibilities where " & lsUnitText & " AND " & lsRoomText & " 
                                 AND (Category" & liSection & "=""" & fReplaceQuotes(lsUpgradeCategory) & """ OR Category" & liSection & "='(Anything)' ) 
 				                AND (Class" & liSection & "=""" & fReplaceQuotes(lsUpgradeClass) & """ OR Class" & liSection & "='(Anything)' )  
                                 AND (Description" & liSection & "=""" & fReplaceQuotes(lsUpgradeDesc) & """ OR Description" & liSection & "='(Anything)' )  
                                 AND (ModelOrStyle" & liSection & "=""" & fReplaceQuotes(lsStyle) & """ OR ModelOrStyle" & liSection & "='(Anything)' )
                                 AND (severity = 1 or severity = 2 )"
-                    'Debug.Print(lsSQL)
+					''debug.print(lsSQL)
 
-                    d = fGetDataset(mscnType, mscnStr, lsSQL, "compat")
-                    rs = d.Tables("compat")
+					d = fGetDataset(mscnType, mscnStr, lsSQL, "compat")
+					rs = d.Tables("compat")
 
-                    '*** Loop through all Matches for the Incompatibilities table that we found and see if we actually have any of those selections
-                    If rs.Rows.Count > 0 Then
-                        r = rs.Rows(0)
-                        ' Debug.Print("Found First: " & lsSQL)
-                        '*** Found THIS item in Inc List, Let's check for another in the requested Upgrades
-                        lsSQL = "Select * from tblRequestedUpgrades where quoteid = " & llQuoteID & " "
-                        If r("Location" & liSectionOther) <> "(Anywhere)" Then
-                            lsSQL = lsSQL & " AND RoomDescription = '" & r("Location" & liSectionOther) & "' "
-                        End If
+					'*** Loop through all Matches for the Incompatibilities table that we found and see if we actually have any of those selections
+					If rs.Rows.Count > 0 Then
+						r = rs.Rows(0)
+						' 'debug.print("Found First: " & lsSQL)
+						'*** Found THIS item in Inc List, Let's check for another in the requested Upgrades
+						lsSQL = "Select * from tblRequestedUpgrades where quoteid = " & llQuoteID & " "
+						If r("Location" & liSectionOther) <> "(Anywhere)" Then
+							lsSQL = lsSQL & " AND RoomDescription = '" & r("Location" & liSectionOther) & "' "
+						End If
 
-                        If r("Category" & liSectionOther) <> "(Anything)" Then
-                            lsSQL = lsSQL & " AND UpgradeCategory = """ & fReplaceQuotes(r("Category" & liSectionOther)) & """ "
-                        End If
+						If r("Category" & liSectionOther) <> "(Anything)" Then
+							lsSQL = lsSQL & " AND UpgradeCategory = """ & fReplaceQuotes(r("Category" & liSectionOther)) & """ "
+						End If
 
-                        If r("Description" & liSectionOther) <> "(Anything)" Then
-                            lsSQL = lsSQL & " AND UpgradeDescription = """ & fReplaceQuotes(r("Description" & liSectionOther)) & """ "
-                        End If
+						If r("Description" & liSectionOther) <> "(Anything)" Then
+							lsSQL = lsSQL & " AND UpgradeDescription = """ & fReplaceQuotes(r("Description" & liSectionOther)) & """ "
+						End If
 
-                        If r("Class" & liSectionOther) <> "(Anything)" Then
-                            lsSQL = lsSQL & " AND UpgradeClass = """ & fReplaceQuotes(r("Class" & liSectionOther)) & """ "
-                        End If
+						If r("Class" & liSectionOther) <> "(Anything)" Then
+							lsSQL = lsSQL & " AND UpgradeClass = """ & fReplaceQuotes(r("Class" & liSectionOther)) & """ "
+						End If
 
-                        If r("ModelOrStyle" & liSectionOther) <> "(Anything)" Then
-                            lsSQL = lsSQL & " AND StyleDescription" & liSectionOther & " = """ & fReplaceQuotes(r("ModelOrStyle" & liSectionOther)) & """ "
-                        End If
-                        '   Debug.Print(lsSQL)
+						If r("ModelOrStyle" & liSectionOther) <> "(Anything)" Then
+							lsSQL = lsSQL & " AND StyleDescription" & liSectionOther & " = """ & fReplaceQuotes(r("ModelOrStyle" & liSectionOther)) & """ "
+						End If
+						'   'debug.print(lsSQL)
 
-                        d = fGetDataset(mscnType, mscnStr, lsSQL, "rs2")
-                        rs2 = d.Tables("rs2")
-                        If rs2.Rows.Count > 0 Then
-                            r2 = rs2.Rows(0)
-                            lsMsg = lsMsg & ("The item you are trying to add is incompatible with the following Rule.")
-                            lsMsg = lsMsg & r2.Item("IncompatibilityID").ToString '  .DoCmd.OpenForm("frmIncompatMSG", acNormal, , "IncompatibilityID=" & rs("IncompatibilityID"), acFormReadOnly, acDialog)
-                            '*** gbContinue comes back from the frmIncompatMSG form and indicates whether the
-                            '*** item was only a warning and the user said Continue or whether is was denied
-                            '    If Session("gbContinue") = True Then
-                            fcheckforIncompatibilitiesOLD = False
-                            'Else
-                            '   fcheckforIncompatibilities = True
-                            'End If
-                        End If
-                        rs2.Dispose()
-                        ' rs2.Close()
-                        ' rs.MoveNext()
-                    End If
-                    rs.Dispose()
-                    'rs.Close()
-                Next liRoom
-                '*** End Room Loop
-            Next liSection
-            '*** End Section Loop
-        Next liUnit
-        '*** End Unit Loop
-        rs = Nothing
-        rs2 = Nothing
-    End Function
-    '*************************************
-    '*** Data Validation Functions
-    '*************************************
+						d = fGetDataset(mscnType, mscnStr, lsSQL, "rs2")
+						rs2 = d.Tables("rs2")
+						If rs2.Rows.Count > 0 Then
+							r2 = rs2.Rows(0)
+							lsMsg = lsMsg & ("The item you are trying to add is incompatible with the following Rule.")
+							lsMsg = lsMsg & r2.Item("IncompatibilityID").ToString '  .DoCmd.OpenForm("frmIncompatMSG", acNormal, , "IncompatibilityID=" & rs("IncompatibilityID"), acFormReadOnly, acDialog)
+							'*** gbContinue comes back from the frmIncompatMSG form and indicates whether the
+							'*** item was only a warning and the user said Continue or whether is was denied
+							'    If Session("gbContinue") = True Then
+							fcheckforIncompatibilitiesOLD = False
+							'Else
+							'   fcheckforIncompatibilities = True
+							'End If
+						End If
+						rs2.Dispose()
+						' rs2.Close()
+						' rs.MoveNext()
+					End If
+					rs.Dispose()
+					'rs.Close()
+				Next liRoom
+				'*** End Room Loop
+			Next liSection
+			'*** End Section Loop
+		Next liUnit
+		'*** End Unit Loop
+		rs = Nothing
+		rs2 = Nothing
+	End Function
+	'*************************************
+	'*** Data Validation Functions
+	'*************************************
 
 
-    Dim gbContinue As Boolean
+	Dim gbContinue As Boolean
 	Dim gbMissingSelections As Boolean
 	Sub test()
 		Dim dt As DataTable = New DataTable
@@ -3759,7 +3793,7 @@ LoadChildrenError:
 					lsSQL = "Select * from tblIncompatibilities where " & lsUnitText
 					lsSQL = lsSQL & " AND (Severity = 3 )  "
 
-					' Debug.Print(lsSQL)
+					' 'debug.print(lsSQL)
 					d = fGetDataset(mscnType, mscnStr, lsSQL, "Rules")
 					rsRule = d.Tables("Rules")
 
@@ -3784,7 +3818,7 @@ LoadChildrenError:
 							If lsUpgradeDesc <> "(Anything)" Then lsSQL = lsSQL & " AND UpgradeDescription = '" & lsUpgradeDesc & "' "
 							If lsUpgradeClass <> "(Anything)" Then lsSQL = lsSQL & " AND UpgradeClass = '" & lsUpgradeClass & "' "
 							If lsStyle <> "(Anything)" Then lsSQL = lsSQL & " AND StyleDescription" & liSectionOther & " = '" & lsStyle & "' "
-							' Debug.Print(lsSQL)
+							' 'debug.print(lsSQL)
 
 							' rs.Open(lsSQL, CurrentProject.Connection)
 							d = fGetDataset(mscnType, mscnStr, lsSQL, "Found")
@@ -3801,7 +3835,7 @@ LoadChildrenError:
 								If r("Class" & liSectionOther) <> "(Anything)" Then lsSQL = lsSQL & " AND UpgradeClass = '" & r("Class" & liSectionOther) & "' "
 								If r("ModelOrStyle" & liSectionOther) <> "(Anything)" Then lsSQL = lsSQL & " AND StyleDescription" & liSectionOther & " = '" & r("ModelOrStyle" & liSectionOther) & "' "
 
-								'  Debug.Print(lsSQL)
+								'  'debug.print(lsSQL)
 
 								' rs2.Open(lsSQL, CurrentProject.Connection)
 								d = fGetDataset(mscnType, mscnStr, lsSQL, "Found2")
@@ -3869,7 +3903,7 @@ fCheckForRequiredItems_Error:
 			"where   tblUpgradeOptions.BuildingPhase = '" & lsPhase & "'  " &
 			" And tblQuote.ID ='" & lsQuoteID & "';"
 
-		'Debug.Print(lsSQL)
+		''debug.print(lsSQL)
 
 		fMissingSelections = fRunSQL(mscnType, mscnStr, lsSQL)
 
@@ -3886,7 +3920,7 @@ fCheckForRequiredItems_Error:
 				"      (u.QuoteID         = s.QuoteID)       " &
 				"WHERE  s.QuoteID ='" & lsQuoteID & "' and u.active = 1;"
 
-		'Debug.Print(lsSQL)
+		''debug.print(lsSQL)
 		fMissingSelections = fRunSQL(mscnType, mscnStr, lsSQL)
 
 		'*** Update the Required Field Based on the CategorySummary Table
@@ -3896,7 +3930,7 @@ fCheckForRequiredItems_Error:
 				"       s.UpgradeCategory = u.UpgradeCategory 	" &
 				"WHERE  u.Required=1 and s.QUoteID'" & lsQuoteID & "';"
 
-		'Debug.Print(lsSQL)
+		''debug.print(lsSQL)
 		fMissingSelections = fRunSQL(mscnType, mscnStr, lsSQL)
 
 
@@ -3929,7 +3963,7 @@ fCheckForRequiredItems_Error:
 		Next
 		dt.Dispose()
 
-		'Debug.Print(lsSQL)
+		''debug.print(lsSQL)
 		fMissingSelections = fRunSQL(mscnType, mscnStr, lsSQL)
 
 

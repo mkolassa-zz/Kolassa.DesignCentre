@@ -8,36 +8,69 @@ Public Class ctrlBase
     Dim lblTitle As Label
     Dim lblTitle2 As Label
     Dim ddl As DropDownList
-
+	'Public  uPanel1 As UpdatePanel
 	'*** Not so sure I can have these here
 	Dim ctrlField1 As TextBox
 	Dim ctrlField2 As TextBox
 	'******************************************
-
+	Public msControlPanelcss As String
 	Dim mnuCTRL1 As Menu
 	Dim mnuCTRL As DropDownList
-	Dim cmdFieldDef As Button
+	Dim cmdFieldDef As LinkButton
 	Dim cmdFieldDeflnk As LinkButton
+	Dim cmdFieldDel As LinkButton
 	Public initReportControl As ReportControl
-	Public Function fGetFieldButton() As Button
-		cmdFieldDef = New Button
+	Public Function fGetFieldButton() As LinkButton
+		cmdFieldDef = New LinkButton
 		cmdFieldDef.Text = "<i class='fa fa-forward' aria-hidden='true'></i>" ' "+"
-		cmdFieldDef.Text = "+"
-		cmdFieldDef.UseSubmitBehavior = False
+		cmdFieldDef.Text = "<i class='fa fa-edit'></i>" '"<i class='icon-edit'></i>"
+		'cmdFieldDef.UseSubmitBehavior = False
+
+		cmdFieldDef.CssClass = "float-right px-1"
 
 		cmdFieldDef.Attributes.Add("onmousedown", "document.getElementById('divsaverecord').style.display = 'none';")
-		cmdFieldDef.CssClass = "btn btn-link pull-right"
+
 
 		cmdFieldDef.ID = "cmdPopulateFieldValues"
 		cmdFieldDef.Attributes.Add("data-reportid", mrptCtrl.ReportID)
 		cmdFieldDef.Attributes.Add("data-reportcontrolid", mrptCtrl.ReportControlID)
 		cmdFieldDef.Attributes.Add("data-reportcontrolfieldnumid", mrptCtrl.ReportControlNumID)
 		cmdFieldDef.Attributes.Add("data-reportcontrolfieldid", mrptCtrl.ReportControlFieldID)
-
+		If EditMode = True Then
+			cmdFieldDef.Visible = True
+		Else
+			cmdFieldDef.Visible = False
+		End If
 		AddHandler cmdFieldDef.Click, AddressOf LoadReportFields
 		fGetFieldButton = cmdFieldDef
 	End Function
+	Public Function fGetFieldDeleteButton() As LinkButton
 
+		cmdFieldDel = New LinkButton
+		cmdFieldDel.Text = "<i class='fa fa-forward' aria-hidden='true'></i>" ' "+"
+		cmdFieldDel.Text = "<i class='fa fa-trash  padding-left:30px;'></i>" ' "\xF135"
+		'cmdFieldDel.UseSubmitBehavior = False
+
+
+		cmdFieldDel.Attributes.Add("onmousedown", "document.getElementById('divsaverecord').style.display = 'none';")
+		cmdFieldDel.CssClass = "float-right px-1" '< i Class='fa fa-plus'></i>" float-right"
+
+		cmdFieldDel.ID = "cmdDeleteFieldValues"
+		cmdFieldDel.Attributes.Add("data-reportid", mrptCtrl.ReportID)
+		cmdFieldDel.Attributes.Add("data-reportcontrolid", mrptCtrl.ReportControlID)
+		cmdFieldDel.Attributes.Add("data-reportcontrolfieldnumid", mrptCtrl.ReportControlNumID)
+		cmdFieldDel.Attributes.Add("data-reportcontrolfieldid", mrptCtrl.ReportControlFieldID)
+
+		AddHandler cmdFieldDel.Click, AddressOf DeleteReportFields
+		If EditMode = True Then
+			cmdFieldDel.Visible = True
+		Else
+			cmdFieldDel.Visible = False
+		End If
+		fGetFieldDeleteButton = cmdFieldDel
+
+
+	End Function
 	Public Sub UpdateParent()
 	End Sub
 	Private Sub ctrlBase_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
@@ -104,10 +137,10 @@ Public Class ctrlBase
         lblTitle.ID = "lbl" & msFieldName
 		lblTitle.Text = msFieldName
 		lblTitle.CssClass = "control-label font-weight-bold"
-		If msReportType = "Form" Then
+		If msReportType = "Form" Or msReportType = "" Then
 			lblTitle.Visible = False
 		End If
-		span.Controls.Add(lblTitle)
+		'	span.Controls.Add(lblTitle)
 		span.Controls.Add(b)
 		span.Controls.Add(cmd)
 		span.Controls.Add(c)
@@ -143,6 +176,16 @@ Public Class ctrlBase
 		'writer.RenderEndTag() ' </tr>
 		'writer.RenderEndTag() ' </table>
 		'cal.RenderControl(writer)
+		If EditMode = True Then
+			cmdFieldDef.Visible = True
+			cmdFieldDel.Visible = True
+		Else
+			If cmdFieldDel Is Nothing Then
+			Else
+				cmdFieldDel.Visible = False
+				cmdFieldDef.Visible = False
+			End If
+		End If
 		RenderSubControls(writer)
     End Sub
     Protected Overridable Sub RenderSubControls(writer As HtmlTextWriter)
@@ -161,12 +204,27 @@ Public Class ctrlBase
 		'		Dim cbut As cmdFieldDelegate = New cmdFieldDelegate(AddressOf TestButton)
 		'		cbut.Invoke(Me, New EventArgs)
 	End Sub
+	Public Overridable Sub DeleteReportFields(sender As Object, e As EventArgs)
 
+		RaiseBubbleEvent(sender, e)
+		'		Dim cbut As cmdFieldDelegate = New cmdFieldDelegate(AddressOf TestButton)
+		'		cbut.Invoke(Me, New EventArgs)
+	End Sub
 	Sub TestButton(sender As Object, e As EventArgs)
 		MyBase.RaiseBubbleEvent(sender, e)
 		RaiseBubbleEvent(sender, e)
 		Stop
 	End Sub
+	Public Overridable Property ControlPanelcss() As String
+		Get
+			ControlPanelcss = msControlPanelcss
+		End Get
+		Set(sValue As String)
+			msControlPanelcss = sValue
+			'uPanel1.Attributes.Add("class", sValue)
+		End Set
+	End Property
+
 	Public Overridable Sub setValues()
 		'*** Set the controls = the selected Value
 		If SelectedItems.Count > 0 Then ctrlField1.Text = SelectedItems(0).ToString

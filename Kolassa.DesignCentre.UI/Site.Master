@@ -21,6 +21,12 @@
 		.dc-max-width {
 				max-width: 12% !important;
 			}
+        .dcmenu {
+            height: 24px;
+            width: 24px;
+            margin: 0 1rem;
+            display:inline;
+            }
 	</style>
     <style>
         #ajaxoverlay {
@@ -39,6 +45,7 @@
     </style>
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <link href="Content/fontawesome-all.css" rel="stylesheet" />
+    <link href="fonts/dc_fonts.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 	<!-- link href="Content/bootstrap.css" rel="stylesheet" />
 	<link href="Content/sidebar.css" rel="stylesheet" />
@@ -48,7 +55,7 @@
 <body>
 	
     <form runat="server">
-        <script src="/Scripts/modernizr-2.6.2.js"></script>
+        <script src="/Scripts/modernizr-2.8.3.js"></script>
         <script src="Scripts/popper.js"></script>
       <asp:ScriptManager runat="server" EnablePageMethods="true" > 
             <Scripts>
@@ -71,6 +78,11 @@
             </Scripts>
         </asp:ScriptManager> 
 		
+    
+
+
+
+
 		<nav class="swite-header sticky-top py-0" style="background-color:cornsilk">
         <div class="container d-flex flex-column flex-md-row justify-content-between">
             <a class="py-2" href="#">
@@ -120,6 +132,9 @@
 						<%End If %>&nbsp;
 				        </li>
                     </ul>
+                    <ul class="navbar-nav px-3">
+                        <li class="nav-item text-nowrap">  <i class="fas fa-envelope fa-x"></i><span class="badge badge-pill badge-danger">9</span>&nbsp;&nbsp;</li>
+                    </ul>
 			        <!--		<div class="btn-group">
 		        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			        Action
@@ -147,18 +162,18 @@
           transition: margin 200ms ease-out;
       }
 
-  .main{
-    padding: 10px 10px 0 10px;
-  }
+      .main{
+        padding: 10px 10px 0 10px;
+      }
 
- @media (min-width: 765px) {
+    @media (min-width: 765px) {
 
-		    .main {
-		        position: absolute;
-		        width: calc(100% - 40px);
-		        margin-left: 40px;
-		        float: right;
-		    }
+	.main {
+		position: absolute;
+		width: calc(100% - 40px);
+		margin-left: 40px;
+		float: right;
+	}
 
     nav.sidebar:hover + .main{
       margin-left: 200px;
@@ -256,48 +271,7 @@
   }
 
 		</style>
-		<!--
-   <nav class="navbar navbar-default sidebar" role="navigation">
-    <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>      
-    </div>
-    <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li class="active">
-			<a href="#">Home<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span></a></li>
-		    <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmProjects" ><i class="fa fa-th"     ></i> <span class="d-none d-md-inline">Projects</span></a>
-			<a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmCustomers"><i class="fa fa-users"  ></i> <span class="d-none d-md-inline">Customers</span></a>
-			<a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmContacts" ><i class="fa fa-phone"   ></i> <span class="d-none d-md-inline">Contacts</span></a>
-			<a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmQuote"    ><i class="fa fa-quote-left"></i> <span class="d-none d-md-inline">Quotes</span></a>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a>
-          <ul class="dropdown-menu forAnimate" role="menu">
-      
-			  
-			<a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmUnits"><i class="fa fa-users"  ></i> <span class="d-none d-md-inline">Units</span></a>
-			<a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmUnitTypes" ><i class="fa fa-phone"   ></i> <span class="d-none d-md-inline">Unit Types</span></a>
-			<a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmTiers"    ><i class="fa fa-quote-left"></i> <span class="d-none d-md-inline">Tiers</span></a>
-            <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmBuildingPhases"><i class="fa fa-users"  ></i> <span class="d-none d-md-inline">Building Phases</span></a>
-			<a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmProjectTypes" ><i class="fa fa-phone"   ></i> <span class="d-none d-md-inline">Project Types</span></a>
-			<a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmFloors"    ><i class="fa fa-quote-left"></i> <span class="d-none d-md-inline">Floors</span></a>
-            
-			  <li class="divider"></li>
-            <li><a href="#">FAQ </a></li>
-            <li class="divider"></li>
-            <li><a href="#">About Us</a></li>
-          </ul>
-        </li>          
-       </ul>
-    </div>
-  </div>
-</nav>
-	-->
+
 	
         <asp:loginview ID="lg" runat="server">
              <AnonymousTemplate>
@@ -350,36 +324,35 @@
 
 						 
 						
-						
-                <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmProjects" ><i class="fa fa-th"     ></i> <span class="d-none d-md-inline">Project Dashboard</span></a>
-                <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmCustomers"><i class="fa fa-users"  ></i> <span class="d-none d-md-inline">Customers</span></a>
-        <!--        <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmContacts" ><i class="fa fa-phone"   ></i> <span class="d-none d-md-inline">Contacts</span></a> -->
-                <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmQuote"    ><i class="fa fa-quote-left"></i> <span class="d-none d-md-inline">Quotes</span></a>
+					
+                <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmProjects" ><i class="dcmenu fa fa-th"        ></i> <span class="d-none d-md-inline">Project Dashboard</span></a>
+                <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmBase?objType=Customers"><i class="dcmenu fa fa-users"     ></i> <span class="d-none d-md-inline">Customers</span></a>
+        <!--    <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmContacts" ><i class="dcmenu fa fa-phone"     ></i> <span class="d-none d-md-inline">Contacts</span></a> -->
+                <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmQuote"    ><i class="dcmenu fa fa-quote-left"></i> <span class="d-none d-md-inline">Quotes</span></a>
 
-         		       <li class="divider"></li>
-				          
-          
+         		<li class="divider"></li>
                 <span class="d-block p-2 bg-dark text-white">Admin</span>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=Units"><i class="fa fa-users"  ></i> <span class="d-none d-md-inline">Units</span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UnitTypes" ><i class="fa fa-phone"   ></i> <span class="d-none d-md-inline">Unit Types</span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UNITPROFILES"  ></i> <span class="d-none d-md-inline">Unit Profiles</span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UnitTiers"    ><i class="fa fa-quote-left"></i> <span class="d-none d-md-inline">Tiers</span></a>
 
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=PROJECTS"  ></i> <span class="fa fa-pencil-alt">Projects</span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ProjectPhases"><i class="fa fa-adversal"  ></i> <span class="d-none d-md-inline">Building Phases</span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ProjectTypes" ><i class="fa fa-angle-down"   ></i> <span class="d-none d-md-inline">Project Types</span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=COMPANYINFO"        ><i class="dcmenu dc-home"              ></i><span class="d-none d-md-inline">Company Info      </span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ProjectTypes"       ><i class="dcmenu fa fa-angle-down"     ></i><span class="d-none d-md-inline">Project Types     </span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=PROJECTS"           ><i class="dcmenu dc-Projects"          ></i><span class="d-none d-md-inline">Projects          </span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ProjectPhases"      ><i class="dcmenu dc-Phases"            ></i><span class="d-none d-md-inline">Building Phases   </span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UnitTypes"          ><div class="dcmenu"><span class="dc-UnitTypes"         ></span></div><span class="d-none d-md-inline">Unit Types        </span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=Units"              ><div class="dcmenu"><span class="dc-Units"             ></span></div><span class="d-none d-md-inline">Units             </span></a>
+                
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UNITPROFILES"       ><span class="dcmenu dc-Appliances"               ></span><span class="d-none d-md-inline">Unit Profiles     </span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UnitTiers"          ><span class="dcmenu dc-quotes-left"       ></span><span class="d-none d-md-inline">Tiers             </span></a>
 
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=Floors"       ><i class="fa fa-quote-left"></i> <span class="d-none d-md-inline">Floors</span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ROOMS"  ></i> <span class="fa fa-bath">Rooms</span></a>
-
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=VENDORS"  ></i> <span class="fa fa-people-carry">Vendors</span></a>
-
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=LOGINS"   ></i> <span class="fa fa-users">Logins</span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=DEPOSITCONDITIONS"  ></i> <span class="fa fa-money-bill-alt">Deposit Contitions</span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=COMPANYINFO"   ></i> <span class="fa fa-compass">Company Info</span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=REPORTCATEGORIES"   ></i> <span class="fa fa-dochub">Report Categories</span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=BASE"  ></i> <span class="fa fa-baseball-ball">Base</span></a>
-			
+                
+                
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=Floors"             ><i class="dcmenu dc-Floors"            ></i><span class="d-none d-md-inline">Floors            </span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ROOMS"              ><i class="dcmenu dc-Rooms"             ></i><span class="d-none d-md-inline">Rooms             </span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=VENDORS"            ><i class="dcmenu fa fa-people-carry"   ></i><span class="d-none d-md-inline">Vendors           </span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=LOGINS"             ><i class="dcmenu fa fa-users"          ></i><span class="d-none d-md-inline">Logins            </span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=DEPOSITCONDITIONS"  ><i class="dcmenu fa fa-money-bill-alt" ></i><span class="d-none d-md-inline">Deposit Contitions</span></a>
+                
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=REPORTCATEGORIES"   ><i class="dcmenu dc-ReportCategories"  ></i><span class="d-none d-md-inline">Report Categories </span></a>
+                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=BASE"               ><i class="dcmenu dc-cross"           ></i><span class="d-none d-md-inline">Base              </span></a>		
 		</ul>
 	</div>
 </div>
@@ -388,13 +361,114 @@
  </div>
                 </div> <!-- Closing Menu.js Div Tag -->
 
+            <!-- Right Side Help Nav -->
+                 <link rel="stylesheet" href="Content/owl.carousel.min.css">
+                 <link rel="stylesheet" href="Content/helpstyle.css">
+                 <script src="Scripts/owl.carousel.min.js"></script>
+                 <script src ="Scripts/helpmain.js"></script>
+                 <aside class="sidebar">
+                      <div class="toggle">
+                        <a href="#" class="burger js-menu-toggle" data-toggle="collapse" data-target="#main-navbar">
+                              <span><i class="far fa-question-circle"></i></span>
+                            </a>
+                      </div>
+                      <div class="side-inner">
+        
+                        <div class="action-progress-wrap">
+          
+                          <div class="action-progress-block mb-4">
+                            <h3>Addison Stuart Help Content Coming Soon</h3>
+            
+
+                            <div class="d-flex align-items-center">
+                              <div class="progress w-100">
+                                <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div>
+                              <div class="ml-4">25%</div>
+                            </div>
+                          </div>
+
+                          <ul class="progress-list">
+                            <li class="done">
+                              <a href="#">
+                                <h4>Create Projects</h4>
+                                <p>Create New Projects, Define Unit Type, Units, Floors, Phases, ETC.</p>
+                              </a>
+                            </li>
+                            <li class="done">
+                              <a href="#">
+                                <h4>Track Customers and Contacts</h4>
+                                <p>Track all customers with Purchase Dates, Status, Upgrade Costs and Counts.</p>
+                              </a>
+                            </li>
+                            <li>
+                              <a href="#">
+                                <h4>Manage Upgrades</h4>
+                                <p>Design Upgrades for specific Unit Types.  Ensure that for each Unit, customers will be able to see
+                                    a comprehensive list of all upgrade options.  Maximize profit, eliminate waste and inefficiencies.
+                                </p>
+                              </a>
+                            </li>
+                            <li>
+                              <a href="#">
+                                <h4>Vendor Management</h4>
+                                <p>Eliminate mistakes by tracking upgrades against Vendors and locations.  Because Design Centre enables
+                                    Vendors to be assigned to upgrades and upgrades assigned to rooms, vendors will always know what to install in
+                                    the correct locations.</p>
+                              </a>
+                            </li>
+                            <li>
+                              <a href="#">
+                                <h4>Keep procurement and inventory precise</h4>
+                                <p>By knowing what product goes where and when, procurement managers will have a much more accurate idea of when
+                                    to purchase inventory.  No more losing pallets of cabinets at an off site storage facility.  With Design Centre, 
+                                    the right product show up at the right time.
+                                </p>
+                              </a>
+                            </li>
+                            <li>
+                              <a href="#">
+                                <h4>Communicate Effectively</h4>
+                                <p>Sales, management, vendors will all have visibility into the communications stream around each unit.
+                                 Communications are tracked and available to the correct people.</p>
+                              </a>
+                            </li>
+                            <li>
+                              <a href="#">
+                                <h4>Enter Quotes Quickly and Easily</h4>
+                                <p>Everyone will benefit from having ALL the upgrades for a particular unit available in one spot.</p>
+                                  <p>Break Upgrades down by category to ensure Customers get a full view of the options.</p>
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="user-profile">
+                          <div>
+                            <a href="#" class="d-flex align-items-center" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-offset="0,20">
+                              <div class="user-pic mr-3">
+                                <img src="images/logo2.png" alt="" class="img-fluid">
+                              </div>
+                              <div class="user-name">
+                                <span>Dan Smith</span>
+                              </div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item" href="#">Action</a>
+                              <a class="dropdown-item" href="#">Another action</a>
+                              <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                           </div>
+                        </div>
+                      </div>
+                    </aside>
+                 <!-- End Right Side Help Nav -->
 
 			</LoggedInTemplate>
 		</asp:loginview>
 
 
 			<div class="page-header">
-				<div class="container body-content" style="padding-top:5px;">
+				<div class="container body-content" style="max-width: 3000px;padding-top:5px;padding-left:20px;padding-right:20px;">
 			 		<!-- THIS IS THE PANEL FOR SEARCHING FOR A Project -->
 					<asp:Panel Runat="server" ID="pnlProjectLookup"   Width="400px" Visible = "true">
 						<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR SEARCHING FOR A Project -->
@@ -443,7 +517,7 @@
 								<div class="modal-body">
 								 <!-- <uc1:ctrlProjectList runat="server" id="ctrlProjectList1" /> -->
                                     <asp:TextBox runat="server" ID="txtNodeID" type="number"></asp:TextBox>
-                                    <br /><asp:Button runat="server" ID="btnNode" />
+                                    <br /><asp:linkButton runat="server" ID="btnNode" ><i class="dc-checkmark"></i></asp:linkButton>/>
 								</div>
 							  <div class="modal-footer">
 								<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

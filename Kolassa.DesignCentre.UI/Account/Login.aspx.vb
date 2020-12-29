@@ -64,7 +64,11 @@ Partial Public Class Login
                 End If
             End If
         Catch
-            Debug.Print(Err.Description & Err.GetException.InnerException.ToString)
+            Dim lsErr As String = Err.Description
+            If Not Err.GetException.InnerException Is Nothing Then
+                lsErr = lsErr & Err.GetException.InnerException.ToString
+            End If
+            Debug.Print(lsErr)
         End Try
     End Sub
     Protected Sub SendEmailConfirmationToken(sender As Object, e As EventArgs)

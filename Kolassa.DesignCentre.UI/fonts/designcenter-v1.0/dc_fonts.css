@@ -1,0 +1,288 @@
+@font-face {
+  font-family: 'designcenter';
+  src:  url('fonts/designcenter.eot?79s47');
+  src:  url('fonts/designcenter.eot?79s47#iefix') format('embedded-opentype'),
+    url('fonts/designcenter.ttf?79s47') format('truetype'),
+    url('fonts/designcenter.woff?79s47') format('woff'),
+    url('fonts/designcenter.svg?79s47#designcenter') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="dc-"], [class*=" dc-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'designcenter' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dc-home:before {
+  content: "\e900";
+}
+.dc-home2:before {
+  content: "\e901";
+}
+.dc-home3:before {
+  content: "\e902";
+}
+.dc-office:before {
+  content: "\e903";
+}
+.dc-newspaper:before {
+  content: "\e904";
+}
+.dc-pencil:before {
+  content: "\e905";
+}
+.dc-eyedropper:before {
+  content: "\e90a";
+}
+.dc-image:before {
+  content: "\e90d";
+}
+.dc-images:before {
+  content: "\e90e";
+}
+.dc-library:before {
+  content: "\e921";
+}
+.dc-folder-open:before {
+  content: "\e930";
+}
+.dc-price-tag:before {
+  content: "\e935";
+}
+.dc-quotes-left:before {
+  content: "\e977";
+}
+.dc-quotes-right:before {
+  content: "\e978";
+}
+.dc-binoculars:before {
+  content: "\e985";
+}
+.dc-key:before {
+  content: "\e98d";
+}
+.dc-unlocked:before {
+  content: "\e990";
+}
+.dc-wrench:before {
+  content: "\e991";
+}
+.dc-equalizer:before {
+  content: "\e992";
+}
+.dc-equalizer2:before {
+  content: "\e993";
+}
+.dc-cogs:before {
+  content: "\e995";
+}
+.dc-pie-chart:before {
+  content: "\e99a";
+}
+.dc-stats-dots:before {
+  content: "\e99b";
+}
+.dc-stats-bars:before {
+  content: "\e99c";
+}
+.dc-bin:before {
+  content: "\e9ac";
+}
+.dc-switch:before {
+  content: "\e9b6";
+}
+.dc-power-cord:before {
+  content: "\e9b7";
+}
+.dc-sphere:before {
+  content: "\e9c9";
+}
+.dc-warning:before {
+  content: "\ea07";
+}
+.dc-cross:before {
+  content: "\ea0f";
+}
+.dc-checkmark:before {
+  content: "\ea10";
+}
+.dc-loop2:before {
+  content: "\ea2e";
+}
+.dc-move-up:before {
+  content: "\ea46";
+}
+.dc-move-down:before {
+  content: "\ea47";
+}
+.dc-sort-alpha-asc:before {
+  content: "\ea48";
+}
+.dc-sort-alpha-desc:before {
+  content: "\ea49";
+}
+.dc-file-excel:before {
+  content: "\eae2";
+}
+.dc-Page:before {
+  content: "\e906";
+}
+.dc-Adjustments:before {
+  content: "\e907";
+}
+.dc-AllPages:before {
+  content: "\e908";
+}
+.dc-Appliances:before {
+  content: "\e909";
+}
+.dc-Bed2:before {
+  content: "\e90b";
+}
+.dc-Bed3:before {
+  content: "\e90c";
+}
+.dc-Bed4:before {
+  content: "\e90f";
+}
+.dc-Closet:before {
+  content: "\e910";
+}
+.dc-Communication:before {
+  content: "\e911";
+}
+.dc-Contacts:before {
+  content: "\e912";
+}
+.dc-DiningRoom:before {
+  content: "\e913";
+}
+.dc-Download:before {
+  content: "\e914";
+}
+.dc-Electrical:before {
+  content: "\e915";
+}
+.dc-Flooring:before {
+  content: "\e916";
+}
+.dc-Floors:before {
+  content: "\e917";
+}
+.dc-Foyer:before {
+  content: "\e918";
+}
+.dc-FullBath:before {
+  content: "\e919";
+}
+.dc-HalfBath:before {
+  content: "\e91a";
+}
+.dc-Hallway:before {
+  content: "\e91b";
+}
+.dc-Images:before {
+  content: "\e91c";
+}
+.dc-Incompatabilities:before {
+  content: "\e91d";
+}
+.dc-Kitchen:before {
+  content: "\e91e";
+}
+.dc-LivingRoom:before {
+  content: "\e91f";
+}
+.dc-Logins:before {
+  content: "\e920";
+}
+.dc-Lookups:before {
+  content: "\e922";
+}
+.dc-MasterBath:before {
+  content: "\e923";
+}
+.dc-MasterBed:before {
+  content: "\e924";
+}
+.dc-MasterCloset:before {
+  content: "\e925";
+}
+.dc-Options:before {
+  content: "\e926";
+}
+.dc-Payments:before {
+  content: "\e927";
+}
+.dc-Personal-Data:before {
+  content: "\e928";
+}
+.dc-Phases:before {
+  content: "\e929";
+}
+.dc-Print:before {
+  content: "\e92a";
+}
+.dc-Projects:before {
+  content: "\e92b";
+}
+.dc-ReportCategories:before {
+  content: "\e92c";
+}
+.dc-ReportControls:before {
+  content: "\e92d";
+}
+.dc-Reports:before {
+  content: "\e92e";
+}
+.dc-Rooms:before {
+  content: "\e92f";
+}
+.dc-Selections:before {
+  content: "\e931";
+}
+.dc-Settings:before {
+  content: "\e932";
+}
+.dc-Shower:before {
+  content: "\e933";
+}
+.dc-Structural:before {
+  content: "\e934";
+}
+.dc-Tiers:before {
+  content: "\e936";
+}
+.dc-Tile:before {
+  content: "\e937";
+}
+.dc-Tools:before {
+  content: "\e938";
+}
+.dc-Units:before {
+  content: "\e939";
+}
+.dc-UnitTypes:before {
+  content: "\e93a";
+}
+.dc-Users:before {
+  content: "\e93b";
+}
+.dc-Vendors:before {
+  content: "\e93c";
+}
+.dc-Window:before {
+  content: "\e93d";
+}
