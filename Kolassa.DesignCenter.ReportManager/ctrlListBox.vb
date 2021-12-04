@@ -98,6 +98,7 @@ Public Class ctrlListBox
         uPanel1.ContentTemplateContainer.Controls.Add(lblField2)
         uPanel1.ContentTemplateContainer.Controls.Add(ctrlField2)
         uPanel1.ContentTemplateContainer.Controls.Add(CustomValidator1)
+        uPanel1.Controls.Add(ctrlHelpText)
         uPanel1.Attributes.Add("class", msControlPanelcss)
         '  SetFields(Me.DropDownList1.Text, Me.DropDownList1.SelectedValue)
         'debug.print("</ctrlListbox.CreateChildControls>")

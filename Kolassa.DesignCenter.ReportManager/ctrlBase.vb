@@ -12,6 +12,7 @@ Public Class ctrlBase
 	'*** Not so sure I can have these here
 	Dim ctrlField1 As TextBox
 	Dim ctrlField2 As TextBox
+	Public ctrlHelpText As Label
 	'******************************************
 	Public msControlPanelcss As String
 	Dim mnuCTRL1 As Menu
@@ -36,7 +37,12 @@ Public Class ctrlBase
 		cmdFieldDef.Attributes.Add("data-reportcontrolid", mrptCtrl.ReportControlID)
 		cmdFieldDef.Attributes.Add("data-reportcontrolfieldnumid", mrptCtrl.ReportControlNumID)
 		cmdFieldDef.Attributes.Add("data-reportcontrolfieldid", mrptCtrl.ReportControlFieldID)
-		If EditMode = True Then
+		cmdFieldDef.Attributes.Add("data-reportcontrolfieldHelpText", mrptCtrl.ReportControlHelpText)
+		Dim lsCTRL As String = ""
+		If Not Page Is Nothing Then lsCTRL = Page.Request.Params.Get("__EVENTTARGET")
+
+		If lsCTRL.ToUpper.Contains("CMDEDITMODE") = True Then EditMode = True
+			If EditMode = True Then
 			cmdFieldDef.Visible = True
 		Else
 			cmdFieldDef.Visible = False
@@ -93,11 +99,11 @@ Public Class ctrlBase
 		Dim cmd As Button
 		mnuCTRL1 = New Menu
         mnuCTRL1.ID = "mnuCTRL1"
-        mnuCTRL1.ToolTip = msFieldName
+		mnuCTRL1.ToolTip = msclsBaseFieldName
 
 		mnuCTRL = New DropDownList
         mnuCTRL.ID = "mnuCTRL"
-		mnuCTRL.Text = msFieldName
+		mnuCTRL.Text = msclsBaseFieldName
 		mnuCTRL.CssClass = "form-control control-label  form-control-sm"
 		Dim li As New ListItem
         Dim rli As ReportListItem
@@ -134,8 +140,8 @@ Public Class ctrlBase
 		cmd = New Button 'fGetFieldButton()
 		'	Controls.Add(cmd)
 		lblTitle = New Label
-        lblTitle.ID = "lbl" & msFieldName
-		lblTitle.Text = msFieldName
+		lblTitle.ID = "lbl" & msclsBaseFieldName
+		lblTitle.Text = msclsBaseFieldName
 		lblTitle.CssClass = "control-label font-weight-bold"
 		If msReportType = "Form" Or msReportType = "" Then
 			lblTitle.Visible = False
@@ -144,10 +150,17 @@ Public Class ctrlBase
 		span.Controls.Add(b)
 		span.Controls.Add(cmd)
 		span.Controls.Add(c)
+		ctrlHelpText = New Label
+		ctrlHelpText.CssClass = "form-text text-muted"
+		ctrlHelpText.Attributes.Add("style", "font-size:xx-small; Order:10;")
+		ctrlHelpText.Text = msclsBaseHelpText ' & "Here is the Help Text"
+
+
 		Controls.Add(span)
-		'	Controls.Add(lblTitle)
+
 		CreateChildControlsSub()
-    End Sub
+
+	End Sub
     Protected Overridable Sub CreateChildControlsSub()
         lblTitle2 = New Label
         lblTitle2.ID = "mylabel"
@@ -176,6 +189,8 @@ Public Class ctrlBase
 		'writer.RenderEndTag() ' </tr>
 		'writer.RenderEndTag() ' </table>
 		'cal.RenderControl(writer)
+		'	Dim lsCtrl As String = Page.Request.Params.Get("__EVENTTARGET")
+		'	If lsCtrl.ToUpper.Contains("CMDEDITMODE") Then EditMode = True
 		If EditMode = True Then
 			cmdFieldDef.Visible = True
 			cmdFieldDel.Visible = True

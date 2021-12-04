@@ -61,7 +61,7 @@ Public Class SiteMaster
         If Session("NodeID") Is Nothing Then
             Session("NodeID") = 0
         End If
-
+        txtNodeID.Text = Session("NodeID")
         '*** Get all the current User Info
         Dim context = New ApplicationDbContext()
         ' Create an instance of the generic type UserStore(Of T), with

@@ -9,7 +9,7 @@ Public Class mycontrol_
     Dim cmdrfSave As Button
     Dim cmdrfClose As Button
     'Dim txtRFReportID, txtRFReportControl As textbox
-    Dim txtRFContainerName, txtRFColumnSize, txtRFSortOrder, txtRFNodeID, txtRFValidation, txtRFValidationPatern, txtValidationTitle, txtrfTableName, txtRFFieldName, txtRFFieldLength, txtRFFieldTitle, txtRFID, txtRFName As TextBox
+    Dim txtRFContainerName, txtRFColumnSize, txtRFSortOrder, txtRFNodeID, txtRFValidation, txtRFValidationPatern, txtValidationTitle, txtrfTableName, txtRFHelpText, txtRFFieldName, txtRFFieldLength, txtRFFieldTitle, txtRFID, txtRFName As TextBox
     Dim chkRFRequired, chkRFActive, chkrfReadOnly As CheckBox
     Dim cboFieldType, cboRFReportControl, cboRFReportID As DropDownList
     Dim div1, div2, div3, div4, div5, div6, div7, div8, div9 As System.Web.UI.HtmlControls.HtmlGenericControl
@@ -84,7 +84,8 @@ Public Class mycontrol_
                 txtRFFieldName.Text = Trim(IIf(IsDBNull(dr("FieldName")), "", dr("FieldName")))
                 txtrfTableName.Text = Trim(IIf(IsDBNull(dr("TableName")), "", dr("TableName")))
 
-
+                Dim lsCHT As String = Trim(IIf(IsDBNull(dr("ControlFieldHelpText")), "", dr("ControlFieldHelpText")))
+                txtRFHelpText.Text = Trim(IIf(IsDBNull(dr("FieldHelpText")), lsCHT, dr("FieldHelpText")))
                 txtRFName.Text = Trim(IIf(IsDBNull(dr("Name")), "", dr("Name")))
                 txtRFNodeID.Text = Trim(IIf(IsDBNull(dr("NodeID")), "", dr("NodeID")))
                 txtRFFieldLength.Text = Trim(IIf(IsDBNull(dr("FieldLength")), "", dr("FieldLength")))
@@ -212,6 +213,10 @@ Public Class mycontrol_
         chkrfReadOnly = New CheckBox
         chkrfReadOnly.ID = "chkrfReadOnly"
 
+        txtRFHelpText = New TextBox
+        txtRFHelpText.CssClass = lsClass
+        txtRFHelpText.ID = "txtRFHelpText"
+
         txtRFID = New TextBox
         txtRFID.CssClass = lsClass
         txtRFID.ID = "txtRFID"
@@ -273,10 +278,11 @@ Public Class mycontrol_
         div5.Controls.Add(fGetLabel("Title", txtRFFieldTitle, "txt"))
         div6.Controls.Add(fGetLabel("Field ID", txtRFID, "txt"))
         div6.Controls.Add(fGetLabel("Name", txtRFName, "txt"))
-        div7.Controls.Add(fGetLabel("Field Type", cboFieldType, "txt"))
+        div7.Controls.Add(fGetLabel("Field Type<br/>", cboFieldType, "txt"))
         div7.Controls.Add(fGetLabel("Sort Order", txtRFSortOrder, "txt"))
         div8.Controls.Add(fGetLabel("Container Name", txtRFContainerName, "txt"))
         div8.Controls.Add(fGetLabel("Column Size (1-12)", txtRFColumnSize, "txt"))
+        div8.Controls.Add(fGetLabel("Help Text", txtRFHelpText, "txt"))
         p.Controls.Add(div1)
         p.Controls.Add(div2)
         p.Controls.Add(div3)
@@ -289,9 +295,9 @@ Public Class mycontrol_
         p1.CssClass = "form-inline {margin-right:27px;}"
         chkRFActive.CssClass = ".mr-2"
         chkRFRequired.CssClass = ".mr-2"
-        p1.Controls.Add(fGetLabel("Required", chkRFRequired, "chk"))
-        p1.Controls.Add(fGetLabel("Active", chkRFActive, "chk"))
-        p1.Controls.Add(fGetLabel("Read Only", chkrfReadOnly, "chk"))
+        p1.Controls.Add(fGetLabel("Required&nbsp;", chkRFRequired, "chk"))
+        p1.Controls.Add(fGetLabel("Active&nbsp;", chkRFActive, "chk"))
+        p1.Controls.Add(fGetLabel("Read Only&nbsp;", chkrfReadOnly, "chk"))
         p.Controls.Add(p1)
         Controls.Add(p)
     End Sub
@@ -334,11 +340,13 @@ Public Class mycontrol_
         rf.ReportControl = Trim(cboRFReportControl.SelectedValue)
         rf.SortOrder = Trim(txtRFSortOrder.Text)
         rf.containerName = Trim(txtRFContainerName.Text)
-        rf.columnsize = Trim(txtRFColumnSize.Text)
+        rf.ColumnSize = If(Trim(txtRFColumnSize.Text) = "", "0", Trim(txtRFColumnSize.Text))
         rf.FieldReadOnly = IIf(chkrfReadOnly.Checked, 1, 0)
         rf.Active = IIf(chkRFActive.Checked = True, 1, 0)
         rf.Required = IIf(chkRFRequired.Checked = True, 1, 0)
         rf.FieldType = cboFieldType.SelectedValue
+        rf.HelpText = Replace(Trim(txtRFHelpText.Text), """", """""")
+
         rf.Update()
 
     End Sub

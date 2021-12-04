@@ -241,6 +241,11 @@ Public Class Report
             rptCtrl.Description = If(dr("FieldTitle") Is DBNull.Value, dr("ControlDescription"), If(Trim(dr("FieldTitle")) = "", dr("ControlDescription"), dr("FieldTitle")))
             rptCtrl.FieldDescription = If(dr("FieldTitle") Is DBNull.Value, dr("ControlFieldDescription"), If(Trim(dr("FieldTitle")) = "", dr("ControlFieldDescription"), dr("FieldTitle")))
             rptCtrl.FieldName = If(dr("FieldName") Is DBNull.Value, dr("ControlFieldName"), If(Trim(dr("FieldName")) = "", dr("ControlFieldName"), dr("FieldName")))
+
+            Dim lsHT As String = If(dr("FieldHelpText") Is DBNull.Value, "", dr("FieldHelpText"))
+            Dim lsCHT As String = If(dr("ControlFieldHelpText") Is DBNull.Value, "", dr("ControlFieldHelpText"))
+            rptCtrl.ReportControlHelpText = If(lsHT = "", lsCHT, lsHT)
+
             rptCtrl.Type = dr("ControlType")
             rptCtrl.ConnectionString = "" 'cnStr
             rptCtrl.Required = dr("Required")
@@ -324,6 +329,7 @@ Public Class ReportControls
             lctrl.ControlName = dr("ControlName")
             lctrl.FieldDescription = dr("ControlFieldDescription")
             lctrl.FieldName = dr("ControlFieldName")
+            lctrl.ReportControlHelpText = IIf(IsDBNull(dr("ControlFieldHelpText")), "", dr("ControlFieldHelpText"))
             lctrl.SQL = IIf(IsDBNull(dr("ControlSQL")), "", dr("ControlSQL"))
             If lctrl.SQL <> "" Then Stop
             lctrl.Type = IIf(IsDBNull(dr("ControlType")), "", dr("ControlType"))
@@ -366,7 +372,7 @@ Public Class ReportControl
     Public ReportControlNumID As Long = 0       'Numeric Value for Report Control Instance
     Public ReportControlContainerName As String = ""
     Public ReportControlColumnSize As Integer = 12 ' 1-12 based on Bootstrap column numbers
-
+    Public ReportControlHelpText As String = ""
     Dim msControlConnectionString As String = ""
     Dim msControlRowSource As String = "" '*** SQL used to fill the Control
     Dim msOperator As String = ""

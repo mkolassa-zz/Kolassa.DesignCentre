@@ -59,15 +59,6 @@ Partial Public Class SiteMaster
     Protected WithEvents Panel1 As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''ctrlProjectList1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ctrlProjectList1 As Global.Kolassa.DesignCentre.UI.ctrlProjectList
-
-    '''<summary>
     '''txtNodeID control.
     '''</summary>
     '''<remarks>

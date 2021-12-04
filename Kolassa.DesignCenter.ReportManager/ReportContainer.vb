@@ -1580,7 +1580,7 @@ Err_Cmdrunreport_Click:
             ctrl.Tag = "ReportControl"
             ctrl.ID = ReportControl.ControlName
             ctrl.FieldName = ReportControl.FieldDescription
-
+            ctrl.HelpText = ReportControl.ReportControlHelpText
             ctrl.msReportType = IIf(IsDBNull(rpt.ReportType), "Form", rpt.ReportType)
             ctrl.CssClass = "CustomControl"
             If ReportControl IsNot Nothing Then

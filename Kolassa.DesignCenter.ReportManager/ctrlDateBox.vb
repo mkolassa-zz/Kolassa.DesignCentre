@@ -110,9 +110,9 @@ Public Class ctrlDateBox
 			ctrlField2.Visible = False
 
 		End If
-
-		'  SetFields(Me.DropDownList1.Text, Me.DropDownList1.SelectedValue)
-	End Sub
+        UpdatePanel1.Controls.Add(ctrlHelpText)
+        '  SetFields(Me.DropDownList1.Text, Me.DropDownList1.SelectedValue)
+    End Sub
     Protected Overrides Sub RecreateChildControls()
         EnsureChildControls()
     End Sub
@@ -219,9 +219,9 @@ Public Class ctrlDateBox
         msOperator = lsOption
         Dim ls1 As String = ""
         Dim ls2 As String = ""
-        lblfn.Text = msFieldName
+        lblfn.Text = msclsBaseFieldName
 
-		Dim ddl1 As DropDownList = Me.FindControl("DropDownList1")
+        Dim ddl1 As DropDownList = Me.FindControl("DropDownList1")
 
 
 		Select Case lsOption

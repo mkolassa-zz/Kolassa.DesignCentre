@@ -1,6 +1,7 @@
 ﻿Option Strict Off
 Imports System.ComponentModel
 Imports System.Drawing
+Imports System.Web.UI
 Imports System.IO
 
 <DefaultProperty("Text"), ToolboxData("<{0}:ctrlCheckBox_ runat=server></{0}:ctrlCheckBox>"), ToolboxBitmap(GetType(Calendar))>

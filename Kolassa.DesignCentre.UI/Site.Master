@@ -43,6 +43,11 @@
           cursor: pointer; /* Add a pointer on hover */
         }
     </style>
+    <style>
+        .modal-header {
+            background-color:moccasin;
+        }
+    </style>
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <link href="Content/fontawesome-all.css" rel="stylesheet" />
     <link href="fonts/dc_fonts.css" rel="stylesheet" />
@@ -111,7 +116,7 @@
 							</button>
           
 						<%Else  %>
-								<button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#ProjectModal" style="padding-top:10px;border:none;">
+								<button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#ProjectModal" style="padding-top:7px;border:none;">
 								    <i class="fa fa-arrow-circle-down" ></i> <%: Session("ProjectName")  %></a>
 								</button>
 						<%End If %>&nbsp;
@@ -125,15 +130,16 @@
 							</button>
           
 						<%Else  %>
-								<button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#NodeModal" style="padding-top:10px;border:none;">
-								    <i class="fa fa-arrow-circle-down" ></i>Node: <%# Session("NodeID")  %></a>
+								<button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#NodeModal" style="padding-top:7px;border:none;">
+								    <i class="fa fa-arrow-circle-down" ></i>&nbsp;Node:&nbsp; <%: Session("NodeID")  %></a>
 
 								</button>
 						<%End If %>&nbsp;
 				        </li>
                     </ul>
                     <ul class="navbar-nav px-3">
-                        <li class="nav-item text-nowrap">  <i class="fas fa-envelope fa-x"></i><span class="badge badge-pill badge-danger">9</span>&nbsp;&nbsp;</li>
+                        <li class="nav-item text-nowrap" style="padding-top:7px;">  <i class="fas fa-envelope fa-x" ></i>
+                            <span class="badge badge-pill badge-danger" style="padding-top:7px;">9</span>&nbsp;&nbsp;</li>
                     </ul>
 			        <!--		<div class="btn-group">
 		        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -507,22 +513,19 @@
 						  <div class="modal-dialog" role="document">
 							<div class="modal-content">
 							  <div class="modal-header">
-								<h5 class="modal-title" id="lblNodeModal">Node Search</h5>
+								<h5 class="modal-title" id="lblNodeModal">Change Node</h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									  <span aria-hidden="true">&times;</span>
 									</button>
-								 
-					
 								</div>
 								<div class="modal-body">
-								 <!-- <uc1:ctrlProjectList runat="server" id="ctrlProjectList1" /> -->
-                                    <asp:TextBox runat="server" ID="txtNodeID" type="number"></asp:TextBox>
-                                    <br /><asp:linkButton runat="server" ID="btnNode" ><i class="dc-checkmark"></i></asp:linkButton>/>
+								    <table><tr><td>
+                                        <asp:TextBox runat="server" style="text-align:right;width:50px;" ID="txtNodeID" type="number" ></asp:TextBox>
+                                        </td><td style="vertical-align:middle;">
+                                        &nbsp; <asp:linkButton runat="server" ID="btnNode" ><i class="dc-checkmark"></i></asp:linkButton>
+                                    </td></tr></table>
 								</div>
-							  <div class="modal-footer">
-								<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-							
-							  </div>
+		
 							</div>
 						  </div>
 						</div>
@@ -580,7 +583,9 @@
              //   alert('d');
                // frm.trigger("reset");
             })
-</script>
+
+       
+        </script>
 </body>
 	
 </html>

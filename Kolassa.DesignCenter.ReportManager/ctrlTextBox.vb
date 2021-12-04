@@ -118,6 +118,7 @@ Public Class ctrlTextBox
         AddHandler CustomValidator1.ServerValidate, AddressOf CustomValidator1_ServerValidate
 
         uPanel1.Controls.Add(lblFieldName)
+        uPanel1.Controls.Add(ctrlHelpText)
 
 
 
@@ -140,6 +141,7 @@ Public Class ctrlTextBox
         ' UpdatePanel1.ContentTemplateContainer.Controls.Add(ctrlField2)
         ' UpdatePanel1.ContentTemplateContainer.Controls.Add(CustomValidator1)
         '  SetFields(Me.DropDownList1.Text, Me.DropDownList1.SelectedValue)
+        uPanel1.Controls.Add(ctrlHelpText)
     End Sub
     Protected Overrides Sub RecreateChildControls()
         EnsureChildControls()

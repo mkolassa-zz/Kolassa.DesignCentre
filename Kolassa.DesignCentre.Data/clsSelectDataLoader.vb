@@ -1757,7 +1757,7 @@ Public Class clsSelectDataLoader
 				"FROM tblAdjustments C " &
 				"      left join  aspnetusers cu on c.createuser = cu.id " &
 				"      left join  aspnetusers uu on c.updateuser = uu.id " &
-				"WHERE (NodeID Is null Or NodeID=" & llNodeID & " ) " &
+				"WHERE (c.NodeID Is null Or c.NodeID=" & llNodeID & " ) " &
 					IIf(lsWhere.Length > 4, " And " & lsWhere, "") & NL &
 					IIf(isGUID(lsObjectID), " And c.objectID='" & lsObjectID & "'", "") & NL &
 					IIf(lbActive = True, " And Active = 1 ", "") & NL &
@@ -1858,7 +1858,7 @@ Public Class clsSelectDataLoader
 				"FROM tblPayments C " &
 				"      left join  aspnetusers cu on c.createuser = cu.id " &
 				"      left join  aspnetusers uu on c.updateuser = uu.id " &
-				"WHERE (NodeID Is null Or NodeID=" & llNodeID & " ) " &
+				"WHERE (c.NodeID Is null Or c.NodeID=" & llNodeID & " ) " &
 					IIf(lsWhere.Length > 4, " And " & lsWhere, "") & NL &
 					IIf(isGUID(lsObjectID), " And c.objectID='" & lsObjectID & "'", "") & NL &
 					IIf(lbActive = True, " And Active = 1 ", "") & NL &

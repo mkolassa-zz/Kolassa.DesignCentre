@@ -392,7 +392,7 @@
 	<asp:Panel Runat="server" ID="pnlPayments"   Visible = "true">
 		<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR Payments -->
 		<div class="modal fade" id="PaymentsModal" tabindex="-1" role="dialog" aria-labelledby="lblPayments" aria-hidden="true">
-		  <div  class="modal-dialog"  role="document">
+		  <div  class="modal-dialog" style="max-width:1550px;" role="document">
 			<div class="modal-content" style="width:1250px;">
 			  <div class="modal-header">
 				<h5 class="modal-title" id="lblPayments">Quote Payments</h5>

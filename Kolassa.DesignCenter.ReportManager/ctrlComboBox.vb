@@ -118,7 +118,7 @@ Public Class ctrlComboBox
         uPanel1.ContentTemplateContainer.Controls.Add(CustomValidator1)
         uPanel1.Attributes.Add("class", msControlPanelcss)
         '  SetFields(Me.DropDownList1.Text, Me.DropDownList1.SelectedValue)
-
+        uPanel1.Controls.Add(ctrlHelpText)
         SetVisibility()
         'debug.print("</clsComboBox.CreateChildControlsSub>")
     End Sub

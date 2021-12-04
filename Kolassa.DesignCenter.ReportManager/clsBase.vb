@@ -18,7 +18,8 @@ Partial Public Class clsBase
 	Public msValidationReason As String = ""
 	Protected msValidationPattern As String = ""
 	Protected msValidationTitle As String = ""
-	Public msFieldName As String
+    Public msclsBaseFieldName As String = ""
+    Public msclsBaseHelpText As String = ""
     Public msOperator As String = ""
     Public msDataType As String = ""
     Public miListItems As ReportListItems = New ReportListItems
@@ -100,17 +101,25 @@ Partial Public Class clsBase
     End Sub
     Public Property FieldName() As String
         Get
-            FieldName = msFieldName
+            FieldName = msclsBaseFieldName
         End Get
         Set(ByVal value As String)
-            msFieldName = value
+            msclsBaseFieldName = value
 
-            ' mnuCTRL.Text = msFieldName
+            ' mnuCTRL.Text = msclsBaseFieldName
+        End Set
+    End Property
+    Public Property HelpText() As String
+        Get
+            HelpText = msclsBaseHelpText
+        End Get
+        Set(ByVal value As String)
+            msclsBaseHelpText = value
         End Set
     End Property
     Public Property Tag() As String
         Get
-            Tag = msFieldName
+            Tag = msclsBaseFieldName
         End Get
         Set(ByVal value As String)
             msTag = value
@@ -131,7 +140,7 @@ Partial Public Class clsBase
         Dim ddl1 As DropDownList = Me.FindControl("DropDownList1")
         msOperator = lsOption
 
-        If Not lblfn Is Nothing Then lblfn.Text = msFieldName
+        If Not lblfn Is Nothing Then lblfn.Text = msclsBaseFieldName
         Select Case lsOption
             Case ("Equals"), "="
                 lblf1.Text = "="
@@ -216,7 +225,7 @@ Partial Public Class clsBase
         msValidationReason = ""
         If mbRequired = True Then
             If mcSelectedItems.Count = 0 Or (ctrl2.Visible = True And mcSelectedItems2.Count = 0) Then
-                msValidationReason = msFieldName & " is required."
+                msValidationReason = msclsBaseFieldName & " is required."
                 mbValid = False
                 Validate = False
                 Exit Function

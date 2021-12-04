@@ -10,7 +10,7 @@ Public Class clsDataLoader
     Dim mdsReportControls As DataSet
     Public mdsAllControls As DataSet
     Dim mdsListItems As DataSet
-    Dim msErrorMsg As String
+    Public msErrorMsg As String
     Dim mdsChildren As DataSet
     Dim cns As SqlConnection
     Dim cno As OleDb.OleDbConnection
@@ -554,10 +554,11 @@ Public Class clsDataLoader
                 cno.Close()
         End Select
         fExecuteSQLCmd = True
+        msErrorMsg = ""
         Return True
 fexecuteSQLError:
-        Dim lsErr As String = Err.Description
-        Debug.Print("<error>" & lsErr & "</error>")
+        msErrorMsg = Err.Description
+        Debug.Print("<error>" & msErrorMsg & "</error>")
     End Function
     Function fTakeOutQuotes(ByVal lsStr As String) As String
         lsStr = Replace(lsStr, "script", "scri_pt")
@@ -813,9 +814,11 @@ LoadChildrenError:
         If ds.Tables.Count > 1 Then
             If ds.Tables(0).Rows.Count > 0 Then
                 errMessage = "Control Name already exists for this control"
-                Return False
+                Return True
             End If
         End If
+
+        '*** Field Needs to be updated
         lsSQL = "SELECT * From
                     (SELECT case when isnull(f.name,'')='' then c.controlname else f.name end as theControlname,
                         case when isnull(f.fieldname,'')='' then c.controlfieldname else f.name end as theFieldname,
@@ -828,10 +831,10 @@ LoadChildrenError:
         If ds.Tables.Count > 1 Then
             If ds.Tables(0).Rows.Count > 0 Then
                 errMessage = "A  Control For this field already exists!"
-                Return False
+                Return True
             End If
         End If
-        Return True
+        Return False
     End Function
 End Class
 Public Class clsReportFields
@@ -870,6 +873,7 @@ Public Class clsReportFields
                 cf.Active = IIf(IsDBNull(dr("Active")), False, IIf(dr("Active") = True, True, False))
                 cf.Required = IIf(IsDBNull(dr("Required")), False, IIf(dr("Required") = True, True, False))
                 cf.FieldType = IIf(IsDBNull(dr("FieldType")), "", dr("FieldType"))
+                cf.HelpText = IIf(IsDBNull(dr("ControlFieldHelpText")), "", dr("ControlFieldHelpText"))
             Next
         End If
 
@@ -900,6 +904,7 @@ Public Class clsReportField
     Public ContainerName As String = ""
     Public ColumnSize As Integer = 12
     Public lsErrorMessage As String
+    Public HelpText As String
     Public Sub New()
         NodeID = System.Web.HttpContext.Current.Session("NodeID")
     End Sub
@@ -928,7 +933,7 @@ Public Class clsReportField
            ,[CreateDate]           ,[Createuser]           ,[UpdateDate]           ,[UpdateUser]
            ,[SortOrder]           ,[Validation]           ,[FieldValidationPattern]           ,[FieldValidationTitle]
            ,[TableName]           ,[FieldName]           ,[FieldReadOnly]           ,[FieldLength]
-           ,[FieldTitle]           ,[ID]           ,[Name], containername, columnsize)
+           ,[FieldTitle]           ,[ID]           ,[Name], containername, columnsize, [ControlFieldHelpText])
      VALUES
            (@ReportID,
            ,@pReportControl
@@ -950,7 +955,7 @@ Public Class clsReportField
            ,@pFieldLength
            ,@pFieldTitle
            ,@pID
-           ,@pName,@pContainerName, @pColumnSize)"
+           ,@pName,@pContainerName, @pColumnSize, @pHelpText)"
 
         msSQLcmd = New SqlCommand
         msSQLcmd.CommandText = lsSQL
@@ -979,7 +984,7 @@ Public Class clsReportField
         msSQLcmd.Parameters.AddWithValue("@pName", Name)
         msSQLcmd.Parameters.AddWithValue("@pContainerName", ContainerName)
         msSQLcmd.Parameters.AddWithValue("@pColumnSize", ColumnSize)
-
+        msSQLcmd.Parameters.AddWithValue("@pHelpText", HelpText)
         '*** Run The SQL.
         Insert = c.fExecuteSQLCmd("SQLConnection", c.mscnStr, msSQLcmd)
     End Function
@@ -1020,7 +1025,7 @@ Public Class clsReportField
                     ,[FieldLength] =@pFieldLength
                     ,[FieldTitle] = @pFieldTitle
                     ,[ID] = @pID
-                    ,[Name] = @pName              ,[ContainerName] = @pContainerName              ,[ColumnSize] = @pColumnSize
+                    ,[Name] = @pName              ,[ContainerName] = @pContainerName              ,[ColumnSize] = @pColumnSize,[FieldHelpText] = @pHelpText
                   Where ID = @pID"
 
         msSQLcmd = New SqlCommand
@@ -1049,9 +1054,11 @@ Public Class clsReportField
         msSQLcmd.Parameters.AddWithValue("@pUser", c.fGetUser)
         msSQLcmd.Parameters.AddWithValue("@pContainerName", ContainerName)
         msSQLcmd.Parameters.AddWithValue("@pColumnSize", ColumnSize)
-
+        msSQLcmd.Parameters.AddWithValue("@pHelpText", HelpText)
         '*** Run The SQL.
+
         Update = c.fExecuteSQLCmd("SQLConnection", c.mscnStr, msSQLcmd)
+        lsErrorMessage = c.msErrorMsg
     End Function
 End Class
 

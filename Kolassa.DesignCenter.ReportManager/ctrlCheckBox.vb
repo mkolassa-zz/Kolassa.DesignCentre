@@ -165,7 +165,7 @@ Public Class ctrlCheckBox
         '      UpdatePanel1.ContentTemplateContainer.Controls.Add(ctrlField1)
         '      UpdatePanel1.ContentTemplateContainer.Controls.Add(ctrlField2)
         '      UpdatePanel1.ContentTemplateContainer.Controls.Add(CustomValidator1)
-
+        uPanel1.Controls.Add(ctrlHelpText)
     End Sub
     Protected Overrides Sub RecreateChildControls()
         EnsureChildControls()
