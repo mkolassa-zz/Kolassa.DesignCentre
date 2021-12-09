@@ -437,6 +437,8 @@
     <Content Include="fonts\designcenter.ttf" />
     <Content Include="fonts\designcenter.eot" />
     <Content Include="fonts\designcenter.woff" />
+    <Content Include="webConnectionStrings.config" />
+    <Content Include=".gitignore" />
     <None Include="My Project\PublishProfiles\Design Centre dc.pubxml" />
     <None Include="My Project\PublishProfiles\FTPProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
@@ -678,6 +680,7 @@
     <Content Include="webfonts\fa-solid-900.ttf" />
     <Content Include="webfonts\fa-solid-900.woff" />
     <Content Include="webfonts\fa-solid-900.woff2" />
+    <Content Include="webAppSettings.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account\AddPhoneNumber.aspx.designer.vb">
