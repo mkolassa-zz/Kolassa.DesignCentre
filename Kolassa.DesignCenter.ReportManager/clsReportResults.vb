@@ -38,6 +38,7 @@ Public Class ReportResults
     Dim imgSort As ImageButton
     Dim lnkDel As LinkButton
     Dim radShowAll As RadioButtonList
+    Dim msHide As String = "d-none " ' *** Hides CSS Element
     Public ShowAll As String
     ' Public WhereDesc As String
     'Public ReportDescription As String
@@ -52,7 +53,7 @@ Public Class ReportResults
         lblViewName = New Label
         lblViewName.ID = "lblViewName"
         lblViewName.Text = "The View"
-        lblViewName.CssClass = "d-none input-group-prepend"
+        lblViewName.CssClass = msHide & " input-group-prepend"
         '*** LOAD VIEWS DDL
         '*** Get Views From Database
         pHeading = New Panel

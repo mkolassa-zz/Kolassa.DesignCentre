@@ -21,6 +21,7 @@ Public Class ctrlReportColumns
     Dim pViewType As Panel
     Dim radViewType As RadioButtonList
     Public ViewType As String
+    Dim msHide As String = "" '"d-none" '*** CSS for hiding elements
     '  Dim lblField1 As Label
     '  Dim lblField2 As Label
     '  Dim ctrlField1 As DropDownList
@@ -42,7 +43,7 @@ Public Class ctrlReportColumns
         txtReportID = New TextBox
         txtReportID.ID = "txtReportID"
         txtReportID.ReadOnly = True
-        txtReportID.CssClass = "d-none"
+        txtReportID.CssClass = msHide
         txtReportID.Text = ReportID
         lblViewTitle = New Label
         lblViewTitle.ID = "lblViewTitle"
@@ -164,7 +165,7 @@ Public Class ctrlReportColumns
         AddHandler btnDelete.Click, AddressOf btnDelete_Click
 
         lblViewTitle.CssClass = "sr-only"
-        txtViewID.CssClass = "d-none form-control sr-only"
+        txtViewID.CssClass = msHide & " form-control sr-only"
         txtViewName.CssClass = "form-control"
         txtViewName.Attributes("placeholder") = "View Name"
 

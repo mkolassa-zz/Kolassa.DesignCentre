@@ -41,6 +41,7 @@ Public Class ReportContainer
     Public msReportListClass As String
     Public msReportListSelectedClass As String
     Dim iTimeThrough As Integer ' Tracks number of times UPData update is run.
+    Dim msHide As String = "" ' "d-none"
 
     ' Dim asyncPostBackTrigger1 As AsyncPostBackTrigger
     ' Dim asyncPostbackTrigger2 As AsyncPostBackTrigger
@@ -131,13 +132,13 @@ Public Class ReportContainer
         btnSetReport = New Button
         btnSetReport.Text = "Set Report"
         btnSetReport.ID = "btnSetReport"
-        btnSetReport.CssClass = "d-none"
+        btnSetReport.CssClass = msHide
         AddHandler btnSetReport.Click, AddressOf btnSetReport_Click
 
 
         txtReportID = New TextBox
         txtReportID.ID = "txtReportID"
-        txtReportID.CssClass = "d-none"
+        txtReportID.CssClass = msHide
         updatePanel1 = New Panel ' UpdatePanel
         updatePanel2 = New Panel ' UpdatePanel
         updatePanel1.ID = "updatePanel1"
@@ -159,7 +160,7 @@ Public Class ReportContainer
 
         txtDebug = New TextBox
         txtDebug.ID = "txtDebug"
-        txtDebug.CssClass = "d-none"
+        txtDebug.CssClass = msHide
 
         litmsg = New Literal
         litmsg.ID = "litmsg"     'debug.print("<Clear control='litmessage' />")
@@ -316,7 +317,7 @@ Public Class ReportContainer
         '*** If UP1 Does not exist, exit, cuz the Container is not right
 
         If cp Is Nothing Then Exit Sub
-        'If cp Is Nothing Then Exit Sub
+
         Dim rfe As Panel = ctrlRMFieldEditor.FindControl("pnlRF-modal")
         ' rfe = Page.FindControl("rfmodal")
         If Not rfe Is Nothing Then
@@ -377,7 +378,7 @@ Public Class ReportContainer
         upHeader.RenderControl(writer)
 
         updatePanel1.RenderControl(writer)
-
+        ' mbShowRFPanel = True 'take this out
         If mbShowRFPanel Then
             ctrlRMFieldEditor.Visible = True
             up1.Visible = vbFalse
@@ -645,7 +646,7 @@ Public Class ReportContainer
 
                         cat.HideReportLists = CBool(dr("ReportCategoryHideLists"))
                         '     If cat.HideReportLists = True Then
-                        'up2.CssClass = "d-none"
+                        'up2.CssClass = msHide
                         'Else
                         '   up2.CssClass = "col-sm-9"
                         'End If
@@ -716,7 +717,7 @@ Public Class ReportContainer
             If cat2.CategoryID = llistitem.Value Then
                 cat.HideReportLists = cat2.HideReportLists
                 If cat.HideReportLists = True Then
-                    up2.CssClass = "d-none"
+                    up2.CssClass = msHide
                 Else
                     up2.CssClass = "col-sm-3"
                 End If

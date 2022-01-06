@@ -18,10 +18,7 @@ Partial Class frmRooms
 		Stop
 	End Sub
 
-	Protected Sub cmdUPData_Click(sender As Object, e As EventArgs) Handles cmdUPData.Click
-		'Stop
-		ctrlCustomers1.DataBind()
-	End Sub
+
 
 	Private Sub frm_Init(sender As Object, e As EventArgs) Handles Me.Init
 		'ObjectDataSource1.TypeName="

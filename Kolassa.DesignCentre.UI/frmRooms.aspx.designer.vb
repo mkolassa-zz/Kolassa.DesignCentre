@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class frmRooms
-    
+
     '''<summary>
     '''txtSearch control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class frmRooms
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtSearch As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''lblSearch control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class frmRooms
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblSearch As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''cmdSearch control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class frmRooms
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdSearch As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''cmdExcel control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class frmRooms
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdExcel As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''grdData control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class frmRooms
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents grdData As Global.System.Web.UI.WebControls.GridView
-    
+
     '''<summary>
     '''odsData control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class frmRooms
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents odsData As Global.System.Web.UI.WebControls.ObjectDataSource
-    
+
     '''<summary>
     '''pnlData control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class frmRooms
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlData As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''upData control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class frmRooms
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents upData As Global.System.Web.UI.UpdatePanel
-    
+
     '''<summary>
     '''txtID control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class frmRooms
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtID As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''cmdUPData control.
     '''</summary>
@@ -102,13 +102,4 @@ Partial Public Class frmRooms
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdUPData As Global.System.Web.UI.WebControls.Button
-    
-    '''<summary>
-    '''ctrlCustomers1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ctrlCustomers1 As Global.Kolassa.DesignCentre.UI.ctrlCustomers
 End Class

@@ -2755,37 +2755,50 @@ IIf(isGUID(ID), " OR ID = '" & ID & "' ", "")
 	'*** Requested Upgrades
 	Public Function LoadUpgradeOptions(ByVal llNodeID As Long, ByVal lsRoom As String, ByVal lsPhase As String, ByVal lsQuoteID As String, ByVal lsWhere As String, ByVal lbActive As Boolean, ByVal lsID As String, Optional ByVal lsCat As String = "") As DataSet
 		Dim lsSQL As String
+		Try
+			'*** Initialize
+			LoadUpgradeOptions = Nothing
+			If lsWhere = Nothing Then lsWhere = ""
+			'*** Check for No Selected Category
+			If llNodeID = 0 Then
+				'response.write("No Project Selectedd")
+				Exit Function
+			End If
 
-		'*** Initialize
-		LoadUpgradeOptions = Nothing
-		If lsWhere = Nothing Then lsWhere = ""
-		'*** Check for No Selected Category
-		If llNodeID = 0 Then
-			'response.write("No Project Selectedd")
-			Exit Function
-		End If
+			lsSQL = "Select TOP 10000 ut.name as unittype, uo.* " &
+				" FROM   tblUpgradeOptions uo inner join TblUnittypes ut on ut.id = uo.unittypeid " &
+				" WHERE 1=1  " &
+		IIf(lbActive = True, " and uo.Active = 1 ", "") & NL
+			If lsID = "00000000-0000-0000-0000-000000000000" Or Not isGUID(lsID) Then
+				If lsRoom <> "" Then lsSQL = lsSQL & " AND uo.[Location] = '" & lsRoom & "' "
+				If lsPhase <> "" Then lsSQL = lsSQL & "       AND uo.BuildingPhase = '" & lsPhase & "' "
+				If lsWhere.Length > 4 Then
+					lsWhere = lsWhere.Replace("SearchText", "ut.name + uo.[Description] + uo.[Location] ")
 
-		lsSQL = "SELECT * " &
-				"FROM   tblUpgradeOptions " &
-				"WHERE 1=1  " &
-		IIf(lbActive = True, " and Active = 1 ", "") & NL
-		If lsID = "00000000-0000-0000-0000-000000000000" Or Not isGUID(lsID) Then
-			lsSQL = lsSQL & " AND RoomDescription = '" & lsRoom & "' " &
-				"        AND BuildingPhase = '" & lsPhase & "' " &
-				IIf(lsWhere.Length > 4, " AND " & lsWhere, "") &
-				IIf(lsCat = "", "", " and UpgradeCategory =  '" & lsCat & "' ") & NL
-		Else
-			lsSQL = lsSQL & IIf(isGUID(lsID), " AND ID = '" & lsID & "' ", "") & NL
-		End If
-		lsSQL = lsSQL & "ORDER BY UpgradeCategory"
+					lsSQL = lsSQL & " AND " & lsWhere
+				End If
+				If lsCat <> "" Then lsSQL = lsSQL & " and uo.UpgradeCategory =  '" & lsCat & "' "
+			Else
+				lsSQL = lsSQL & IIf(isGUID(lsID), " AND ID = '" & lsID & "' ", "") & NL
+			End If
+			lsSQL = lsSQL & " ORDER BY UpgradeCategory"
 
 
-		'*** Load a data set.
-		Dim ds As New DataSet()
-		ds = fGetDataset(mscnType, mscnStr, lsSQL, "UpgradeOptions")
+			'*** Load a data set.
+			Dim ds As New DataSet()
+			ds = fGetDataset(mscnType, mscnStr, lsSQL, "UpgradeOptions")
 
-		mdsCustomers = ds
-		LoadUpgradeOptions = mdsCustomers
+			mdsCustomers = ds
+			LoadUpgradeOptions = mdsCustomers
+		Catch
+			Dim dsEmpty As New DataSet
+			Dim dt As New DataTable
+			dt.Columns.Add("Empty")
+			dt.Rows.Add("No Data!")
+			dsEmpty.Tables.Add(New DataTable("Empty"))
+			LoadUpgradeOptions = dsEmpty
+
+		End Try
 	End Function
 	Public Function DeleteUpgradeOptions(ByVal RecordID As String, llNodeID As Long) As Boolean
 		If Not isGUID(RecordID) Then

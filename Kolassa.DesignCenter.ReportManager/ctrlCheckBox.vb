@@ -16,6 +16,7 @@ Public Class ctrlCheckBox
     Dim ctrlField2 As CheckBox
     Dim CustomValidator1 As CustomValidator
     Dim trig As AsyncPostBackTrigger
+    Dim msHide As String = "d-none" '*** CSS for hiding elements
     Public Overrides Property ControlPanelcss() As String
         Get
             ControlPanelcss = msControlPanelcss
@@ -77,7 +78,7 @@ Public Class ctrlCheckBox
         '  uPanel1.Triggers.Add(trig)
         lblField1 = New Label
         lblField1.ID = "lblField1"
-        lblField1.CssClass = "d-none " 'form-check-label"
+        lblField1.CssClass = msHide & " " 'form-check-label"
         lblField2 = New Label
         lblField2.ID = "lblField2"
         lblField2.Visible = False
@@ -98,7 +99,7 @@ Public Class ctrlCheckBox
         lblFieldName.AssociatedControlID = ctrlField1.ID
         lblField1.AssociatedControlID = ctrlField1.ID
         lblField1.Attributes.Add("for", ctrlField1.ClientID)
-        lblField1.Attributes.Add("class", "d-none")
+        lblField1.Attributes.Add("class", msHide)
         lblField2.AssociatedControlID = ctrlField2.ID
         CustomValidator1 = New CustomValidator
         CustomValidator1.ID = "CustomValidator1"
@@ -116,7 +117,7 @@ Public Class ctrlCheckBox
         uPanel1.Controls.Add(DropDownList1)
         Controls.Add(uPanel1)
         uPanel1.Controls.Add(lblField1)
-        lblField1.CssClass = "d-none"
+        lblField1.CssClass = msHide
         uPanel1.Controls.Add(ctrlField1)
         uPanel1.Controls.Add(lblField2)
         uPanel1.Controls.Add(ctrlField2)

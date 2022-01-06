@@ -145,6 +145,7 @@
             </asp:GridView>
            <asp:Button ID="cmdAddNew" Text="Add New Record" runat="server" Visible="False"/>
            <asp:ImageButton ID="imgAdd" runat="server" ImageUrl="~/images/add.png" AlternateText="Add New Record" Height="16px" Width="16px" />
+            
         </ContentTemplate>
   
         
