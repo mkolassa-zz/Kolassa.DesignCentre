@@ -194,6 +194,15 @@ Partial Public Class frmBase
     Protected WithEvents lblTitle As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''ctrlPivotControl control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ctrlPivotControl As Global.Kolassa.DesignCenter.ReportManager.ctrlPivot
+
+    '''<summary>
     '''pnlData control.
     '''</summary>
     '''<remarks>
@@ -236,7 +245,7 @@ Partial Public Class frmBase
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents rptBase As Global.Kolassa.DesignCenter.ReportManager.ReportContainer
+    Protected WithEvents rptBase As Global.Kolassa.DesignCenter.ReportManager.reportcontainer
 
     '''<summary>
     '''updateProgress control.

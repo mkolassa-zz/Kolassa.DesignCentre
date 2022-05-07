@@ -43,6 +43,7 @@ Public Class clsSelectDataLoader
 	Dim msSQLParameter As SqlParameter
 	Dim NL As String = Chr(13) & Chr(10)
 	Public Property msErrorMsg As String
+	Public ReadOnly Property ErrorMessage As String = msErrorMsg
 	Public Sub New()
 		mscnType = "SQLConnection" '"OLEDB"
 		'  mscnStr = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=D:\Documents and Settings\mkolassa\My Documents\Visual Studio\Projects\WebSites\Select\App_Data\legadata.mdb;User Id=Master;Password=Cubs1;Jet OLEDB:System Database=D:\Documents and Settings\mkolassa\My Documents\Visual Studio\Projects\WebSites\Select\App_Data\Parallax.mdw;"
@@ -2942,6 +2943,31 @@ IIf(isGUID(ID), " OR ID = '" & ID & "' ", "")
 		mdsReportCategories = ds
 		LoadReportCategories = mdsReportCategories
 	End Function
+	Function fGetTableName(lsTableName As String, llNodeID As Long) As String
+		Dim lsSQL As String
+
+		'*** Initialize
+		fGetTableName = ""
+
+		'*** Check for No Selected Category
+		If llNodeID = 0 Then Exit Function
+
+		lsSQL = "SELECT tablename , reportName, *
+				 FROM tblReportDescriptions
+				 WHERE  UPPER( reportname) = '" & lsTableName & "' 
+				 AND   (NodeID=0 or nodeID =1 or NodeID=" & llNodeID & ") "
+
+		'*** Load a data set.
+		Dim ds As New DataSet()
+		ds = fGetDataset(mscnType, mscnStr, lsSQL, "Categories")
+
+		If ds.Tables.Count > 0 Then
+			If ds.Tables(0).Rows.Count > 0 Then
+				fGetTableName = ds.Tables(0)(0)(0)
+			End If
+		End If
+
+	End Function
 	Public Function InsertReportCategory(ByVal ReportCategoryID As Long, ByVal lsName As String, ByVal lsType As String, ByVal HideLists As Boolean) As Boolean
 		Dim lsSQL As String
 		Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
@@ -3079,6 +3105,7 @@ LoadChildrenError:
 		'llNodeID = 2
 		If lsWhere = Nothing Then lsWhere = ""
 		'*** Check for No Selected Category
+		llNodeID = System.Web.HttpContext.Current.Session("NodeID")
 		If llNodeID = 0 Then
 			'response.write("No Project Selectedd")
 			Exit Function
@@ -3277,7 +3304,7 @@ LoadChildrenError:
 
 		For Each p As KeyValuePair(Of String, String) In formValue
 			Select Case p.Key.ToUpper
-				Case "ID", "CODE", "NAME", "DESCRIPTION", "ACTIVE", "OBJECTID"
+				Case "ID", "CODE", "NAME", "DESCRIPTION", "ACTIVE", "OBJECTID", "CREATEUSER", "CREATEDDATE", "CREATEDATE", "NODEID", "UPDATEDATE", "UPDATEUSER"
 				Case Else
 					cmd = New SqlCommand
 					lsSQL = "Update " & lsTable & "  " &
@@ -3377,6 +3404,7 @@ LoadChildrenError:
 					cno.Close()
 			End Select
 		Catch
+			msErrorMsg = Err.Description
 			'debug.print(Err.Description)
 		End Try
 		fGetDataset = ds

@@ -1,6 +1,8 @@
 ﻿<%@ Page Title="Home Page" Language="VB" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.vb" Inherits="Kolassa.DesignCentre.UI._Default" %>
 
 <%@ Register Src="~/Controls/ctrlImages.ascx" TagPrefix="uc1" TagName="ctrlImages" %>
+<%@ Register Src="~/Controls/ctrlImageNew.ascx" TagPrefix="uc1" TagName="ctrlImageNew" %>
+
 
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
@@ -31,13 +33,12 @@
 				</div>
 				<div class="row">
 					<div class="col-md-4">
-						<h2>Getting Started</h2>
+						<h2>Getting Started
+                        </h2>
 						<p>
 							Design Centre enables you to build out options, units, plans and other data intensive structures quickly to get right down to business selling products and services.
 						</p>
-						<p>
-							<a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301948">Learn more &raquo;</a>
-						</p>
+				
 					</div>
 					<div class="col-md-4">
 						<h2>Drive Revenue</h2>
@@ -125,27 +126,27 @@
 </div>
 -->
 
-                <div id="test">
-					<br />
-					<h5>Select a Project</h5>
-					<div class="card-deck" >
-                    <asp:Repeater ID="Repeater1" runat="server" DataSourceID="odsProjects" >
-                    <ItemTemplate>
-						<div class="card mb-3" style="width: 18rem;">
-						  <asp:image  ID="imgProj" runat="server" style="clip:rect(0px,100px,200px,0px);"  cssclass="card-img-top img-thumbnail" src='<%#Eval("imageURL") %>' AlternateText='<%#Eval("ProjectTYpeName") %>' />
-						  <div class="card-body">
-							<h5 class="card-title"><a href="frmProjects.aspx?ProjectID=<%#Eval("ID") %>"><%#Eval("Name") %></a></h5>
-							<p class="card-text"> <%#Eval("Description") %>
-                            <br /><%#Eval("ProjectTYpeName") %></p>
-						  </div>
-						</div>
-                    </ItemTemplate>
-
-                </asp:Repeater>
-						</div>
+					<div id="test">
+						<br />
+						<h5>Select a Project</h5>
+						<div class="card-deck" >
+						<asp:Repeater ID="Repeater1" runat="server" DataSourceID="odsProjects" >
+						<ItemTemplate>
+							<div class="card mb-3" style="width: 18rem;">
+							  <asp:image  ID="imgProj" runat="server" style="clip:rect(0px,100px,200px,0px);"  cssclass="card-img-top img-thumbnail" src='<%#Eval("imageURL") %>' AlternateText='<%#Eval("ProjectTYpeName") %>' />
+							  <div class="card-body">
+								<h5 class="card-title"><a href="frmProjects.aspx?ProjectID=<%#Eval("ID") %>"><%#Eval("Name") %></a></h5>
+								<p class="card-text"> <%#Eval("Description") %>
+								<br /><%#Eval("ProjectTYpeName") %></p>
+							  </div>
+							</div>
+						</ItemTemplate>
+					</asp:Repeater>
+				</div>
+  			</div>
   
-			</div>
-                
+				
+
             <asp:ObjectDataSource ID="odsProjects" runat="server" 
 				SelectMethod="LoadProjects" TypeName="Kolassa.DesignCentre.Data.clsSelectDataLoader" 
 				InsertMethod="InsertProjects" UpdateMethod="UpdateProjects" 
@@ -163,7 +164,6 @@
           
 				<SelectParameters>
 					<asp:SessionParameter Name="llNodeID" SessionField="NodeID" DefaultValue="0" />
-		
 					<asp:Parameter Name="lsWhere" Type="String" DefaultValue="" />
 					<asp:Parameter Name="lbActive" Type="Boolean" DefaultValue="True" />
 					<asp:Parameter Name="lsID" Type="String" DefaultValue="" />
@@ -187,4 +187,11 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 		</LoggedInTemplate>
 	</asp:LoginView>
+			<p>
+				<a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301948">Learn more &raquo;</a>
+				<asp:Button ID="cmdCSV" runat="server" Text="CSV" OnClick="cmdCSV_Click" />
+				<asp:FileUpload ID="fuCSV" runat="server" />
+			</p>
+    <uc1:ctrlImages runat="server" id="ctrlImages" />
+    <uc1:ctrlImageNew runat="server" id="ctrlImageNew" />
 </asp:Content>

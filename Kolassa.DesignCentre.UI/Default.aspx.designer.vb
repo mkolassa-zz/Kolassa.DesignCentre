@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class _Default
-    
+
     '''<summary>
     '''LoginView1 control.
     '''</summary>
@@ -21,4 +21,40 @@ Partial Public Class _Default
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents LoginView1 As Global.System.Web.UI.WebControls.LoginView
+
+    '''<summary>
+    '''cmdCSV control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdCSV As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''fuCSV control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fuCSV As Global.System.Web.UI.WebControls.FileUpload
+
+    '''<summary>
+    '''ctrlImages control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ctrlImages As Global.Kolassa.DesignCentre.UI.ctrlImages
+
+    '''<summary>
+    '''ctrlImageNew control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ctrlImageNew As Global.Kolassa.DesignCentre.UI.ctrlImagesNew
 End Class

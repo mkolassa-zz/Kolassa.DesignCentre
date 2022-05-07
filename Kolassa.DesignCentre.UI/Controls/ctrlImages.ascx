@@ -70,7 +70,7 @@
     </UpdateParameters>
 </asp:ObjectDataSource>
 
-
+<asp:label ID="lblObjectID" runat="server" />
     <div class="container">
         <h2>Images</h2>
         <!-- Trigger the modal with a button -->
@@ -88,7 +88,6 @@
                     </div>
                     <div class="modal-body">
                         <p>Select an Image.</p> 
-						<uc1:ctrlImageNew ID="asdf" runat="server" />
                         <uc1:ctrlImageNew ID="ctrlImageNew1" runat="server"  /> 
                     </div>
                     <div class="modal-footer">
@@ -104,15 +103,17 @@
 <table >
     <tr><td style="width:100px;"></td><td></td></tr>
         <tr><td></td><td>
-            <asp:GridView ID="GridView1" runat="server" DataSourceID="odsImages" CssClass="table table-striped table-bordered table-hover glyphicon-hover" AutoGenerateColumns="False">
+            <asp:GridView ID="gvImages" runat="server" DataSourceID="odsImages" CssClass="table table-striped table-bordered table-hover glyphicon-hover" 
+                AutoGenerateColumns="False">
                 <Columns>
                     <asp:BoundField DataField="Name" HeaderText ="Picture Name" />
                     <asp:BoundField DataField="Description" HeaderText ="Picture Desc" />
                     <asp:TemplateField>
                         <ItemTemplate>
-                            <a href="<%#"data:" + Trim(Eval("Type")) + ";base64," + Convert.ToBase64String(Eval("Image")) %>">
-                                <asp:Image CssClass="ctrlImage" ID="Image1" runat="server" Height="100px" ImageUrl='<%#"data:" + Trim(Eval("Type")) + ";base64," + Convert.ToBase64String(Eval("Image")) %>' />
-                            </a>
+                           <!-- <a href="< % #"data:" + Trim(Eval("Type")) + ";base64," + Convert.ToBase64String(Eval("Image")) % >">
+                                <asp:Image CssClass="ctrlImage" ID="Image1" runat="server" Height="100px" ImageUrl='< % #"data:" + Trim(Eval("Type")) + ";base64," + Convert.ToBase64String(Eval("Image")) %>' />
+                            </a> -->
+                            <img src =<%# Eval("ImageURL") %> />
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
@@ -124,8 +125,125 @@
             </td></tr>
 
 </table>
-      
+<style>
+    body {
+  padding: 30px 0;
+  position: relative;
+}
+
+.gallery {
+  width: 600px;
+  margin: auto;
+  border-radius: 3px;
+  overflow: hidden;
+  //position: relative;
+}
+.img-c {
+  width: 200px;
+  height: 200px;
+  float: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.img-w {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  transition: transform ease-in-out 300ms;
+}
+
+.img-w img {
+  display: none;
+}
+
+.img-c {
+    transition: width ease 400ms, height ease 350ms, left cubic-bezier(0.4, 0, 0.2, 1) 420ms, top cubic-bezier(0.4, 0, 0.2, 1) 420ms;
+}
+
+.img-c:hover .img-w {
+  transform: scale(1.08);
+  transition: transform cubic-bezier(0.4, 0, 0.2, 1) 450ms;
+}
+
+.img-c.active {
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute;
+  z-index: 2;
+  //transform: translateX(-50%);
+}
+
+.img-c.postactive {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.img-c.active.positioned {
+  left: 0 !important;
+  top: 0 !important;
+  transition-delay: 50ms;
+}
+</style>
+<hr />
+      <div class="gallery">
+  <div class="img-w">
+    <img src="https://images.unsplash.com/photo-1485766410122-1b403edb53db?dpr=1&auto=format&fit=crop&w=1500&h=846&q=80&cs=tinysrgb&crop=" alt="" /></div>
+  <div class="img-w"><img src="https://images.unsplash.com/photo-1485793997698-baba81bf21ab?dpr=1&auto=format&fit=crop&w=1500&h=1000&q=80&cs=tinysrgb&crop=" alt="" /></div>
+  <div class="img-w"><img src="https://images.unsplash.com/photo-1485871800663-71856dc09ec4?dpr=1&auto=format&fit=crop&w=1500&h=2250&q=80&cs=tinysrgb&crop=" alt="" /></div>
+  <div class="img-w"><img src="https://images.unsplash.com/photo-1485871882310-4ecdab8a6f94?dpr=1&auto=format&fit=crop&w=1500&h=2250&q=80&cs=tinysrgb&crop=" alt="" /></div>
+  <div class="img-w"><img src="https://images.unsplash.com/photo-1485872304698-0537e003288d?dpr=1&auto=format&fit=crop&w=1500&h=1000&q=80&cs=tinysrgb&crop=" alt="" /></div>
+  <div class="img-w"><img src="https://images.unsplash.com/photo-1485872325464-50f17b82075a?dpr=1&auto=format&fit=crop&w=1500&h=1000&q=80&cs=tinysrgb&crop=" alt="" /></div>
+  <div class="img-w"><img src="https://images.unsplash.com/photo-1470171119584-533105644520?dpr=1&auto=format&fit=crop&w=1500&h=886&q=80&cs=tinysrgb&crop=" alt="" /></div>
+  <div class="img-w"><img src="https://images.unsplash.com/photo-1485881787686-9314a2bc8f9b?dpr=1&auto=format&fit=crop&w=1500&h=969&q=80&cs=tinysrgb&crop=" alt="" /></div>
+  <div class="img-w"><img src="https://images.unsplash.com/photo-1485889397316-8393dd065127?dpr=1&auto=format&fit=crop&w=1500&h=843&q=80&cs=tinysrgb&crop=" alt="" /></div>
+</div>
+<hr />
 
             
+<script>
+    $(function () {
+        $(".img-w").each(function () {
+            $(this).wrap("<div class='img-c'></div>")
+            let imgSrc = $(this).find("img").attr("src");
+            $(this).css('background-image', 'url(' + imgSrc + ')');
+        })
 
+
+        $(".img-c").click(function () {
+            let w = $(this).outerWidth()
+            let h = $(this).outerHeight()
+            let x = $(this).offset().left
+            let y = $(this).offset().top
+
+
+            $(".active").not($(this)).remove()
+            let copy = $(this).clone();
+            copy.insertAfter($(this)).height(h).width(w).delay(500).addClass("active")
+            $(".active").css('top', y - 8);
+            $(".active").css('left', x - 8);
+
+            setTimeout(function () {
+                copy.addClass("positioned")
+            }, 0)
+
+        })
+
+
+
+
+    })
+
+    $(document).on("click", ".img-c.active", function () {
+        let copy = $(this)
+        copy.removeClass("positioned active").addClass("postactive")
+        setTimeout(function () {
+            copy.remove();
+        }, 500)
+    })
+</script>
 

@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class ctrlImages
-    
+
     '''<summary>
     '''odsImages control.
     '''</summary>
@@ -21,16 +21,16 @@ Partial Public Class ctrlImages
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents odsImages As Global.System.Web.UI.WebControls.ObjectDataSource
-    
+
     '''<summary>
-    '''asdf control.
+    '''lblObjectID control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents asdf As Global.Kolassa.DesignCentre.UI.ctrlImagesNew
-    
+    Protected WithEvents lblObjectID As Global.System.Web.UI.WebControls.Label
+
     '''<summary>
     '''ctrlImageNew1 control.
     '''</summary>
@@ -39,13 +39,13 @@ Partial Public Class ctrlImages
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ctrlImageNew1 As Global.Kolassa.DesignCentre.UI.ctrlImagesNew
-    
+
     '''<summary>
-    '''GridView1 control.
+    '''gvImages control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents GridView1 As Global.System.Web.UI.WebControls.GridView
+    Protected WithEvents gvImages As Global.System.Web.UI.WebControls.GridView
 End Class

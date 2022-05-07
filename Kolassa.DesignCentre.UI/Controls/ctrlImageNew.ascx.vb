@@ -4,7 +4,18 @@ Imports Kolassa.DesignCentre.Data
 Public Class ctrlImagesNew
     Inherits System.Web.UI.UserControl
 
+    Public Sub New()
+
+    End Sub
+
     Private Function GetSelectedValue()
+        If Len(lblObjectID.Text) = 36 Then
+            GetSelectedValue = lblObjectID.Text
+            Exit Function
+        Else
+            GetSelectedValue = "742D682D-278F-4CF3-B527-C9115C5028A7"
+            Exit Function
+        End If
         Dim rg As GridView 'RadGrid
         GetSelectedValue = ""
 
@@ -25,6 +36,15 @@ Public Class ctrlImagesNew
             End If
         End If
     End Function
+    Public Property objectId() As String
+        Get
+            objectId = lblObjectID.Text
+        End Get
+        Set(value As String)
+            lblObjectID.Text = value
+        End Set
+    End Property
+
     Protected Sub btnUpload_Click(sender As Object, e As EventArgs) Handles btnUpload.Click
         Dim lsFileName As String
 

@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="vb" AutoEventWireup="false"  CodeBehind="ctrlImageNew.ascx.vb" Inherits="Kolassa.DesignCentre.UI.ctrlImagesNew" %>
 
-<div  >
+<div>
+    <asp:Label ID="lblObjectID" runat="server" /><br></br>
     <br />Image Description:<br />
     <asp:TextBox ID="txtDescription" MaxLength="30" runat="server" Width="226px"></asp:TextBox>
 

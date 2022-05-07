@@ -4,8 +4,8 @@ Public Class ctrlImages
     Inherits System.Web.UI.UserControl
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-
-        Page.Form.Enctype = "multipart/form-data"
+		lblObjectID.Text = "742D682D-278F-4CF3-B527-C9115C5028A7"
+		Page.Form.Enctype = "multipart/form-data"
     End Sub
 
 
@@ -15,7 +15,14 @@ Public Class ctrlImages
 
 	Protected Sub ObjectDataSource1_Selecting(sender As Object, e As ObjectDataSourceSelectingEventArgs) Handles odsImages.Selecting
 		Dim rg As GridView 'T elerik.Web.UI.RadGrid
+		Dim lsID As String = lblObjectID.Text
+		If lsID.Length = 36 Then
+			e.InputParameters("lsObjectID") = lsID
+			Exit Sub
+		End If
+
 		rg = Me.Parent.FindControl("rgMaster")
+
 		If rg Is Nothing Then
 			rg = Me.Parent.Parent.FindControl("rgMaster")
 		End If

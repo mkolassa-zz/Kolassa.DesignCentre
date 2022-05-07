@@ -106,7 +106,7 @@
          
         </div>
     </nav>
-
+    
     <div class="d-none accordion" id="accordionExample">
         <div class="card">
             <div class="card-header" id="headingOne">
@@ -118,6 +118,7 @@
                 <div class="card-body">
                     <cc1:ReportContainer ID="ReportContainer1" runat="server"  CssClass="row" showDebug="True" 
                         ReportListClass="list-group-item " ReportListSelectedClass="list-group-item list-group-item-primary"/>
+                    
                 </div>
             </div>
         </div>
@@ -227,8 +228,10 @@
                 </asp:ObjectDataSource> -->
 
   </div>
-
-
+        
+        MikeMike
+           <cc1:ctrlPivot runat="server" ID="ctrlPivotControl"  ></cc1:ctrlPivot>
+        MacMan
 
 
             <div class="pane-label"><code>css</code></div>

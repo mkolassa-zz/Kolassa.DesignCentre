@@ -11,6 +11,7 @@ Public Class clsDataLoader
     Public mdsAllControls As DataSet
     Dim mdsListItems As DataSet
     Public msErrorMsg As String
+    Public ReadOnly Property ErrorMessage As String = msErrorMsg
     Dim mdsChildren As DataSet
     Dim cns As SqlConnection
     Dim cno As OleDb.OleDbConnection
@@ -31,15 +32,41 @@ Public Class clsDataLoader
         ' mscnStr = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=c:\data\parallax\pinnacle\pinnacle data.mdb;User Id=admin;Password=;"
         'LoadReports(0)
     End Sub
-    Public Function LoadReport(ByVal liReportID As Integer) As DataSet
+
+
+
+    Public Function LoadSQL(ByVal SQL As String) As DataSet
+        Dim lsSQL As String
+
+        '*** Initialize
+        LoadSQL = Nothing
+
+        lsSQL = SQL
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        ds = fGetDataset(mscnType, mscnStr, lsSQL, "Reports")
+
+        '*** Debugging Start
+        Dim dt As DataTable = ds.Tables.Item("Reports")
+        Dim rowCustomer As DataRow
+
+
+        '*** Debugging End
+
+        mdsReports = ds
+        LoadSQL = mdsReports
+    End Function
+    Public Function LoadReport(ByVal liReportID As Integer, Optional ByVal ReportName As String = "") As DataSet
         Dim lsSQL As String
 
         '*** Initialize
         LoadReport = Nothing
 
         '*** Check for No Selected Category
-        If liReportID = 0 Then
+        If liReportID = 0 And ReportName = "" Then
             ' Debug("No Category Selectedd")
+            msErrorMsg = "No Report Specified"
             Exit Function
         End If
 
@@ -50,8 +77,14 @@ Public Class clsDataLoader
                 "       tblReportDescriptions.EntityType, tblReportDescriptions.TableName         " & NL &
                 "FROM   tblReportDescriptions           " & NL &
                 "       Left Join tblReportSQL S on tblReportDescriptions.ReportID = S.ReportID " & NL &
-                "WHERE  tblReportDescriptions.ReportID=" & liReportID & NL &
-                " order by tblReportDescriptions.ReportName ;"
+                "WHERE  1=1 "
+        If liReportID > 0 Then
+            lsSQL = lsSQL & "   And   tblReportDescriptions.ReportID=" & liReportID & NL
+        Else
+            lsSQL = lsSQL & "   And   tblReportDescriptions.ReportName='" & ReportName & "'" & NL
+        End If
+
+        lsSQL &= " order by tblReportDescriptions.ReportName ;"
 
         '*** Load a data set.
         Dim ds As New DataSet()
@@ -81,29 +114,29 @@ Public Class clsDataLoader
             Exit Function
         End If
         If llReportID > 0 Then
-            lsSQL = "SELECT tblReportDescriptions.ReportID,          " & NL &
+            lsSQL = "Select tblReportDescriptions.ReportID,          " & NL &
                 "       tblReportDescriptions.ReportDescription, " & NL &
                 "       tblReportDescriptions.ReportName,         " & NL &
                 "       tblReportDescriptions.EntityType , tblReportDescriptions.TableName ,   s.SearchClause       " & NL &
-                "FROM   tblReportDescriptions Left Join tblReportSQL s on tblReportDescriptions.ReportID = s.ReportID " & NL &
+                "FROM   tblReportDescriptions Left Join tblReportSQL s On tblReportDescriptions.ReportID = s.ReportID " & NL &
                 "WHERE  tblReportDescriptions.ReportID=" & llReportID & " " & NL &
                 " order by tblReportDescriptions.ReportName ;"
         Else
             If ReportName = "" Or ReportName Is Nothing Then
-                lsSQL = "SELECT tblReportDescriptions.ReportID,          " & NL &
+                lsSQL = "Select tblReportDescriptions.ReportID,          " & NL &
                     "       tblReportDescriptions.ReportDescription, " & NL &
                     "       tblReportDescriptions.ReportName,   s.SelectStatement ,     " & NL &
                     "       tblReportDescriptions.EntityType, tblReportDescriptions.TableName  , s.SearchClause       " & NL &
                     "FROM   tblReportCategoryMap INNER JOIN          " & NL &
-                    "       tblReportDescriptions ON                 " & NL &
+                    "       tblReportDescriptions On                 " & NL &
                     "       tblReportCategoryMap.ReportID = tblReportDescriptions.ReportID " & NL &
-                    "       Left Join tblReportSQL S on tblReportDescriptions.ReportID = S.ReportID " & NL &
+                    "       Left Join tblReportSQL S On tblReportDescriptions.ReportID = S.ReportID " & NL &
                     "WHERE  tblReportCategoryMap.CategoryID=" & llCategoryID & NL &
                     " order by tblReportDescriptions.ReportName ;"
             Else
                 If ReportName = "ALLREPORTS" Then
 
-                    lsSQL = "SELECT tblReportDescriptions.ReportID,          " & NL &
+                    lsSQL = "Select tblReportDescriptions.ReportID,          " & NL &
                     "       tblReportDescriptions.ReportDescription, " & NL &
                     "       tblReportDescriptions.ReportName,         " & NL &
                     "       tblReportDescriptions.EntityType , tblReportDescriptions.TableName           " & NL &
@@ -111,7 +144,7 @@ Public Class clsDataLoader
                     "WHERE  1=1 " & NL &
                     " order by tblReportDescriptions.ReportName ;"
                 Else
-                    lsSQL = "SELECT tblReportDescriptions.ReportID,          " & NL &
+                    lsSQL = "Select tblReportDescriptions.ReportID,          " & NL &
                     "       tblReportDescriptions.ReportDescription, " & NL &
                     "       tblReportDescriptions.ReportName,         " & NL &
                     "       tblReportDescriptions.EntityType , tblReportDescriptions.TableName           " & NL &

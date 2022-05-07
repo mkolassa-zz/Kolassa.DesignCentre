@@ -12,11 +12,35 @@ Public Class ctrlPivot
 
 
     Public Function DataTableForTesting() As DataTable
+        Dim cn As New clsDataLoader
+        Dim ds As New DataSet
+        Dim lsSQL As String
+        lsSQL = "SELECT D.name Category
+                    , UT.NAME as UnitType
+,o.customerprice
+                    , o.BuildingPhase
+                    , o.location
+                    ,o.UpgradeLevel, o.ModelOrStyle
+                    ,o.Description
+                    ,o.CustomerPrice, o.DeveloperPrice,o.ToVendorPrice
+               FROM 
+                    TBLUPGRADECATEGORIES C inner join
+                    TBLUPGRADECATEGORYDETAILS D  on c.id = d.categoryid INNER JOIN
+                    TBLUPGRADEOPTIONS O on D.ID = O.CATEGORYDETAILID and d.UNITTYPEID = o.UnitTypeID INNER JOIN
+                    tblUnittypes UT on UT.ID = O.UnitTypeID
+              Where 1=1
+                     and d.name = 'cabinets'
+                     and o.location ='Bath 2'
+                     Order by o.Description, ut.name"
 
+        ds = cn.LoadSQL(lsSQL)
+        Return ds.Tables(0)
+
+        Exit Function
         Dim dt As DataTable = New DataTable("Sales Table")
-        dt.Columns.Add("Sales Person")
-        dt.Columns.Add("Product")
-        dt.Columns.Add("Quantity")
+        dt.Columns.Add("UnitType")
+        dt.Columns.Add("Location")
+        dt.Columns.Add("CustomerPrice")
         dt.Columns.Add("Sale Amount")
         dt.Rows.Add(New Object() {"John", "Pens", 200, 350.0})
         dt.Rows.Add(New Object() {"John", "Pencils", 400, 500.0})
@@ -47,11 +71,12 @@ Public Class ctrlPivot
 
 
 
-    Protected Sub CreateChildControls()
+    Protected Overrides Sub CreateChildControls()
 
         '/Advanced Pivot 
         Dim advPivot As pivot = New pivot(DataTableForTesting)
-        Dim advancedPivotHTML As HtmlTable = advPivot.PivotTable("Sales Person", "Product", New String() {"Sale Amount", "Quantity"})
+        Dim advancedPivotHTML As HtmlTable = advPivot.PivotTable("Category", "Location", New String() {"CustomerPrice", "DeveloperPrice"})
+        Div1 = New Panel
         Div1.Controls.Add(advancedPivotHTML)
 
 
@@ -64,10 +89,12 @@ Public Class ctrlPivot
         SimplePivot.CssTotals = "Totals"
         SimplePivot.CssTable = "Table"
 
-        Dim simplePivotHTML As HtmlTable = advPivot.PivotTable("Product", "Sales Person", New String() {"Sale Amount"})
+        Dim simplePivotHTML As HtmlTable = advPivot.PivotTable("Category", "UnitType", New String() {"CustomerPrice"})
+        Div2 = New Panel
         Div2.Controls.Add(simplePivotHTML)
 
-
+        Controls.Add(Div1)
+        Controls.Add(Div2)
     End Sub
 
 
@@ -171,14 +198,14 @@ Public Class pivot
         End Sub
 
 
-        '/// <summary> 
-        '/// Creates an advanced 3D Pivot table. 
-        '/// </summary> 
-        '/// <param name="xAxisField">The main heading at the top of the report.</param> 
-        '/// <param name="yAxisField">The heading on the left of the report.</param> 
-        '/// <param name="zAxisFields">The sub heading at the top of the report.</param> 
-        '/// <returns>HtmlTable Control.</returns> 
-        Public Function PivotTable(xAxisField As String, yAxisField As String, zAxisFields As String()) As HtmlTable
+    ''***  <summary> 
+    ''***  Creates an advanced 3D Pivot table. 
+    ''***  </summary> 
+    '/// <param name="xAxisField">The main heading at the top of the report.</param> 
+    '/// <param name="yAxisField">The heading on the left of the report.</param> 
+    '/// <param name="zAxisFields">The sub heading at the top of the report.</param> 
+    '/// <returns>HtmlTable Control.</returns> 
+    Public Function PivotTable(xAxisField As String, yAxisField As String, zAxisFields As String()) As HtmlTable
             Dim Table As HtmlTable = New HtmlTable()
             '//style table 
             TableStyle(Table)
@@ -206,134 +233,140 @@ Public Class pivot
                         yAxis.Add(row(yAxisField))
                     End If
                 Next
-                '//create a 2D array for the y-axis/z-axis fields 
-                Dim zAxis As Integer = zAxisFields.Length
-                If (zAxis < 1) Then zAxis = 1
+            '//create a 2D array for the y-axis/z-axis fields 
+            Dim zAxis As Integer = zAxisFields.Length
+            Dim sxAxis, syAxis As String
+
+            Dim lMatrix As Long
+            If (zAxis < 1) Then zAxis = 1
                 Dim matrix((xAxis.Count * zAxis), yAxis.Count) As String
                 Dim zAxisValues(zAxis) As String
-                For y As Integer = 0 To yAxis.Count '//loop thru y-axis fields 
-                    '//rows 
-                    For x As Integer = 0 To xAxis.Count ' //loop thru x-axis fields 
-                        '//main columns 
-                        '//get the z-axis values 
-                        zAxisValues = FindValues(xAxisField, Convert.ToString(xAxis(x)), yAxisField, Convert.ToString(yAxis(y)), zAxisFields)
-                        For z As Integer = 0 To zAxis ' //loop thru z-axis fields 
-                            '//sub columns 
-                            matrix((((x + 1) * zAxis - zAxis) + z), y) = zAxisValues(z)
-                        Next
+            For y As Integer = 0 To yAxis.Count - 1 '//loop thru y-axis fields 
+                '//rows 
+                For x As Integer = 0 To xAxis.Count - 1 ' //loop thru x-axis fields 
+                    '//main columns 
+                    '//get the z-axis values 
+                    sxAxis = Convert.ToString(xAxis(x))
+                    syAxis = Convert.ToString(yAxis(y))
+                    zAxisValues = FindValues(xAxisField, sxAxis, yAxisField, syAxis, zAxisFields)
+                    For z As Integer = 0 To zAxis ' //loop thru z-axis fields 
+                        '//sub columns 
+                        lMatrix = (((x + 1) * zAxis - zAxis) + z)
+                        matrix(lMatrix, y) = zAxisValues(z)
                     Next
                 Next
-                '//calculate totals for the y-axis 
-                Dim yTotals(xAxis.Count * zAxis) As Decimal
-                For col As Integer = 0 To (xAxis.Count * zAxis)
-                    yTotals(col) = 0
-                    For irow As Integer = 0 To yAxis.Count
-                        yTotals(col) += Convert.ToDecimal(matrix(col, irow))
-                    Next
+            Next
+            '//calculate totals for the y-axis 
+            Dim yTotals(xAxis.Count * zAxis) As Decimal
+            For col As Integer = 0 To (xAxis.Count * zAxis) - 1
+                yTotals(col) = 0
+                For irow As Integer = 0 To yAxis.Count - 1
+                    yTotals(col) += Convert.ToDecimal(matrix(col, irow))
                 Next
-                '//calculate totals for the x-axis 
-                Dim xTotals(zAxis, (yAxis.Count + 1)) As Decimal
-                For y As Integer = 0 To yAxis.Count ' //loop thru the y-axis 
-                    Dim zCount As Integer = 0
-                    For z As Integer = 0 To (zAxis * xAxis.Count) ' //loop thru the z-axis 
-                        xTotals(zCount, y) += Convert.ToDecimal(matrix(z, y))
-                        If zCount = (zAxis - 1) Then
-                            zCount = 0
-                        Else
-                            zCount = zCount + 1
-                        End If
-                    Next
+            Next
+            '//calculate totals for the x-axis 
+            Dim xTotals(zAxis, (yAxis.Count + 1)) As Decimal
+            For y As Integer = 0 To yAxis.Count - 1 ' //loop thru the y-axis 
+                Dim zCount As Integer = 0
+                For z As Integer = 0 To (zAxis * xAxis.Count) - 1 ' //loop thru the z-axis 
+                    xTotals(zCount, y) += Convert.ToDecimal(matrix(z, y))
+                    If zCount = (zAxis - 1) Then
+                        zCount = 0
+                    Else
+                        zCount = zCount + 1
+                    End If
                 Next
-                For xx As Integer = 0 To zAxis ' //Grand Total 
-                    For xy As Integer = 0 To yAxis.Count
-                        xTotals(xx, yAxis.Count) += xTotals(xx, xy)
-                    Next
+            Next
+            For xx As Integer = 0 To zAxis - 1 ' //Grand Total 
+                For xy As Integer = 0 To yAxis.Count - 1
+                    xTotals(xx, yAxis.Count) += xTotals(xx, xy)
                 Next
+            Next
 
-                '//Build HTML Table 
-                '//Append main row (x-axis) 
-                Dim mainRow As HtmlTableRow = New HtmlTableRow()
+            '//Build HTML Table 
+            '//Append main row (x-axis) 
+            Dim mainRow As HtmlTableRow = New HtmlTableRow()
                 mainRow.Cells.Add(New HtmlTableCell())
 
-                For x As Integer = 0 To xAxis.Count ' //loop thru x-axis + 1 
-                    Dim cell As HtmlTableCell = New HtmlTableCell()
-                    cell.ColSpan = zAxis
-                    If (x < xAxis.Count) Then
-                        cell.InnerText = Convert.ToString(xAxis(x))
-                    Else
-                        cell.InnerText = "Grand Totals"
-                    End If
-                    '//style cell 
-                    MainHeaderTopCellStyle(cell)
-                    mainRow.Cells.Add(cell)
-                Next
+            For x As Integer = 0 To xAxis.Count - 1 ' //loop thru x-axis + 1 
+                Dim cell As HtmlTableCell = New HtmlTableCell()
+                cell.ColSpan = zAxis
+                If (x < xAxis.Count) Then
+                    cell.InnerText = Convert.ToString(xAxis(x))
+                Else
+                    cell.InnerText = "Grand Totals"
+                End If
+                '//style cell 
+                MainHeaderTopCellStyle(cell)
+                mainRow.Cells.Add(cell)
+            Next
 
-                Table.Rows.Add(mainRow)
+            Table.Rows.Add(mainRow)
                 ' //Append sub row (z-axis) 
                 Dim subRow As HtmlTableRow = New HtmlTableRow()
                 subRow.Cells.Add(New HtmlTableCell())
                 subRow.Cells(0).InnerText = yAxisField
                 '//style cell 
                 subHeaderCellStyle(subRow.Cells(0))
-                For x As Integer = 0 To xAxis.Count ' //loop thru x-axis + 1 
-                    For z As Integer = 0 To zAxis
-                        Dim cell As HtmlTableCell = New HtmlTableCell()
-                        cell.InnerText = zAxisFields(z)
-                        '//style cell 
-                        subHeaderCellStyle(cell)
-                        subRow.Cells.Add(cell)
-                    Next
-                Next
-                Table.Rows.Add(subRow)
-                '//Append table items from matrix 
-                For y As Integer = 0 To yAxis.Count ' //loop thru y-axis 
-                    Dim itemRow As HtmlTableRow = New HtmlTableRow()
-                    For z As Integer = 0 To (zAxis * xAxis.Count) '//loop thru z-axis + 1 
-                        Dim cell As HtmlTableCell = New HtmlTableCell()
-                        If (z = 0) Then
-                            cell.InnerText = Convert.ToString(yAxis(y))
-                            '//style cell 
-                            MainHeaderLeftCellStyle(cell)
-                        Else
-                            cell.InnerText = Convert.ToString(matrix((z - 1), y))
-                            '//style cell 
-                            ItemCellStyle(cell)
-                        End If
-                        itemRow.Cells.Add(cell)
-                    Next
-                    '//append x-axis grand totals 
-                    For z As Integer = 0 To zAxis
-                        Dim cell As HtmlTableCell = New HtmlTableCell()
-                        cell.InnerText = Convert.ToString(xTotals(z, y))
-                        '//style cell 
-                        totalCellStyle(cell)
-                        itemRow.Cells.Add(cell)
-                    Next
-                    Table.Rows.Add(itemRow)
-                Next
-                ' //append y-axis totals 
-                Dim totalRow As HtmlTableRow = New HtmlTableRow()
-                For x As Integer = 0 To (zAxis * xAxis.Count)
-
+            For x As Integer = 0 To xAxis.Count - 1 ' //loop thru x-axis + 1 
+                For z As Integer = 0 To zAxis - 1
                     Dim cell As HtmlTableCell = New HtmlTableCell()
-                    If (x = 0) Then
-                        cell.InnerText = "Totals"
+                    cell.InnerText = zAxisFields(z)
+                    '//style cell 
+                    subHeaderCellStyle(cell)
+                    subRow.Cells.Add(cell)
+                Next
+            Next
+            Table.Rows.Add(subRow)
+            '//Append table items from matrix 
+            For y As Integer = 0 To yAxis.Count - 1 ' //loop thru y-axis 
+                Dim itemRow As HtmlTableRow = New HtmlTableRow()
+                For z As Integer = 0 To (zAxis * xAxis.Count) - 1 '//loop thru z-axis + 1 
+                    Dim cell As HtmlTableCell = New HtmlTableCell()
+                    If (z = 0) Then
+                        cell.InnerText = Convert.ToString(yAxis(y))
+                        '//style cell 
+                        MainHeaderLeftCellStyle(cell)
                     Else
-                        cell.InnerText = Convert.ToString(yTotals(x - 1))
+                        cell.InnerText = Convert.ToString(matrix((z - 1), y))
+                        '//style cell 
+                        ItemCellStyle(cell)
                     End If
-                    '//style cell 
-                    totalCellStyle(cell)
-                    totalRow.Cells.Add(cell)
+                    itemRow.Cells.Add(cell)
                 Next
-                '//append x-axis/y-axis totals 
-                For z As Integer = 0 To zAxis
+                '//append x-axis grand totals 
+                For z As Integer = 0 To zAxis - 1
                     Dim cell As HtmlTableCell = New HtmlTableCell()
-                    cell.InnerText = Convert.ToString(xTotals(z, xTotals.GetUpperBound(1)))
+                    cell.InnerText = Convert.ToString(xTotals(z, y))
                     '//style cell 
                     totalCellStyle(cell)
-                    totalRow.Cells.Add(cell)
+                    itemRow.Cells.Add(cell)
                 Next
-                Table.Rows.Add(totalRow)
+                Table.Rows.Add(itemRow)
+            Next
+            ' //append y-axis totals 
+            Dim totalRow As HtmlTableRow = New HtmlTableRow()
+            For x As Integer = 0 To (zAxis * xAxis.Count) - 1
+
+                Dim cell As HtmlTableCell = New HtmlTableCell()
+                If (x = 0) Then
+                    cell.InnerText = "Totals"
+                Else
+                    cell.InnerText = Convert.ToString(yTotals(x - 1))
+                End If
+                '//style cell 
+                totalCellStyle(cell)
+                totalRow.Cells.Add(cell)
+            Next
+            '//append x-axis/y-axis totals 
+            For z As Integer = 0 To zAxis - 1
+                Dim cell As HtmlTableCell = New HtmlTableCell()
+                cell.InnerText = Convert.ToString(xTotals(z, xTotals.GetUpperBound(1)))
+                '//style cell 
+                totalCellStyle(cell)
+                totalRow.Cells.Add(cell)
+            Next
+            Table.Rows.Add(totalRow)
             Catch
                 Throw
             End Try

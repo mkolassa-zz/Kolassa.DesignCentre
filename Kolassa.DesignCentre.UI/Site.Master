@@ -105,8 +105,7 @@
                 <LoggedInTemplate>
 				    <a href="#" data-target="#sidebar" data-toggle="collapse" aria-expanded="false" onclick="w3_open()"><i class="fas fa-bars fa-1x" 
                         style="position: absolute;top: 10px; left: 10px;"></i></a>
-				    <a class="py-2 d-none d-md-inline-block" runat="server" href="~/Account/Manage" title="Manage your account">Hello, <%:IIf(Session("UserFriendlyName") Is Nothing, Context.User.Identity.GetUserName(), Session("UserFriendlyName"))  %>!</a>
-                    <asp:LoginStatus class="py-2 d-none d-md-inline-block" runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
+				   
                 
                     <ul class="navbar-nav px-3">
                         <li class="nav-item text-nowrap">		
@@ -141,6 +140,19 @@
                         <li class="nav-item text-nowrap" style="padding-top:7px;">  <i class="fas fa-envelope fa-x" ></i>
                             <span class="badge badge-pill badge-danger" style="padding-top:7px;">9</span>&nbsp;&nbsp;</li>
                     </ul>
+          
+                    <li class="nav-item dropdown" style="list-style-type: none;">
+                        <a class="nav-link dropdown-toggle" id="navbardrop" data-toggle="dropdown" runat="server" href="~/Account/Manage" title="Manage your account">Hello, <%:IIf(Session("UserFriendlyName") Is Nothing, Context.User.Identity.GetUserName(), Session("UserFriendlyName"))  %>!</a>
+                    
+                        
+      <div class="dropdown-menu">
+          <asp:LoginStatus class="py-2 d-none d-md-inline-block" runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />   
+        <a class="dropdown-item" href="#">Link 1</a>
+        <a class="dropdown-item" href="#">Link 2</a>
+        <a class="dropdown-item" href="#">Link 3</a>
+      </div>
+    </li>
+
 			        <!--		<div class="btn-group">
 		        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			        Action

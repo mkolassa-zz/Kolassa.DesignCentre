@@ -1,4 +1,7 @@
-﻿Public Class _Default
+﻿
+
+Public Class _Default
+
 	Inherits Page
 
 
@@ -36,5 +39,20 @@
 		'Me.LoginView1.Controls.Add(c)
 	End Sub
 
+	Protected Sub cmdCSV_Click(sender As Object, e As EventArgs)
+		Dim c As New clsTestCSV
+		Dim lsFileName As String
 
+		lsFileName = fucsv.FileName
+		If fuCSV.HasFile Then
+			lsFileName = ConfigurationManager.AppSettings("uploadFolder") & "/" & Guid.NewGuid.ToString & fuCSV.FileName
+			fuCSV.SaveAs(lsFileName)
+			fuCSV.ToolTip = "File uploaded successfully."
+
+			Session("objType") = Request.QueryString("objType")
+			c.ObjectType = Session("objType")
+			c.csvReadTest(lsFileName)
+			c.csvWriteTest()
+		End If
+	End Sub
 End Class
