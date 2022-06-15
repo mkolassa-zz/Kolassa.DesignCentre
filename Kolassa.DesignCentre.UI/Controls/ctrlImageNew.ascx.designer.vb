@@ -14,6 +14,69 @@ Option Explicit On
 Partial Public Class ctrlImagesNew
 
     '''<summary>
+    '''pnlURL control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlURL As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''txtImageURL control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtImageURL As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''lnkbSave control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lnkbSave As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
+    '''upFileUploader control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents upFileUploader As Global.System.Web.UI.UpdatePanel
+
+    '''<summary>
+    '''litNode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents litNode As Global.System.Web.UI.WebControls.Literal
+
+    '''<summary>
+    '''litobject control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents litobject As Global.System.Web.UI.WebControls.Literal
+
+    '''<summary>
+    '''TextBox1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents TextBox1 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
     '''lblObjectID control.
     '''</summary>
     '''<remarks>
@@ -32,20 +95,47 @@ Partial Public Class ctrlImagesNew
     Protected WithEvents txtDescription As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''FileUpload1 control.
+    '''AjaxFileUpload1 control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents FileUpload1 As Global.System.Web.UI.WebControls.FileUpload
+    Protected WithEvents AjaxFileUpload1 As Global.AjaxControlToolkit.AjaxFileUpload
 
     '''<summary>
-    '''btnUpload control.
+    '''upExisting control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnUpload As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents upExisting As Global.System.Web.UI.UpdatePanel
+
+    '''<summary>
+    '''Literal1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents Literal1 As Global.System.Web.UI.WebControls.Literal
+
+    '''<summary>
+    '''Literal2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents Literal2 As Global.System.Web.UI.WebControls.Literal
+
+    '''<summary>
+    '''TextBox2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents TextBox2 As Global.System.Web.UI.WebControls.TextBox
 End Class

@@ -11,41 +11,32 @@ Option Strict On
 Option Explicit On
 
 
-Partial Public Class _Default
+Partial Public Class ctrlImagesDisplay
 
     '''<summary>
-    '''LoginView1 control.
+    '''odsImages control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents LoginView1 As Global.System.Web.UI.WebControls.LoginView
+    Protected WithEvents odsImages As Global.System.Web.UI.WebControls.ObjectDataSource
 
     '''<summary>
-    '''cmdCSV control.
+    '''txtImageObjectID control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents cmdCSV As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents txtImageObjectID As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''fuCSV control.
+    '''rpt control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents fuCSV As Global.System.Web.UI.WebControls.FileUpload
-
-    '''<summary>
-    '''ctrlImages control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ctrlImages As Global.Kolassa.DesignCentre.UI.ctrlImages
+    Protected WithEvents rpt As Global.System.Web.UI.WebControls.Repeater
 End Class

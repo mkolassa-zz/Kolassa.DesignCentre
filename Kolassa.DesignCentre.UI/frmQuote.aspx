@@ -10,6 +10,10 @@
 <%@ Register Src="~/Controls/ctrlCustomers.ascx" TagPrefix="uc1" TagName="ctrlCustomers" %>
 <%@ Register Src="~/Controls/ctrlUpgradeItems.ascx" TagPrefix="uc1" TagName="ctrlUpgradeItems" %>
 <%@ Register Src="~/Controls/ctrlSelectedUpgrades.ascx" TagPrefix="uc1" TagName="ctrlSelectedUpgrades" %>
+<%@ Register Src="~/Controls/ctrlImages.ascx" TagPrefix="uc1" TagName="ctrlImages" %>
+<%@ Register Src="~/Controls/ctrlImagesDisplay.ascx" TagPrefix="uc1" TagName="ctrlImagesDisplay" %>
+
+
 
 
 
@@ -23,7 +27,7 @@
 	<link rel="stylesheet" href="Content/buttons.css"        />
 	<link rel="stylesheet" href="Content/bootstrap.css"      />
 	<link rel="stylesheet" href="Content/sidebar.css"        />
-
+	<link rel="stylesheet" href="https://fonts.sandbox.google.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 	<style>
         table.glyphicon-hover .glyphicon { visibility: hidden; }
         table.glyphicon-hover td:hover .glyphicon {  visibility: visible; }
@@ -252,7 +256,7 @@
 						<button  id="btnSearchQuotes" type="button" class="btn btn-default btn-sm"
                             data-toggle="modal" data-target="#quoteSearchModal" >
                             <i class="fa fa-search"></i> Search Quotes</button>
-						<a href="NewQuote.aspx" id="btnNewQuote" class="btn btn-info btn-sm" role="button"><i class="fa fa-plus-square"></i> New Quotes</a>
+						<a href="NewQuote.aspx" id="btnNewQuote" class="btn btn-default btn-sm" role="button"><i class="fa fa-plus-square"></i> New Quotes</a>
 					</asp:Panel>
 
 				</td>
@@ -314,7 +318,7 @@
 	</asp:Panel>
 	<!-- END Discussion PANEL -->
 
-	    <!-- THIS IS THE PANEL FOR Adjustments -->
+	 <!-- THIS IS THE PANEL FOR Adjustments -->
 	<asp:Panel Runat="server" ID="Panel1"   >
 		<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR Adjustments -->
 		<div class="modal fade" id="AdjustmentsModal" tabindex="-1" role="dialog" aria-labelledby="lblAdjustments" aria-hidden="true">
@@ -388,6 +392,32 @@
 	</asp:Panel>
 	<!-- END Selected Items PANEL -->
 
+	<!-- THIS IS THE PANEL FOR ITEM IMAGES -->
+	<asp:Panel Runat="server" ID="pnlItemImages"   >
+		<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR Item Images -->
+		<div class="modal fade" id="ItemImagesModal" tabindex="-1" role="dialog" aria-labelledby="lblItemImages" aria-hidden="true">
+		  <div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+			  <div class="modal-header" style="background-color:white;">
+				<h5 class="modal-card-body"  id="lblItemImages">Images</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+			        <div class="form-group">
+                        <uc1:ctrlImagesDisplay runat="server" id="ctrlImagesDisplay" />
+				    </div>
+				</div>
+			  <div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			  </div> 
+			</div>
+		  </div>
+		</div>
+	</asp:Panel>
+	<!-- END ITEM IMAGES PANEL -->
+
 	    <!-- THIS IS THE PANEL FOR Payments -->
 	<asp:Panel Runat="server" ID="pnlPayments"   Visible = "true">
 		<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR Payments -->
@@ -442,10 +472,10 @@
 										            <button type="button" class="dropdown-item" data-toggle="modal" data-target="#PaymentsModal"><i class="fas fa-dollar-sign"></i> Payments</button>
 										            <button type="button" class="dropdown-item btn-sm" data-toggle="modal" data-target="#AdjustmentsModal"><i class="fas fa-adjust"></i> Adjustments</button>
 							      		            <asp:label ID="lblReports" runat="server"><i class='fas fa-file-code'></i> Reports</asp:label>
-										            <asp:linkbutton ID="cmdMissingSelections" runat="server" class="dropdown-item" ><i class='fas fa-file-code'></i> Missing Report</asp:linkbutton>
-										            <asp:linkButton ID="cmdCustomerReceipt"   runat="server" class="dropdown-item" ><i class='fas fa-file-alt'></i> Preview Receipt</asp:linkButton>   
-										            <asp:linkbutton ID="cmdStandardReport"    runat="server" class="dropdown-item" ><i class='fas fa-file'></i> Standard Selections Report</asp:linkbutton>	
-													 <asp:linkbutton ID="cmdVendorInstallationReport"    runat="server" class="dropdown-item" ><i class='fas fa-chevron-right'></i> Vendor Installation Report</asp:linkbutton>	
+										            <asp:linkbutton ID="cmdMissingSelections"           runat="server" class="dropdown-item" ><i class='fas fa-file-code'></i> Missing Report</asp:linkbutton>
+										            <asp:linkButton ID="cmdCustomerReceipt"             runat="server" class="dropdown-item" ><i class='fas fa-file-alt'></i> Preview Receipt</asp:linkButton>   
+										            <asp:linkbutton ID="cmdStandardReport"              runat="server" class="dropdown-item" ><i class='fas fa-file'></i> Standard Selections Report</asp:linkbutton>	
+													<asp:linkbutton ID="cmdVendorInstallationReport"    runat="server" class="dropdown-item" ><i class='fas fa-chevron-right'></i> Vendor Installation Report</asp:linkbutton>	
                                                 </ul>
                                             </li>
                                         </ul>
@@ -515,32 +545,31 @@
 						   DataSourceID="odsPhases" DataKeyNames="ID" >
 						   <Columns>
 						   
-							   <asp:BoundField DataField="ObjectID" HeaderText="ObjectID" SortExpression="ObjectID" Visible="false" />
-							   <asp:BoundField DataField="Code" HeaderText="Code" SortExpression="Code" Visible="false"/>
-							   <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="card-title" />
-							   <asp:BoundField DataField="Description" HeaderText="Description" SortExpression="Description" Visible="false"/>
+								<asp:BoundField DataField="ObjectID" HeaderText="ObjectID" SortExpression="ObjectID" Visible="false" />
+								<asp:BoundField DataField="Code" HeaderText="Code" SortExpression="Code" Visible="false"/>
+								<asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="card-title" />
+								<asp:BoundField DataField="Description" HeaderText="Description" SortExpression="Description" Visible="false"/>
 						   		<asp:TemplateField HeaderText="Status">
 									<ItemTemplate><label id="lbl" data-id="<%# Eval("ID") %>"><%# Eval("PhaseStatus") %></label>
 									</ItemTemplate>
-							   </asp:TemplateField>
-							   <asp:BoundField DataField="ProjectType" HeaderText="ProjectType" SortExpression="ProjectType" Visible="false"/>
-							   <asp:BoundField DataField="PhaseTargetDateString" HeaderText="Target" SortExpression="PhaseTargetDate" DataFormatString="{0:yyyy-MM-dd}" />
-							   <asp:BoundField DataField="PhaseCompleteDateString" HeaderText="Completed" SortExpression="PhaseCompleteDate" DataFormatString="{0:yyyy-MM-dd}" />
-							   <asp:BoundField DataField="CustomerEmail" HeaderText="CustomerEmail" SortExpression="CustomerEmail" Visible="false"/>
-							   <asp:BoundField DataField="NodeID" HeaderText="NodeID" SortExpression="NodeID" Visible="false"/>
-							   <asp:BoundField DataField="Image" HeaderText="Image" SortExpression="Image" Visible="false"/>
-							   <asp:BoundField DataField="SortOrder" HeaderText="SortOrder" SortExpression="SortOrder" Visible="false"/>
-							   <asp:CheckBoxField DataField="Active" HeaderText="Active" SortExpression="Active" Visible="false"/>
-							   <asp:BoundField DataField="CreateDate" HeaderText="CreateDate" SortExpression="CreateDate" Visible="false"/>
-							   <asp:BoundField DataField="CreateUser" HeaderText="CreateUser" SortExpression="CreateUser" Visible="false"/>
-							   <asp:BoundField DataField="UpdateDate" HeaderText="UpdateDate" SortExpression="UpdateDate" Visible="false"/>
-							   <asp:BoundField DataField="UpdateUser" HeaderText="UpdateUser" SortExpression="UpdateUser" Visible="false"/>
-							   <asp:BoundField DataField="UpdateUserName" HeaderText="UpdateUserName" SortExpression="UpdateUserName" Visible="false"/>
-							   <asp:BoundField DataField="CreateUserName" HeaderText="CreateUserName" SortExpression="CreateUserName" Visible="false"/>
-							   <asp:BoundField DataField="ErrorMessage" HeaderText="ErrorMessage" SortExpression="ErrorMessage" Visible="false"/>
-							   <asp:BoundField DataField="Level" HeaderText="Level" SortExpression="Level" Visible="false"/>
-							   <asp:BoundField DataField="ID" HeaderText="ID" SortExpression="ID" Visible="true" ControlStyle-Font-Size="XX-Small" />
-			
+								</asp:TemplateField>
+								<asp:BoundField DataField="ProjectType" HeaderText="ProjectType" SortExpression="ProjectType" Visible="false"/>
+								<asp:BoundField DataField="PhaseTargetDateString" HeaderText="Target" SortExpression="PhaseTargetDate" DataFormatString="{0:yyyy-MM-dd}" />
+								<asp:BoundField DataField="PhaseCompleteDateString" HeaderText="Completed" SortExpression="PhaseCompleteDate" DataFormatString="{0:yyyy-MM-dd}" />
+								<asp:BoundField DataField="CustomerEmail" HeaderText="CustomerEmail" SortExpression="CustomerEmail" Visible="false"/>
+								<asp:BoundField DataField="NodeID" HeaderText="NodeID" SortExpression="NodeID" Visible="false"/>
+								<asp:BoundField DataField="Image" HeaderText="Image" SortExpression="Image" Visible="false"/>
+								<asp:BoundField DataField="SortOrder" HeaderText="SortOrder" SortExpression="SortOrder" Visible="false"/>
+								<asp:CheckBoxField DataField="Active" HeaderText="Active" SortExpression="Active" Visible="false"/>
+								<asp:BoundField DataField="CreateDate" HeaderText="CreateDate" SortExpression="CreateDate" Visible="false"/>
+								<asp:BoundField DataField="CreateUser" HeaderText="CreateUser" SortExpression="CreateUser" Visible="false"/>
+								<asp:BoundField DataField="UpdateDate" HeaderText="UpdateDate" SortExpression="UpdateDate" Visible="false"/>
+								<asp:BoundField DataField="UpdateUser" HeaderText="UpdateUser" SortExpression="UpdateUser" Visible="false"/>
+								<asp:BoundField DataField="UpdateUserName" HeaderText="UpdateUserName" SortExpression="UpdateUserName" Visible="false"/>
+								<asp:BoundField DataField="CreateUserName" HeaderText="CreateUserName" SortExpression="CreateUserName" Visible="false"/>
+								<asp:BoundField DataField="ErrorMessage" HeaderText="ErrorMessage" SortExpression="ErrorMessage" Visible="false"/>
+								<asp:BoundField DataField="Level" HeaderText="Level" SortExpression="Level" Visible="false"/>
+								<asp:BoundField DataField="ID" HeaderText="ID" SortExpression="ID" Visible="true" ControlStyle-Font-Size="XX-Small" />
 						   </Columns>
 					   </asp:GridView>
 					  	   
@@ -592,23 +621,23 @@
         </asp:UpdatePanel>
 
 		<asp:UpdateProgress ID="upprogPhase" runat="server" AssociatedUpdatePanelID="upPhase">
-        <ProgressTemplate>
-			<asp:Image ID="imgLoadingPhase" runat="server" ImageUrl="~/images/loadingH.gif"  Height="20px"  />            </ProgressTemplate>
+			<ProgressTemplate>
+				<asp:Image ID="imgLoadingPhase" runat="server" ImageUrl="~/images/loadingH.gif"  Height="20px"  />
+			</ProgressTemplate>
 		</asp:UpdateProgress>
-	
 	  </div>
-  </div>
+	</div>
 
 
 
 
-  <div class="card col-3">
-      <div class="card-body">
-		  <h5 class="card-title">Current Phase</h5>
-		  <p class="card-text">
+	<div class="card col-3">
+		<div class="card-body">
+			<h5 class="card-title">Current Phase</h5>
+			<p class="card-text">
 			<asp:RadioButtonList  ID="rblPhase" runat="server" AutoPostBack="True" CssClass="form-check form-check-label form-check-input"> </asp:RadioButtonList>
-	  </div>
-  </div>
+		</div>
+	</div>
 </div>
 	
 
@@ -766,13 +795,11 @@
 							<LayoutTemplate>
                             <table style="width:100%" class="table-bordered table-hover" id="gradient-style">
                                 <tr>
-                                   
                                     <th style="width:5%">Insert</th>
                                     <th style="width:60%">Description</th>
 									<th style="width:10%" class="d-none">ID</th>
                                     <th style="width:15%">Style</th>
                                     <th style="width:15%">Customer Price</th>
-                                
                                </tr>
                                <asp:PlaceHolder ID="itemPlaceholder" runat="server"></asp:PlaceHolder>
                            </table>
@@ -783,10 +810,19 @@
                                         OnCommand="InsertItem_Command"   
                                         CommandName="InsertRequestedItem" 
                                         CommandArgument='<%#Eval("ID") %>' />
-
+										<asp:LinkButton 
+											runat="server" 
+											ID="lnkSelectedPhoto" 
+											data-toggle="modal" 
+											data-target="#ItemImagesModal" 
+											data-id='<%# 1%>'
+											Text="Photos"  ><!-- DataBinder.Eval(Container.DataItem, "RequestedUpgradeID") -->
+                                        <i class="fa-picture-o editselecteditem"  onclick="fSetSelectedImages(this)"/>
+        								<i class="material-symbols-outlined">photo_camera</i>
+									</asp:LinkButton> 
 									</td>
 									<td><%#Eval("Description")%></td>
-									<td class="d-none"><%#Eval("ID")%></td>
+									<td ID="OptionID" class="d-none"><%#Eval("ID")%></td>
 									<td><%#Eval("Style")%></td>
 									<td><%#Eval("CustomerPrice", "{0:c}")%></td>
 								</tr>
@@ -794,7 +830,7 @@
 							<SelectedItemTemplate>
 								<td><asp:LinkButton runat="server" ID="InsertItem" Text="Inserty" CommandName="InsertRequestedItem" CommandArgument='<%#Eval("ID") %>' ClientIDMode="AutoID" /></td>
                                 <td><%#Eval("Description")%></td>
-								<td><%#Eval("ID")%></td>
+								<td id="OptionID"><%#Eval("ID")%></td>
                                 <td><%#Eval("Style")%></td>
                                 <td><%#Eval("CustomerPrice", "{0:c}")%></td>
                           </SelectedItemTemplate>
@@ -815,7 +851,7 @@
 			</asp:UpdateProgress>
                     <br />
 
-            <!-- **********************************************************************************************************
+    <!-- **********************************************************************************************************
          *** Selected Upgrades
          *********************************************************************************************************** -->
   
@@ -823,24 +859,23 @@
 			<ContentTemplate>
 				<div class="card w-100">
                     <div class="card-body">
-				<h5><asp:label id="lblSelectedUpgrades" runat="server">Selected Upgrades</asp:label></h5>
-					<asp:Panel runat="server" ID="pnlSelectedUpgrades" Width="100%"  ScrollBars="Vertical" class="border border-primary table table-sm">                
-						
+						<h5><asp:label id="lblSelectedUpgrades" runat="server">Selected Upgrades</asp:label></h5>
+						<asp:Panel runat="server" ID="pnlSelectedUpgrades" Width="100%"  ScrollBars="Vertical" class="border border-primary table table-sm">                
 						<asp:ListView ID="lstSelectedUpgrade"  runat="server" DataKeyNames="RequestedUpgradeID" DataSourceID="odsSelectedUpgrade"> 
                          
                         <LayoutTemplate>
                             <table style="width:100%" class="table-bordered table-hover" id="gradient-style">
                                 <tr>
-                                    <th style="width:5%; text-align:center">ActItems</i></th>
+                                    <th style="width:7%; text-align:center">ActItems</i></th>
                                     <th  data-visible="false" class="d-none">ID</i></th>
+									<th  data-visible="false" class="d-none">OptionID</i></th>
                                     <th style="width:10%; text-align:center">Category</th>
-                                    <th style="width:10%; text-align:center">Upgrade Level</th>
-								
+                                    <th style="width:10%; text-align:center">Upgrade Level</th>							
                                     <th style="width:55%; text-align:center">Description</th>
                                     <th style="width:10%; text-align:center">Style</th>
                                     <th style="width:10%; text-align:center">Qty</th>                             
 									<th style="width:10%; text-align:center">Price</th>       
-									<th style="width:10%; text-align:center">Adj</th>  
+									<th style="width:8%; text-align:center">Adj</th>  
 									<th style="width:10%; text-align:center">Total</th>      
                                     <th style="display:inline; text-align:center">Comment</th>     
                                </tr>
@@ -857,25 +892,29 @@
                                         ID="btnEditSelectedItem" 
                                         data-toggle="modal" 
                                         data-target="#SelectedItemsModal" 
-                                        data-id='<%# DataBinder.Eval(Container.DataItem, "RequestedUpgradeID")%>'
-                                        Text="Edit"  >
+                                        data-id='<%# DataBinder.Eval(Container.DataItem, "RequestedUpgradeID")%>' Text="Edit"  >
                                         <i class="fa-pencil editselecteditem"  onclick="fSetSelectedItems(this)"/>
                                         <i class="material-icons">edit</i>
-
 									</asp:LinkButton> 
-                                    <!-- button ID="btnSelectedItem"                                     
-                                        data-id='<%# DataBinder.Eval(Container.DataItem, "RequestedUpgradeID")%>'
-                                          >
-                                        <i class="fa-pencil editselecteditem"  onclick="fSetSelectedItems(this)"/>
-                                        
+									<asp:LinkButton 
+                                        runat="server" 
+                                        ID="lnkSelectedPhoto" 
+                                        data-toggle="modal" 
+                                        data-target="#ItemImagesModal" 
+                                        data-id='<%# DataBinder.Eval(Container.DataItem, "RequestedUpgradeID")%>'   Text="Photos"  >
+                                        <i class="fa-picture-o editselecteditem"  onclick="fSetSelectedImages(this)"/>
+        								<i class="material-symbols-outlined">photo_camera</i>
+									</asp:LinkButton> 
 
+                                    <!-- button ID="btnSelectedItem"                                     
+                                        data-id='<%# DataBinder.Eval(Container.DataItem, "RequestedUpgradeID")%>'>
+                                        <i class="fa-pencil editselecteditem"  onclick="fSetSelectedItems(this)"/>
 									</!--> 
                                 </td>
                                 <td id="id" class="d-none"><%#Eval("RequestedUpgradeID")%></td>
-                                <td id="category"><%#Eval("Category")%></td>
-                                
-                                <td id="level"><%#Eval("UpgradeLevel")%></td>
-					
+								<td id="OptionID" class="d-none"><%#Eval("OptionID")%></td>
+                                <td id="category"><%#Eval("Category")%></td>                          
+                                <td id="level"><%#Eval("UpgradeLevel")%></td>					
                                 <td id="description"><%#Eval("Description")%><%#If(Eval("Standard").ToString().ToUpper = "TRUE", "&nbsp;<span class=""badge badge-primary"">S</span>", "")  %></td>
                                 <td id="style"><%#Eval("Style")%></td>
                                 <td id="quantity" style="text-align:center"><%#Eval("Quantity")%></td>
@@ -890,7 +929,7 @@
                         </asp:ListView>
 					</asp:Panel>
 					</div></div>
-							</ContentTemplate>
+				</ContentTemplate>
 				<Triggers>
 					<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemInserting" />
 					<asp:AsyncPostBackTrigger ControlID="lstRooms2" EventName="SelectedIndexChanged" />
@@ -904,7 +943,6 @@
 					<asp:AsyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemCommand" />
                     <asp:AsyncPostBackTrigger ControlID="cmdSelectedItemSave" EventName="Click" />
                     <asp:AsyncPostBackTrigger ControlID="cmdAutoPick" EventName="Click" />
-     
 				</Triggers>
 			</asp:UpdatePanel>
 			<asp:UpdateProgress ID="updPrgSelected" runat="server" AssociatedUpdatePanelID="updPnlSelectedUpgrades">
@@ -912,21 +950,10 @@
 					  <asp:Image ID="imgSelected" runat="server" ImageUrl="~/images/loadingH.gif"  Height="20px"  />  
 				</ProgressTemplate>
 			</asp:UpdateProgress>
-                    <br />
-             
+            <br /> 
          </td>
     </tr>  
 </table>
-
-
-
-
- <!--div>
-    <button id='cmdMike2' type="button" data-toggle="modal" data-target="#myModal">Launch modal</button>
-    <button id='cmdMike' type="button" onclick="ShowMessage('Mike will','Error');">Launch Will</button>    
-    <button id='cmdMike4' type="button" onclick="s();">s</button>    
-    <button type="button" id="cmdMessage" class="btn btn-primary" data-toggle="modal" data-target="#MessageModal">Launch demo modal</button>
-    </!--div -->
 
 
 <!-- Message Modal -->
@@ -950,46 +977,43 @@
   </div>
 </div>
     <!-- END MESSAGE MODAL -->
-      <div class="modal fade" id="myModal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-      
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <h4 class="modal-title">Design Centre Message</h4>
-          <button type="button" class="close" data-dismiss="modal">×</button>
-        </div>
-        
-        <!-- Modal body -->
-        <div class="modal-body">          Modal body..        </div>
-        <!-- Modal footer -->
-        <div class="modal-footer">          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>        </div>
-      </div>
-    </div>
-  </div>
+    <div class="modal fade" id="myModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header">
+					<h4 class="modal-title">Design Centre Message</h4>
+					<button type="button" class="close" data-dismiss="modal">×</button>
+				</div>    
+				<!-- Modal body -->
+				<div class="modal-body">          Modal body..        </div>
+				<!-- Modal footer -->
+				<div class="modal-footer">          
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
   
 
 	<!--
     <button id='cmdshowmessage' onclick="ShowMessage('message','messagetype',  'messagetitle')">test Jascipt</button>
     <button id='cmdfsetphase' onclick="bindphase();" >SetPhase</button>
---> 
+	--> 
     <div class="invisible">
-	<button onclick="CallMe('MainContent_txtContact1','MainContent_txtContact2');" >Dude</button> 
-	        <div>
-        <asp:Label ID="lblCustId1" runat="server" Text="Customer ID 1"></asp:Label>
-        <asp:TextBox ID="txtId1" runat="server"></asp:TextBox><br />
+		<button onclick="CallMe('MainContent_txtContact1','MainContent_txtContact2');" >Dude</button> 
+	    <div>
+			<asp:Label ID="lblCustId1" runat="server" Text="Customer ID 1"></asp:Label>
+			<asp:TextBox ID="txtId1" runat="server"></asp:TextBox><br />
             <asp:TextBox ID="txtContact1" runat="server" BorderColor="Transparent" BorderStyle="None"
                 ReadOnly="True"></asp:TextBox><br />
-        <br />
-        <asp:Label ID="lblCustId2" runat="server" Text="Customer ID 2"></asp:Label>
-        &nbsp;
-        <asp:TextBox ID="txtId2" runat="server"></asp:TextBox><br />
+			 <br />
+			<asp:Label ID="lblCustId2" runat="server" Text="Customer ID 2"></asp:Label>   &nbsp;
+			<asp:TextBox ID="txtId2" runat="server"></asp:TextBox><br />
             <asp:TextBox ID="txtContact2" runat="server" BorderColor="Transparent" BorderStyle="None"
                 ReadOnly="True"></asp:TextBox>&nbsp;<br />
             </div>
         </div>
-
-
 </asp:Panel>
 
 
@@ -999,20 +1023,20 @@
   
 	<script>
         $(document).ready(function () {
-                    bindphase(); //Binds fsetphase to the Phase Grid
+            bindphase(); //Binds fsetphase to the Phase Grid
 
-                    $('#MainContent_lstSelectedUpgrade_btnEditSelectedItem_0').on('click', function (event) {
-							  fSetSelectedItems(this);
-			        });
-              
-
-					 $('i.editselecteditem').click(function () {
-                      fSetSelectedItems(this);
-                      $("#SelectedItemsModal").modal("show");
-                  });
-
-
-              });
+            $('#MainContent_lstSelectedUpgrade_btnEditSelectedItem_0').on('click', function (event) {
+				fSetSelectedItems(this);
+			});
+			$('i.editselecteditem').click(function (e) {
+				var sTarget = e.target.outerText;
+				
+                if (sTarget !== "photo_camera") { 
+                    fSetSelectedItems(this);
+					$("#SelectedItemsModal").modal("show");
+				}
+			});
+        });
 
 
         function fCheckPhases() {
@@ -1057,39 +1081,50 @@
             //  $("#MainContent_lblTotalPrice").val(sCost);
             $("#MainContent_txtComment").val(sComment);
             document.getElementById("MainContent_lblTotalPrice").textContent = sCost;     
-		
 	    }
-		
 
-//********************************************
-//*** Javascript AJAX Test TEST TEST TEST
-function CallMe(src,dest)
- {    
-     var ctrl = document.getElementById(src);
-     // call server side method
-     PageMethods.GetContactName(ctrl.value, CallSuccess, CallFailed, dest);
- }
- 
- // set the destination textbox value with the ContactName
- function CallSuccess(res, destCtrl)
- {    
-     var dest = document.getElementById(destCtrl);
-     dest.value = res;
- }
- 
- // alert message on some failure
- function CallFailed(res, destCtrl)
- {
-     alert(res.get_message());
- }
-//********************************************
-//*** Javascript AJAX END TEST TEST TEST *****
-//********************************************
+        function fSetSelectedImages(tthis) {
+            $(tthis).addClass('table-active').siblings().removeClass('table-active');
+            $(tthis).attr('data-toggle', 'modal');
+            $(tthis).attr('data-target', '#ItemImagesModal');
+            var currow = $(tthis).closest('tr');
+            var sID = currow.find("td[id='OptionID']").text();
+			//alert(sID);
+            $("#MainContent_ctrlImagesDisplay_txtImageObjectID").val(sID);
+        }
 
-  	</script>
+	//********************************************
+	//*** Javascript AJAX Test TEST TEST TEST  ***
+	//********************************************
+	function CallMe(src,dest)
+	 {    
+		 var ctrl = document.getElementById(src);
+		 // call server side method
+		 PageMethods.GetContactName(ctrl.value, CallSuccess, CallFailed, dest);
+	 }
+ 
+	 // set the destination textbox value with the ContactName
+	 function CallSuccess(res, destCtrl)
+	 {    
+		 var dest = document.getElementById(destCtrl);
+		 dest.value = res;
+	 }
+ 
+	 // alert message on some failure
+	 function CallFailed(res, destCtrl)
+	 {
+		 alert(res.get_message());
+	 }
+	//********************************************
+	//*** Javascript AJAX END TEST TEST TEST *****
+	//********************************************
+    </script>
 
 
 <script type="text/javascript">
+	//********************************************
+	//*** Javascript Display Error Messages  *****
+	//********************************************
     function ShowMessage(message, messagetype,  messagetitle) {
         var tthis = document.getElementById('cmdMike')
         var cssclass; 
@@ -1179,17 +1214,15 @@ function CallMe(src,dest)
     ///</summary>
     function pageLoad() {
         bindphase();
-
 		// Show Quote Search Modal
         var address = document.getElementById("collapseQuote").innerText; 
 		// iF THE 'search' querystring is true and there is NO selected Quote Bring up the quote search modal
         if (getUrlParameter('search') == 'true') {
-				var alen = address.length
-                if (alen  < 32) {
-                    $('#quoteSearchModal').modal('show');
-                }
+			var alen = address.length
+            if (alen  < 32) {
+                $('#quoteSearchModal').modal('show');
             }
-
+        }
     }  
 </script>
 

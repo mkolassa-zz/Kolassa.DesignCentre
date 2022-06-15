@@ -19,7 +19,7 @@
     	<asp:ScriptManager ID="ScriptManager1" runat="server">
 		</asp:ScriptManager>
     	<rsweb:ReportViewer ID="ReportViewer1" runat="server" Font-Names="Verdana" Font-Size="8pt" ProcessingMode="Remote" WaitMessageFont-Names="Verdana" WaitMessageFont-Size="14pt">
-			<ServerReport ReportPath="mkolassa-001\rptmissing.rdl" ReportServerUrl="http://sql5030.site4now.net/Reports" />
+			<ServerReport ReportPath="mkolassa-001\rptmissing.rdl" ReportServerUrl="https://sql5090.site4now.net/ReportServer" />
 		</rsweb:ReportViewer>
     </form>
 </body>

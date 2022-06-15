@@ -12,10 +12,13 @@ Public Class mycontrol_
     Dim txtRFContainerName, txtRFColumnSize, txtRFSortOrder, txtRFNodeID, txtRFValidation, txtRFValidationPatern, txtValidationTitle, txtrfTableName, txtRFHelpText, txtRFFieldName, txtRFFieldLength, txtRFFieldTitle, txtRFID, txtRFName As TextBox
     Dim chkRFRequired, chkRFActive, chkrfReadOnly As CheckBox
     Dim cboFieldType, cboRFReportControl, cboRFReportID As DropDownList
-    Dim div1, div2, div3, div4, div5, div6, div7, div8, div9 As System.Web.UI.HtmlControls.HtmlGenericControl
-    Dim p, p1 As New Panel
+    Dim div1, div2, div3, div4, div5, div6, div7, div8, div9, div10 As System.Web.UI.HtmlControls.HtmlGenericControl
+    Dim p, p1, pFooter As New Panel
+    Public mlReportNum, mlControlNum As Long '*** Mod Level to re-fill form in CreateChildCOntrols
+    Public msFieldID As String '*** Mod Level to re-fill form in CreateChildCOntrols
     Dim lbl As New Label
-
+    Dim txtRFReportControlID As TextBox
+    Dim litErrorMessage As Literal
     <Category("Appearance")>
     <Description("This is the Selected Date")>
     Public Property SelectedDate() As DateTime
@@ -44,8 +47,12 @@ Public Class mycontrol_
         EnsureChildControls()
     End Sub
     Public Sub LoadForm(ReportNum As Long, ControlNum As Long, FieldID As String)
+        If ReportNum = 0 And ControlNum = 0 And (FieldID Is Nothing Or FieldID = "") Then
+            Exit Sub
+        End If
         Dim c As New clsDataLoader
         Dim lic, lir As ListItem
+        Dim lsCount As Integer = 0
         Dim ds As DataSet = c.LoadReportControls(ReportNum, ControlNum, FieldID)
         If l.Count = 0 Then
             cboRFReportControl.Items.Clear()
@@ -54,6 +61,7 @@ Public Class mycontrol_
                 lic = New ListItem(r("ControlName"), r("ControlID"))
                 l.Add(lic)
                 cboRFReportControl.Items.Add(lic)
+                txtRFReportControlID.Text = r("ControlID")
             Next
         End If
         If r.Count = 0 Then
@@ -82,6 +90,7 @@ Public Class mycontrol_
                     If i.Value = lsReportID Then cboRFReportID.SelectedValue = i.Value
                 Next
                 txtRFFieldName.Text = Trim(IIf(IsDBNull(dr("FieldName")), "", dr("FieldName")))
+
                 txtrfTableName.Text = Trim(IIf(IsDBNull(dr("TableName")), "", dr("TableName")))
 
                 Dim lsCHT As String = Trim(IIf(IsDBNull(dr("ControlFieldHelpText")), "", dr("ControlFieldHelpText")))
@@ -94,11 +103,17 @@ Public Class mycontrol_
                 txtRFValidationPatern.Text = Trim(IIf(IsDBNull(dr("FieldValidationPattern")), "", dr("FieldValidationPattern")))
                 txtRFValidation.Text = Trim(IIf(IsDBNull(dr("Validation")), "", dr("Validation")))
                 txtRFContainerName.Text = Trim(IIf(IsDBNull(dr("ContainerName")), "", dr("ContainerName")))
-                txtRFCOlumnSize.Text = Trim(IIf(IsDBNull(dr("ColumnSize")), "", dr("ColumnSize")))
+                txtRFColumnSize.Text = Trim(IIf(IsDBNull(dr("ColumnSize")), "", dr("ColumnSize")))
                 '   txtRFReportControl.Text = Trim(IIf(IsDBNull(dr("ReportControl")), "", dr("ReportControl")))
                 Dim lsReportControlID As String = Trim(IIf(IsDBNull(dr("ReportControl")), "", dr("ReportControl")))
+
                 For Each i As ListItem In cboRFReportControl.Items
-                    If i.Value = lsReportControlID Then cboRFReportControl.SelectedValue = i.Value
+
+                    If i.Value = lsReportControlID Then
+                        cboRFReportControl.SelectedValue = i.Value
+                        txtRFReportControlID.Text = i.Value
+                    End If
+
                 Next
                 '      cboRFReportControl.SelectedItem = Trim(IIf(IsDBNull(dr("ReportControl")), "", dr("ReportControl")))
 
@@ -119,23 +134,45 @@ Public Class mycontrol_
 
     End Sub
     Protected Overrides Sub CreateChildControls()
+        If msFieldID Is Nothing Or msFieldID = "" Then
+            mlReportNum = ViewState("ReportNum")
+            mlControlNum = ViewState("ControlNum")
+            msFieldID = ViewState("msFieldID")
+        Else
+            ViewState("ReportNum") = mlReportNum
+            ViewState("ControlNum") = mlControlNum
+            ViewState("msFieldID") = msFieldID
+        End If
+        Dim pg As Page
+        Dim ctrlid, ctrlName As String
+        ctrlName = ""
+        pg = Me.Page
+        If pg Is Nothing Then Exit Sub
+        ctrlid = pg.Request.Form("__LASTFOCUS")
+        If pg.IsPostBack Then
+            ctrlName = pg.Request.Params.Get("__EVENTTARGET")
+        End If
+
+        ' If ctrlName = "" Then Exit Sub
+
+
         Controls.Clear()
         Dim lsClass As String = "form-control form-control-sm "
         cmdrfSave = New Button
         cmdrfSave.ID = "cmdrfSave"
         cmdrfSave.Text = "Save"
-        cmdrfSave.CssClass = "btn btn-primary btn-sm px-1"
+        cmdrfSave.CssClass = "btn btn-primary btn-sm px-2 mr-3"
         '  cmdrfSave.OnClientClick = "ShowDivSaveRecord('block')"
         cmdrfSave.Attributes.Add("onmousedown", "document.getElementById('divsaverecord').style.display = 'block';")
         AddHandler cmdrfSave.Click, AddressOf cmdrfSave_click
-        Controls.Add(cmdrfSave)
+        'Below Controls.Add(cmdrfSave)
 
         cmdrfClose = New Button
         cmdrfClose.ID = "cmdrfClose"
         cmdrfClose.Attributes.Add("onmousedown", "document.getElementById('divsaverecord').style.display = 'block';")
         cmdrfClose.Text = "Close"
-        cmdrfClose.CssClass = "btn btn-secondary btn-sm px-1"
-        Controls.Add(cmdrfClose)
+        cmdrfClose.CssClass = "btn btn-secondary btn-sm px-2t"
+        ' Below  Controls.Add(cmdrfClose)
 
         p = New Panel
         p.ID = "pnlRF-modal"
@@ -154,6 +191,7 @@ Public Class mycontrol_
         div7 = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
         div8 = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
         div9 = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+        div10 = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
         div1.Attributes("class") = "form-row"
         div2.Attributes("class") = "form-row"
         div3.Attributes("class") = "form-row"
@@ -163,15 +201,22 @@ Public Class mycontrol_
         div7.Attributes("class") = "form-row"
         div8.Attributes("class") = "form-row"
         div9.Attributes("class") = "form-row"
-
+        div9.Attributes("class") = "full-right"
         '   txtRFReportID = New TextBox
         '  txtRFReportID.CssClass = lsClass
         cboRFReportID = New DropDownList
         cboRFReportID.CssClass = lsClass
 
-        ' txtRFReportControl = New TextBox
-        ' txtRFReportControl.ID = "txtrfReportControlID"
-        ' txtRFReportControl.CssClass = lsClass
+        txtRFReportControlID = New TextBox
+        txtRFReportControlID.ID = "txtrfReportControlID"
+        txtRFReportControlID.ClientIDMode = 3 'Static
+        txtRFReportControlID.CssClass = "d-none"
+        cboRFReportControl = New DropDownList
+        cboRFReportControl.ID = "cboRFReportControl"
+        cboRFReportControl.CssClass = lsClass
+        cboRFReportControl.EnableViewState = True
+        cboRFReportControl.Attributes.Add("onchange", txtRFReportControlID.ClientID + ".value = this.value;")
+
 
         txtRFNodeID = New TextBox
         txtRFNodeID.CssClass = lsClass
@@ -192,6 +237,7 @@ Public Class mycontrol_
         txtrfTableName = New TextBox
         txtrfTableName.CssClass = lsClass
         txtrfTableName.ID = "txtrfTableName"
+        txtrfTableName.Text = msFieldID
 
         txtRFFieldName = New TextBox
         txtRFFieldName.CssClass = lsClass
@@ -239,9 +285,7 @@ Public Class mycontrol_
 
         chkRFActive = New CheckBox
         chkRFActive.ID = "chkRFActive"
-        cboRFReportControl = New DropDownList
-        cboRFReportControl.ID = "cboRFReportControl"
-        cboRFReportControl.CssClass = lsClass
+
 
 
         cboFieldType = New DropDownList
@@ -262,20 +306,33 @@ Public Class mycontrol_
         lstitm.Text = "Form"
         cboFieldType.Items.Add(lstitm)
 
-
+        '*******************************
+        '*** Load Values
+        '*******************************
+        If msFieldID = "" Then
+            If ctrlName.Length > 36 Then
+                Dim lsTemp As String = Right(ctrlName, 36)
+                Dim guidOutput As Guid
+                If Guid.TryParse(lsTemp, guidOutput) Then msFieldID = lsTemp
+            End If
+        End If
+        '       If mlReportNum > 0 Then
+        LoadForm(mlReportNum, mlControlNum, msFieldID)
+        '       End If
 
         ' p.Controls.Add(fGetLabel("Report", txtRFReportID, "txt"))
         div1.Controls.Add(fGetLabel("Report", cboRFReportID, "txt"))
-        '  p.Controls.Add(fGetLabel("Report Control", txtRFReportControl, "txt"))
+
         div1.Controls.Add(fGetLabel("Report Control", cboRFReportControl, "txt"))
+        div1.Controls.Add(txtRFReportControlID)
         div2.Controls.Add(fGetLabel("Node", txtRFNodeID, "txt"))
         div2.Controls.Add(fGetLabel("Validation", txtRFValidation, "txt"))
         div3.Controls.Add(fGetLabel("Validation Pattern", txtRFValidationPatern, "txt"))
         div3.Controls.Add(fGetLabel("Validation Title", txtValidationTitle, "txt"))
         div4.Controls.Add(fGetLabel("Table Name", txtrfTableName, "txt"))
-        div4.Controls.Add(fGetLabel("FIeld Name", txtRFFieldName, "txt"))
-        div5.Controls.Add(fGetLabel("Length", txtRFFieldLength, "txt"))
-        div5.Controls.Add(fGetLabel("Title", txtRFFieldTitle, "txt"))
+        div4.Controls.Add(fGetLabel("Field Name", txtRFFieldName, "txt"))
+        div5.Controls.Add(fGetLabel("Max Length", txtRFFieldLength, "txt"))
+        div5.Controls.Add(fGetLabel("Control Title", txtRFFieldTitle, "txt"))
         div6.Controls.Add(fGetLabel("Field ID", txtRFID, "txt"))
         div6.Controls.Add(fGetLabel("Name", txtRFName, "txt"))
         div7.Controls.Add(fGetLabel("Field Type<br/>", cboFieldType, "txt"))
@@ -283,6 +340,8 @@ Public Class mycontrol_
         div8.Controls.Add(fGetLabel("Container Name", txtRFContainerName, "txt"))
         div8.Controls.Add(fGetLabel("Column Size (1-12)", txtRFColumnSize, "txt"))
         div8.Controls.Add(fGetLabel("Help Text", txtRFHelpText, "txt"))
+        litErrorMessage = New Literal
+        div8.Controls.Add(litErrorMessage)
         p.Controls.Add(div1)
         p.Controls.Add(div2)
         p.Controls.Add(div3)
@@ -299,7 +358,13 @@ Public Class mycontrol_
         p1.Controls.Add(fGetLabel("Active&nbsp;", chkRFActive, "chk"))
         p1.Controls.Add(fGetLabel("Read Only&nbsp;", chkrfReadOnly, "chk"))
         p.Controls.Add(p1)
+        pFooter = New Panel
+        pFooter.CssClass = "float-right"
+        pFooter.Controls.Add(cmdrfSave)
+        pFooter.Controls.Add(cmdrfClose)
+        p.Controls.Add(pFooter)
         Controls.Add(p)
+
     End Sub
     Private Function fGetLabel(s As String, c As Control, sType As String) As HtmlGenericControl
         Dim span, span2, span3 As HtmlGenericControl
@@ -326,6 +391,7 @@ Public Class mycontrol_
     Private Sub cmdrfSave_click(sender As Object, e As EventArgs)
         'Stop
         Dim rf As New clsReportField
+
         rf.FieldName = Trim(txtRFFieldName.Text)
         rf.TableName = Trim(txtrfTableName.Text)
         rf.ReportFieldID = Trim(txtRFID.Text)
@@ -337,7 +403,8 @@ Public Class mycontrol_
         rf.ValidationPattern = Trim(txtRFValidationPatern.Text)
         rf.Validation = Trim(txtRFValidation.Text)
         rf.ReportID = Trim(cboRFReportID.Text)
-        rf.ReportControl = Trim(cboRFReportControl.SelectedValue)
+
+        rf.ReportControl = Trim(txtRFReportControlID.Text)
         rf.SortOrder = Trim(txtRFSortOrder.Text)
         rf.containerName = Trim(txtRFContainerName.Text)
         rf.ColumnSize = If(Trim(txtRFColumnSize.Text) = "", "0", Trim(txtRFColumnSize.Text))
@@ -348,6 +415,8 @@ Public Class mycontrol_
         rf.HelpText = Replace(Trim(txtRFHelpText.Text), """", """""")
 
         rf.Update()
+
+        litErrorMessage.Text = rf.ErrorMessage
 
     End Sub
 
@@ -361,8 +430,8 @@ Public Class mycontrol_
         'writer.RenderEndTag() ' </td>
 
         ' writer.RenderBeginTag(HtmlTextWriterTag.Td)
-        cmdrfSave.RenderControl(writer)
-        cmdrfClose.RenderControl(writer)
+        '   cmdrfSave.RenderControl(writer)
+        '  cmdrfClose.RenderControl(writer)
         p.RenderControl(writer)
         '    writer.RenderEndTag() ' </td>
         '    writer.RenderEndTa g() ' </tr>

@@ -24,9 +24,10 @@ Public Class frmReport
 			ReportViewer1.ProcessingMode = ProcessingMode.Remote
 			Dim irsc As IReportServerCredentials = New CustomReportCredentials() '; // e.g.:   ("demo-001", "123456789", "ifc")
 			ReportViewer1.ServerReport.ReportServerCredentials = irsc
-			ReportViewer1.ServerReport.ReportServerUrl = New Uri("http://sql5030.site4now.net/ReportServer")
-			ReportViewer1.ServerReport.ReportPath = "/mkolassa-001/" & ReportName '; //e.g.: /demo-001/test
 
+			ReportViewer1.ServerReport.ReportServerUrl = New Uri("https://sql5090.site4now.net/ReportServer")
+			ReportViewer1.ServerReport.ReportPath = "/mkolassa-001/" & ReportName '; //e.g.: /demo-001/test
+			ReportViewer1.LocalReport.DisplayName = "Report Download"
 			Dim cParams As NameValueCollection = HttpUtility.ParseQueryString(ClientQueryString)
 			If cParams.Count = 0 Then
 			Else
@@ -57,7 +58,7 @@ Public Class frmReport
 
 		Private _UserName As String = "mkolassa-001"
 		Private _PassWord As String = "DesignCenter1!"
-		Private _DomainName As String = "ifc"
+		Private _DomainName As String = "SQL5090" ' "ifc"
 		Public Function GetFormsCredentials(ByRef authCookie As Cookie,
 										ByRef userName As String,
 										ByRef password As String,

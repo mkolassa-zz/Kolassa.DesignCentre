@@ -23,56 +23,67 @@ Public Class ctrlBase
 	Public initReportControl As ReportControl
 	Public Function fGetFieldButton() As LinkButton
 		cmdFieldDef = New LinkButton
-		cmdFieldDef.Text = "<i class='fa fa-forward' aria-hidden='true'></i>" ' "+"
+
+		cmdFieldDef.Text = "<i class='fa fa-forward' aria-hidden='false'></i>" ' "+"
 		cmdFieldDef.Text = "<i class='fa fa-edit'></i>" '"<i class='icon-edit'></i>"
 		'cmdFieldDef.UseSubmitBehavior = False
 
-		cmdFieldDef.CssClass = "float-right px-1"
+		cmdFieldDef.ID = "cmdPopulateFV" ' & mrptCtrl.ReportControlFieldID
+		cmdFieldDef.CssClass = "float-right px-1 editmode"
+		cmdFieldDef.Style.Add("display", "none")
+		'cmdFieldDef.Attributes.Add("onmousedown", "document.getElementById('divsaverecord').style.display = 'none';")
+		cmdFieldDef.Attributes.Add("onmouseup", "$('#lnkshowrf')[0].click();")
+		'	cmdFieldDef.Attributes.Add("Data-toggle", "modal")
+		'	cmdFieldDef.Attributes.Add("Data-target", "#field_edit_modal")
 
-		cmdFieldDef.Attributes.Add("onmousedown", "document.getElementById('divsaverecord').style.display = 'none';")
-
-
-		cmdFieldDef.ID = "cmdPopulateFieldValues"
 		cmdFieldDef.Attributes.Add("data-reportid", mrptCtrl.ReportID)
 		cmdFieldDef.Attributes.Add("data-reportcontrolid", mrptCtrl.ReportControlID)
 		cmdFieldDef.Attributes.Add("data-reportcontrolfieldnumid", mrptCtrl.ReportControlNumID)
 		cmdFieldDef.Attributes.Add("data-reportcontrolfieldid", mrptCtrl.ReportControlFieldID)
 		cmdFieldDef.Attributes.Add("data-reportcontrolfieldHelpText", mrptCtrl.ReportControlHelpText)
+
+		'		cmdFieldDef.Attributes.Add("style", "visubility:hidden;")
+		'*** Show RF EDIT Buttons if the TARGET Request has CMDEDITMODE Set to True
+		'*** this changes Visibility to the edit buttons
 		Dim lsCTRL As String = ""
 		If Not Page Is Nothing Then lsCTRL = Page.Request.Params.Get("__EVENTTARGET")
 
 		If lsCTRL.ToUpper.Contains("CMDEDITMODE") = True Then EditMode = True
-			If EditMode = True Then
-			cmdFieldDef.Visible = True
-		Else
-			cmdFieldDef.Visible = False
-		End If
+		'If EditMode = True Then
+		'	cmdFieldDef.Visible = True
+		'	'cmdFieldDef.Attributes.Add("", mrptCtrl.ReportControlHelpText)
+		'Else
+		'	cmdFieldDef.Visible = False
+		'End If
+
 		AddHandler cmdFieldDef.Click, AddressOf LoadReportFields
 		fGetFieldButton = cmdFieldDef
 	End Function
 	Public Function fGetFieldDeleteButton() As LinkButton
 
 		cmdFieldDel = New LinkButton
-		cmdFieldDel.Text = "<i class='fa fa-forward' aria-hidden='true'></i>" ' "+"
+		cmdFieldDel.Text = "<i class='fa fa-forward' aria-hidden='false'></i>" ' "+"
 		cmdFieldDel.Text = "<i class='fa fa-trash  padding-left:30px;'></i>" ' "\xF135"
 		'cmdFieldDel.UseSubmitBehavior = False
 
 
-		cmdFieldDel.Attributes.Add("onmousedown", "document.getElementById('divsaverecord').style.display = 'none';")
-		cmdFieldDel.CssClass = "float-right px-1" '< i Class='fa fa-plus'></i>" float-right"
+		'cmdFieldDel.Attributes.Add("onmousedown", "document.getElementById('divsaverecord').style.display = 'none';")
+		cmdFieldDel.CssClass = "float-right px-1 editmode" '< i Class='fa fa-plus'></i>" float-right"
 
-		cmdFieldDel.ID = "cmdDeleteFieldValues"
+		cmdFieldDel.ID = "cmdDeleteFieldValues" & mrptCtrl.ReportControlFieldID
 		cmdFieldDel.Attributes.Add("data-reportid", mrptCtrl.ReportID)
 		cmdFieldDel.Attributes.Add("data-reportcontrolid", mrptCtrl.ReportControlID)
 		cmdFieldDel.Attributes.Add("data-reportcontrolfieldnumid", mrptCtrl.ReportControlNumID)
 		cmdFieldDel.Attributes.Add("data-reportcontrolfieldid", mrptCtrl.ReportControlFieldID)
-
+		cmdFieldDel.Attributes.Add("data-mode", "editmode")
+		cmdFieldDel.Style.Add("display", "none")
+		'	cmdFieldDel.Attributes.Add("style", "visubility:hidden;")
 		AddHandler cmdFieldDel.Click, AddressOf DeleteReportFields
-		If EditMode = True Then
-			cmdFieldDel.Visible = True
-		Else
-			cmdFieldDel.Visible = False
-		End If
+		'If EditMode = True Then
+		'	cmdFieldDel.Visible = True
+		'Else
+		'	cmdFieldDel.Visible = False
+		'End If
 		fGetFieldDeleteButton = cmdFieldDel
 
 
@@ -191,16 +202,17 @@ Public Class ctrlBase
 		'cal.RenderControl(writer)
 		'	Dim lsCtrl As String = Page.Request.Params.Get("__EVENTTARGET")
 		'	If lsCtrl.ToUpper.Contains("CMDEDITMODE") Then EditMode = True
-		If EditMode = True Then
-			cmdFieldDef.Visible = True
-			cmdFieldDel.Visible = True
-		Else
-			If cmdFieldDel Is Nothing Then
-			Else
-				cmdFieldDel.Visible = False
-				cmdFieldDef.Visible = False
-			End If
-		End If
+		'If
+		'EditMode = True Then
+		'	cmdFieldDef.Visible = True
+		'	cmdFieldDel.Visible = True
+		'Else
+		'	If cmdFieldDel Is Nothing Then
+		'	Else
+		'		cmdFieldDel.Visible = False
+		'		cmdFieldDef.Visible = False
+		'	End If
+		'End If
 		RenderSubControls(writer)
     End Sub
     Protected Overridable Sub RenderSubControls(writer As HtmlTextWriter)
@@ -222,8 +234,7 @@ Public Class ctrlBase
 	Public Overridable Sub DeleteReportFields(sender As Object, e As EventArgs)
 
 		RaiseBubbleEvent(sender, e)
-		'		Dim cbut As cmdFieldDelegate = New cmdFieldDelegate(AddressOf TestButton)
-		'		cbut.Invoke(Me, New EventArgs)
+
 	End Sub
 	Sub TestButton(sender As Object, e As EventArgs)
 		MyBase.RaiseBubbleEvent(sender, e)

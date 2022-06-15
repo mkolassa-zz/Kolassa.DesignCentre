@@ -104,6 +104,15 @@ Partial Public Class frmBase
     Protected WithEvents cmdSearch As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
+    '''btnAjax control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnAjax As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
     '''ReportContainer1 control.
     '''</summary>
     '''<remarks>
@@ -194,15 +203,6 @@ Partial Public Class frmBase
     Protected WithEvents lblTitle As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''ctrlPivotControl control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ctrlPivotControl As Global.Kolassa.DesignCenter.ReportManager.ctrlPivot
-
-    '''<summary>
     '''pnlData control.
     '''</summary>
     '''<remarks>
@@ -239,6 +239,24 @@ Partial Public Class frmBase
     Protected WithEvents upBase As Global.System.Web.UI.UpdatePanel
 
     '''<summary>
+    '''tcEditData control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tcEditData As Global.AjaxControlToolkit.TabContainer
+
+    '''<summary>
+    '''tabEdit control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tabEdit As Global.AjaxControlToolkit.TabPanel
+
+    '''<summary>
     '''rptBase control.
     '''</summary>
     '''<remarks>
@@ -246,6 +264,60 @@ Partial Public Class frmBase
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rptBase As Global.Kolassa.DesignCenter.ReportManager.reportcontainer
+
+    '''<summary>
+    '''cmdUpdateStuff control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdUpdateStuff As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''tabImages control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tabImages As Global.AjaxControlToolkit.TabPanel
+
+    '''<summary>
+    '''ctrlImages1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ctrlImages1 As Global.Kolassa.DesignCentre.UI.ctrlImages
+
+    '''<summary>
+    '''ctrlImageLookup control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ctrlImageLookup As Global.Kolassa.DesignCentre.UI.ctrlImageLookup
+
+    '''<summary>
+    '''tabContacts control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tabContacts As Global.AjaxControlToolkit.TabPanel
+
+    '''<summary>
+    '''ctrlContactEntry1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ctrlContactEntry1 As Global.Kolassa.DesignCentre.UI.ctrlContactEntry
 
     '''<summary>
     '''updateProgress control.

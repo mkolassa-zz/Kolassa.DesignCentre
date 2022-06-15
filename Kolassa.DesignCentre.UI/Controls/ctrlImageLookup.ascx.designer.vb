@@ -11,16 +11,43 @@ Option Strict On
 Option Explicit On
 
 
-Partial Public Class ctrlImages
+Partial Public Class ctrlImageLookup
 
     '''<summary>
-    '''odsImages control.
+    '''upProgressLookup control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents odsImages As Global.System.Web.UI.WebControls.ObjectDataSource
+    Protected WithEvents upProgressLookup As Global.System.Web.UI.UpdateProgress
+
+    '''<summary>
+    '''upResults control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents upResults As Global.System.Web.UI.UpdatePanel
+
+    '''<summary>
+    '''txtImageSearch control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtImageSearch As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''lnkSearch control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lnkSearch As Global.System.Web.UI.WebControls.LinkButton
 
     '''<summary>
     '''lblObjectID control.
@@ -32,56 +59,11 @@ Partial Public Class ctrlImages
     Protected WithEvents lblObjectID As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''ctrlImageNewURL control.
+    '''grdImageLookup control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ctrlImageNewURL As Global.Kolassa.DesignCentre.UI.ctrlImagesNew
-
-    '''<summary>
-    '''ctrlImageNew1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ctrlImageNew1 As Global.Kolassa.DesignCentre.UI.ctrlImagesNew
-
-    '''<summary>
-    '''ctrlImageNew2 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ctrlImageNew2 As Global.Kolassa.DesignCentre.UI.ctrlImagesNew
-
-    '''<summary>
-    '''upImages control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents upImages As Global.System.Web.UI.UpdatePanel
-
-    '''<summary>
-    '''gvImages control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents gvImages As Global.System.Web.UI.WebControls.GridView
-
-    '''<summary>
-    '''rpt control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rpt As Global.System.Web.UI.WebControls.Repeater
+    Protected WithEvents grdImageLookup As Global.System.Web.UI.WebControls.GridView
 End Class

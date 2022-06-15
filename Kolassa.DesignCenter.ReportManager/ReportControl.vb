@@ -231,13 +231,23 @@ Public Class Report
         Dim ds As Data.DataSet = mdlDataLoader.LoadReportControls(mlReportID)
         Dim dt As Data.DataTable = ds.Tables("ReportControls")
         Dim dr As Data.DataRow
-        Dim lsMsg As String = ""
+        Dim lsMsg, lsReportControlFieldName As String
+        lsMsg = ""
         '*** Iterate through the control Records, Create the Control object
         '*** and add the controls to the Collection
         For Each dr In dt.Rows
             rptCtrl = New ReportControl
             rptCtrl.ControlFieldType = CStr(dr("ControlFieldType"))
-            rptCtrl.ControlName = If(dr("FieldName") Is DBNull.Value, dr("ControlName"), If(Trim(dr("FIeldName")) = "", dr("ControlName"), dr("FieldName")))
+            If dr("ReportControlFieldsName") Is DBNull.Value Then
+                lsReportControlFieldName = ""
+            Else
+                lsReportControlFieldName = dr("ReportControlFieldsName")
+            End If
+            If lsReportControlFieldName = "" Then
+                rptCtrl.ControlName = If(dr("FieldName") Is DBNull.Value, dr("ControlName"), If(Trim(dr("FIeldName")) = "", dr("ControlName"), dr("FieldName")))
+            Else
+                rptCtrl.ControlName = dr("ReportControlFieldsName")
+            End If
             rptCtrl.Description = If(dr("FieldTitle") Is DBNull.Value, dr("ControlDescription"), If(Trim(dr("FieldTitle")) = "", dr("ControlDescription"), dr("FieldTitle")))
             rptCtrl.FieldDescription = If(dr("FieldTitle") Is DBNull.Value, dr("ControlFieldDescription"), If(Trim(dr("FieldTitle")) = "", dr("ControlFieldDescription"), dr("FieldTitle")))
             rptCtrl.FieldName = If(dr("FieldName") Is DBNull.Value, dr("ControlFieldName"), If(Trim(dr("FieldName")) = "", dr("ControlFieldName"), dr("FieldName")))

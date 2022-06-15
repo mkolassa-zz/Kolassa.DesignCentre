@@ -2111,6 +2111,35 @@ Public Class clsReportCategories
 	End Function
 End Class
 '*********************************************************
+'**** Image
+'*********************************************************
+Public Class clsImage
+	Inherits clsBase
+	Public Property ImageURL As String
+	Public Property ObjectID As String
+	Public Property ImageOrder As Integer
+	Public Property ImageType As String
+	'Private Property NODEID As Long
+	Public Property ProjectID As String
+	Public Sub New()
+		NodeID = System.Web.HttpContext.Current.Session("NodeID")
+		ProjectID = System.Web.HttpContext.Current.Session("Project")
+	End Sub
+	Public Overrides Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
+		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+		If Description = "" Then Description = Name
+		Dim lsMsg As String = ""
+		Dim lbOK As Boolean
+		Dim b As Byte()
+		If ObjectID = "" Then ObjectID = ProjectID
+		lbOK = c.InsertImages(ObjectID, NodeID, Name, Description, ImageOrder, b, ImageType, ImageURL, ProjectID)
+		If lbOK = False Then
+			ErrorMessage = c.ErrorMessage
+		End If
+	End Sub
+
+End Class
+'*********************************************************
 '**** ReportCategory
 '*********************************************************
 Public Class clsReportCategory

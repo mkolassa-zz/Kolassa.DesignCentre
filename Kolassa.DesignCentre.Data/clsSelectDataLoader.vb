@@ -501,18 +501,18 @@ Public Class clsSelectDataLoader
 		End If
 		If isGUID(lsQuoteID) = False Then lsQuoteID = "11112222-3333-4444-5555-666677778888"
 		If isGUID(lsQuoteID) = False Then lsQuoteID = "11112222-3333-4444-5555-666677778888"
-        lsSQL = "SELECT ID as RequestedUpgradeID, " &
-                "       UpgradeCategory as Category, " &
-                "       UpgradeClass as UpgradeLevel, " &
-                "       UpgradeDescription as Description, " &
-                "       StyleDescription as Style, " &
-                                "       Quantity, CustomerPrice, Adjustments, " &
-                                                "       StyleDescription as Style, " &
-                "      QUantity * CustomerPrice + Adjustments AS Cost , Comments ,[Standard] " &
-                "FROM   tblRequestedUpgrades " &
-                "WHERE 1=1  " &
-        IIf(lbActive = True, " and Active = 1 ", "") & NL
-        If lsID = "00000000-0000-0000-0000-000000000000" Or Not isGUID(lsID) Then
+		lsSQL = "SELECT ID as RequestedUpgradeID, OptionID, " &
+				"       UpgradeCategory as Category, " &
+				"       UpgradeClass as UpgradeLevel, " &
+				"       UpgradeDescription as Description, " &
+				"       StyleDescription as Style, " &
+				"       Quantity, CustomerPrice, Adjustments, " &
+				"       StyleDescription as Style, " &
+				"       Quantity * CustomerPrice + Adjustments AS Cost , Comments ,[Standard] " &
+				"FROM   tblRequestedUpgrades " &
+				"WHERE 1=1  " &
+		IIf(lbActive = True, " and Active = 1 ", "") & NL
+		If lsID = "00000000-0000-0000-0000-000000000000" Or Not isGUID(lsID) Then
 			lsSQL = lsSQL & " AND RoomDescription = '" & lsRoom & "' " &
 				"        AND BuildingPhase = '" & lsPhase & "' " &
 				"        AND ObjectID = '" & lsQuoteID & "' " &
@@ -3110,7 +3110,7 @@ LoadChildrenError:
 			'response.write("No Project Selectedd")
 			Exit Function
 		End If
-		lsSQL = "SELECT * " & NL &
+		lsSQL = "SELECT *, ID as RecordID " & NL &
 				"FROM tblImages                                   " & NL &
 				"WHERE ( tblImages.NodeID=" & llNodeID & " " & IIf(lsWhere.Length > 4, " And " & lsWhere, "") &
 					 IIf(lbActive = True, " And Active = 1 ", "") & ")" & NL &
@@ -3125,14 +3125,16 @@ LoadChildrenError:
 		mdsProjectTypes = ds
 		LoadImages = mdsProjectTypes
 	End Function
-	Public Function DeleteImages(ByVal RecordID As String, llNodeID As Long) As Boolean
+	Public Function DeleteImages(ByVal RecordID As Guid, llNodeID As Long) As Boolean
+		Dim lsID As String = RecordID.ToString
 		Dim lscnStr As String = mscnDefault
-		Dim lsSQL As String = "Update tblImage Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'    WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
+		Dim lsSQL As String = "Update tblImages Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'"
+		lsSQL = lsSQL & "  WHERE  NodeID=" & llNodeID & " And ID = '" & lsID & "'"
 		DeleteImages = fRunSQL("SQLConnection", lscnStr, lsSQL)
 	End Function
 	Public Function InsertImages(ByVal lsObjectID As String, ByVal llNodeID As Long, ByVal lsName As String,
 								 lsDescription As String, ByVal liOrder As Integer, ByVal lsImage As Byte(),
-								 ByVal lsType As String, lsURL As String) As Boolean
+								 ByVal lsType As String, lsURL As String, ProjectID As String) As Boolean
 		Dim lsSQL As String
 		Dim lscnStr As String = mscnDefault
 		Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
@@ -3144,17 +3146,19 @@ LoadChildrenError:
 			Exit Function
 		End If
 
-		msSQLParameter = New SqlParameter("@pImage", SqlDbType.Image)
-		msSQLParameter.Value = lsImage
+		'msSQLParameter = New SqlParameter("@pImage", SqlDbType.Image)
+		'msSQLParameter.Value = lsImage
 
-		lsSQL = "INSERT INTO tblImages ( ObjectID, Name,  Description, Image, Type, ImageOrder, " &
-				"                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID ) " &
+		lsSQL = "INSERT INTO tblImages ( ObjectID, Name,  Description, imageURL,  --Image, 
+                                          Type, ImageOrder, ProjectID " &
+				"                        , UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID ) " &
 				"Values ( '" & fTakeOutQuotes(lsObjectID) & "', " & NL &
 						  "'" & fTakeOutQuotes(lsName) & "', " & NL &
-						  "'" & fTakeOutQuotes(lsDescription) & "', " & NL &
-						  "@pImage " & fTakeOutQuotes("") & ", " & NL &
+						  "'" & fTakeOutQuotes(lsDescription) & "', " & "'" & fTakeOutQuotes(lsURL) & "', " & NL &
+						  " -- @pImage " & fTakeOutQuotes("") & ", " & NL &
 						  "'" & fTakeOutQuotes(lsType) & "', " & NL &
 						   "" & fTakeOutQuotes(liOrder) & ", " & NL &
+						  "'" & fTakeOutQuotes(ProjectID) & "', " & NL &
 						  "'" & Now.ToString & "', " & NL &
 						  " convert(uniqueidentifier,'" & fTakeOutQuotes(lsCurrentUser) & "'), " & NL &
 						  "'" & Now.ToString & "', " & NL &
@@ -3932,7 +3936,7 @@ fCheckForRequiredItems_Error:
 	Function fMissingSelections(ByVal lsQuoteID As String, ByVal lsOutput As String, ByVal lsPhase As String) As Boolean
 		Dim lsSQL As String
 
-		lsSQL = "Delete * from tempselections Where quoteid = '" & lsQuoteID & "';"
+		lsSQL = "Delete  from tempselections Where quoteid = '" & lsQuoteID & "';"
 		fMissingSelections = fRunSQL(mscnType, mscnStr, lsSQL)
 
 		lsSQL = "Insert into TempSelections (   UnitType, UnitTypeID, Location, UpgradeCategory,          QuoteID, BuildingPhase, UnitName, ValueExists, Required ) " &
@@ -3940,7 +3944,7 @@ fCheckForRequiredItems_Error:
 			"         tblQuote.ID as quoteID, tblUpgradeOptions.BuildingPhase, tblUnits.UnitName, 0 AS ValueExists , 0 as Optionrequired " &
 			"FROM     (tblUnitTypes LEFT JOIN (tblUnits LEFT JOIN tblQuote ON tblUnits.ID = tblQuote.UnitID)   " &
 			"         ON tblUnitTypes.ID = tblUnits.UnitTypeID) INNER JOIN tblUpgradeOptions ON   " &
-			"         tblUnitTypes.UnitTypeName = tblUpgradeOptions.UnitType  " &
+			"         tblUnitTypes.id = tblUpgradeOptions.UnitTypeID  " &
 			"where   tblUpgradeOptions.BuildingPhase = '" & lsPhase & "'  " &
 			" And tblQuote.ID ='" & lsQuoteID & "';"
 
@@ -3977,9 +3981,9 @@ fCheckForRequiredItems_Error:
 
 		'*** Delete Rows where Upgrade Record Exists for the unit but Room is not defined in the
 		'*** Unit Profile
-		lsSQL = "SELECT tblUnitTypes.UnitTypeName, " &
-				"tblUnitTypes.UnitTypeDescription, " &
-				"tblUnitTypes.UnitTypeCode,  " &
+		lsSQL = "SELECT tblUnitTypes.Name as UnitTypeName, " &
+				"'tblUnitTypes.' as UnitTypeDescription, " &
+				"tblUnitTypes.code as UnitTypeCode,  " &
 				"tblUnitProfiles.RoomID,      " &
 				"r.Name as RoomName, " &
 				"r.Description as RoomDescription, " &

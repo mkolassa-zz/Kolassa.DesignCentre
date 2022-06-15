@@ -1217,6 +1217,7 @@ ph1Status_Error:
 		ctrlCommunications.DataBind()
 		CtrlAdjustments.DataBind()
 		Me.ctrlPayments.DataBind()
+		ctrlImagesDisplay.DataBind()
 	End Sub
 
 
@@ -1428,7 +1429,7 @@ ph1Status_Error:
 		If lsPhase Is Nothing Then lsPhase = ""
 		If f.isGUIDString(litID.Text) And lsPhase <> "" Then
 			lb = c.fMissingSelections(Me.litID.Text, "Report", rblPhase.SelectedValue)
-			Dim url As String = "frmReport.aspx?ReportName=rptMissing&QuoteID=" & Session("QuoteID")
+			Dim url As String = "frmReport.aspx?ReportName=rptMissing&QuoteID=" & Session("QuoteID") & "&Phase=" & lsPhase
 			Dim s As String = "window.open('" & url + "', 'popup_window', 'width=300,height=100,left=100,top=100,resizable=yes');"
 			ClientScript.RegisterStartupScript(Me.GetType(), "script", s, True)
 		Else
@@ -1502,8 +1503,10 @@ Err_cmdAutoPick_Click:
 		p.Active = True
 		p.AdditionalFileToPrint1 = ""
 		p.AdditionalFileToPrint2 = ""
-        p.Adjustments = txtAdjustment.Text
-        p.BuildingPhase = rblPhase.SelectedValue
+		If IsNumeric(txtAdjustment.Text) Then
+			p.Adjustments = txtAdjustment.Text
+		End If
+		p.BuildingPhase = rblPhase.SelectedValue
 		p.Code = ""
         p.Comments = txtComment.Text ' "txtCommments.text"
         p.CustomerPrice = txtItemPrice.Text

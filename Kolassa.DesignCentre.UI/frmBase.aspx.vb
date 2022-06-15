@@ -147,7 +147,9 @@ Partial Class frmBase
 			'** The following line is needed to populate the controls on the ReportContainer
 			rptBase.DataBind()
 			rptBase.debugThis("Debug This")
-
+			ctrlImages1.ObjectID = s
+			ctrlContactEntry1.Attributes.Remove("objectID")
+			ctrlContactEntry1.ObjectID = s
 			'Exit Sub
 		Catch
 			rptBase.debugThis("<Err>" & Err.Description & "</Err>")

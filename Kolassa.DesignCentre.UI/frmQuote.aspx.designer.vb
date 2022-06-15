@@ -293,6 +293,24 @@ Partial Public Class frmQuote
     Protected WithEvents cmdSelectedItemSave As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
+    '''pnlItemImages control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlItemImages As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''ctrlImagesDisplay control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ctrlImagesDisplay As Global.Kolassa.DesignCentre.UI.ctrlImagesDisplay
+
+    '''<summary>
     '''pnlPayments control.
     '''</summary>
     '''<remarks>

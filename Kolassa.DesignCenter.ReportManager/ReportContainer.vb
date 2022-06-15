@@ -16,8 +16,8 @@ Public Class ReportContainer
 	Dim updatePanel2 As Panel ' UpdatePanel
     Dim lstReports As BulletedList
     Dim txtReportID As TextBox
-	Dim txtDebug As TextBox
-	Dim btnSetReport As Button
+    Dim litDebug As Literal
+    Dim btnSetReport As Button
 	Dim litmsg As Literal
 	Dim upHeader As Panel
 	Dim up1 As Panel
@@ -42,6 +42,13 @@ Public Class ReportContainer
     Public msReportListSelectedClass As String
     Dim iTimeThrough As Integer ' Tracks number of times UPData update is run.
     Dim msHide As String = "" ' "d-none"
+    Dim RFModal, RFModalDialog, RFModalContent, RFModalHeader, RFModalBody As System.Web.UI.HtmlControls.HtmlGenericControl
+    Dim RFSpan, rfLitContent As Literal
+    Dim RFCLose, lnkshowrf As HtmlAnchor
+    Dim upFieldEditor As UpdatePanel
+    Dim upt As UpdatePanelTrigger
+    Dim apt As AsyncPostBackTrigger
+    'Dim cmdRefresh As Button
 
     ' Dim asyncPostBackTrigger1 As AsyncPostBackTrigger
     ' Dim asyncPostbackTrigger2 As AsyncPostBackTrigger
@@ -112,14 +119,84 @@ Public Class ReportContainer
             ctrlName = p.Request.Params.Get("__EVENTTARGET")
         End If
         Controls.Clear()
+        lnkshowrf = New HtmlAnchor
 
+        lnkshowrf.ID = "lnkshowrf"
+        lnkshowrf.ClientIDMode = 3 '"Static" ' *** Must make static so bubble up event know what to fire 
+        lnkshowrf.HRef = "#field_edit_modal"
+        lnkshowrf.Attributes.Add("class", "btn btn-link btn-sm mt-1 d-none anewrec")
+        lnkshowrf.Attributes.Add("data-toggle", "modal")
+        lnkshowrf.Title = "Show the Modal"
+        lnkshowrf.InnerText = "Show the Modal!"
+        '  Page.Controls.Add(lnkshowrf) '*** Moved down to UP1
+        RFModal = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+
+        RFModal.Attributes.Add("class", "modal") ' arecnew show")
+        RFModal.Attributes.Add("ID", "field_edit_modal")
+        RFModal.Attributes.Add("role", "dialog")
+        RFModal.Attributes.Add("tabindex", "-1")
+        RFModal.Attributes.Add("aria-modal", "true")
+        '     RFModal.Attributes.Add("style", "display: block;")
+        RFModalDialog = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+        With RFModalDialog
+            .Attributes.Add("class", "modal-dialog")
+            .Attributes.Add("role", "document")
+        End With
+        RFModalContent = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+        With RFModalContent
+            .Attributes.Add("class", "modal-content")
+        End With
+        RFModalHeader = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+        With RFModalHeader
+            .Attributes.Add("class", "modal-header")
+        End With
+        RFModalBody = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+        RFModalBody.Attributes.Add("class", "modal-body")
+        RFSpan = New Literal
+        RFSpan.Text = "Configure Field Form"
+
+        '  rfLitContent = New Literal
+        'RFModalBody.Controls.Add(rfLitContent)
+
+        RFCLose = New HtmlAnchor
+        RFCLose.Attributes.Add("class", "H5")
+        RFCLose.HRef = "#field_edit_modal"
+        RFCLose.Attributes.Add("data-toggle", "modal")
+        '  RFCLose.Attributes.Add("data-dismiss", "modal")
+        RFCLose.Attributes.Add("data-target", "#field_edit_modal")
+        RFCLose.Attributes.Add("class", "anewrec text-white close")
+        RFCLose.InnerText = "X"
+
+
+        RFModalHeader.Controls.Add(RFSpan)
+        RFModalHeader.Controls.Add(RFCLose)
+        'cmdRefresh = New Button
+        'cmdRefresh.ID = "cmdRefresh"
+        'cmdRefresh.Text = "Refresh"
+        'RFModalHeader.Controls.Add(cmdRefresh)
         '*** Create the Control Config tool for editing fields on forms
         ctrlRMFieldEditor = New mycontrol_
+        ctrlRMFieldEditor.EnableViewState = True
         ctrlRMFieldEditor.ID = "ReportManagerFieldEditor"
         ctrlRMFieldEditor.Attributes.Clear()
         ctrlRMFieldEditor.Attributes.Remove("style")
-        Controls.Add(ctrlRMFieldEditor)
+        upFieldEditor = New UpdatePanel
+        upFieldEditor.ID = "upFieldEditor"
+        upFieldEditor.ContentTemplateContainer.Controls.Add(ctrlRMFieldEditor)
 
+        '  apt = New AsyncPostBackTrigger
+        '  apt.ControlID = "cmdRefresh"
+        '  apt.EventName = "click"
+        '  upFieldEditor.Triggers.Add(apt)
+
+
+        RFModalBody.Controls.Add(upFieldEditor)
+        RFModalContent.Controls.Add(RFModalHeader)
+        RFModalContent.Controls.Add(RFModalBody)
+        RFModalDialog.Controls.Add(RFModalContent)
+        RFModal.Controls.Add(RFModalDialog)
+        ' RFModal.Controls.Add(ctrlRMFieldEditor)
+        '  Controls.Add(RFModal) 'Added to UP1 below
 
         '*** Create the Category Drop Down
         cboReportCategory = New DropDownList
@@ -158,9 +235,9 @@ Public Class ReportContainer
         up2.ID = "up2"
         AddHandler up2.Load, AddressOf UP2Load
 
-        txtDebug = New TextBox
-        txtDebug.ID = "txtDebug"
-        txtDebug.CssClass = msHide
+        litDebug = New Literal
+        litDebug.ID = "txtDebug"
+        ' txtDebug.CssClass = msHide
 
         litmsg = New Literal
         litmsg.ID = "litmsg"     'debug.print("<Clear control='litmessage' />")
@@ -173,12 +250,13 @@ Public Class ReportContainer
             cmdEditMode.ID = "cmdEditMode"
             cmdEditMode.Text = "<i class='fa fa-cog float-right'></i>"
             AddHandler cmdEditMode.Click, AddressOf cmdEditMode_Click
+            cmdEditMode.OnClientClick = "fResetForm()"
             up1.Controls.Add(cmdEditMode)
         End If
 
         cmdNewField = New LinkButton
         cmdNewField.ID = "cmdNewField"
-        cmdNewField.Text = "<i class='fa fa-plus'></i>"
+        cmdNewField.Text = "<i Class='fa fa-plus'></i>"
         AddHandler cmdNewField.Click, AddressOf cmdNewfield_Click
         If Me.Attributes("EditMode") = "True" Then
             cmdNewField.Visible = True
@@ -186,7 +264,8 @@ Public Class ReportContainer
             cmdNewField.Visible = False
         End If
         up1.Controls.Add(cmdNewField)
-
+        up1.Controls.Add(lnkshowrf) 'created above
+        up1.Controls.Add(RFModal) 'Created Above)
         '   asyncPostBackTrigger1 = New AsyncPostBackTrigger
         '   asyncPostBackTrigger1.ControlID = "cboReportCategory"
         '   asyncPostbackTrigger2 = New AsyncPostBackTrigger
@@ -253,7 +332,7 @@ Public Class ReportContainer
 
         'upHeader.Controls.Add(cboReportCategory)
         'upHeader.Controls.Add(btn)
-        upHeader.Controls.Add(txtDebug)
+        upHeader.Controls.Add(litDebug)
         upHeader.Controls.Add(litmsg)
 
         'updatePanel2.Triggers.Add(asyncPostBackTrigger1)
@@ -301,6 +380,8 @@ Public Class ReportContainer
         c.InsertReportField(miReportID)
     End Sub
     Sub setPanelVisibility()
+        mbShowRFPanel = True
+        ' Exit Sub
         '*** Identify if the Control that caused the postback was "cmdPopulateFieldvalues"
         '*** if so, Process to form and then hide the control
 
@@ -309,7 +390,7 @@ Public Class ReportContainer
         If Page.IsPostBack Then
             ctrlname = Page.Request.Params.Get("__EVENTTARGET")
         End If
-
+        Exit Sub
         '*** Make sure the UP1 Panel Exists
         Dim cp As Panel = Me.FindControl("up1")
         Dim ctrlRMFieldEditor As mycontrol_ = cp.Parent.FindControl("ReportManagerFieldEditor")
@@ -339,7 +420,7 @@ Public Class ReportContainer
                 End If
             End If
         End If
-        '        mbShowRFPanel = True
+        ' mbShowRFPanel = True
     End Sub
     Public Sub btnSetReport_Click()
         ' On Error Resume Next
@@ -378,21 +459,30 @@ Public Class ReportContainer
         upHeader.RenderControl(writer)
 
         updatePanel1.RenderControl(writer)
-        ' mbShowRFPanel = True 'take this out
-        If mbShowRFPanel Then
-            ctrlRMFieldEditor.Visible = True
-            up1.Visible = vbFalse
+        If 1 = 2 Then
+            If mbShowRFPanel Then
+                ctrlRMFieldEditor.Visible = True
+                up1.Visible = vbFalse
 
-        Else
-            ctrlRMFieldEditor.Visible = False
-            up1.Visible = True
-            If Me.Attributes("EditMode") = "True" Then
-                cmdNewField.Visible = True
             Else
-                cmdNewField.Visible = False
+                ctrlRMFieldEditor.Visible = False
+                up1.Visible = True
+                If Me.Attributes("EditMode") = "True" Then
+                    cmdNewField.Visible = True
+                Else
+                    cmdNewField.Visible = False
+                End If
             End If
+        Else
+            mbShowRFPanel = True 'take this out
+            up1.Visible = True
+
         End If
-        If Not ctrlRMFieldEditor Is Nothing Then ctrlRMFieldEditor.RenderControl(writer)
+
+        '      If Not ctrlRMFieldEditor Is Nothing Then
+        '      ctrlRMFieldEditor.Visible = True
+        ' ctrlRMFieldEditor.RenderControl(writer)
+        '      End If
 
 
 
@@ -786,7 +876,7 @@ Public Class ReportContainer
             End If
             'lstReports.Visible = False 'Put This Back in
             'cboReportCategory.Visible = False 'Put This Back in
-            txtDebug.Visible = False
+            litDebug.Visible = False
         End If
 
         '*** disable controls on form
@@ -1742,6 +1832,11 @@ Err_Cmdrunreport_Click:
                                 End Select
                             End While
 
+                        End If
+                        If lsControlText.Length > 36 Then
+                            Dim lsTemp As String = Right(lsControlText, 36)
+                            Dim guidOutput As Guid
+                            If Guid.TryParse(lsTemp, guidOutput) Then lsFieldID = lsTemp
                         End If
                         If lsControlText.ToUpper.Contains("POPULATE") Then
                             setPanelVisibility()

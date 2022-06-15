@@ -285,13 +285,16 @@ Public Class clsDataLoader
         '*** Initialize
         LoadReportControls = Nothing
 
-        lsSQL = "SELECT tblReportControls.*
-                       , tblReportControls.ID as ReportControlID
-                       , tblReportFields.* 
-                       , TblReportFields.ID as ReportControlFieldID " &
-                "From   tblReportFields inner join tblReportControls on " &
-                "       tblreportfields.reportcontrol = tblreportcontrols.controlid " &
-                "WHERE  ReportID= " & llReportID & " " & IIf(llControlNum > 0, " AND ReportControl =" & llControlNum & " ", "") & IIf(lsFieldID = "", "", " AND tblReportFields.ID ='" & lsFieldID & "' ") &
+        lsSQL = "SELECT c.*
+                       , c.ID as ReportControlID
+                       , f.* 
+                       , f.ID as ReportControlFieldID , f.Name as ReportControlFieldsName " &
+                "From   tblReportFields f inner join tblReportControls c on " &
+                "       f.reportcontrol = c.controlid " &
+                "WHERE  1=1  " &
+                        IIf(llReportID > 0, " AND ReportID= " & llReportID & " ", " ") &
+                        IIf(llControlNum > 0, " AND ReportControl =" & llControlNum & " ", "") &
+                        IIf(lsFieldID = "", "", " AND f.ID ='" & lsFieldID & "' ") &
                 "ORDER BY SortOrder "
 
         '*** Load a data set.
@@ -752,7 +755,8 @@ LoadChildrenError:
                 '*** Load a data set.
                 Try
                     dscmd.Fill(ds, lsTableName)
-                Catch
+                Catch e As Exception
+                    msErrorMsg = e.Message
                     ds = New DataSet
                     Dim dt As New DataTable("Empty")
                     ds.Tables.Add(dt)
@@ -844,7 +848,7 @@ LoadChildrenError:
                  WHERE A.NodeID=" & nodeID & " and A.ReportID=" & ReportID & " and  A.thecontrolname='" & Trim(controlname) & "' and A.ID !='" & ReportFieldID & "'"
         Dim ds As New DataSet()
         ds = fGetDataset("SQLConnection", mscnStr, lsSQL, "Projects")
-        If ds.Tables.Count > 1 Then
+        If ds.Tables.Count > 0 Then
             If ds.Tables(0).Rows.Count > 0 Then
                 errMessage = "Control Name already exists for this control"
                 Return True
@@ -861,7 +865,7 @@ LoadChildrenError:
                  WHERE A.NodeID=" & nodeID & " and A.ReportID=" & ReportID & " and  A.thefieldname='" & Trim(fieldname) & "' and A.ID !='" & ReportFieldID & "'"
         ds = New DataSet()
         ds = fGetDataset("SQLConnection", mscnStr, lsSQL, "Projects")
-        If ds.Tables.Count > 1 Then
+        If ds.Tables.Count > 0 Then
             If ds.Tables(0).Rows.Count > 0 Then
                 errMessage = "A  Control For this field already exists!"
                 Return True
@@ -916,6 +920,7 @@ Public Class clsReportFields
 
 End Class
 Public Class clsReportField
+
     Public ReportFieldID As String
     Public ReportControl As String
     Public FieldName As String
@@ -936,7 +941,7 @@ Public Class clsReportField
     Public SortOrder As Integer = 0
     Public ContainerName As String = ""
     Public ColumnSize As Integer = 12
-    Public lsErrorMessage As String
+    Public ErrorMessage As String
     Public HelpText As String
     Public Sub New()
         NodeID = System.Web.HttpContext.Current.Session("NodeID")
@@ -956,7 +961,7 @@ Public Class clsReportField
         'If llNodeID = 0 Then
         ' Exit Function
         ' End If
-        If c.fRFFieldExists(0, FieldName, ReportID, ReportFieldID, Name, lsErrorMessage) Then
+        If c.fRFFieldExists(0, FieldName, ReportID, ReportFieldID, Name, ErrorMessage) Then
             Return False
         End If
 
@@ -1021,13 +1026,14 @@ Public Class clsReportField
         '*** Run The SQL.
         Insert = c.fExecuteSQLCmd("SQLConnection", c.mscnStr, msSQLcmd)
     End Function
+
     Public Function Update() As Boolean
         Dim c As New Kolassa.DesignCenter.ReportManager.clsDataLoader
         Dim lgID As New Guid
         Dim msSQLcmd As SqlCommand
         lgID = Guid.NewGuid
         Dim lsSQL As String
-        lsErrorMessage = ""
+        ErrorMessage = ""
 
 
         '*** Initialize
@@ -1036,7 +1042,7 @@ Public Class clsReportField
         'If llNodeID = 0 Then
         ' Exit Function
         ' End If nodeID As Long, fieldname As String, ReportID As String, ReportFieldID As String, controlname As String, 
-        If c.fRFFieldExists(0, FieldName, ReportID, ReportFieldID, Name, lsErrorMessage) Then
+        If c.fRFFieldExists(0, FieldName, ReportID, ReportFieldID, Name, ErrorMessage) Then
             Return False
         End If
         lsSQL = "Update tblReportFields set
@@ -1091,7 +1097,7 @@ Public Class clsReportField
         '*** Run The SQL.
 
         Update = c.fExecuteSQLCmd("SQLConnection", c.mscnStr, msSQLcmd)
-        lsErrorMessage = c.msErrorMsg
+        ErrorMessage = c.msErrorMsg
     End Function
 End Class
 

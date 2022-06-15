@@ -8,7 +8,7 @@ Public Class ctrlListBox
 
     Dim lblFieldName As Label
     Dim DropDownList1 As DropDownList
-    Dim uPanel1 As UpdatePanel
+    Dim uPanel1 As Panel 'UpdatePanel
     Dim lblField1 As Label
     Dim lblField2 As Label
     Dim ctrlField1 As ListBox
@@ -55,7 +55,7 @@ Public Class ctrlListBox
 
         DropDownList1.AutoPostBack = True
         DropDownList1.ToolTip = "Select the Operator"
-        uPanel1 = New UpdatePanel
+        uPanel1 = New Panel ' UpdatePanel
         uPanel1.ID = "uPanel1"
         trig = New AsyncPostBackTrigger
         trig.ControlID = "DropDownList1"
@@ -85,19 +85,19 @@ Public Class ctrlListBox
         Controls.Add(lblFieldName)
 
 
-        uPanel1.ContentTemplateContainer.Controls.Add(fGetFieldButton)
-        uPanel1.ContentTemplateContainer.Controls.Add(fGetFieldDeleteButton)
+        uPanel1.Controls.Add(fGetFieldButton)
+        uPanel1.Controls.Add(fGetFieldDeleteButton)
 
 
         Controls.Add(DropDownList1)
 
 
         Controls.Add(uPanel1)
-        uPanel1.ContentTemplateContainer.Controls.Add(lblField1)
-        uPanel1.ContentTemplateContainer.Controls.Add(ctrlField1)
-        uPanel1.ContentTemplateContainer.Controls.Add(lblField2)
-        uPanel1.ContentTemplateContainer.Controls.Add(ctrlField2)
-        uPanel1.ContentTemplateContainer.Controls.Add(CustomValidator1)
+        uPanel1.Controls.Add(lblField1)
+        uPanel1.Controls.Add(ctrlField1)
+        uPanel1.Controls.Add(lblField2)
+        uPanel1.Controls.Add(ctrlField2)
+        uPanel1.Controls.Add(CustomValidator1)
         uPanel1.Controls.Add(ctrlHelpText)
         uPanel1.Attributes.Add("class", msControlPanelcss)
         '  SetFields(Me.DropDownList1.Text, Me.DropDownList1.SelectedValue)
@@ -200,7 +200,7 @@ Public Class ctrlListBox
         liSelectedIndices2 = ctrlField2.GetSelectedIndices()
 
         If UBound(liSelectedIndices) = -1 Then
-            '*** NO INdices found through normal object.  Due to some bug in ASP.NET I
+            '*** NO Indices found through normal object.  Due to some bug in ASP.NET I
             '*** will now check the Request.Form object
             Dim lsForm(1000) As String ' = Context.Request.Form(Me.Parent.ClientID)
             Dim lcForm As NameValueCollection = Context.Request.Form()
@@ -214,7 +214,13 @@ Public Class ctrlListBox
                             listitemTemp = ctrlField1.Items.FindByValue(lsForm(liCounter))
                             miSelectedItem = New ReportListItem
                             miSelectedItem.Value = CStr(lsForm(liCounter))
-                            miSelectedItem.Description = CStr(listitemTemp.Text)
+                            '*** Dont know why this listitem is nothing
+                            If listitemTemp Is Nothing Then
+                                miSelectedItem.Description = "No Value Check this out"
+                            Else
+                                miSelectedItem.Description = IIf(listitemTemp Is Nothing, "No Value, Check this out", CStr(listitemTemp.Text))
+                            End If
+
                             mcSelectedItems.Add(miSelectedItem)
                         Next
                     End If

@@ -36,24 +36,25 @@
         border-style: none;
     }
 </style>
+<script>
+    function onError(img) {
+        delete img.onerror;
+        // Change the url
+        //img.src = 'images/noload.jpg';
+    
+        // or just hide it (jQuery)
+        jQuery(img).hide();
+    }
+</script>
 
 
 
 <asp:ObjectDataSource ID="odsImages" runat="server" SelectMethod="LoadImages" TypeName="Kolassa.DesignCentre.Data.clsSelectDataLoader" 
-	DeleteMethod="DeleteImages" InsertMethod="InsertImages" OldValuesParameterFormatString="original_{0}" UpdateMethod="Updateimages">
+	DeleteMethod="DeleteImages" UpdateMethod="Updateimages">
     <DeleteParameters>
         <asp:Parameter Name="RecordID" Type="String" />
-    </DeleteParameters>
-    <InsertParameters>
-        <asp:Parameter Name="lsObjectID" Type="String" />
         <asp:Parameter Name="llNodeID" Type="Int64" />
-        <asp:Parameter Name="lsName" Type="String" />
-        <asp:Parameter Name="lsDescription" Type="String" />
-        <asp:Parameter Name="liOrder" Type="Int32" />
-        <asp:Parameter Name="lsImage" Type="Object" />
-        <asp:Parameter Name="lsType" Type="String" />
-        <asp:Parameter Name="lsURL" Type="String" />
-    </InsertParameters>
+    </DeleteParameters>
     <SelectParameters>
         <asp:Parameter DefaultValue="12121212-1212-1212-1212-121212121212" Name="lsObjectID" Type="String" />
     </SelectParameters>
@@ -74,54 +75,104 @@
     <div class="container">
         <h2>Images</h2>
         <!-- Trigger the modal with a button -->
-        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
-
+        <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modal-image-url">Add Url</button>
+        <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modal-image-upload">Upload Image</button>
+        <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modal-image">Find Existing</button>
         <!-- Modal -->
-        <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal fade" id="modal-image-url" role="dialog">
             <div class="modal-dialog">
-
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Add New Image</h4>
+                        <div class="modal-title">Add New Image</div>
+                        <button type="button" class="close" onclick="$('#modal-image-url').modal('hide');" >&times;</button>
                     </div>
                     <div class="modal-body">
                         <p>Select an Image.</p> 
-                        <uc1:ctrlImageNew ID="ctrlImageNew1" runat="server"  /> 
+                        <uc1:ctrlImageNew ID="ctrlImageNewURL" imagetype="URL" runat="server"  /> 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-default"  onclick="$('#modal-image-url').modal('hide');">Cancel</button>
                     </div>
                 </div>
-
             </div>
-        </div>
-</div>
+        </div>        
+        <div class="modal fade" id="modal-image-upload" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="modal-title">Add New Image</div>
+                        <button type="button" class="close" onclick="$('#modal-image-upload').modal('hide');" >&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Select an Image.</p> 
+                        <uc1:ctrlImageNew ID="ctrlImageNew1" imagetype="UPLOAD" runat="server"  /> 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"  onclick="$('#modal-image-upload').modal('hide');">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        <div class="modal fade" id="modal-image-existing" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="modal-title">Add New Image</div>
+                        <button type="button" class="close" onclick="$('#modal-image-existing').modal('hide');" >&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Select an Image.</p> 
+                        <uc1:ctrlImageNew ID="ctrlImageNew2" imagetype="EXISTING" runat="server"  /> 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"  onclick="$('#modal-image-existing').modal('hide');">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        <!-- *** End Modals *** -->
+    </div>
 
 
 <table >
     <tr><td style="width:100px;"></td><td></td></tr>
         <tr><td></td><td>
-            <asp:GridView ID="gvImages" runat="server" DataSourceID="odsImages" CssClass="table table-striped table-bordered table-hover glyphicon-hover" 
-                AutoGenerateColumns="False">
-                <Columns>
-                    <asp:BoundField DataField="Name" HeaderText ="Picture Name" />
-                    <asp:BoundField DataField="Description" HeaderText ="Picture Desc" />
-                    <asp:TemplateField>
-                        <ItemTemplate>
-                           <!-- <a href="< % #"data:" + Trim(Eval("Type")) + ";base64," + Convert.ToBase64String(Eval("Image")) % >">
-                                <asp:Image CssClass="ctrlImage" ID="Image1" runat="server" Height="100px" ImageUrl='< % #"data:" + Trim(Eval("Type")) + ";base64," + Convert.ToBase64String(Eval("Image")) %>' />
-                            </a> -->
-                            <img src =<%# Eval("ImageURL") %> />
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                </Columns>
-                <EmptyDataTemplate>
-                    No Images Found.
-                </EmptyDataTemplate>
-            </asp:GridView>
-
+            <asp:UpdatePanel ID="upImages" runat="server">
+                <ContentTemplate>
+                    <asp:GridView ID="gvImages" runat="server" DataSourceID="odsImages" CssClass="table table-striped table-bordered table-hover glyphicon-hover" 
+                        AutoGenerateColumns="False" AutoGenerateDeleteButton="false" DataKeyNames="RecordID">
+                        <Columns>
+                            <asp:TemplateField>
+                                <ItemTemplate>
+                                <asp:LinkButton Runat="server" 
+                                    OnClientClick="return confirm('Are you sure you want to DELETE this image?');" 
+                                    CommandName="Delete"><i class='fa fa-trash  padding-left:30px;'></i></asp:LinkButton>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:BoundField DataField="ID" HeaderText ="ID" Visible="false" />
+                            <asp:BoundField DataField="Name" HeaderText ="Picture Name" />
+                            <asp:BoundField DataField="Description" HeaderText ="Picture Desc" />
+                            <asp:TemplateField>
+                                <ItemTemplate>
+                                   <!-- <a href="< % #"data:" + Trim(Eval("Type")) + ";base64," + Convert.ToBase64String(Eval("Image")) % >">
+                                        <asp:Image CssClass="ctrlImage" ID="Image1" runat="server" Height="100px" ImageUrl='< % #"data:" + Trim(Eval("Type")) + ";base64," + Convert.ToBase64String(Eval("Image")) %>' />
+                                    </a> -->
+                                    <img src =<%# Eval("ImageURL") %> alt="No Image" onerror="onError(this)" height="50" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                        <EmptyDataTemplate>
+                            No Images Found.
+                        </EmptyDataTemplate>
+                    </asp:GridView>
+                    </ContentTemplate>
+                <Triggers>
+                    <asp:AsyncPostBackTrigger ControlID="gvImages" EventName="RowDeleted" />
+                </Triggers>
+                </asp:UpdatePanel>
             </td></tr>
 
 </table>
@@ -190,6 +241,15 @@
 }
 </style>
 <hr />
+<div class="gallery">
+    <asp:Repeater ID="rpt" runat="server" DataSourceID="odsImages">
+    <ItemTemplate >
+    <div class="img-w">
+        <img src="<%# Eval("ImageURL") %>" alt="Image Not Found" />
+     </div>
+    </ItemTemplate>
+    </asp:Repeater>
+</div>
       <div class="gallery">
   <div class="img-w">
     <img src="https://images.unsplash.com/photo-1485766410122-1b403edb53db?dpr=1&auto=format&fit=crop&w=1500&h=846&q=80&cs=tinysrgb&crop=" alt="" /></div>
@@ -213,13 +273,11 @@
             $(this).css('background-image', 'url(' + imgSrc + ')');
         })
 
-
         $(".img-c").click(function () {
             let w = $(this).outerWidth()
             let h = $(this).outerHeight()
             let x = $(this).offset().left
             let y = $(this).offset().top
-
 
             $(".active").not($(this)).remove()
             let copy = $(this).clone();
@@ -230,12 +288,7 @@
             setTimeout(function () {
                 copy.addClass("positioned")
             }, 0)
-
         })
-
-
-
-
     })
 
     $(document).on("click", ".img-c.active", function () {
@@ -246,4 +299,3 @@
         }, 500)
     })
 </script>
-

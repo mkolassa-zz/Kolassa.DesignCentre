@@ -193,5 +193,5 @@
 				<asp:FileUpload ID="fuCSV" runat="server" />
 			</p>
     <uc1:ctrlImages runat="server" id="ctrlImages" />
-    <uc1:ctrlImageNew runat="server" id="ctrlImageNew" />
+
 </asp:Content>

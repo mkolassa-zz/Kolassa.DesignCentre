@@ -1,13 +1,15 @@
 <%@ Page Language="vb" EnableEventValidation=false AutoEventWireup="false" MasterPageFile="~/Site.master" Codebehind="frmBase.aspx.vb" Inherits="Kolassa.DesignCentre.UI.frmBase"%>
 <%@ Register Assembly="Kolassa.DesignCenter.ReportManager" Namespace="Kolassa.DesignCenter.ReportManager" TagPrefix="cc1" %>
 <%@ Register assembly="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" namespace="System.Web.UI" tagprefix="asp" %>
-
-
+<%@ Register Src="~/Controls/ctrlImageNew.ascx" TagPrefix="uc1" TagName="ctrlImageNew" %>
+<%@ Register Src="~/Controls/ctrlImages.ascx" TagPrefix="uc1" TagName="ctrlImages" %>
+<%@ Register Src="~/Controls/ctrlImageLookup.ascx" TagPrefix="uc1" TagName="ctrlImageLookup" %>
+<%@ Register Src="~/Controls/ctrlContactEntry.ascx" TagPrefix="uc1" TagName="ctrlContactEntry" %>
 
 
 
 <asp:Content ID="BodyContent" runat=server ContentPlaceHolderID="MainContent">
-    <script src="Scripts/bootstrap.min.js"></script>
+    <!-- script src="Scripts/bootstrap.min.js"></!--> 
     <script src="Scripts/dragtable.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
@@ -51,7 +53,78 @@
 		}
 </style>	
 
+ <style>
+  .ajaxKolassa .ajax__tab_header {
+   border:none;
+}
+  .ajaxKolassa .ajax__tab_active {
+   border:none;
+   background-image:url("~/images/TabBackgroundInactive.png");
+}
+  .ajaxKolassa .ajax__tab_tab {
+   border:none;
+  background-image:url("~/images/TabBackgroundInactive.png");
+}
+ .ajax__tab_xp .ajax__tab_body {
+    background-color: #ffffff;
+    border: 0px solid #999999;
+    border-top: 0;
+   font-size: 12pt;
+    padding: 8px;
+}
 
+.ajax__tab_outer{ border:none;
+     }
+.ajax__tab_inner{border:none; background-image:url("~/images/TabBackgroundInactive.png");
+     }
+.ajax__tab_tab{border:none;background-image:url("~/images/TabBackgroundInactive.png");
+     }
+.ajax__tab_body{border:none;
+     }
+.ajax__tab_hover {border:none;
+     }
+.ajax__tab_active{border:none;background-image:url("~/images/TabBackgroundActive.png");
+     }
+</style>  
+<style>
+    accordion
+    {
+    width: 98%;
+    margin: auto;
+    border-radius: 5px;
+    
+    border: 1px solid #6C5A39;
+    background-color: #DED3BE;
+    }
+    .accordionHeader
+    {
+        border: 1px solid #2F4F4F;
+        color: white;
+        background-color: #2E4d7B;
+        font-family: Arial, Sans-Serif;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 5px;
+        margin-top: 5px;
+        cursor: pointer;
+    }
+    .accordionHeaderSelected {
+        border: 1px solid #2F4F4F;
+        color: white;
+        background-color: #2E4d7B;
+        font-family: Arial, Sans-Serif;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 5px;
+        margin-top: 5px;
+    }
+    .accordionContent
+    {
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: White;
+    }
+</style>
 
 <div class="Jumbotron">
     <br />
@@ -78,20 +151,21 @@
                     <!-- ******** Print Drop Down ********* -->
                     <a class="nav-link dropdown-toggle" style="padding-left:20px;padding-right:20px;" href="#" id="navbarDropdown" 
                     role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="dc-Print"></i> &nbsp;</a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">          
-                    <asp:linkbutton ID="lnkdPrintPage"  runat="server"  OnClick="PrintCurrentPage"     CssClass="btn btn-mini"><i class="dc-Page"></i> &nbsp;Print Page</asp:linkbutton>
-                    <asp:Linkbutton ID="lnkPrintAll"    runat="server"  onclick="PrintAllPages"        CssClass="btn btn-mini"><i class="dc-AllPages"></i> &nbsp;Print All Pages</asp:Linkbutton>
-                </div>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">          
+                        <asp:linkbutton ID="lnkdPrintPage"  runat="server"  OnClick="PrintCurrentPage"     CssClass="btn btn-mini"><i class="dc-Page"></i> &nbsp;Print Page</asp:linkbutton>
+                        <asp:Linkbutton ID="lnkPrintAll"    runat="server"  onclick="PrintAllPages"        CssClass="btn btn-mini"><i class="dc-AllPages"></i> &nbsp;Print All Pages</asp:Linkbutton>
+                    </div>
                 </li>
                 <li class="nav-item" style="padding-left:20px;padding-right:10px; padding-top:5px;">
-                    <asp:LinkButton ID="lnkShowColumns" runat ="server"  data-target="#loadMe"   ><i class="dc-Tools" title="Configure View"></i></asp:LinkButton>
-                    
+                    <asp:LinkButton ID="lnkShowColumns" runat ="server"  data-target="#loadMe"   ><i class="dc-Tools" title="Configure View"></i></asp:LinkButton>               
                 </li>
                 <li class="nav-item" style="padding-left:20px;padding-right:10px; padding-top:5px;">
                     <asp:linkbutton ID="lnkExport"      runat="server" tooltip="Download" ><i class="dc-Download"></i></asp:linkbutton>
                 </li>
                 <li class="nav-item" style="padding-left:20px;padding-right:10px; padding-top:5px;">
-                    <asp:linkButton  ID="cmdNewrec"   runat="server" tooltip="Add Record" OnClientClick="newrec(this)"><i class='fa fa-plus-circle fa-1x' ></i></asp:linkButton>
+                    <asp:linkButton  ID="cmdNewrec"   runat="server" tooltip="Add Record" CssClass="newrec" OnClientClick="newrec(this)">
+                        <i class='fa fa-plus-circle fa-1x' ></i></asp:linkButton>
+                      <img src="images/add.PNG" class="d-none"  ID="anewrec"  onclick="newrec(this)"/>
                 </li>
             </ul>
         </div>
@@ -102,11 +176,10 @@
 		    <asp:textbox id="txtSearch" runat="server" class="form-control my-1 py-1" type="text" placeholder="Search" aria-label="Search" AutoPostBack="True" />
 		    <asp:label   id="lblSearch" runat="server" class="d-none form-control my-1 py-1"  />
 	        <asp:Button  ID="cmdSearch" runat="server" class="fa-search" Text ="Search" Visible="false"></asp:button>
-            
-         
+            <asp:Button ID="btnAjax" runat="server" OnClientClick="callAjaxMethod(event)"  Text="Call method using Ajax" />
         </div>
     </nav>
-    
+
     <div class="d-none accordion" id="accordionExample">
         <div class="card">
             <div class="card-header" id="headingOne">
@@ -118,7 +191,6 @@
                 <div class="card-body">
                     <cc1:ReportContainer ID="ReportContainer1" runat="server"  CssClass="row" showDebug="True" 
                         ReportListClass="list-group-item " ReportListSelectedClass="list-group-item list-group-item-primary"/>
-                    
                 </div>
             </div>
         </div>
@@ -132,11 +204,11 @@
                             <div class="modal-content">
                             <!-- Modal Header -->
                             <div class="modal-header">
-                              <h4 class="modal-title"><asp:Label ID="lblModalTitleColumns" runat="server" /></h4>
-                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                              <h4 class="modal-title"><asp:Label ID="lblModalTitleColumns" runat="server" />Manage Views</h4>
+                              <button type="button" class="close"  data-dismiss="modal">&times;</button>
                             </div>
                             <!-- Modal body -->
-                            <div class="modal-body">
+                            <div class="modal-body" style=" overflow-y: hidden; ">
                                 <asp:Label ID="lblModalBodyColumns" runat="server" />
                                     <cc1:ctrlReportColumns ID="ctrlReportColumns1" runat="server"  />
                             </div>
@@ -178,61 +250,50 @@
             </Triggers>
      </asp:UpdatePanel>
 
+    <style>
+        #moverlay {
+          position: fixed; /* Sit on top of the page content */
+          display: none; /* Hidden by default */
+          width: 100%; /* Full width (cover the whole page) */
+          height: 100%; /* Full height (cover the whole page) */
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+          z-index: 999999; /* Specify a stack order in case you're using a different order for other elements */
+          cursor: pointer; /* Add a pointer on hover */
+        }
+        #moverlayinside {
+            position:absolute;
+                     top:50%;
+                     left:50%;
+                     background-color:white;
+                     z-index:1002;
+                     overflow:auto;
+                     width:400px;
+                     margin-left:-200px;
+        }
+    </style>
 
-
+    <div id="moverlay">
+        <div id="moverlayinside">
+            <div style="align-content:center; vertical-align:middle; text-align:center; ">
+                 <p>Loading . . . </p> <img style="height:25px;" src="images/loading_nice.gif" /> 
+                 <p><button id="btnoverlay2" class="btn btn-light btn-sm" onclick="document.getElementById('moverlay').style.display = 'none';" >No</button></p>
+            </div>
+        </div>
+    </div>
+    <button id="btnoverlay" class="d-none" onclick="document.getElementById('moverlay').style.display = 'none';" >Yes</button>
+       
     <!-- frmReports FINISH -->
-<div class="cont">
-    <div class="row">
-        <div class="col-sm-12 sp">
-	        <h2><asp:Label runat="server" ID="lblTitle" /></h2>
-        
+    <div class="cont">
+        <div class="row">
+            <div class="col-sm-12 sp">
+	            <h2><asp:Label runat="server" ID="lblTitle" /></h2>
                 <div id="datatables">
-                    <!-- *************************************************************************************
-                                            MAIN GRIDVIEW
-                         ************************************************************************************* 
-	                asp:GridView ID="grdData" run at="server" 
-				            class="draggable  table table-bordered table-sm" AllowPaging="True"
-				            AllowSorting="True"	    PageSize="20" EmptyDataText="No Data"
-				            DataKeyNames="ID" DataSourceID="ods Data"  >
-                    <Columns>
-                            <asp:CommandField ButtonType="Image" ShowEditButton="false" ShowDeleteButton="true"  DeleteImageUrl="~/images/delete.png" 
-                                ControlStyle-CssClass=" del table-hover" 
-                                ShowCancelButton="true" />
-			                <asp:TemplateField HeaderText="Name">
-			                <ItemTemplate>
-				                <label id="lbl" data-id="< %# Eval("ID") % >">< %# Eval("Name") % ></label>
-			                </ItemTemplate>
-			                </asp:TemplateField>
-                        </Columns>
-    	                <RowStyle CssClass="clickable-row" />
-                    </asp:GridView>-->
                 </div>
-                <!-- *************************************************************************************
-                                            OBJECT DATASOURCE FOR GRIDVIEW
-                     ************************************************************************************* -->
-              <!--   asp : ObjectD ataSource ID="ods Data" run at="server" SelectMethod="GetRecordData" TypeName="Kolassa.DesignCentre.UI.clsBases" DeleteMethod="DeleteRecordData" >
-                    <DeleteParameters> 
-                        <asp:Parameter Name="sTable"   Type="String" />
-                        <asp:SessionParameter Name="llNodeID" Type="Int64" SessionField="NodeID" />
-                        <asp:Parameter DbType="Guid" Name="ID" />
-                    </DeleteParameters>
-                    <SelectParameters>
-                        <asp:SessionParameter Name="SortExpression" SessionField="NodeID" Type="String" />
-                        <asp:Parameter Name="SortOrder"      Type="String" />
-		                <asp:ControlParameter ControlID="grdData" Name="lsObjectID" PropertyName="SelectedValue" Type="String" />
-        	            <asp:Parameter Name="lsObjType"      Type="String"  />
-			            <asp:Parameter Name="lbActive"       Type="Boolean" DefaultValue="True" />
-        	            <asp:ControlParameter ControlID="lblSearch" Name="lsWhere" PropertyName="Text" Type="String" />
-                        <asp:Parameter Name="stable"      Type="String"  />
-                    </SelectParameters>
-                </asp:ObjectDataSource> -->
-
-  </div>
-        
-        MikeMike
-           <cc1:ctrlPivot runat="server" ID="ctrlPivotControl"  ></cc1:ctrlPivot>
-        MacMan
-
+            </div>
 
             <div class="pane-label"><code>css</code></div>
                 <div class="inner">
@@ -249,54 +310,66 @@
 				            </div>
 				            <div class="modal-body">
 					            <asp:Panel ID="upData" runat="server"  >
-						            <asp:UpdatePanel ID="upBase" runat="server">
+						            <asp:UpdatePanel ID="upBase" runat="server" ChildrenAsTriggers="false" UpdateMode="Conditional">
 							            <ContentTemplate>
-								            <cc1:reportcontainer runat="server" ID="rptBase"  ReportCategoryType="frmVendors" ></cc1:reportcontainer>
+                                            <ajaxToolkit:TabContainer ID="tcEditData" AutoPostBack="true"  CssClass="ajaxKolassa" runat="server" Height="100%" ActiveTabIndex="0" OnClientActiveTabChanged="clientActiveTabChanged" >
+                                                <ajaxToolkit:TabPanel ID="tabEdit"  runat="server"  CssClass="ajaxKolassa" 
+                                                     HeaderText="Edit Record <i class='fa fa-edit'></i>"  >
+                                                    <ContentTemplate>
+                                                        <cc1:reportcontainer runat="server" ID="rptBase"  ReportCategoryType="frmVendors" ></cc1:reportcontainer>
+                                                        <asp:button runat="server" ID="cmdUpdateStuff" Text="X" ToolTip="Refresh" class="d-none btn btn-link"/>
+                                                    </ContentTemplate>
+                                                </ajaxToolkit:TabPanel>
+                                                <ajaxToolkit:TabPanel ID="tabImages" runat="server" HeaderText="Images <i class='fa fa-images'></i>"  >
+                                                    <ContentTemplate>
+                                                        <uc1:ctrlImages runat="server" ID="ctrlImages1" />
+                                                        <uc1:ctrlImageLookup runat="server" id="ctrlImageLookup" />
+                                                    </ContentTemplate>
+                                                </ajaxToolkit:TabPanel>
+
+                                                <ajaxToolkit:TabPanel  ID="tabContacts"  runat="server"  HeaderText="Contacts <i class='fa fa-user'></i>"  >
+                                                    <ContentTemplate>
+                                                        <uc1:ctrlContactEntry runat="server" ID="ctrlContactEntry1" />
+                                                    </ContentTemplate>
+                                                </ajaxToolkit:TabPanel>
+                                            </ajaxToolkit:TabContainer>
+								            <i class='fa fa-ed'></i>
 							            </ContentTemplate>
 							            <Triggers>
-								            <asp:AsyncPostBackTrigger ControlID="cmdSaveRecord" EventName="Click" />
-								            <asp:AsyncPostBackTrigger ControlID="cmdUPData" EventName="Click"   />
-                                            <asp:AsyncPostBackTrigger ControlID="cmdDelData" EventName="Click"   />
+                                            <asp:AsyncPostBackTrigger ControlID="cmdSaveRecord"  EventName="Click" />
+								            <asp:AsyncPostBackTrigger ControlID="cmdUPData"      EventName="Click" />
+                                            <asp:AsyncPostBackTrigger ControlID="cmdDelData"     EventName="Click" />
 							            </Triggers>
 						            </asp:UpdatePanel><!-- Modal footer -->	
 						            <asp:updateprogress associatedupdatepanelid="upBase"  id="updateProgress" runat="server">
 							            <progresstemplate>
-                                            <!-- Progress Stuff-->
-                                             <div id="progressBackgroundFilter"></div>
-								            <div id="processMessage"> Loading...<br /><br /><img style="width:30px;" alt="Loading" src="images/loading_nice.gif" /></div>
-        
-     
-								           
+                                            <!-- ************* Progress Stuff **************** -->
+                                            <div id="progressBackgroundFilter"></div>
+								            <div id="processMessage" style="text-align:center;"> Loading...<br /><br /><img style="width:30px;" alt="Loading" src="images/loading_nice.gif" /></div>           
 							            </progresstemplate>
 						            </asp:updateprogress> 	
-					            </asp:Panel>
+					            </asp:Panel>    
+				            </div>
+                            <div class="modal-footer">
                                 <div id="divsaverecord">
-                                   
 		                            <asp:Button ID="cmdSaveRecord" runat="server" Text="Save"          class="btn btn-primary" ></asp:button> 
 					                <asp:Button ID="cmdSQL"        runat="server" Text="Load SQL"      class="btn btn-primary" Visible="false"></asp:button>
 					                <asp:Button ID="cmdLoad"       runat="server" Text="Load Record"   class="btn btn-primary" visible="false"></asp:button> 
 					                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
 					            </div>
-
-				            </div>
-                            <div class="modal-footer">
                             </div>
                         </div>
                     </div>
                 </div>
             </asp:Panel>
         </div>
-  
-</div>
-    <asp:Button ID ="cmdUPData" runat="server"   UseSubmitBehavior="false"  CssClass="d-none" />
-    <asp:Button ID ="cmdDelData" runat="server"   UseSubmitBehavior="false"  CssClass="d-none" />
-    <asp:TextBox ID ="txtID" runat="server" CssClass="d-none" />
-    <!-- Put SubForm Here -->
-
-    
-</div>
+     </div>
+        <asp:Button ID ="cmdUPData" runat="server"   UseSubmitBehavior="false"  CssClass="d-none" />
+        <asp:Button ID ="cmdDelData" runat="server"   UseSubmitBehavior="false"  CssClass="d-none" />
+        <asp:TextBox ID ="txtID" runat="server" CssClass="d-none" />
+    </div>
 	
-                                               <!-- Ajax updateProgress -->
+    <!-- *******  Ajax updateProgress *********-->
     <div class="modal fade" id="loadMe" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
@@ -313,8 +386,44 @@
                 </div>
             </div>
         </div>
-    </div>
-			
+     </div>
+
+    <!-- **** NESTED START -->
+    <button id="opener">Open Dialog</button>
+<div id="dialog" title="Basic dialog">
+    <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+    <p>
+        <button id="opener2">Open a nested dialog</button>
+    </p>
+</div>
+<div id="dialog2" title="Nested dialog">
+    <p>This is a nested dialog for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+</div>
+    <script>
+        $("#opener").click(function () {
+            $("#dialog").dialog("open");
+        });
+        $("#dialog").dialog({
+            autoOpen: false,
+            modal: true,
+            open: function (event, ui) {
+                $(".ui-dialog #opener2").click(function () {
+                    $("#dialog2").dialog("open");
+                });
+            }
+        });
+
+        $("#dialog2").dialog({
+            autoOpen: false,
+            modal: true
+        });
+    </script>
+    <style>
+        .ui-widget-overlay {
+    background: rgba(0,0,0,0.9);
+}
+    </style>
+<!-- ****** END OF HTML, START SCRIPTS ****-->			
     <style>
     /* START Resizable */
         .row {
@@ -421,14 +530,14 @@
 	    </style>
 
     <script>
-		    $(document).ready(
-			    $('#close').click(function () {
-				    $('#alert').hide();
-			    }));
-		    $(document).ready(
-			    $('#TestAlert').click(function () {
-				    $('#MyAlert').show();
-			    }));
+        $(document).ready(
+            $('#close').click(function () {
+                $('#alert').hide();
+            }));
+        $(document).ready(
+            $('#TestAlert').click(function () {
+                $('#MyAlert').show();
+            }));
     </script>
     <script> 
         ///<summary>
@@ -445,20 +554,34 @@
             var divsr = document.getElementById('divsaverecord').style.display = thestyle;
         }
 
+        function ShowDivSaveRecordIMG(thestyle) {
+            var divsr = document.getElementById('divsaverecord').style.display = thestyle;
+        }
+
         function fSetPhase(tthis) {
             var currow = $(tthis).closest('tr');
-            //var sID = currow.find('td:eq(0)').text();
             var sID = currow.find('span:eq(0)').data("id");
             if (sID === undefined) { sID = currow.find('label:eq(0)').data("id"); }
-            $('#<%= txtID.ClientID %>').val(sID); 
+            $('#<%= txtID.ClientID %>').val(sID);
             $('#<%= txtID.ClientID %>').attr("data-Action", "update");
             document.getElementById('<%= cmdUPData.ClientID %>').click()
             $(tthis).addClass('table-active').siblings().removeClass('table-active');
             $(tthis).attr('data-toggle', 'modal');
             $(tthis).attr('data-target', '#DataModal');
             ShowDivSaveRecord("block");
-        } 
-
+        }
+        function fResetForm() {
+            var x = document.getElementsByClassName("editmode")
+            for (var c of x) {
+                c.style.clear;
+                if (c.style.display == "block") {
+                    c.style.display = "none";
+                }
+                else {
+                    c.style.display = "block";
+                }
+            }
+        }
         function bindEvents() {
             $('#MainContent_ReportResults_gvResults').on('click', '.clickable-row', function (event) {
                 var target = $(event.nodeName);
@@ -466,9 +589,7 @@
 
                 if (dhref != "A") {
                     fSetPhase(this);
-                } else
-                {
-
+                } else {
                     event.stopPropagation
                     event.preventDefault
                     var currow = $(this).closest('tr');
@@ -477,129 +598,168 @@
                     $('#<%= txtID.ClientID %>').val(sID);
                     $('#<%= txtID.ClientID %>').attr("data-Action", "delete");
                     document.getElementById('<%= cmdDelData.ClientID %>').click()
-                   // alert('thisran');
+                    // alert('thisran');
                 }
             }
             );
 
+
             $(".del").click(function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-               // alert("Button Clicked");
-                var currow = $(this).closest('tr');
-                var sID = currow.find('span:eq(0)').data("id");
-                if (sID === undefined) { sID = currow.find('label:eq(0)').data("id"); }
-                $('#<%= txtID.ClientID %>').val(sID);
-                $('#<%= txtID.ClientID %>').attr("data-Action", "delete");
-                document.getElementById('<%= cmdDelData.ClientID %>').click()
+                // alert("Button Clicked");
+                var z = confirm("Are you sure you would like to Delete this record?");
+                if (z == true) {
+                    var currow = $(this).closest('tr');
+                    var sID = currow.find('span:eq(0)').data("id");
+                    if (sID === undefined) { sID = currow.find('label:eq(0)').data("id"); }
+                    $('#<%= txtID.ClientID %>').val(sID);
+                    $('#<%= txtID.ClientID %>').attr("data-Action", "delete");
+                    document.getElementById('<%= cmdDelData.ClientID %>').click()
+                }
             });
+
         }
 
-	    $(document).ready(
+        $(document).ready(
             function () {
-                bindEvents(); //Binds fsetphase to the Phase Grid
-
-   /*             $('#MainContent_ReportResults_gvResults').on('click', '.clickable-row', function (event) {
-                    var target = $(event.nodeName);
-                    var dhref = event.target.nodeName;
-                 
-                    if (dhref != "A") {
-                        fSetPhase(this);
-                    } else { event.stopPropagation}
-                    alert('thisran');
-              }
-               );*/
+                bindEvents(); //Binds fsetphase to the Phase Grid              
                 $('#MainContent_grdData').on('click', '.clickable-row', function (event) {
                     fSetPhase(this);
-                    }
-               );
-                $('#lblViewName').on('click', '.pad-all', function (event) {
+                }
+                );
+                $('#lblViewName').on('click', function (event) {
                     alert('OK');
                 }
                 );
 
-
-
-
-
-
-
-
-	
-				
-			    });
-                //*************************
-                //       From Report File
-                function ShowPopup(title, body) {
-                    $("#modalColumns").modal("show");
+                $('#MainContent_grdData').on('click', '.confirmremove', function (event) {
+                    alert(this);
                 }
-		        function newrec(tthis) {
-				     findtd("MainContent_rptBase_up1");
-				      $(tthis).addClass('table-active').siblings().removeClass('table-active');
-				      $(tthis).attr('data-toggle', 'modal');
-				      $(tthis).attr('data-target', '#DataModal');
+                );
+                /*
+                  *$('#MainContent_ReportResults_gvResults').on('click', '.clickable-row', function (event) {
+                     var target = $(event.nodeName);
+                     var dhref = event.target.nodeName;
+     
+                     if (dhref != "A") {
+                         fSetPhase(this);
+                     } else { event.stopPropagation}
+                     alert('thisran');
+                         }
+                     );*/
+            });
 
-		    } 
-					      function findtd(class_name) {
-						      $("#" + class_name).find('table').each (function () {
-							      $(this).find('tr').each(function () {
-								      $(this).find('td').each(function () {
-									      $(this).find('.form-group').each(function () {
-										      $(this).find('input').each(function () {
-											      clear_form_elements(this);
-										      })
-									      })
-								      })
-							      })
-						      })
-					      }
-		    function clear_form_elements(ctrl) {
-  
-        switch(ctrl.type) {
-            case 'password':
-            case 'text':
-            case 'textarea':
-            case 'file':
-            case 'select-one':
-            case 'select-multiple':
-            case 'date':
-            case 'number':
-            case 'tel':
-            case 'email':
-                jQuery(ctrl).val('');
-                break;
-            case 'checkbox':
-            case 'radio':
-                ctrl.checked = false;
-                break;
+
+        //*************************
+        //       From Report File
+        function ShowPopup(title, body) {
+            $("#modalColumns").modal("show");
         }
- 
-    }
+        function newrec(tthis) {
+            document.getElementById('moverlay').style.display = 'none';
+            findtd("MainContent_tcEditData_tabEdit_rptBase_up1");
+            $(tthis).addClass('table-active').siblings().removeClass('table-active');
+            $(tthis).attr('data-toggle', 'modal');
+            $(tthis).attr('data-target', '#DataModal');
+        }
+        function findtd(class_name) {
+            $("#" + class_name).find('table').each(function () {
+                $(this).find('tr').each(function () {
+                    $(this).find('td').each(function () {
+                        $(this).find('.form-group').each(function () {
+                            $(this).find('input').each(function () {
+                                clear_form_elements(this);
+                                var txtval = this.id.toUpperCase();
+                                if (txtval.search("TXTCODE_CTRLFIELD1") >= 1) {
+                                    var res = callAjaxMethod(this);
+
+                                }
+                            })
+                        })
+                    })
+                })
+            })
+        }
+
+        function clear_form_elements(ctrl) {
+
+            switch (ctrl.type) {
+                case 'password':
+                case 'text':
+                case 'textarea':
+                case 'file':
+                case 'select-one':
+                case 'select-multiple':
+                case 'date':
+                case 'number':
+                case 'tel':
+                case 'email':
+                    jQuery(ctrl).val('');
+                    break;
+                case 'checkbox':
+                case 'radio':
+                    ctrl.checked = false;
+                    break;
+            }
+
+        }
+
+
+
+        /*  Ajax Call to get Code */
+        function callAjaxMethod(thisctrl) {
+            //To prevent postback from happening as we are ASP.Net TextBox control
+            //If we had used input html element, there is no need to use ' e.preventDefault()' as posback will not happen
+            // e.preventDefault();
+            var datas = '{"project": "<%= Session("Project")%>","lsObjectType": "<%= Request.QueryString("objtype")%>","llNodeID": "<%=Session("NodeID")%>" }'
+            $.ajax({
+                type: "POST",
+                url: "dcwebservices.asmx/getObjectCode", //?project=asdf",
+                data: datas,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: OnCodeSuccess_,
+                error: OnErrorCall_
+            });
+
+            function OnCodeSuccess_(response) {
+              //  var xbtnname = $('<%= btnAjax.ClientID%>').value 
+              //  var btn = document.getElementById('<%= btnAjax.ClientID%>')
+              //   btn.value = (response.d);
+                thisctrl.value = (response.d);
+                return (response.d);
+            }
+            function OnErrorCall_(response) {
+              //  $('#<%=txtID.ClientID%>').addClass("Error in calling Ajax:" + response.d);
+                thisctrl.value = ("Err Get Code");
+                return "Err geting code";
+            }
+        }
+            
     </script>
-            <script type="text/javascript">
-                $(function () {
-                    $("[id*=gvViewColumns]").sortable({
-                        items: 'tr:not(tr:first-child)',
-                        cursor: 'pointer',
-                        axis: 'y',
-                        dropOnEmpty: false,
-                        start: function (e, ui) {
-                            ui.item.addClass("selected");
-                        },
-                        stop: function (e, ui) {
-                            ui.item.removeClass("selected");
-                        },
-                        receive: function (e, ui) {
-                            $(this).find("tbody").append(ui.item);
-                        }
-                    });
+    <script type="text/javascript">
+            $(function () {
+                $("[id*=gvViewColumns]").sortable({
+                    items: 'tr:not(tr:first-child)',
+                    cursor: 'pointer',
+                    axis: 'y',
+                    dropOnEmpty: false,
+                    start: function (e, ui) {
+                        ui.item.addClass("selected");
+                    },
+                    stop: function (e, ui) {
+                        ui.item.removeClass("selected");
+                    },
+                    receive: function (e, ui) {
+                        $(this).find("tbody").append(ui.item);
+                    }
                 });
-
-  
+            });
     </script>
 
 
-      <!--  //*** Bootstrap Report Alerts-->
+    <!--  //*** Bootstrap Report Alerts-->
 	<style type="text/css">
     .messagealert {
         width: 100%;
@@ -609,7 +769,7 @@
         padding: 0;
         font-size: 15px;
     }
-</style>
+    </style>
     <script type="text/javascript">
 
         function ShowMessage(message, messagetype) {
@@ -630,27 +790,25 @@
 			<% Dim s As String = "div" & (Rnd() * 1000).ToString%>
 			var divname;
 			divname = makeid(4)
-			$('#<%=upBase.ClientID %>').append('<div id="<%=s%>"  class="alert alert-dismissible ' + cssclass + '"><a href="#" class="close" data-dismiss="alert"   aria-label="close">&times;</a><strong>' + messagetype + '!</strong> <span>' + message + '</span></div>');
+		$('#<%=upBase.ClientID %>').append('<div id="<%=s%>"  class="alert alert-dismissible ' + cssclass + '"><a href="#" class="close" data-dismiss="alert"   aria-label="close">&times;</a><strong>' + messagetype + '!</strong> <span>' + message + '</span></div>');
 		//	$('#<%=cmdSaveRecord.ClientID %>').append('<div id="dividoodal"   class="alert ' + cssclass + '"><a href="#" class="close"  aria-label="close">&times;</a><strong>' + messagetype + '!</strong> <span>' + message + '</span></div>'); 
 		//	$('#div' + divname).show();
-				$('#<%=s%>').show();
+            $('#<%=s%>').show();
 		//	$('#dividoodal').show();
 			var divvar = 'Alert'
 			$('#My' + divvar).show();
         }
     </script>
 	<script type="text/javascript">
-	    function aalert(message) { 
-			alert(message);
-		}
+	    function aalert(message) { alert(message); }
 		function makeid(length) {
-   var result           = '';
-   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-   var charactersLength = characters.length;
-   for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-   return result;
+           var result           = '';
+           var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+           var charactersLength = characters.length;
+           for ( var i = 0; i < length; i++ ) {
+              result += characters.charAt(Math.floor(Math.random() * charactersLength));
+           }
+           return result;
         }
 
         function getcolumns(){ 
@@ -699,7 +857,6 @@
         $('.sp:not(.editor)').resizable({
             handles: 's',
             resize: function (event, ui) {
-
                 var y = ui.element.outerHeight();
                 var ele = ui.element;
 
@@ -741,13 +898,51 @@
 
           //  document.getElementById("ctl00$MainContent$cmdSaveRecord").textContent = "Save";
         })
+
+        $("#DataModal").on('shown.bs.modal', function (event) {
+            var triggerElement = $(event.relatedTarget);
+            if (triggerElement[0].className.includes('newrec') == true) {
+             //   newrec(triggerElement); 
+            } else {
+              //  document.getElementById('moverlay').style.display = 'block'; 202206
+            }     
+        });
+
     </script>
 
-    <!-- Column Stuff -->
+
+    <script type="text/javascript">
+        Type.registerNamespace("ScriptLibrary");
+        var postbackElement;
+        Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(pageLoaded);
+        function pageLoaded(sender, args) {
+            var mov = document.getElementById('moverlay').style.display;
+            if (mov == 'block') {
+                document.getElementById('moverlay').style.display = 'none';
+            }
+        }
+    </script>
 
 
 
   
-
+    <script>
+        function clientActiveTabChanged(sender, args) {
+            // alert(sender.get_activeTabIndex());
+            switch (sender.get_activeTabIndex()) {
+                case 0:
+                    ShowDivSaveRecordIMG('block')
+                    break;
+                case 1:
+                    ShowDivSaveRecordIMG('none')
+                    break;
+                case 2:
+                    ShowDivSaveRecordIMG('none')
+                    break;
+                default:
+                    ShowDivSaveRecordIMG('block')
+            }
+        }
+    </script>
 
 </asp:Content>

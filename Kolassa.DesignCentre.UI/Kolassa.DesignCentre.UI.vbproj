@@ -348,12 +348,13 @@
     <Content Include="Content\prettify.css" />
     <Content Include="Content\sidebar.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="Controls\ctrlImageLookup.ascx" />
     <Content Include="Controls\ctrlImageNew.ascx" />
+    <Content Include="Controls\ctrlImagesDisplay.ascx" />
     <Content Include="Controls\ctrlSelectedUpgrades.ascx" />
     <Content Include="Controls\ctrlUpgradeItems.ascx" />
     <Content Include="Controls\ctrlPayments.ascx" />
     <Content Include="Controls\ctrlAdjustments.ascx" />
-    <Content Include="Controls\ctrlContactEntry.ascx" />
     <Content Include="Controls\ctrlCustomers.ascx" />
     <Content Include="Controls\ctrlGoogleChartPie.ascx" />
     <Content Include="Controls\ctrlCommunications.ascx" />
@@ -373,6 +374,8 @@
     <Content Include="images\loadingH.gif" />
     <Content Include="images\sort-asc.png" />
     <Content Include="images\sort-desc.png" />
+    <Content Include="images\TabBacgroundActive.png" />
+    <Content Include="images\TabBacgroundInactive.png" />
     <Content Include="images\tools.png" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -793,11 +796,25 @@
     <Compile Include="App_Code\BootstrapAlerts.vb" />
     <Compile Include="App_Code\clsCSVReader.vb" />
     <Compile Include="App_Code\clsObjects.vb" />
+    <Compile Include="Controls\ctrlImageLookup.ascx.designer.vb">
+      <DependentUpon>ctrlImageLookup.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ctrlImageLookup.ascx.vb">
+      <DependentUpon>ctrlImageLookup.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Controls\ctrlImageNew.ascx.designer.vb">
       <DependentUpon>ctrlImageNew.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\ctrlImageNew.ascx.vb">
       <DependentUpon>ctrlImageNew.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ctrlImagesDisplay.ascx.designer.vb">
+      <DependentUpon>ctrlImagesDisplay.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ctrlImagesDisplay.ascx.vb">
+      <DependentUpon>ctrlImagesDisplay.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controls\ctrlSelectedUpgrades.ascx.designer.vb">
@@ -886,13 +903,6 @@
     </Compile>
     <Compile Include="Controls\ctrlAdjustments.ascx.vb">
       <DependentUpon>ctrlAdjustments.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\ctrlContactEntry.ascx.designer.vb">
-      <DependentUpon>ctrlContactEntry.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ctrlContactEntry.ascx.vb">
-      <DependentUpon>ctrlContactEntry.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controls\ctrlCustomers.ascx.designer.vb">
