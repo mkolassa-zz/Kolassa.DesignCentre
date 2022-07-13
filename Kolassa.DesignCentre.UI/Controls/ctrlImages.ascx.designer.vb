@@ -32,6 +32,15 @@ Partial Public Class ctrlImages
     Protected WithEvents lblObjectID As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''lnkrefresh control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lnkrefresh As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
     '''ctrlImageNewURL control.
     '''</summary>
     '''<remarks>

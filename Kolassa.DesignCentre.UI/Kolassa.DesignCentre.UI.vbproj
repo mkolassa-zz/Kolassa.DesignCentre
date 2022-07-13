@@ -348,6 +348,7 @@
     <Content Include="Content\prettify.css" />
     <Content Include="Content\sidebar.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="Controls\ctrlContactEntry.ascx" />
     <Content Include="Controls\ctrlImageLookup.ascx" />
     <Content Include="Controls\ctrlImageNew.ascx" />
     <Content Include="Controls\ctrlImagesDisplay.ascx" />
@@ -375,7 +376,7 @@
     <Content Include="images\sort-asc.png" />
     <Content Include="images\sort-desc.png" />
     <Content Include="images\TabBacgroundActive.png" />
-    <Content Include="images\TabBacgroundInactive.png" />
+    <Content Include="images\TabBackgroundInactive.png" />
     <Content Include="images\tools.png" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -796,6 +797,13 @@
     <Compile Include="App_Code\BootstrapAlerts.vb" />
     <Compile Include="App_Code\clsCSVReader.vb" />
     <Compile Include="App_Code\clsObjects.vb" />
+    <Compile Include="Controls\ctrlContactEntry.ascx.designer.vb">
+      <DependentUpon>ctrlContactEntry.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ctrlContactEntry.ascx.vb">
+      <DependentUpon>ctrlContactEntry.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Controls\ctrlImageLookup.ascx.designer.vb">
       <DependentUpon>ctrlImageLookup.ascx</DependentUpon>
     </Compile>

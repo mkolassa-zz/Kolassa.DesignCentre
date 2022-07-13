@@ -498,9 +498,7 @@
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									  <span aria-hidden="true">&times;</span>
 									</button>
-								 
-					
-								</div>
+							  </div>
 								<div class="modal-body">
 								 <uc1:ctrlProjectList runat="server" id="ctrlProjectList" />
 								</div>
@@ -518,6 +516,7 @@
 				</div>
 		
             	<div class="container body-content" style="padding-top:5px;">
+                     <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" >
 			 		<!-- THIS IS THE PANEL FOR SEARCHING FOR A NODE -->
 					<asp:Panel Runat="server" ID="Panel1"   Width="400px" Visible = "true">
 						<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR SEARCHING FOR A Project -->
@@ -532,9 +531,9 @@
 								</div>
 								<div class="modal-body">
 								    <table><tr><td>
-                                        <asp:TextBox runat="server" style="text-align:right;width:50px;" ID="txtNodeID" type="number" ></asp:TextBox>
+                                     <asp:textbox id="txtnodeid" placeholder="Node ID" runat="server" onchange="changenode()" />
                                         </td><td style="vertical-align:middle;">
-                                        &nbsp; <asp:linkButton runat="server" ID="btnNode" ><i class="dc-checkmark"></i></asp:linkButton>
+                                        &nbsp; <asp:button runat="server" ID="btnNode" text="Change" UseSubmitBehavior="true"></asp:button>
                                     </td></tr></table>
 								</div>
 		
@@ -543,7 +542,12 @@
 						</div>
 					</asp:Panel>
 					<!-- END PROJECT LOOKUP PANEL -->
-                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" >
+                   <script>
+                       function changenode() {
+                           var x = document.getElementById("<%= txtnodeid.ClientID %>").value;
+                           document.getElementById("<%= btnNode.ClientID %>").setAttribute("nodeid", x);
+                       }
+                   </script>
 					</asp:ContentPlaceHolder>
 				</div>    
             

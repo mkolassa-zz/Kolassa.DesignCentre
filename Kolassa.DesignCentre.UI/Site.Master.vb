@@ -61,7 +61,7 @@ Public Class SiteMaster
         If Session("NodeID") Is Nothing Then
             Session("NodeID") = 0
         End If
-        txtNodeID.Text = Session("NodeID")
+        txtnodeid.Text = Session("NodeID")
         '*** Get all the current User Info
         Dim context = New ApplicationDbContext()
         ' Create an instance of the generic type UserStore(Of T), with
@@ -149,12 +149,24 @@ Public Class SiteMaster
         Context.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie)
     End Sub
 
-    Protected Sub SetNode(sender As Object, e As EventArgs) Handles txtNodeID.TextChanged, btnNode.Click
-        If Session("NodeID") <> txtNodeID.Text Then
-            Session("NodeID") = txtNodeID.Text
-            Session("ProjectObject") = Nothing
-            Session("ProjectName") = Nothing
-            Session("Project") = Nothing
+    Protected Sub SetNode(sender As Object, e As EventArgs) Handles btnNode.Click
+        Dim lsNodeClient As String = Replace(txtnodeid.ClientID, "_", "$")
+        If IsPostBack Then
+            Dim lsNodeID As String = Request.Form("txtnodeid")
+            For i = 1 To Request.Form().Count - 1
+                lsNodeID = Request.Form.GetKey(i)
+                If InStr(lsNodeID, lsNodeClient) > 0 Then
+                    lsNodeID = Request.Form(i)
+                    Exit For
+                End If
+            Next
+
+            If Session("NodeID") <> lsNodeID Then
+                Session("NodeID") = lsNodeID
+                Session("ProjectObject") = Nothing
+                Session("ProjectName") = Nothing
+                Session("Project") = Nothing
+            End If
         End If
     End Sub
 End Class

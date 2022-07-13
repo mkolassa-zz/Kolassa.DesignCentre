@@ -4,6 +4,12 @@ Imports Kolassa.DesignCentre.Data
 Public Class ctrlImagesNew
     Inherits System.Web.UI.UserControl
     Dim msObjectID As String
+    Public Event SomethingHappened(sender As Object, e As EventArgs)
+
+    Public Sub ProcessHappen() Handles Me.SomethingHappened
+        ' Insert code to handle somethingHappened event.
+        Dim x As Integer = 9
+    End Sub
     Public Sub New()
 
     End Sub
@@ -12,6 +18,8 @@ Public Class ctrlImagesNew
             If msObjectID = "" Or msObjectID Is Nothing Then
                 msObjectID = Me.Attributes("objectID")
             End If
+            RaiseEvent SomethingHappened(txtImageURL, New EventArgs)
+            RaiseBubbleEvent(txtImageURL, New EventArgs)
             Return msObjectID
         End Get
         Set(ByVal Value As String)
@@ -80,7 +88,7 @@ Public Class ctrlImagesNew
             'No File
         Else
 
-            c.InsertImages(lsObjectID, liNode, lsFileName, txtDescription.Text, 1, ImageContent, strImageType, "", Session("Project"))
+            c.InsertImages(lsObjectID, Request.QueryString("objType"), liNode, lsFileName, txtDescription.Text, 1, ImageContent, strImageType, "", Session("Project"))
         End If
     End Sub
 
@@ -130,6 +138,7 @@ Public Class ctrlImagesNew
         o.ImageOrder = 1
         o.ImageType = e.ContentType
         o.ObjectID = objID
+        o.ObjectType = Request.QueryString("objType")
         o.Insert()
     End Sub
 
@@ -160,7 +169,9 @@ Public Class ctrlImagesNew
         o.ImageURL = lsImageURL
         o.ImageOrder = 1
         o.ImageType = fgetImageType(lsImageType)
+        o.ObjectType = Request.QueryString("objType")
         o.Insert()
+
     End Sub
     Function fgetImageType(lsImageType As String) As String
         fgetImageType = lsImageType

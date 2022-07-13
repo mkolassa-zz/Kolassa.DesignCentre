@@ -677,27 +677,25 @@
                                 </tr>
                             </SelectedItemTemplate>
                         </asp:ListView>
-                        <asp:Listbox   class="d-none"    id="lstRooms" runat="server" 
-                            Rows="10"  Width="99%"  Height="250px" 
-                            DataSourceID="odsRooms" DataTextField="UpgradeCount" 
-                            DataValueField="RoomName" AutoPostBack="True"         >
+                        <asp:Listbox   class="d-none"  id="lstRooms" runat="server" 
+                            Rows="10"  Width="99%"     Height="250px" 
+                            DataSourceID="odsRooms"    DataTextField="UpgradeCount" 
+                            DataValueField="RoomName"  AutoPostBack="True"         >
                         </asp:Listbox>
                     </ContentTemplate>
                     <Triggers >
                         <asp:AsyncPostBackTrigger ControlID="lstRooms2" EventName="SelectedIndexChanged" />
 						<asp:asyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemDeleted"  />
-						<asp:AsyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemInserted"  />
-						
+						<asp:AsyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemInserted"  />					
 						<asp:AsyncPostBackTrigger ControlID="cmdAutoPick" EventName="Click" />
 						<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemCommand" />
 						<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemDeleting" />
                     </Triggers>
-					
                 </asp:UpdatePanel>
                     </asp:Panel>
 			</div>
-				</div>
-	        </div>
+		</div>
+	</div>
 
     <!-- **********************************************************************************************************
          *** Categories

@@ -29,7 +29,13 @@ Public Class ctrlImages
 			gvImages.DataBind()
 		End Set
 	End Property
-	Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+
+	Public Sub imghandler() Handles ctrlImageNew1.SomethingHappened, ctrlImageNew2.SomethingHappened, ctrlImageNewURL.SomethingHappened
+        'Refresh
+        Dim x As Integer = 9
+        gvImages.DataBind()
+    End Sub
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 		'lblObjectID.Text = Session("Project")
 		Page.Form.Enctype = "multipart/form-data"
 	End Sub
@@ -82,4 +88,8 @@ Public Class ctrlImages
 		odsImages.DeleteParameters.Add("RecordID", lsID)
 		odsImages.DeleteParameters.Add("llNodeID", Session("NodeID"))
 	End Sub
+
+    Private Sub lnkrefresh_Click(sender As Object, e As EventArgs) Handles lnkrefresh.Click
+        gvImages.DataBind()
+    End Sub
 End Class

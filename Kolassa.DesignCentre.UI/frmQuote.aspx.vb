@@ -1139,26 +1139,30 @@ ph1Status_Error:
 			'lstStyle.Enabled = True
 			pnlStyle.Enabled = True
 		End If
-	End Sub
+        lstRooms.DataBind()
+        lstRooms2.DataBind()
+        lstCategories.DataBind()
+    End Sub
 
 	Protected Sub lstSelectedUpgrade_ItemCommand(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.ListViewCommandEventArgs) 'Handles lstSelectedUpgrade.ItemCommand
 		If e.CommandName = "DeleteRequestedItem" Then
-			DeleteRequestedItem(e.CommandArgument)
-		End If
+            DeleteRequestedItem(e.CommandArgument)
+            lstRooms.DataBind()
+
+            lstRooms2.DataBind()
+            lstCategories.DataBind()
+        End If
 	End Sub
 
 	Protected Sub odsRequestedUpgrades_Deleting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.ObjectDataSourceMethodEventArgs) ' Handles odsRequestedUpgrades.Deleting
 		e.InputParameters("RecordID") = Session("llUpgradeOptionID")
 	End Sub
+    Protected Sub lstRequestedUpgrades_ItemCommand(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.ListViewCommandEventArgs) 'Handles lstRequestedUpgrades.ItemCommand
+        If e.CommandName = "DeleteRequestedItem" Then
+            DeleteRequestedItem(e.CommandArgument)
+        End If
 
-
-
-	Protected Sub lstRequestedUpgrades_ItemCommand(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.ListViewCommandEventArgs) 'Handles lstRequestedUpgrades.ItemCommand
-		If e.CommandName = "DeleteRequestedItem" Then
-			DeleteRequestedItem(e.CommandArgument)
-		End If
-
-	End Sub
+    End Sub
 
 
 
@@ -1167,7 +1171,7 @@ ph1Status_Error:
 
 
 
-	Public Sub ShowErrors(ByVal llError As Long, ByVal lsError As String)
+    Public Sub ShowErrors(ByVal llError As Long, ByVal lsError As String)
 		Response.Write(llError & ": " & lsError)
 	End Sub
 

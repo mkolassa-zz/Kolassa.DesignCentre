@@ -59,11 +59,11 @@
 }
   .ajaxKolassa .ajax__tab_active {
    border:none;
-   background-image:url("~/images/TabBackgroundInactive.png");
+   background-image:url("images/TabBackgroundInactive.png");
 }
   .ajaxKolassa .ajax__tab_tab {
    border:none;
-  background-image:url("~/images/TabBackgroundInactive.png");
+  background-image:url("images/TabBackgroundInactive.png");
 }
  .ajax__tab_xp .ajax__tab_body {
     background-color: #ffffff;
@@ -129,11 +129,11 @@
 <div class="Jumbotron">
     <br />
     </div>
+    <asp:Button ID="Button1" runat="server" Text="Button" />
     <!-- FRMREPORTS START -->
     <asp:Label ID="lblReportLabel" runat="server" CssClass="h2" />
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-       
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -144,9 +144,6 @@
                     <img class="btn btn-seondary" height="40" data-toggle="modal" data-target="#modalWhere" style="padding-left:20px" src="images/eye.png"/>
                 </li>
                 -->
-                   
-                 
-              
                 <li class="nav-item dropdown">
                     <!-- ******** Print Drop Down ********* -->
                     <a class="nav-link dropdown-toggle" style="padding-left:20px;padding-right:20px;" href="#" id="navbarDropdown" 
@@ -162,6 +159,15 @@
                 <li class="nav-item" style="padding-left:20px;padding-right:10px; padding-top:5px;">
                     <asp:linkbutton ID="lnkExport"      runat="server" tooltip="Download" ><i class="dc-Download"></i></asp:linkbutton>
                 </li>
+                <li class="dropdown">
+                      <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class='fa fa-upload  padding-left:80px;'></i>
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">&nbsp;<i class="dc-Download"></i>&nbsp;Download Template</a>
+                        <a class="dropdown-item" data-toggle="modal" data-target="#modalupload"  href="#">&nbsp;<i class='fa fa-upload  padding-left:80px;'></i>&nbsp;Upload File</a>
+                      </div>
+                    </li>
                 <li class="nav-item" style="padding-left:20px;padding-right:10px; padding-top:5px;">
                     <asp:linkButton  ID="cmdNewrec"   runat="server" tooltip="Add Record" CssClass="newrec" OnClientClick="newrec(this)">
                         <i class='fa fa-plus-circle fa-1x' ></i></asp:linkButton>
@@ -176,7 +182,7 @@
 		    <asp:textbox id="txtSearch" runat="server" class="form-control my-1 py-1" type="text" placeholder="Search" aria-label="Search" AutoPostBack="True" />
 		    <asp:label   id="lblSearch" runat="server" class="d-none form-control my-1 py-1"  />
 	        <asp:Button  ID="cmdSearch" runat="server" class="fa-search" Text ="Search" Visible="false"></asp:button>
-            <asp:Button ID="btnAjax" runat="server" OnClientClick="callAjaxMethod(event)"  Text="Call method using Ajax" />
+            <asp:Button ID="btnAjax" runat="server" OnClientClick="callAjaxMethod(event)" visible="false" Text="Call method using Ajax" />
         </div>
     </nav>
 
@@ -236,6 +242,29 @@
                             <div class="modal-footer">
                               <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                             </div>       
+                          </div>
+                        </div>
+                      </div>
+                     <!-- Modal Upload Data -->
+                     <div class="modal" id="modalupload">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title"><asp:Label ID="Label1" runat="server" />Upload Data File</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                             <!-- Modal body -->
+                            <div class="modal-body">
+                                <p> <asp:Label ID="lblfileupload" runat="server" AssociatedControlID="fuCSV" Text="file: " />
+                                   <ajaxToolkit:AjaxFileUpload ID="fuCSV" runat="server" CssClass="lbtn lbtn-light"  />
+				                   <asp:Button ID="cmdCSV" class="btn btn-primary" runat="server" Text="Upload CSV" /> 
+				                </p>
+                            </div>       
+                            <!-- Modal footer -->
+                            <!-- div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            </div -->       
                           </div>
                         </div>
                       </div>
@@ -314,20 +343,24 @@
 							            <ContentTemplate>
                                             <ajaxToolkit:TabContainer ID="tcEditData" AutoPostBack="true"  CssClass="ajaxKolassa" runat="server" Height="100%" ActiveTabIndex="0" OnClientActiveTabChanged="clientActiveTabChanged" >
                                                 <ajaxToolkit:TabPanel ID="tabEdit"  runat="server"  CssClass="ajaxKolassa" 
-                                                     HeaderText="Edit Record <i class='fa fa-edit'></i>"  >
+                                                      HeaderText="Edit Record <i class='fa fa-edit'></i>"  >
                                                     <ContentTemplate>
                                                         <cc1:reportcontainer runat="server" ID="rptBase"  ReportCategoryType="frmVendors" ></cc1:reportcontainer>
                                                         <asp:button runat="server" ID="cmdUpdateStuff" Text="X" ToolTip="Refresh" class="d-none btn btn-link"/>
                                                     </ContentTemplate>
                                                 </ajaxToolkit:TabPanel>
-                                                <ajaxToolkit:TabPanel ID="tabImages" runat="server" HeaderText="Images <i class='fa fa-images'></i>"  >
+                                                <ajaxToolkit:TabPanel ID="tabImages" runat="server" 
+                                             
+                                                    HeaderText="Images <i class='fa fa-images'></i>"  >
                                                     <ContentTemplate>
                                                         <uc1:ctrlImages runat="server" ID="ctrlImages1" />
                                                         <uc1:ctrlImageLookup runat="server" id="ctrlImageLookup" />
                                                     </ContentTemplate>
                                                 </ajaxToolkit:TabPanel>
 
-                                                <ajaxToolkit:TabPanel  ID="tabContacts"  runat="server"  HeaderText="Contacts <i class='fa fa-user'></i>"  >
+                                                <ajaxToolkit:TabPanel  ID="tabContacts"  runat="server"  
+                                             
+                                                    HeaderText="Contacts <i class='fa fa-user'></i>"  >
                                                     <ContentTemplate>
                                                         <uc1:ctrlContactEntry runat="server" ID="ctrlContactEntry1" />
                                                     </ContentTemplate>
@@ -350,8 +383,8 @@
 						            </asp:updateprogress> 	
 					            </asp:Panel>    
 				            </div>
-                            <div class="modal-footer">
-                                <div id="divsaverecord">
+                            <div class="modal-footer" style="background-color: white;">
+                                <div id="divsaverecord" style="background-color: white;">
 		                            <asp:Button ID="cmdSaveRecord" runat="server" Text="Save"          class="btn btn-primary" ></asp:button> 
 					                <asp:Button ID="cmdSQL"        runat="server" Text="Load SQL"      class="btn btn-primary" Visible="false"></asp:button>
 					                <asp:Button ID="cmdLoad"       runat="server" Text="Load Record"   class="btn btn-primary" visible="false"></asp:button> 
@@ -388,36 +421,8 @@
         </div>
      </div>
 
-    <!-- **** NESTED START -->
-    <button id="opener">Open Dialog</button>
-<div id="dialog" title="Basic dialog">
-    <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
-    <p>
-        <button id="opener2">Open a nested dialog</button>
-    </p>
-</div>
-<div id="dialog2" title="Nested dialog">
-    <p>This is a nested dialog for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
-</div>
-    <script>
-        $("#opener").click(function () {
-            $("#dialog").dialog("open");
-        });
-        $("#dialog").dialog({
-            autoOpen: false,
-            modal: true,
-            open: function (event, ui) {
-                $(".ui-dialog #opener2").click(function () {
-                    $("#dialog2").dialog("open");
-                });
-            }
-        });
 
-        $("#dialog2").dialog({
-            autoOpen: false,
-            modal: true
-        });
-    </script>
+
     <style>
         .ui-widget-overlay {
     background: rgba(0,0,0,0.9);
@@ -944,5 +949,12 @@
             }
         }
     </script>
-
+    <script> 
+        ///<summary>
+        ///  This will fire on initial page load, 
+        ///  and all subsequent partial page updates made 
+        ///  by any update panel on the page
+        ///</summary>
+  //      function pageLoad() { alert('page loaded!') }
+    </script>
 </asp:Content>

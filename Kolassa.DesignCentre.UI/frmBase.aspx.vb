@@ -5,19 +5,16 @@ Partial Class frmBase
 	Private mbBindData As Boolean = True
 	Private miTimesLoaded As Integer
 	Private mlRecordCount As Long
-
-
-	Protected Sub lnkShowColumns_Click(sender As Object, e As EventArgs) Handles lnkShowColumns.Click
-		LoadColumnModal()
-	End Sub
-	Private Sub ShowMessage(Message As String, type As String)
+    Protected Sub lnkShowColumns_Click(sender As Object, e As EventArgs) Handles lnkShowColumns.Click
+        LoadColumnModal()
+    End Sub
+    Private Sub ShowMessage(Message As String, type As String)
 		Dim m As String = fTakeOutQuotes(Message)
 		Dim t As String = fTakeOutQuotes(type)
 		Dim s As String = "$( document ).ready(function() {ShowMessage('" & m & "','" & t & "');});"
 		ScriptManager.RegisterStartupScript(Page, Page.GetType(), "script", s, True)
-
-		'ScriptManager.RegisterStartupScript(Page, Page.GetType(), "script1", "$( document ).ready(function() {aalert('Stop');});", True)
-	End Sub
+        'ScriptManager.RegisterStartupScript(Page, Page.GetType(), "script1", "$( document ).ready(function() {aalert('Stop');});", True)
+    End Sub
 	Function fTakeOutQuotes(ByVal lsStr As String) As String
 		lsStr = Replace(lsStr, "script", "scri_pt")
 		lsStr = Replace(lsStr, """", "*")
@@ -43,31 +40,8 @@ Partial Class frmBase
 
 		Exit Sub
 	End Sub
-	'Sub rebindGrid()
-	'	Try
-	'		Dim ls As String
-	'		If txtSearch.Text.Trim = "" Then
-	'			lblSearch.Text = ""
-	'		Else
-	'			ls = " SearchText like '%" & Replace(txtSearch.Text, "'", "''") & "%'"
-	'			lblSearch.Text = ls
-	'		End If
 
-	'		odsData.DataBind()
-
-	'		grdData.DataBind()
-	'	Catch
-	'		ShowMessage(Err.Description, "Error")
-	'	End Try
-	'End Sub
-	'Protected Sub grd_SelectedIndexChanged(sender As Object, e As EventArgs) Handles grdData.SelectedIndexChanged
-	'	'Stop
-	'	Dim liNothing As Integer
-	'	For liNothing = 1 To 10
-	'		'debug.print("Hey")
-	'	Next
-	'End Sub
-	Protected Sub cmd_cmdSQL(s As Object, e As EventArgs) Handles cmdSQL.Click
+    Protected Sub cmd_cmdSQL(s As Object, e As EventArgs) Handles cmdSQL.Click
 		Try
 			Dim lsSQL As String = rptBase.f_CreateWhereClause(True)
 			Response.Write(lsSQL)
@@ -172,46 +146,8 @@ Partial Class frmBase
 		lblReportLabel.Text = rptBase.ReportName
 		rptBase.debugThis("</frmBase Init>")
 	End Sub
-	'
-	'Protected Sub ExportToExcel()
-	'	Response.Clear()
-	'	Response.Buffer = True
-	'	Response.AddHeader("content-disposition", "attachment;filename=DataExport.xls")
-	'	Response.Charset = ""
-	'	Response.ContentType = "application/vnd.ms-excel"
-	'	Using sw As New StringWriter()
-	'		Dim hw As New HtmlTextWriter(sw)
 
-	'		'To Export all pages
-	'		grdData.AllowPaging = False
-	'		grdData.DataBind() 'Me.BindGrid()
-
-	'		'grdData.HeaderRow.BackColor = Color.White
-	'		For Each cell As TableCell In grdData.HeaderRow.Cells
-	'			cell.BackColor = grdData.HeaderStyle.BackColor
-	'		Next
-	'		'			For Each row As GridViewRow In grdData.Rows
-	'		'	row.BackColor = Color.White
-	'		'	For Each cell As TableCell In row.Cells
-	'		'		If row.RowIndex Mod 2 = 0 Then
-	'		'			cell.BackColor = grdData.AlternatingRowStyle.BackColor
-	'		'				Else
-	'		'				cell.BackColor = grdData.RowStyle.BackColor
-	'		'				End If
-	'		'				cell.CssClass = "textmode"
-	'		'			Next
-	'		'			Next
-
-	'		grdData.RenderControl(hw)
-	'		'style to format numbers to string
-	'		Dim style As String = "<style> .textmode { } </style>"
-	'		Response.Write(style)
-	'		Response.Output.Write(sw.ToString())
-	'		Response.Flush()
-	'		Response.[End]()
-	'	End Using
-	'End Sub
-	Public Overrides Sub VerifyRenderingInServerForm(control As Control)
+    Public Overrides Sub VerifyRenderingInServerForm(control As Control)
 		' Verifies that the control is rendered
 	End Sub
 
@@ -250,28 +186,20 @@ Partial Class frmBase
 		ReportResults.bindgv()
 		'rebindGrid()
 	End Sub
+    Protected Sub cmdLoad_Click(sender As Object, e As EventArgs) Handles cmdLoad.Click
+        Dim c As New clsBases
+        Dim ds As DataSet
+        c.objType = "base"
+        ds = c.GetRecordData("", "", "base", "'a199a285-612a-4e78-90dd-c115dc49acc2'", True, "ID = 'a199a285-612a-4e78-90dd-c115dc49acc2'", rptBase.TableName)
+        rptBase.f_setFromDataRow(ds)
 
-	'Protected Sub odsData_Selecting(sender As Object, e As ObjectDataSourceSelectingEventArgs) ' Handles odsData.Selecting
-	'	If mbBindData Or grdData.Rows.Count = 0 Then
-	'		mbBindData = False
-	'	Else
-	'		e.Cancel = True
-	'	End If
-	'End Sub
-	Protected Sub cmdLoad_Click(sender As Object, e As EventArgs) Handles cmdLoad.Click
-		Dim c As New clsBases
-		Dim ds As DataSet
-		c.objType = "base"
-		ds = c.GetRecordData("", "", "base", "'a199a285-612a-4e78-90dd-c115dc49acc2'", True, "ID = 'a199a285-612a-4e78-90dd-c115dc49acc2'", rptBase.TableName)
-		rptBase.f_setFromDataRow(ds)
+        rptBase.DataBind()
 
-		rptBase.DataBind()
+        '** The following line is needed to populate the controls on the ReportContainer
+        rptBase.DataBind()
+    End Sub
 
-		'** The following line is needed to populate the controls on the ReportContainer
-		rptBase.DataBind()
-	End Sub
-
-	Private Sub frmBase_LoadComplete(sender As Object, e As EventArgs) Handles Me.LoadComplete
+    Private Sub frmBase_LoadComplete(sender As Object, e As EventArgs) Handles Me.LoadComplete
 		lblReportLabel.Text = rptBase.ReportDescription
 		lblReportFormLabel.Text = rptBase.ReportDescription & " Entry Form"
 		If IsPostBack Then
@@ -281,38 +209,18 @@ Partial Class frmBase
 				If rptBase.Controls.Count > 0 Then
 					rptBase.btnSetReport_Click()
 				End If
-
 			End If
 		End If
 	End Sub
-
-
-
-	'Private Sub odsData_Selected(sender As Object, e As ObjectDataSourceStatusEventArgs) Handles odsData.Selected
-	'	'Stop
-	'	Dim la As DataSet
-
-	'	la = e.ReturnValue
-	'	If la Is Nothing Then
-	'		'ShowMessage("There Seems to be a Problem")
-	'		Exit Sub
-	'	End If
-	'	mlRecordCount = la.Tables.Count
-	'End Sub
-
-	Private Sub txtSearch_TextChanged(sender As Object, e As EventArgs) Handles txtSearch.TextChanged
-		'rebindGrid()
-		If txtSearch.Text.Length > 1 Then
-			ReportResults.SearchCriteria = " SearchText like '%" & fTakeOutQuotes(txtSearch.Text) & "%' "
-		End If
-		ReportResults.bindgv()
-	End Sub
-
-	'	Protected Sub cmdExcelexp_Click(sender As Object, e As EventArgs) Handles cmdExcelexp.Click
-	'		ExportToExcel()
-	'	End Sub
-	'********* From frmReports
-	Protected Overrides Sub LoadViewState(savedState As Object)
+    Private Sub txtSearch_TextChanged(sender As Object, e As EventArgs) Handles txtSearch.TextChanged
+        'rebindGrid()
+        If txtSearch.Text.Length > 1 Then
+            ReportResults.SearchCriteria = " SearchText like '%" & fTakeOutQuotes(txtSearch.Text) & "%' "
+        End If
+        ReportResults.bindgv()
+    End Sub
+    '********* From frmReports
+    Protected Overrides Sub LoadViewState(savedState As Object)
 
 	End Sub
 
@@ -348,25 +256,14 @@ Partial Class frmBase
 		ReportResults.ReportDesc = ReportContainer1.ReportDescription
 		'	ShowMessage("Aww, password is wrong", "Error")
 	End Sub
-	'Public Sub ShowMessage(Message As String, lsType As String)
-	'	'Show Bootstrap Message
-	'	ScriptManager.RegisterClientScriptBlock(Me, Me.GetType(), "myScript" & Guid.NewGuid.ToString, "ShowMessage('" & Message & "','" & lsType & "','');", True)
-	'End Sub
-	'Private Sub _Default_Load(sender As Object, e As EventArgs) Handles Me.Load
-	'	If Me.IsPostBack Or 1 = 1 Then
-	'	End If
-	'	If Session("NodeID") Is Nothing Then Session("NodeID") = 0
-	'	Session("ProjectID") = "742d682d-278f-4cf3-b527-c9115c5028a7"
-	'End Sub
 
-	Private Sub _Default_PreInit(sender As Object, e As EventArgs) Handles Me.Init
+
+    Private Sub _Default_PreInit(sender As Object, e As EventArgs) Handles Me.Init
 
 		If ReportContainer1.ReportID = 0 Then
 			If Request.QueryString("rpt") = "" Then
-
-
-				ReportResults.liReportID = ReportContainer1.f_GetReportID ' Take this out takethisout
-			Else
+                ReportResults.liReportID = ReportContainer1.f_GetReportID ' Take this out takethisout
+            Else
 				ReportResults.liReportID = Val(Request.QueryString("rpt"))
 			End If
 		Else
@@ -483,6 +380,132 @@ Partial Class frmBase
 	End Sub
 
 	Private Sub cmdSearch_Click(sender As Object, e As EventArgs) Handles cmdSearch.Click
+        Dim ls As String
+        ls = "sdf"
+    End Sub
+    Protected Sub uploadcomplete(sender As Object, e As AjaxControlToolkit.AjaxFileUploadEventArgs) Handles fuCSV.UploadComplete
+        Dim c As New clsTestCSV
+        Dim lsFileName As String
+        Dim fPath As String = "~/customerfiles"
 
+        If Not Directory.Exists(fPath) Then Directory.CreateDirectory(fPath)
+
+        Dim lsCust As String = Session("NodeID").ToString
+        lsCust = "000" & Trim(lsCust)
+        lsCust = Right(lsCust, 3)
+
+        '  fPath = fPath & "/cust" & lsCust
+        '  If Not Directory.Exists(fPath) Then Directory.CreateDirectory(fPath)
+        '  Dim fileNametoupload As String = Server.MapPath(fPath) + "\" + Guid.NewGuid.ToString + e.FileName.ToString()
+        '  fileNametoupload = fPath + "\" + Guid.NewGuid.ToString + e.FileName.ToString()
+
+
+        lsFileName = ConfigurationManager.AppSettings("uploadFolder") & "/" & Guid.NewGuid.ToString & fTakeOutQuotes(e.FileName)
+        fuCSV.SaveAs(lsFileName)
+        Session("objType") = Request.QueryString("objType")
+        c.ObjectType = Session("objType")
+        c.csvReadTest(lsFileName)
+        c.csvWriteTest()
+
+    End Sub
+
+    Protected Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+		Dim lsx As String
+		lsx = "asdf"
 	End Sub
+
+    'Sub rebindGrid()
+    '	Try
+    '		Dim ls As String
+    '		If txtSearch.Text.Trim = "" Then
+    '			lblSearch.Text = ""
+    '		Else
+    '			ls = " SearchText like '%" & Replace(txtSearch.Text, "'", "''") & "%'"
+    '			lblSearch.Text = ls
+    '		End If
+
+    '		odsData.DataBind()
+
+    '		grdData.DataBind()
+    '	Catch
+    '		ShowMessage(Err.Description, "Error")
+    '	End Try
+    'End Sub
+    'Protected Sub grd_SelectedIndexChanged(sender As Object, e As EventArgs) Handles grdData.SelectedIndexChanged
+    '	'Stop
+    '	Dim liNothing As Integer
+    '	For liNothing = 1 To 10
+    '		'debug.print("Hey")
+    '	Next
+    'End Sub
+    'Public Sub ShowMessage(Message As String, lsType As String)
+    '	'Show Bootstrap Message
+    '	ScriptManager.RegisterClientScriptBlock(Me, Me.GetType(), "myScript" & Guid.NewGuid.ToString, "ShowMessage('" & Message & "','" & lsType & "','');", True)
+    'End Sub
+    'Private Sub _Default_Load(sender As Object, e As EventArgs) Handles Me.Load
+    '	If Me.IsPostBack Or 1 = 1 Then
+    '	End If
+    '	If Session("NodeID") Is Nothing Then Session("NodeID") = 0
+    '	Session("ProjectID") = "742d682d-278f-4cf3-b527-c9115c5028a7"
+    'End Sub
+    'Protected Sub odsData_Selecting(sender As Object, e As ObjectDataSourceSelectingEventArgs) ' Handles odsData.Selecting
+    '	If mbBindData Or grdData.Rows.Count = 0 Then
+    '		mbBindData = False
+    '	Else
+    '		e.Cancel = True
+    '	End If
+    'End Sub
+    'Private Sub odsData_Selected(sender As Object, e As ObjectDataSourceStatusEventArgs) Handles odsData.Selected
+    '	'Stop
+    '	Dim la As DataSet
+
+    '	la = e.ReturnValue
+    '	If la Is Nothing Then
+    '		'ShowMessage("There Seems to be a Problem")
+    '		Exit Sub
+    '	End If
+    '	mlRecordCount = la.Tables.Count
+    'End Sub
+    '
+    'Protected Sub ExportToExcel()
+    '	Response.Clear()
+    '	Response.Buffer = True
+    '	Response.AddHeader("content-disposition", "attachment;filename=DataExport.xls")
+    '	Response.Charset = ""
+    '	Response.ContentType = "application/vnd.ms-excel"
+    '	Using sw As New StringWriter()
+    '		Dim hw As New HtmlTextWriter(sw)
+
+    '		'To Export all pages
+    '		grdData.AllowPaging = False
+    '		grdData.DataBind() 'Me.BindGrid()
+
+    '		'grdData.HeaderRow.BackColor = Color.White
+    '		For Each cell As TableCell In grdData.HeaderRow.Cells
+    '			cell.BackColor = grdData.HeaderStyle.BackColor
+    '		Next
+    '		'			For Each row As GridViewRow In grdData.Rows
+    '		'	row.BackColor = Color.White
+    '		'	For Each cell As TableCell In row.Cells
+    '		'		If row.RowIndex Mod 2 = 0 Then
+    '		'			cell.BackColor = grdData.AlternatingRowStyle.BackColor
+    '		'				Else
+    '		'				cell.BackColor = grdData.RowStyle.BackColor
+    '		'				End If
+    '		'				cell.CssClass = "textmode"
+    '		'			Next
+    '		'			Next
+
+    '		grdData.RenderControl(hw)
+    '		'style to format numbers to string
+    '		Dim style As String = "<style> .textmode { } </style>"
+    '		Response.Write(style)
+    '		Response.Output.Write(sw.ToString())
+    '		Response.Flush()
+    '		Response.[End]()
+    '	End Using
+    'End Sub
+    '	Protected Sub cmdExcelexp_Click(sender As Object, e As EventArgs) Handles cmdExcelexp.Click
+    '		ExportToExcel()
+    '	End Sub
 End Class

@@ -6,7 +6,8 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 Public Class CsvRow
     Inherits List(Of String)
-
+    Public Property objTypeCol As Integer
+    Public Property objType As String
     Public Property LineText As String
 End Class
 
@@ -56,7 +57,7 @@ End Class
 ''' </summary>
 Public Class CsvFileReader
     Inherits StreamReader
-
+    Dim objType As String
     Public Sub New(ByVal stream As Stream)
         MyBase.New(stream)
     End Sub
@@ -167,7 +168,8 @@ Public Class clsTestCSV
         Dim lbUpdate As Boolean = False
         Dim str1, str2 As String
         Dim sHeader(10, 255) As String
-
+        Dim objTypeCol As Integer
+        Dim lsObjType As String = ""
         str1 = ""
         str2 = ""
         Dim iRow, iCol As Integer
@@ -180,8 +182,10 @@ Public Class clsTestCSV
 
             Using reader As CsvFileReader = New CsvFileReader(lsFileName)
                 Dim row As CsvRow = New CsvRow()
-
+                objTypeCol = 0
                 While reader.ReadRow(row)
+                    lsObjType = ""
+
                     iRow = iRow + 1
                     iCol = 0
                     formvalues = New List(Of KeyValuePair(Of String, String))
@@ -190,7 +194,12 @@ Public Class clsTestCSV
                         iCol = iCol + 1
                         If iRow = 1 Then
                             sHeader(1, iCol) = s
+                            If s.ToUpper = "OBJTYPE" Then
+                                objTypeCol = iCol
+                                lsObjType = ""
+                            End If
                         Else
+                            If objTypeCol > 0 And iCol = objTypeCol Then lsObjType = s
                             str2 = s
                         End If
                         'System.Diagnostics.Debug.Print(s)
@@ -206,17 +215,21 @@ Public Class clsTestCSV
                     If iRow > 1 Then '*** Not a header, process row
                         clsb = New clsBases
 
-                        clsb.objType = ObjectType
-                        clsObj = clsb.GetObject(ObjectType)
+                        If lsObjType = "" Then
+                            clsb.objType = ObjectType
+                        Else
+                            clsb.objType = lsObjType
+                        End If
+                        clsObj = clsb.GetObject(clsb.objType)
 
                         clsObj.FormValue = formvalues
                         clsObj.processFormValues()
 
-                        'If lbUpdate = True Then
-                        '      clsObj.Update()
-                        'Else
+                        '     If lbUpdate = True Then
+                        '     clsObj.Update()
+                        ' Else
                         '     clsObj.Insert()
-                        'End If
+                        ' End If
                     End If
 
                 End While

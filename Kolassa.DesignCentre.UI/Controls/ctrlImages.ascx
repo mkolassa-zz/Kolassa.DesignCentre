@@ -71,24 +71,31 @@
     </UpdateParameters>
 </asp:ObjectDataSource>
 
-<asp:label ID="lblObjectID" runat="server" />
+
     <div class="container">
-        <h2>Images</h2>
+      <h5  data-toggle="collapse" data-target="#imageid">Image Information</h5>
+        <div id="imageid" class="collapse">
+            <div class="form-row">
+                <asp:label ID="lblObjectID" runat="server" />
+             </div>
+        </div>
+        <br />   
         <!-- Trigger the modal with a button -->
-        <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modal-image-url">Add Url</button>
-        <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modal-image-upload">Upload Image</button>
-        <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modal-image">Find Existing</button>
+        <label  data-toggle="modal" data-target="#modal-image-url"><i class='fa fa-plus-square  padding-left:80px;'></i> Add Url </label>&nbsp;&nbsp;
+        <label  data-toggle="modal" data-target="#modal-image-upload"><i class='fa fa-upload  padding-left:80px;'></i> Upload </label>&nbsp;&nbsp;
+        <label  data-toggle="modal" data-target="#modal-image"><i class='fa fa-search  padding-left:80px;'></i> Find Existing</label>
+                <asp:linkbutton ID="lnkrefresh" runat="server"><i class='fa fa-recycle  padding-left:80px;'></i> Refresh</asp:linkbutton>
         <!-- Modal -->
         <div class="modal fade" id="modal-image-url" role="dialog">
             <div class="modal-dialog">
                 <!-- Modal content-->
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <div class="modal-title">Add New Image</div>
+                    <div class="modal-header" style="background-color:deepskyblue;">
+                        <div class="modal-title" >Add New Image</div>
                         <button type="button" class="close" onclick="$('#modal-image-url').modal('hide');" >&times;</button>
                     </div>
                     <div class="modal-body">
-                        <p>Select an Image.</p> 
+                       
                         <uc1:ctrlImageNew ID="ctrlImageNewURL" imagetype="URL" runat="server"  /> 
                     </div>
                     <div class="modal-footer">
@@ -101,12 +108,12 @@
             <div class="modal-dialog">
                 <!-- Modal content-->
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header" style="background-color:deepskyblue;">
                         <div class="modal-title">Add New Image</div>
                         <button type="button" class="close" onclick="$('#modal-image-upload').modal('hide');" >&times;</button>
                     </div>
                     <div class="modal-body">
-                        <p>Select an Image.</p> 
+                  
                         <uc1:ctrlImageNew ID="ctrlImageNew1" imagetype="UPLOAD" runat="server"  /> 
                     </div>
                     <div class="modal-footer">
@@ -171,6 +178,8 @@
                     </ContentTemplate>
                 <Triggers>
                     <asp:AsyncPostBackTrigger ControlID="gvImages" EventName="RowDeleted" />
+                    <asp:AsyncPostBackTrigger ControlID="ctrlImageNewURL" EventName="SomethingHappened" />
+                    <asp:AsyncPostBackTrigger ControlID="lnkRefresh" EventName="Click" />
                 </Triggers>
                 </asp:UpdatePanel>
             </td></tr>

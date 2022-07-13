@@ -35,8 +35,8 @@ Public Class clsContact
 	Public Property UpdateUserName As String
 	Public Property CreateUserName As String
 	Public Property ContactType As String
-
-	Public Property ImageURL As String = "images/people-jerks-shovel.gif"
+    Public Property ObjectType As String
+    Public Property ImageURL As String = "images/people-jerks-shovel.gif"
 
 	Public Sub New()
 		NodeID = System.Web.HttpContext.Current.Session("NodeID")
@@ -55,16 +55,21 @@ Public Class clsContacts
 		ErrorMessage = c.ErrorMessage
 	End Sub
 	Public Sub InsertContacts(obj As clsContact)
-		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.InsertContacts(obj.NodeID, obj.FirstName, obj.LastName, obj.ParentID, obj.FullAddress, obj.City, obj.StateProvince, obj.PostalCode,
-						 obj.Country, obj.Phone1, obj.Phone2, obj.Email1, obj.Email2, obj.ContactType)
-		ErrorMessage = c.ErrorMessage
-	End Sub
+        Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+        Dim s As Boolean
+        s = c.InsertContacts(obj.NodeID, obj.ObjectType, obj.FirstName, obj.LastName, obj.ParentID, obj.FullAddress, obj.City, obj.StateProvince, obj.PostalCode,
+                         obj.Country, obj.Phone1, obj.Phone2, obj.Email1, obj.Email2, obj.ContactType)
+        If s = False Then
+			ErrorMessage = c.ErrorMessage
+		Else
+            ErrorMessage = ""
+        End If
+    End Sub
 	Public Sub UpdateContacts(obj As clsContact)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdateContacts(obj.ID, obj.ParentID, obj.FirstName, obj.LastName, obj.FullAddress, obj.City, obj.StateProvince, obj.PostalCode, obj.Country, obj.Phone2, obj.Phone1, obj.Email1, obj.Email2, obj.NodeID,
-						 obj.Type, obj.Active, obj.ContactType, obj.NodeID, obj.ImageURL)
-		ErrorMessage = c.ErrorMessage
+        c.UpdateContacts(obj.ID, obj.ParentID, obj.FirstName, obj.LastName, obj.FullAddress, obj.City, obj.StateProvince, obj.PostalCode, obj.Country, obj.Phone2, obj.Phone1, obj.Email1, obj.Email2, obj.NodeID,
+                         obj.Type, obj.Active, obj.ContactType, obj.NodeID, obj.ImageURL)
+        ErrorMessage = c.ErrorMessage
 	End Sub
 End Class
 
@@ -1345,8 +1350,8 @@ Public Class clsUnits
 						Case "UNITNAME" : cObject.Name = row.Item(column)
 						Case "OBJECTID" : cObject.ObjectID = row.Item(column).ToString
 						Case "UNITCODE" : cObject.Code = row.Item(column)
-						Case "TIERID" : cObject.Tier = row.Item(column)
-						Case "FLOORID" : cObject.FloorID = Trim(row.Item(column).ToString)
+                        Case "TIERID" : cObject.Tier = row.Item(column).ToString
+                        Case "FLOORID" : cObject.FloorID = Trim(row.Item(column).ToString)
 						Case "UNITTYPEID" : cObject.UnitTypeID = row.Item(column).ToString
 						Case "AVAILABLE" : cObject.Availalbe = row.Item(column)
 						Case "DEPOSITTYPEID" : cObject.DepositTypeID = row.Item(column).ToString
@@ -1631,8 +1636,10 @@ Public Class clsBases
 			Case "REPORTCATEGORIES", "REPORTDESCRIPTIONS", "REPORTCATEGORYMAP" : GetObject = New clsDBObject
 
 			Case "BASE" : GetObject = New clsBase
-			Case Else : GetObject = New clsDBObject
-		End Select
+            Case Else
+                GetObject = New clsDBObject(lsObjType)
+                GetObject.ObjectType = lsObjType
+        End Select
 		GetObject.ObjectType = lsObjType
 	End Function
 	Public Function GetTableNameFromObjType() As String
@@ -2132,8 +2139,8 @@ Public Class clsImage
 		Dim lbOK As Boolean
 		Dim b As Byte()
 		If ObjectID = "" Then ObjectID = ProjectID
-		lbOK = c.InsertImages(ObjectID, NodeID, Name, Description, ImageOrder, b, ImageType, ImageURL, ProjectID)
-		If lbOK = False Then
+        lbOK = c.InsertImages(ObjectID, ObjectType, NodeID, Name, Description, ImageOrder, b, ImageType, ImageURL, ProjectID)
+        If lbOK = False Then
 			ErrorMessage = c.ErrorMessage
 		End If
 	End Sub
@@ -2270,19 +2277,25 @@ Public Class clsDBObject
 	Inherits clsBase
     'Public Property Description As String
     Public Property HideLists As Boolean
-	'Private Property NODEID As Long
+    'Private Property NODEID As Long
 
-	Public Sub New()
-		NodeID = System.Web.HttpContext.Current.Session("NodeID")
-		ObjectType = System.Web.HttpContext.Current.Session("ObjType")
-		If TableName Is Nothing Then
-			Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+    Public Sub New(Optional ObjType As String = "")
+        '*** Optional Constructor is when want to pass different Object type than Form has in QueryString
+        '*** THis is for File Uploads that might have multiple ObjTypes
+        NodeID = System.Web.HttpContext.Current.Session("NodeID")
+		If ObjType = "" Then
+			ObjectType = System.Web.HttpContext.Current.Session("ObjType")
+		Else
+            ObjectType = ObjType
+        End If
+        If TableName Is Nothing Then
+            Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+            '      If ObjType <> "" Then ObjectType = ObjType
+            TableName = c.fGetTableName(ObjectType, NodeID)
+        End If
+    End Sub
 
-			TableName = c.fGetTableName(ObjectType, NodeID)
-		End If
-	End Sub
-
-	Public Overrides Sub Delete()
+    Public Overrides Sub Delete()
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 
 		c.DeleteThings(TableName, ID, NodeID)

@@ -50,6 +50,15 @@ Partial Public Class SiteMaster
     Protected WithEvents MainContent As Global.System.Web.UI.WebControls.ContentPlaceHolder
 
     '''<summary>
+    '''ContentPlaceHolder1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ContentPlaceHolder1 As Global.System.Web.UI.WebControls.ContentPlaceHolder
+
+    '''<summary>
     '''Panel1 control.
     '''</summary>
     '''<remarks>
@@ -59,13 +68,13 @@ Partial Public Class SiteMaster
     Protected WithEvents Panel1 As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''txtNodeID control.
+    '''txtnodeid control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents txtNodeID As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents txtnodeid As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
     '''btnNode control.
@@ -74,14 +83,5 @@ Partial Public Class SiteMaster
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnNode As Global.System.Web.UI.WebControls.LinkButton
-
-    '''<summary>
-    '''ContentPlaceHolder1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ContentPlaceHolder1 As Global.System.Web.UI.WebControls.ContentPlaceHolder
+    Protected WithEvents btnNode As Global.System.Web.UI.WebControls.Button
 End Class

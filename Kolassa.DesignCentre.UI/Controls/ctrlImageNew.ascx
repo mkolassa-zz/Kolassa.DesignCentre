@@ -3,8 +3,9 @@
     
     <asp:Panel ID="pnlURL" runat="server"> 
         <br />Image URL:<br />
-        <asp:TextBox ID="txtImageURL" MaxLength="250" runat="server" Width="100%" Height="51px"></asp:TextBox><br />
-        <asp:LinkButton ID="lnkbSave" runat="server"><i class="fa fa-save"></i> Save URL</asp:LinkButton>
+        <asp:TextBox ID="txtImageURL" MaxLength="250" runat="server" Width="100%" Height="51px"></asp:TextBox>
+        <br /><br />
+        <asp:LinkButton ID="lnkbSave" CssClass="btn btn-primary" runat="server"><i class="fa fa-save"></i> Save URL</asp:LinkButton>
     </asp:Panel>
 
 
