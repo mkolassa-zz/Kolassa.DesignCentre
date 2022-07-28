@@ -41,23 +41,36 @@ Public Class clsSelectDataLoader
 	Dim mlCategoryID As Long
 	Public msSQLcmd As SqlClient.SqlCommand
 	Dim msSQLParameter As SqlParameter
-	Dim NL As String = Chr(13) & Chr(10)
-	Public Property msErrorMsg As String
-    Public ReadOnly Property ErrorMessage As String
+    Dim NL As String = Chr(13) & Chr(10)
+    Public ProjectID As String = ""
+    Public Property msErrorMsg As String
+	Public ReadOnly Property ErrorMessage As String
 		Get
 			ErrorMessage = msErrorMsg
 		End Get
 	End Property
 
 
+
     Public Sub New()
-		mscnType = "SQLConnection" '"OLEDB"
-		'  mscnStr = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=D:\Documents and Settings\mkolassa\My Documents\Visual Studio\Projects\WebSites\Select\App_Data\legadata.mdb;User Id=Master;Password=Cubs1;Jet OLEDB:System Database=D:\Documents and Settings\mkolassa\My Documents\Visual Studio\Projects\WebSites\Select\App_Data\Parallax.mdw;"
-		mscnStr = ConfigurationManager.ConnectionStrings.Item("ReportManager").ToString
-		mscnDefault = ConfigurationManager.ConnectionStrings.Item("DefaultConnection").ToString
-		mscnStr = mscnDefault
-	End Sub
-	Function fGetUser() As String
+		Try
+			If System.Web.HttpContext.Current.Session("Project") Is Nothing Then
+			Else
+
+
+				ProjectID = IIf(System.Web.HttpContext.Current.Session("Project") Is Nothing, "", System.Web.HttpContext.Current.Session("Project"))
+			End If
+		Catch
+            ProjectID = ""
+        End Try
+
+        mscnType = "SQLConnection" '"OLEDB"
+        '  mscnStr = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=D:\Documents and Settings\mkolassa\My Documents\Visual Studio\Projects\WebSites\Select\App_Data\legadata.mdb;User Id=Master;Password=Cubs1;Jet OLEDB:System Database=D:\Documents and Settings\mkolassa\My Documents\Visual Studio\Projects\WebSites\Select\App_Data\Parallax.mdw;"
+        mscnStr = ConfigurationManager.ConnectionStrings.Item("ReportManager").ToString
+        mscnDefault = ConfigurationManager.ConnectionStrings.Item("DefaultConnection").ToString
+        mscnStr = mscnDefault
+    End Sub
+    Function fGetUser() As String
 
 		fGetUser = Web.HttpContext.Current.User.Identity.GetUserId()
 	End Function
@@ -196,16 +209,16 @@ Public Class clsSelectDataLoader
 			'response.write("No Project Selectedd")
 			Exit Function
 		End If
-		lsSQL = "SELECT F.NODEID, F.CODE ,F.ID, F.Name, F.Description, F.Active, F.Image, f.ImageURL, F.ProjectType , F.Code, F.ProjectTypeName    FROM " & NL &
-				"(Select P.NodeID, P.ID, P.Name, P.Description, P.ImageURL, P.Active, P.Image, P.ProjectType, T.Code, T.Name as ProjectTypeName  " & NL &
-				"FROM tblProjects as P left join   tblProjectTypes as T on P.ProjectType = T.Code )  F                              " & NL &
-				"WHERE  ( NodeID=" & llNodeID & " " & IIf(lsWhere.Length > 4, " And " & lsWhere, "") &
-					IIf(lbActive = True, " And Active = 1 ", "") & ")" & NL &
-					IIf(isGUID(lsID), " AND f.ID = '" & lsID & "' ", "")
+        lsSQL = "SELECT F.NODEID, F.CODE ,F.ID, F.Name, F.Description, F.Active, F.Image, f.ImageURL, F.ProjectType , F.Code, F.ProjectTypeName    FROM " & NL &
+                "(Select P.NodeID, P.ID, P.Code, P.Name, P.Description, P.ImageURL, P.Active, P.Image, P.ProjectType, T.Code as typeCode, T.Name as ProjectTypeName  " & NL &
+                "FROM tblProjects as P left join   tblProjectTypes as T on P.ProjectType = T.Code )  F                              " & NL &
+                "WHERE  ( NodeID=" & llNodeID & " " & IIf(lsWhere.Length > 4, " And " & lsWhere, "") &
+                    IIf(lbActive = True, " And Active = 1 ", "") & ")" & NL &
+                    IIf(isGUID(lsID), " AND f.ID = '" & lsID & "' ", "")
 
 
-		'*** Load a data set.
-		Dim ds As New DataSet()
+        '*** Load a data set.
+        Dim ds As New DataSet()
 		' ds = fGetDataset(mscnType, lscnStr, lsSQL, "Projects")
 		ds = fGetDataset("SQLConnection", lscnStr, lsSQL, "Projects")
 		mdsProjects = ds
@@ -1452,17 +1465,17 @@ Public Class clsSelectDataLoader
 			'response.write("No Project Selected")
 			Exit Function
 		End If
-		lsSQL = "INSERT INTO tblRooms ( ID, Code, Name, Description,  " &
-				"                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID ) " &
-				"Values ( '" & fTakeOutQuotes(lsCode) & "', " & NL & "'" & fTakeOutQuotes(lsName) & "', " & NL &
-						  "'" & fTakeOutQuotes(lsDescription) & "', " & NL &
-						  "'" & Now.ToString & "', " & NL &
-						  "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
-						" '" & Now.ToString & "', " & NL &
-						 " '" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
-						   "true, " & llNodeID & "); "
-		'*** Run The SQL.
-		InsertRooms = fRunSQL(mscnType, mscnStr, lsSQL)
+        lsSQL = "INSERT INTO tblRooms (  Code, Name, Description,  " &
+                "                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID, ObjectID ) " &
+                "Values ( '" & fTakeOutQuotes(lsCode) & "', " & NL & "'" & fTakeOutQuotes(lsName) & "', " & NL &
+                          "'" & fTakeOutQuotes(lsDescription) & "', " & NL &
+                          "'" & Now.ToString & "', " & NL &
+                          "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
+                        " '" & Now.ToString & "', " & NL &
+                         " '" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
+                           "1, " & llNodeID & " ,'" & ProjectID & "'); "
+        '*** Run The SQL.
+        InsertRooms = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
 	Public Function UpdateRooms(ByVal llNodeID As Long, ByVal lsCode As String, ByVal lsName As String, ByVal lsDescription As String, ByVal lsActive As String, ByVal lsID As String) As Boolean
 		Dim lsSQL As String
@@ -2610,14 +2623,16 @@ IIf(isGUID(ID), " OR ID = '" & ID & "' ", "")
 		If liWHere > 0 Then
 			lsWhere = lsWhere.Replace("SearchText", " Upper( Name + Code + Description ) ")
 		End If
-		lsSQL = "SELECT * " & NL &
-				"FROM tblUnitTypes                                   " & NL &
-				"WHERE ( NodeID=" & llNodeID & " " & IIf(lsWhere.Length > 4, " and " & lsWhere, "") &
-				IIf(lbActive = True, " and Active = 1 ", "") & ")" & NL &
-				IIf(isGUID(lsID), " OR ID = '" & lsID & "' ", "")
+        lsSQL = "SELECT * " & NL &
+                "FROM tblUnitTypes                                   " & NL &
+                "WHERE ( 1=1  " &
+                IIf(ProjectID.Length = 36, " AND  ObjectID = '" & ProjectID & "' ", "") &
+                " AND  NodeID=" & llNodeID & " " & IIf(lsWhere.Length > 4, " And " & lsWhere, "") &
+                IIf(lbActive = True, " And Active = 1 ", "") & ")" & NL &
+                IIf(isGUID(lsID), " Or ID = '" & lsID & "' ", "")
 
-		'*** Load a data set.
-		Dim ds As New DataSet()
+        '*** Load a data set.
+        Dim ds As New DataSet()
 		ds = fGetDataset(mscnType, mscnStr, lsSQL, "UnitTypes")
 
 		mdsUnitTypes = ds
@@ -4068,6 +4083,86 @@ fCheckForRequiredItems_Error:
 		'*** Run The SQL.
 		UpdateQuoteStatus = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
+    '*********************************
+    '*** Autonumber
+    '*********************************
+    Public Function fGetNextCode(NodeID As Long, ObjectType As String, TableName As String, ProjectID As String, ErrMsg As String) As String
+        fGetNextCode = ""
+        Dim lsSQL As String
+        Dim lscnStr As String = mscnStr
+        Dim llAutonumber As Double = 0
+        Dim lsCodePattern As String = "@"
+        Dim lsID = "12341234-4321-5432-6543-653465346534"
+        '*** Initialize
 
+        If NodeID = 0 Then
+            'response.write("No Project Selectedd")
+            Exit Function
+        End If
+
+        lsSQL = "Select * from tblAutonumber
+                 WHERE  NodeID = " & NodeID & " 
+                    And Code = '" & ObjectType & "' 
+                    And Active = 1
+                    and ObjectID = '" & ProjectID & "'  "
+
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        Dim t As DataTable
+        Dim r As DataRow
+        ds = fGetDataset("SQLConnection", lscnStr, lsSQL, "Projects")
+
+        If ds.Tables.Count > 0 Then
+            If ds.Tables(0).Rows.Count > 0 Then
+                t = ds.Tables(0)
+                r = t.Rows(0)
+                llAutonumber = r("CurrentCount")
+                lsCodePattern = r("CodePattern")
+                lsID = r("ID")
+                If InStr(lsCodePattern, "@") > 0 Then
+                    Replace(lsCodePattern, "@", CStr(llAutonumber + 1).Trim)
+                Else
+                    lsCodePattern = CStr(llAutonumber + 1).Trim
+                End If
+            End If
+        End If
+        Dim cmd As SqlCommand
+        cmd = New SqlCommand
+
+        lsSQL = "UPDATE TBLAUTONUMBER SET CurrentCount = " & llAutonumber + 1 & " Where ID = '" & lsID & "'"
+        cmd.CommandText = lsSQL
+        Dim lbRetVal As Boolean = fExecuteSQLCmd("SQLConnection", lscnStr, cmd)
+        Return lsCodePattern
+    End Function
+
+    Public Function fAutoNumberExists(NodeID As Long, lsCode As String, TableName As String, ProjectID As String, ErrMsg As String) As Boolean
+        fAutoNumberExists = False
+        Dim lsSQL As String
+        Dim lscnStr As String = mscnStr
+        '*** Initialize
+
+        If NodeID = 0 Then
+            'response.write("No Project Selectedd")
+            Exit Function
+        End If
+
+        lsSQL = "Select ID from " & TableName & " 
+                 WHERE  NodeID = " & NodeID & " 
+                    and Code = '" & lsCode & "' 
+                    and ObjectID = '" & ProjectID & "'   --   And Active = 1"
+
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        ds = fGetDataset("SQLConnection", lscnStr, lsSQL, "Projects")
+
+        If ds.Tables(0).Rows.Count > 0 Then
+            Return False
+        Else
+            Return True
+        End If
+
+    End Function
 End Class
 

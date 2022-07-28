@@ -101,11 +101,11 @@ Public Class ReportContainer
         EnsureChildControls()
         'debug.print("</RecreateChildControls>")
     End Sub
-    Protected Sub cmdEditMode_Click()
-        EditMode = True
-        Me.Attributes("EditMode") = "True"
+    'Protected Sub cmdEditMode_Click()
+    '    EditMode = True
+    '    Me.Attributes("EditMode") = "True"
 
-    End Sub
+    'End Sub
     Protected Overrides Sub CreateChildControls()
         'debug.print("<ReportContainer_CreateChildControls>")
         Dim ctrlid As String
@@ -129,8 +129,9 @@ Public Class ReportContainer
         lnkshowrf.Title = "Show the Modal"
         lnkshowrf.InnerText = "Show the Modal!"
         '  Page.Controls.Add(lnkshowrf) '*** Moved down to UP1
-        RFModal = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
 
+        '*** Field Edit Modal ***
+        RFModal = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
         RFModal.Attributes.Add("class", "modal") ' arecnew show")
         RFModal.Attributes.Add("ID", "field_edit_modal")
         RFModal.Attributes.Add("role", "dialog")
@@ -249,7 +250,8 @@ Public Class ReportContainer
             cmdEditMode = New LinkButton
             cmdEditMode.ID = "cmdEditMode"
             cmdEditMode.Text = "<i class='fa fa-cog float-right'></i>"
-            AddHandler cmdEditMode.Click, AddressOf cmdEditMode_Click
+            '2022-07-28'   AddHandler cmdEditMode.Click, AddressOf cmdEditMode_Click
+            cmdEditMode.Attributes.Add("onClick", "return false;") ' Added 2022-07-28
             cmdEditMode.OnClientClick = "fResetForm()"
             up1.Controls.Add(cmdEditMode)
         End If
@@ -257,12 +259,14 @@ Public Class ReportContainer
         cmdNewField = New LinkButton
         cmdNewField.ID = "cmdNewField"
         cmdNewField.Text = "<i Class='fa fa-plus'></i>"
+        cmdNewField.Attributes.Add("style", "display:none;")
+        cmdNewField.CssClass = "editmode"
         AddHandler cmdNewField.Click, AddressOf cmdNewfield_Click
-        If Me.Attributes("EditMode") = "True" Then
-            cmdNewField.Visible = True
-        Else
-            cmdNewField.Visible = False
-        End If
+        '     If Me.Attributes("EditMode") = "True" Then
+        '     cmdNewField.Visible = True
+        '     Else
+        '     cmdNewField.Visible = False
+        '     End If
         up1.Controls.Add(cmdNewField)
         up1.Controls.Add(lnkshowrf) 'created above
         up1.Controls.Add(RFModal) 'Created Above)
@@ -467,11 +471,11 @@ Public Class ReportContainer
             Else
                 ctrlRMFieldEditor.Visible = False
                 up1.Visible = True
-                If Me.Attributes("EditMode") = "True" Then
-                    cmdNewField.Visible = True
-                Else
-                    cmdNewField.Visible = False
-                End If
+                'If Me.Attributes("EditMode") = "True" Then
+                '    cmdNewField.Visible = True
+                'Else
+                '    cmdNewField.Visible = False
+                'End If
             End If
         Else
             mbShowRFPanel = True 'take this out

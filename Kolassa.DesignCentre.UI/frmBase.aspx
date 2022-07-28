@@ -129,7 +129,7 @@
 <div class="Jumbotron">
     <br />
     </div>
-    <asp:Button ID="Button1" runat="server" Text="Button" />
+    <asp:Button ID="Button1" runat="server" Text="Go" Visible="false" />
     <!-- FRMREPORTS START -->
     <asp:Label ID="lblReportLabel" runat="server" CssClass="h2" />
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -309,11 +309,11 @@
         <div id="moverlayinside">
             <div style="align-content:center; vertical-align:middle; text-align:center; ">
                  <p>Loading . . . </p> <img style="height:25px;" src="images/loading_nice.gif" /> 
-                 <p><button id="btnoverlay2" class="btn btn-light btn-sm" onclick="document.getElementById('moverlay').style.display = 'none';" >No</button></p>
+                 <p><button id="btnoverlay2" type="button" class="btn btn-light btn-sm" onclick="document.getElementById('moverlay').style.display = 'none';" >No</button></p>
             </div>
         </div>
     </div>
-    <button id="btnoverlay" class="d-none" onclick="document.getElementById('moverlay').style.display = 'none';" >Yes</button>
+    <button id="btnoverlay" type="button" class="d-none" onclick="document.getElementById('moverlay').style.display = 'none';" >Yes</button>
        
     <!-- frmReports FINISH -->
     <div class="cont">
@@ -341,12 +341,43 @@
 					            <asp:Panel ID="upData" runat="server"  >
 						            <asp:UpdatePanel ID="upBase" runat="server" ChildrenAsTriggers="false" UpdateMode="Conditional">
 							            <ContentTemplate>
-                                            <ajaxToolkit:TabContainer ID="tcEditData" AutoPostBack="true"  CssClass="ajaxKolassa" runat="server" Height="100%" ActiveTabIndex="0" OnClientActiveTabChanged="clientActiveTabChanged" >
+                                            <ajaxToolkit:TabContainer ID="tcEditData" AutoPostBack="true"  CssClass="ajaxKolassa" runat="server" 
+                                                Height="100%" ActiveTabIndex="0"  OnClientActiveTabChanged="clientActiveTabChanged" >
                                                 <ajaxToolkit:TabPanel ID="tabEdit"  runat="server"  CssClass="ajaxKolassa" 
                                                       HeaderText="Edit Record <i class='fa fa-edit'></i>"  >
                                                     <ContentTemplate>
                                                         <cc1:reportcontainer runat="server" ID="rptBase"  ReportCategoryType="frmVendors" ></cc1:reportcontainer>
                                                         <asp:button runat="server" ID="cmdUpdateStuff" Text="X" ToolTip="Refresh" class="d-none btn btn-link"/>
+      
+                                                        
+                                                        
+                                                        
+                                                        <center>
+    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#MyPopup">
+        Open Modal</button>
+</center>
+<!-- Modal Popup -->
+<div id="MyPopup" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    &times;</button>
+                <h4 class="modal-title">
+                    Greetings
+                </h4>
+            </div>
+            <div class="modal-body">
+                Welcome to ASPSnippets.com
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnClosePopup" value="Close" class="btn btn-danger" />
+            </div>
+        </div>
+    </div>
+</div>
+      ''*****
                                                     </ContentTemplate>
                                                 </ajaxToolkit:TabPanel>
                                                 <ajaxToolkit:TabPanel ID="tabImages" runat="server" 
@@ -366,26 +397,28 @@
                                                     </ContentTemplate>
                                                 </ajaxToolkit:TabPanel>
                                             </ajaxToolkit:TabContainer>
-								            <i class='fa fa-ed'></i>
-							            </ContentTemplate>
+								         
+                                          
+                                        </ContentTemplate>
 							            <Triggers>
                                             <asp:AsyncPostBackTrigger ControlID="cmdSaveRecord"  EventName="Click" />
 								            <asp:AsyncPostBackTrigger ControlID="cmdUPData"      EventName="Click" />
                                             <asp:AsyncPostBackTrigger ControlID="cmdDelData"     EventName="Click" />
+                                            <asp:AsyncPostBackTrigger ControlID="tceditdata" EventName="Load" />
 							            </Triggers>
 						            </asp:UpdatePanel><!-- Modal footer -->	
 						            <asp:updateprogress associatedupdatepanelid="upBase"  id="updateProgress" runat="server">
 							            <progresstemplate>
                                             <!-- ************* Progress Stuff **************** -->
                                             <div id="progressBackgroundFilter"></div>
-								            <div id="processMessage" style="text-align:center;"> Loading...<br /><br /><img style="width:30px;" alt="Loading" src="images/loading_nice.gif" /></div>           
+								            <div id="processMessage" style="text-align:center;"> Loading Data...<br /><br /><img style="width:30px;" alt="Loading" src="images/loading_nice.gif" /></div>           
 							            </progresstemplate>
 						            </asp:updateprogress> 	
 					            </asp:Panel>    
 				            </div>
                             <div class="modal-footer" style="background-color: white;">
-                                <div id="divsaverecord" style="background-color: white;">
-		                            <asp:Button ID="cmdSaveRecord" runat="server" Text="Save"          class="btn btn-primary" ></asp:button> 
+                                  <asp:Button ID="cmdSaveRecord" runat="server" Text="Save me"          class="btn btn-primary" ></asp:button> 
+                                <div id="divsaverecord" style="background-color: white;">		                           
 					                <asp:Button ID="cmdSQL"        runat="server" Text="Load SQL"      class="btn btn-primary" Visible="false"></asp:button>
 					                <asp:Button ID="cmdLoad"       runat="server" Text="Load Record"   class="btn btn-primary" visible="false"></asp:button> 
 					                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -569,7 +602,9 @@
             if (sID === undefined) { sID = currow.find('label:eq(0)').data("id"); }
             $('#<%= txtID.ClientID %>').val(sID);
             $('#<%= txtID.ClientID %>').attr("data-Action", "update");
+            $get('MainContent_updateProgress').style.display = 'block';
             document.getElementById('<%= cmdUPData.ClientID %>').click()
+            $get('MainContent_updateProgress').style.display = 'none';
             $(tthis).addClass('table-active').siblings().removeClass('table-active');
             $(tthis).attr('data-toggle', 'modal');
             $(tthis).attr('data-target', '#DataModal');
@@ -593,6 +628,7 @@
                 var dhref = event.target.nodeName;
 
                 if (dhref != "A") {
+                  //  clientActiveTabChanged(this,0);
                     fSetPhase(this);
                 } else {
                     event.stopPropagation
@@ -933,7 +969,7 @@
   
     <script>
         function clientActiveTabChanged(sender, args) {
-            // alert(sender.get_activeTabIndex());
+             alert(sender.get_activeTabIndex());
             switch (sender.get_activeTabIndex()) {
                 case 0:
                     ShowDivSaveRecordIMG('block')

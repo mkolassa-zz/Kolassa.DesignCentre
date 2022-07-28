@@ -159,10 +159,10 @@ Public Class clsCustomer
 			End Select
 
 		Next
-		If ID = "" Then
-			Insert()
-		Else
-			Update()
+        If ID = "" Then 'INSERTUPDATE
+            Insert()
+        Else
+            Update()
 		End If
 		lsString = lsString
 	End Sub
@@ -1532,8 +1532,8 @@ Public Class clsBase
 	Public Property UpdateUser As String
 	Public Property UpdateUserName As String
 	Public Property CreateUserName As String
-
-	Public Property NodeID As Integer
+    Public Property ProjectID As String
+    Public Property NodeID As Integer
 	Public Property ImageUrl As String
 	Public FormValue As List(Of KeyValuePair(Of String, String))
 	Public Property ErrorMessage As String
@@ -1541,8 +1541,10 @@ Public Class clsBase
 	Public Property EditMode As Boolean
 	Public Property ObjectType As String
 	Public Sub New()
-		NodeID = System.Web.HttpContext.Current.Session("NodeID")
-	End Sub
+        NodeID = System.Web.HttpContext.Current.Session("NodeID")
+        ProjectID = System.Web.HttpContext.Current.Session("Project")
+
+    End Sub
 	Public Overridable Sub processFormValues()
 		Dim lsString As String = ""
 		For Each kvp As KeyValuePair(Of String, String) In FormValue
@@ -1579,14 +1581,39 @@ Public Class clsBase
 			End Select
 
 		Next
-		If ID = "" Then
+        If CodeExists() Then
+            ErrorMessage = "Item Code already exists on another item.  Please change the code field."
+            lsString = ErrorMessage
+            Exit Sub
+        End If
+        If ID = "" Then
 			Insert()
 		Else
 			Update()
 		End If
 		lsString = lsString
 	End Sub
-	Public Overridable Sub Delete()
+	Public Function GetNextCode() As String
+		GetNextCode = ""
+        Dim c As New Kolassa.DesignCenter.ReportManager.clsDataLoader
+        GetNextCode = c.fGetNextCode(NodeID, ObjectType, TableName, ProjectID, ErrorMessage)
+	End Function
+    Public Function CodeExists() As Boolean
+        CodeExists = False
+        Dim c As New Kolassa.DesignCenter.ReportManager.clsDataLoader
+        CodeExists = c.fAutoNumberExists(NodeID, ObjectType, TableName, ProjectID, ID, Code, ErrorMessage)
+    End Function
+    Public Function GetTableNameFromObjType() As String
+        GetTableNameFromObjType = ""
+        Dim c As New Kolassa.DesignCenter.ReportManager.clsDataLoader
+        Dim ds As DataSet = c.LoadReports(0, ObjectType, 0)
+        If ds.Tables.Count > 0 Then
+            If ds.Tables(0).Rows.Count > 0 Then
+                GetTableNameFromObjType = ds.Tables(0).Rows(0)("TableName")
+            End If
+        End If
+    End Function
+    Public Overridable Sub Delete()
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		c.DeleteBase(ID, NodeID)
 		ErrorMessage = c.ErrorMessage
@@ -1613,13 +1640,15 @@ Public Class clsBases
 	Public NODEID As Long
 	Public Active As Boolean
 	Public ID As String
+    Public ProjectID As String
+    Public Sub New()
+        ProjectID = System.Web.HttpContext.Current.Session("ProjectID")
+        NODEID = System.Web.HttpContext.Current.Session("NodeID")
+        objType = System.Web.HttpContext.Current.Session("objType")
+        If objType Is Nothing Or objType = "" Then objType = "Units"
+    End Sub
 
-	Public Sub New()
-		NODEID = System.Web.HttpContext.Current.Session("NodeID")
-		objType = System.Web.HttpContext.Current.Session("objType")
-		If objType Is Nothing Or objType = "" Then objType = "Units"
-	End Sub
-	Public Function GetObject(lsObjType As String) As clsBase
+    Public Function GetObject(lsObjType As String) As clsBase
 		If lsObjType Is Nothing Then lsObjType = "BASE"
 		Select Case lsObjType.ToUpper
 			Case "ROOMS" : GetObject = New clsRoom
@@ -1640,8 +1669,9 @@ Public Class clsBases
                 GetObject = New clsDBObject(lsObjType)
                 GetObject.ObjectType = lsObjType
         End Select
-		GetObject.ObjectType = lsObjType
-	End Function
+        GetObject.ObjectType = lsObjType
+        GetObject.ProjectID = ProjectID
+    End Function
 	Public Function GetTableNameFromObjType() As String
 		GetTableNameFromObjType = ""
 		Dim c As New Kolassa.DesignCenter.ReportManager.clsDataLoader
@@ -1651,8 +1681,6 @@ Public Class clsBases
 				GetTableNameFromObjType = ds.Tables(0).Rows(0)("TableName")
 			End If
 		End If
-
-
 	End Function
 	Overridable Function GetRecordData(SortExpression As String, SortOrder As String, lsObjectID As String, lsObjType As String, lbActive As Boolean, lsWhere As String, stable As String) As DataSet 'IEnumerable(Of clsCustomer)
 		Dim ds As New DataSet
@@ -1661,7 +1689,7 @@ Public Class clsBases
 		Dim colName As String
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 
-		If ID = "" Then ID = lsObjectID
+        If ID = "" Then ID = lsObjectID
 		Select Case objType.ToUpper
 			Case "ROOMS" : ds = c.LoadRooms(NODEID, lsWhere, Active, ID)
 			Case "UNITS" : ds = c.LoadUnits(NODEID, lsWhere, Active, "", ID) 'FIX THIS
@@ -2311,8 +2339,8 @@ Public Class clsDBObject
 		Dim lbOK As Boolean
 		lbOK = c.InsertThings(FormValue, TableName, ID, NodeID, Name, Description, Code)
 		If lbOK = False Then
-			ErrorMessage = lsMsg
-		End If
+            ErrorMessage = c.msErrorMsg
+        End If
 	End Sub
 	Public Overloads Function Update(obj As clsDBObject) As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
@@ -2372,10 +2400,15 @@ Public Class clsDBObject
 			End Select
 
 		Next
-		If ID = "" Then
-			Insert()
-		Else
-			Update(Me)
+        If CodeExists() Then
+            ErrorMessage = "Item Code already exists on another item.  Please change the code field."
+            lsString = ErrorMessage
+            Exit Sub
+        End If
+        If ID = "" Then 'INSERTUPDATE
+            Insert()
+        Else
+            Update(Me)
 		End If
 		lsString = lsString
 	End Sub

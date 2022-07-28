@@ -10,8 +10,9 @@ Partial Class frmBase
     End Sub
     Private Sub ShowMessage(Message As String, type As String)
 		Dim m As String = fTakeOutQuotes(Message)
-		Dim t As String = fTakeOutQuotes(type)
-		Dim s As String = "$( document ).ready(function() {ShowMessage('" & m & "','" & t & "');});"
+        Dim t As String = fTakeOutQuotes(type)
+        m = m.Replace(vbCrLf, " ")
+        Dim s As String = "$( document ).ready(function() {ShowMessage('" & m & "','" & t & "');});"
 		ScriptManager.RegisterStartupScript(Page, Page.GetType(), "script", s, True)
         'ScriptManager.RegisterStartupScript(Page, Page.GetType(), "script1", "$( document ).ready(function() {aalert('Stop');});", True)
     End Sub
@@ -38,7 +39,7 @@ Partial Class frmBase
 		'Dim asyncpb As Boolean '= upData.IsInPartialRendering
 		Session("objType") = Request.QueryString("objType")
 
-		Exit Sub
+        Exit Sub
 	End Sub
 
     Protected Sub cmd_cmdSQL(s As Object, e As EventArgs) Handles cmdSQL.Click
@@ -153,11 +154,11 @@ Partial Class frmBase
 
 
 
-	'Protected Sub grdData_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles grdData.PageIndexChanging
-	'	grdData.PageIndex = e.NewPageIndex
-	'	grdData.DataBind()
-	'End Sub
-	Protected Sub SaveRecord(sender As Object, e As EventArgs) Handles cmdSaveRecord.Click
+    'Protected Sub grdData_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles grdData.PageIndexChanging
+    '	grdData.PageIndex = e.NewPageIndex
+    '	grdData.DataBind()
+    'End Sub
+    Protected Sub SaveRecord(sender As Object, e As EventArgs) Handles cmdSaveRecord.Click
 		Dim cBases As New clsBases
 		Dim o As New clsBase
 
@@ -177,8 +178,8 @@ Partial Class frmBase
 
 		If Not o.ErrorMessage Is Nothing Then
 			If o.ErrorMessage.Length > 0 Then
-				ShowMessage(o.ErrorMessage, "Error")
-			End If
+                ShowMessage(o.ErrorMessage, "Error")
+            End If
 		Else
 			ShowMessage("Record Saved Successfully", "Success")
 		End If
@@ -186,6 +187,7 @@ Partial Class frmBase
 		ReportResults.bindgv()
 		'rebindGrid()
 	End Sub
+
     Protected Sub cmdLoad_Click(sender As Object, e As EventArgs) Handles cmdLoad.Click
         Dim c As New clsBases
         Dim ds As DataSet
@@ -413,6 +415,11 @@ Partial Class frmBase
 		Dim lsx As String
 		lsx = "asdf"
 	End Sub
+
+    Private Sub tcEditData_Load(sender As Object, e As EventArgs) Handles tcEditData.Load
+        Dim x As Integer
+        x = 4
+    End Sub
 
     'Sub rebindGrid()
     '	Try

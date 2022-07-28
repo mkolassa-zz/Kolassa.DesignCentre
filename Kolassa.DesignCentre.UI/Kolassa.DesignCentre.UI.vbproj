@@ -365,6 +365,7 @@
     <Content Include="Controls\ctrlProjectList.ascx" />
     <Content Include="Controls\ctrlQuoteLookup.ascx" />
     <Content Include="dccharts.asmx" />
+    <Content Include="dcwebservices.asmx" />
     <Content Include="Default.aspx" />
     <Content Include="fonts\dc_fonts.css" />
     <Content Include="fonts\designcenter.svg" />
@@ -841,6 +842,10 @@
     </Compile>
     <Compile Include="dccharts.asmx.vb">
       <DependentUpon>dccharts.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="dcwebservices.asmx.vb">
+      <DependentUpon>dcwebservices.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="frmReports.aspx.designer.vb">

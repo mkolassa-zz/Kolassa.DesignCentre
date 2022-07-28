@@ -23,8 +23,25 @@ Public Class clsDataLoader
 	Public ProjectID As String = "11112222-3333-4444-5555-666677778888"
 	Dim NL As String = Chr(13) & Chr(10)
     Public Sub New()
-        NodeID = System.Web.HttpContext.Current.Session("NodeID")
-        ProjectID = System.Web.HttpContext.Current.Session("Project")
+        Try
+            Dim s As String = ""
+            If System.Web.HttpContext.Current.Session("Project") Is Nothing Then
+            Else
+                s = System.Web.HttpContext.Current.Session("Project")
+            End If
+            If s Is Nothing Then
+            Else
+                If s.Length = 36 Then
+                    ProjectID = System.Web.HttpContext.Current.Session("Project")
+                End If
+                If System.Web.HttpContext.Current.Session("NodeID").ToString.Length > 0 Then
+                    NodeID = System.Web.HttpContext.Current.Session("NodeID")
+                End If
+            End If
+        Catch
+        End Try
+        'NodeID = System.Web.HttpContext.Current.Session("NodeID")
+        ' ProjectID = System.Web.HttpContext.Current.Session("Project")
         '      If Not IsNothing(ProjectID) Then Stop
         mscnType = "SQLConnection" '"OLEDB"
         mscnStr = System.Configuration.ConfigurationManager.ConnectionStrings.Item("ReportManager").ToString
@@ -201,6 +218,11 @@ Public Class clsDataLoader
         End If
         If lsSearchClause = "" Then lsSearchClause = " isnull([code],' ' ) + isnull( [name],' ') + isnull( [description],' ') "
         lsSQL = Replace(lsSQL, "@WHERE@", lsWhere)
+        If ProjectID.Length = 36 Then
+            lsSQL = Replace(lsSQL, "@OBJECTID@", "  ObjectID = '" & ProjectID & "' AND ")
+        Else
+            lsSQL = Replace(lsSQL, "@OBJECTID@", "")
+        End If
         lsSQL = Replace(lsSQL, "SearchText", " " + lsSearchClause + " ")
 
 
@@ -873,6 +895,90 @@ LoadChildrenError:
         End If
         Return False
     End Function
+    '*********************************
+    '*** Autonumber
+    '*********************************
+    Public Function fGetNextCode(NodeID As Long, ObjectType As String, TableName As String, ProjectID As String, ErrMsg As String) As String
+        fGetNextCode = ""
+        Dim lsSQL As String
+        Dim lscnStr As String = mscnStr
+        Dim llAutonumber As Double = 0
+        Dim lsCodePattern As String = "@"
+        Dim lsID = "12341234-4321-5432-6543-653465346534"
+        '*** Initialize
+
+        If NodeID = 0 Then
+            'response.write("No Project Selectedd")
+            Exit Function
+        End If
+
+        lsSQL = "Select * from tblAutonumber
+                 WHERE  NodeID = " & NodeID & " 
+                    And Code = '" & ObjectType & "' 
+                    And Active = 1
+                    and ObjectID = '" & ProjectID & "'  "
+
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        Dim t As DataTable
+        Dim r As DataRow
+        ds = fGetDataset("SQLConnection", lscnStr, lsSQL, "Projects")
+
+        If ds.Tables.Count > 0 Then
+            If ds.Tables(0).Rows.Count > 0 Then
+                t = ds.Tables(0)
+                r = t.Rows(0)
+                llAutonumber = r("CurrentCount")
+                lsCodePattern = r("CodePattern")
+                lsID = r("ID").ToString
+                If InStr(lsCodePattern, "@") > 0 Then
+                    lsCodePattern = Replace(lsCodePattern, "@", CStr(llAutonumber + 1).Trim)
+                Else
+                    lsCodePattern = CStr(llAutonumber + 1).Trim
+                End If
+            End If
+        End If
+        Dim cmd As SqlCommand
+        cmd = New SqlCommand
+
+        lsSQL = "UPDATE TBLAUTONUMBER SET CurrentCount = " & llAutonumber + 1 & " Where ID = '" & lsID & "'"
+        cmd.CommandText = lsSQL
+        Dim lbRetVal As Boolean = fExecuteSQLCmd("SQLConnection", lscnStr, cmd)
+        Return lsCodePattern
+    End Function
+
+    Public Function fAutoNumberExists(NodeID As Long, ObjType As String, TableName As String, ProjectID As String, ID As String, Code As String, ErrMsg As String) As Boolean
+        fAutoNumberExists = False
+        Dim lsSQL As String
+        Dim lscnStr As String = mscnStr
+        '*** Initialize
+
+        If NodeID = 0 Then
+            'response.write("No Project Selectedd")
+            Exit Function
+        End If
+
+        lsSQL = "Select ID from " & TableName & " 
+                 WHERE  NodeID = " & NodeID & " 
+                    and Code = '" & Code & "' 
+                    and ObjectID = '" & ProjectID & "'
+                    and Active = 1 "
+        If Not ID Is Nothing Then
+            If ID.Length = 36 Then lsSQL = lsSQL & " and ID<>'" & ID & "' "
+        End If
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        ds = fGetDataset("SQLConnection", lscnStr, lsSQL, "Projects")
+
+        If ds.Tables(0).Rows.Count > 0 Then
+            Return True
+        Else
+            Return False
+        End If
+
+    End Function
 End Class
 Public Class clsReportFields
 
@@ -1099,5 +1205,7 @@ Public Class clsReportField
         Update = c.fExecuteSQLCmd("SQLConnection", c.mscnStr, msSQLcmd)
         ErrorMessage = c.msErrorMsg
     End Function
+
+
 End Class
 
