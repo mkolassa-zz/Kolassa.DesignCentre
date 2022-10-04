@@ -90,12 +90,12 @@ Public Class ApplicationUserManager
           .Subject = "Security Code",
           .BodyFormat = "Your security code is {0}"
         })
-        
+
         ' Configure user lockout defaults
         manager.UserLockoutEnabledByDefault = True
         manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5)
         manager.MaxFailedAccessAttemptsBeforeLockout = 5
-        
+
         manager.EmailService = New EmailService()
         manager.SmsService = New SmsService()
         Dim dataProtectionProvider = options.DataProtectionProvider
@@ -104,6 +104,7 @@ Public Class ApplicationUserManager
         End If
         Return manager
     End Function
+
 End Class
 
 Public Class ApplicationSignInManager
@@ -119,4 +120,6 @@ Public Class ApplicationSignInManager
     Public Shared Function Create(options As IdentityFactoryOptions(Of ApplicationSignInManager), context As IOwinContext) As ApplicationSignInManager
         Return New ApplicationSignInManager(context.GetUserManager(Of ApplicationUserManager)(), context.Authentication)
     End Function
+
+
 End Class

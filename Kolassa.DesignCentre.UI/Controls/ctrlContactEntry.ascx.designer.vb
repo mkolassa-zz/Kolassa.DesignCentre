@@ -122,6 +122,15 @@ Partial Public Class ctrlContactEntry
     Protected WithEvents txtContactLastName As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''chkPrimary control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkPrimary As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
     '''txtContactAddress control.
     '''</summary>
     '''<remarks>

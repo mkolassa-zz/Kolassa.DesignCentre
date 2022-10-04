@@ -53,19 +53,19 @@ Partial Class frmBase
 			ShowMessage(Err.Description, "Error")
 		End Try
 	End Sub
-	Protected Sub cmdNew_Click(sender As Object, e As EventArgs) 'Handles cmdNew.Click
-		'Stop
-		Try
+    Protected Sub cmdNew_Click(sender As Object, e As EventArgs) 'Handles cmdNewrec.Click
+        'Stop
+        Try
 
-			Dim s As String
-			s = "12111111-1111-1111-1111-111122223333"
-			LoadRecord(s)
-			Exit Sub
-		Catch
-			'debug.print(Err.Description)
-		End Try
-	End Sub
-	Protected Sub cmdUPData_Click(sender As Object, e As EventArgs) Handles cmdUPData.Click
+            Dim s As String
+            s = "12111111-1111-1111-1111-111122223333"
+            LoadRecord(s)
+            Exit Sub
+        Catch
+            'debug.print(Err.Description)
+        End Try
+    End Sub
+    Protected Sub cmdUPData_Click(sender As Object, e As EventArgs) Handles cmdUPData.Click
 		Dim s As String
 		s = txtID.Text
 		LoadRecord(s)
@@ -109,10 +109,28 @@ Partial Class frmBase
 		Try
 			Dim c As New clsBases
 			Dim ds As DataSet
-			If s = "" Then
-				ds = New DataSet
-			Else
-				Dim sWhere = "ID = '" & s & "'" ') '" & txtID.Text & "'"
+            If s = "" Or s = "00000000-0000-0000-0000-000000000000" Then
+                ds = New DataSet
+                Dim dt As DataTable = New DataTable
+                dt.Columns.Add("ID")
+                dt.Columns.Add("CODE")
+
+                's = Guid.NewGuid.ToString
+                Dim ProjectID As String = Session("Project") '1000
+                Dim ObjectType As String = Request.QueryString("objType") '1000
+                Dim TableName As String
+                Dim errorMessage As String = ""
+                Dim NodeID As Long = Session("NodeID")
+                TableName = "11112222-3333-4444-5555-666677778888"
+
+                Dim cn As New Kolassa.DesignCenter.ReportManager.clsDataLoader
+                Dim newcodestring As String = cn.fGetNextCode(NodeID, ObjectType, TableName, ProjectID, errorMessage)
+                dt.Rows.Add(s, newcodestring)
+
+                ds.Tables.Add(dt)
+
+            Else
+                Dim sWhere = "ID = '" & s & "'" ') '" & txtID.Text & "'"
 				ds = c.GetRecordData("", "", s, Request.QueryString("objType"), True, sWhere, rptBase.TableName)
 			End If
 
@@ -420,6 +438,12 @@ Partial Class frmBase
         Dim x As Integer
         x = 4
     End Sub
+
+    Private Sub cmdClearSelectedItems_Click(sender As Object, e As EventArgs) Handles cmdClearSelectedItems.Click
+        rptBase.DumpSelectedValues()
+    End Sub
+
+
 
     'Sub rebindGrid()
     '	Try

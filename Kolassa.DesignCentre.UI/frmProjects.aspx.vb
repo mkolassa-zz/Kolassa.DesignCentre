@@ -47,10 +47,10 @@ Public Class frmProjects
 
 
 	Protected Sub cmdAdd_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        Dim t As TextBox
+		Dim t As TextBox
 		t = Me.gvPhases.FooterRow.FindControl("Name")
 		Dim lsName As String = t.Text ' ((TextBox)gvIngredient.headerRow.FindControl("tbIngredient")).Text;
-        If lsName = "" Then
+		If lsName = "" Then
 			'response.write("You must enter a Name.")
 		Else
 			odsPhases.Insert()
@@ -59,8 +59,45 @@ Public Class frmProjects
 
 
 	End Sub
+    Function fGetRoles() As DataTable
+        Dim u As ApplicationUser
+    End Function
+    Function fGetProjectAddress() As String
+        Dim c As clsProject = Session("ProjectObject")
 
-	Protected Sub ObjectDataSource1_Inserting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.ObjectDataSourceMethodEventArgs) Handles odsPhases.Inserting
+        If Not c Is Nothing Then
+            Return Trim(c.Address)
+        Else
+            Return ""
+        End If
+    End Function
+    Function fGetProjectAddressMap() As String
+        Dim c As clsProject = Session("ProjectObject")
+        If Not c Is Nothing Then
+            Return " https://maps.google.com/maps?q=" & Trim(c.Longitude) & "," & Trim(c.Latitude) & "&output=svembed"
+        Else
+            Return ""
+        End If
+    End Function
+    Function fGetProjectLatitude() As String
+        Dim c As clsProject = Session("ProjectObject")
+
+        If Not c Is Nothing Then
+            Return c.Latitude
+        Else
+            Return ""
+        End If
+    End Function
+    Function fGetProjectLongitude() As String
+        Dim c As clsProject = Session("ProjectObject")
+
+        If Not c Is Nothing Then
+            Return c.Longitude
+        Else
+            Return ""
+        End If
+    End Function
+    Protected Sub ObjectDataSource1_Inserting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.ObjectDataSourceMethodEventArgs) Handles odsPhases.Inserting
 		Dim t As TextBox
 		'Dim c As CheckBox
 		Dim d As DropDownList

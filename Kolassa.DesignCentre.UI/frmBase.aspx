@@ -14,7 +14,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
     
-	<style>
+
+    
+    <style>
 	    th { height:100px;    }
 
 		tr:not(:first-child):hover {  text-decoration: underline; color: rgb(0,0,255)}
@@ -160,7 +162,7 @@
                     <asp:linkbutton ID="lnkExport"      runat="server" tooltip="Download" ><i class="dc-Download"></i></asp:linkbutton>
                 </li>
                 <li class="dropdown">
-                      <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" title="Design Centre" aria-haspopup="true" aria-expanded="false">
                         <i class='fa fa-upload  padding-left:80px;'></i>
                       </button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -169,9 +171,9 @@
                       </div>
                     </li>
                 <li class="nav-item" style="padding-left:20px;padding-right:10px; padding-top:5px;">
-                    <asp:linkButton  ID="cmdNewrec"   runat="server" tooltip="Add Record" CssClass="newrec" OnClientClick="newrec(this)">
+                    <asp:linkButton  ID="cmdNewrec"   runat="server" tooltip="Add Record" CssClass="newrec" OnClientClick="fSetPhase(this);" data-dude="newrec(this);" >
                         <i class='fa fa-plus-circle fa-1x' ></i></asp:linkButton>
-                      <img src="images/add.PNG" class="d-none"  ID="anewrec"  onclick="newrec(this)"/>
+                      <img src="images/add.PNG" class="d-none"  ID="anewrec"  onclick="fSetPhase(this)"/>
                 </li>
             </ul>
         </div>
@@ -183,6 +185,10 @@
 		    <asp:label   id="lblSearch" runat="server" class="d-none form-control my-1 py-1"  />
 	        <asp:Button  ID="cmdSearch" runat="server" class="fa-search" Text ="Search" Visible="false"></asp:button>
             <asp:Button ID="btnAjax" runat="server" OnClientClick="callAjaxMethod(event)" visible="false" Text="Call method using Ajax" />
+                <asp:linkbutton ID="cmdClearSelectedItems" runat="server" CssClass="clearSelectedItems button"  visible="true" Text="Clear Selected Items" > 
+                    Clear Selected Items
+                    </asp:linkbutton>
+ 
         </div>
     </nav>
 
@@ -193,10 +199,11 @@
                     <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne">Filter</button>									
                 </h2>
             </div>
-            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+            <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
                 <div class="card-body">
                     <cc1:ReportContainer ID="ReportContainer1" runat="server"  CssClass="row" showDebug="True" 
                         ReportListClass="list-group-item " ReportListSelectedClass="list-group-item list-group-item-primary"/>
+
                 </div>
             </div>
         </div>
@@ -328,7 +335,7 @@
                 <div class="inner">
 	            <asp:Panel Runat="server" ID="pnlData"   Visible = "true">
 		            <!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR Data -->
-		            <div class="modal fade" id="DataModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		            <div class="modal fade " data-backdrop="static"  id ="DataModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		              <div class="modal-dialog modal-xl" role="document">
 			            <div class="modal-content">
 				            <div class="modal-header">
@@ -337,7 +344,9 @@
 					              <span aria-hidden="true">&times;</span>
 					            </button>
 				            </div>
+                            <!-- Header Close -->
 				            <div class="modal-body">
+                                <mbody></mbody>
 					            <asp:Panel ID="upData" runat="server"  >
 						            <asp:UpdatePanel ID="upBase" runat="server" ChildrenAsTriggers="false" UpdateMode="Conditional">
 							            <ContentTemplate>
@@ -347,37 +356,10 @@
                                                       HeaderText="Edit Record <i class='fa fa-edit'></i>"  >
                                                     <ContentTemplate>
                                                         <cc1:reportcontainer runat="server" ID="rptBase"  ReportCategoryType="frmVendors" ></cc1:reportcontainer>
+                                                      <!-- ReportContainer close -->
                                                         <asp:button runat="server" ID="cmdUpdateStuff" Text="X" ToolTip="Refresh" class="d-none btn btn-link"/>
-      
                                                         
-                                                        
-                                                        
-                                                        <center>
-    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#MyPopup">
-        Open Modal</button>
-</center>
-<!-- Modal Popup -->
-<div id="MyPopup" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">
-                    &times;</button>
-                <h4 class="modal-title">
-                    Greetings
-                </h4>
-            </div>
-            <div class="modal-body">
-                Welcome to ASPSnippets.com
-            </div>
-            <div class="modal-footer">
-                <input type="button" id="btnClosePopup" value="Close" class="btn btn-danger" />
-            </div>
-        </div>
-    </div>
-</div>
-      ''*****
+
                                                     </ContentTemplate>
                                                 </ajaxToolkit:TabPanel>
                                                 <ajaxToolkit:TabPanel ID="tabImages" runat="server" 
@@ -396,17 +378,20 @@
                                                         <uc1:ctrlContactEntry runat="server" ID="ctrlContactEntry1" />
                                                     </ContentTemplate>
                                                 </ajaxToolkit:TabPanel>
+
                                             </ajaxToolkit:TabContainer>
-								         
+								         <!-- TabContainer Close -->
                                           
                                         </ContentTemplate>
 							            <Triggers>
                                             <asp:AsyncPostBackTrigger ControlID="cmdSaveRecord"  EventName="Click" />
 								            <asp:AsyncPostBackTrigger ControlID="cmdUPData"      EventName="Click" />
                                             <asp:AsyncPostBackTrigger ControlID="cmdDelData"     EventName="Click" />
-                                            <asp:AsyncPostBackTrigger ControlID="tceditdata" EventName="Load" />
+                                                   <asp:AsyncPostBackTrigger ControlID="cmdClearSelectedItems"     EventName="Click" />
 							            </Triggers>
-						            </asp:UpdatePanel><!-- Modal footer -->	
+						            </asp:UpdatePanel>
+                                     <!-- asp:AsyncPostBackTrigger ControlID="tceditdata" EventName="Load" / -->
+                                    <!-- Modal footer -->	
 						            <asp:updateprogress associatedupdatepanelid="upBase"  id="updateProgress" runat="server">
 							            <progresstemplate>
                                             <!-- ************* Progress Stuff **************** -->
@@ -415,15 +400,20 @@
 							            </progresstemplate>
 						            </asp:updateprogress> 	
 					            </asp:Panel>    
-				            </div>
-                            <div class="modal-footer" style="background-color: white;">
-                                  <asp:Button ID="cmdSaveRecord" runat="server" Text="Save me"          class="btn btn-primary" ></asp:button> 
-                                <div id="divsaverecord" style="background-color: white;">		                           
+				                <!-- upDta Panel Close -->
+                          
+                            <!-- Body Close -->
+                            <div class="modal-footer" data-backdrop="static" style="background-color: white;">
+                                 
+                                <div id="divsaverecord" style="background-color: white;">
+                                    <asp:Button ID="cmdSaveRecord" runat="server" Text="Save me"          class="btn btn-primary" ></asp:button> 	                           
 					                <asp:Button ID="cmdSQL"        runat="server" Text="Load SQL"      class="btn btn-primary" Visible="false"></asp:button>
 					                <asp:Button ID="cmdLoad"       runat="server" Text="Load Record"   class="btn btn-primary" visible="false"></asp:button> 
 					                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
 					            </div>
-                            </div>
+                            </div> 
+
+				            </div>
                         </div>
                     </div>
                 </div>
@@ -597,18 +587,51 @@
         }
 
         function fSetPhase(tthis) {
-            var currow = $(tthis).closest('tr');
-            var sID = currow.find('span:eq(0)').data("id");
-            if (sID === undefined) { sID = currow.find('label:eq(0)').data("id"); }
+            //** Find the ID from the Row
+            fResetForm();
+            var sID = '00000000-0000-0000-0000-000000000000';
+            var actiontype = 'insert';
+            var thisname = 'xx' + $(tthis).attr('class');
+            var newrecindex = thisname.indexOf("newrec");
+            if (newrecindex == -1) {
+                actiontype = 'update';
+                var currow = $(tthis).closest('tr');
+                sID = currow.find('span:eq(0)').data("id");
+                if (sID === undefined) { sID = currow.find('label:eq(0)').data("id"); }
+            }
+            {
+                fResetForm()
+            }
             $('#<%= txtID.ClientID %>').val(sID);
-            $('#<%= txtID.ClientID %>').attr("data-Action", "update");
-            $get('MainContent_updateProgress').style.display = 'block';
+            $('#<%= txtID.ClientID %>').attr("data-Action", actiontype);
+            
+          //  $get('MainContent_updateProgress').style.display = 'block';
             document.getElementById('<%= cmdUPData.ClientID %>').click()
-            $get('MainContent_updateProgress').style.display = 'none';
+          //  $get('MainContent_updateProgress').style.display = 'none';
             $(tthis).addClass('table-active').siblings().removeClass('table-active');
             $(tthis).attr('data-toggle', 'modal');
             $(tthis).attr('data-target', '#DataModal');
-            ShowDivSaveRecord("block");
+            var showdivtab = $(".ajax__tab_active").first().attr('id');
+            switch (showdivtab) {
+                case "MainContent_tcEditData_tabEdit_tab":
+                    ShowDivSaveRecord('block')
+                    break;
+                case "MainContent_tcEditData_tabImages_tab":
+                    ShowDivSaveRecord('none')
+                    break;
+                case "MainContent_tcEditData_tabContacts_tab":
+                    ShowDivSaveRecord('none')
+                    break;
+                default:
+                    ShowDivSaveRecord('none')
+
+            }
+            var prog = $get('MainContent_updateProgress');
+                prog.style.display = 'block';
+         //   if (newrecindex > -1) {
+                // Its a new record now go get the new code
+          //      newrec(tthis);
+          //  }
         }
         function fResetForm() {
             var x = document.getElementsByClassName("editmode")
@@ -703,6 +726,7 @@
             $(tthis).addClass('table-active').siblings().removeClass('table-active');
             $(tthis).attr('data-toggle', 'modal');
             $(tthis).attr('data-target', '#DataModal');
+            return true;
         }
         function findtd(class_name) {
             $("#" + class_name).find('table').each(function () {
@@ -714,7 +738,9 @@
                                 var txtval = this.id.toUpperCase();
                                 if (txtval.search("TXTCODE_CTRLFIELD1") >= 1) {
                                     var res = callAjaxMethod(this);
-
+                                   // var clr = $(".clearSelectedItems")
+                                   //     clr.trigger("click");
+                                   // $('#<%=cmdNewrec.ClientID %>').click(function () { });
                                 }
                             })
                         })
@@ -763,18 +789,19 @@
                 success: OnCodeSuccess_,
                 error: OnErrorCall_
             });
+            return true;
 
             function OnCodeSuccess_(response) {
               //  var xbtnname = $('<%= btnAjax.ClientID%>').value 
               //  var btn = document.getElementById('<%= btnAjax.ClientID%>')
               //   btn.value = (response.d);
                 thisctrl.value = (response.d);
-                return (response.d);
+                return true; // (response.d)
             }
             function OnErrorCall_(response) {
               //  $('#<%=txtID.ClientID%>').addClass("Error in calling Ajax:" + response.d);
                 thisctrl.value = ("Err Get Code");
-                return "Err geting code";
+                return true; // "Err geting code"  returning true so server code also runs to kill the last object
             }
         }
             
@@ -969,7 +996,7 @@
   
     <script>
         function clientActiveTabChanged(sender, args) {
-             alert(sender.get_activeTabIndex());
+             //alert(sender.get_activeTabIndex());
             switch (sender.get_activeTabIndex()) {
                 case 0:
                     ShowDivSaveRecordIMG('block')
@@ -993,4 +1020,37 @@
         ///</summary>
   //      function pageLoad() { alert('page loaded!') }
     </script>
+
+
+      <!--           SCRODAL MODAL TEST STUFF                                            
+                             <button type="button" class="button htmlopen-button">open modal</button>
+
+<dialog class="htmlmodal" id="htmlmodal">
+  <h2>An interesting title</h2>
+  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum esse nisi, laboriosam illum temporibus ipsam?</p>
+  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, quo.</p>
+  <button class="button htmlclose-button">close modal</button>
+
+    <label>Your name <input type="text"></label>
+    <label>Your email <input type="email"></label>
+    <button class="button" type="submit">submit form</button>
+
+
+</dialog>                           
+                                                        
+               <button data-scrodal-target="#scrodal">Open scrodal</button>
+  <div class="scrodal" id="scrodal">
+    <div class="scrodal-header">
+      <div class="title">Example scrodal</div>
+      <button data-close-button class="close-button">&times;</button>
+    </div>
+    <div class="scrodal-body">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse quod alias ut illo doloremque eum ipsum obcaecati distinctio debitis reiciendis quae quia soluta totam doloribus quos nesciunt necessitatibus, consectetur quisquam accusamus ex, dolorum, dicta vel? Nostrum voluptatem totam, molestiae rem at ad autem dolor ex aperiam. Amet assumenda eos architecto, dolor placeat deserunt voluptatibus tenetur sint officiis perferendis atque! Voluptatem maxime eius eum dolorem dolor exercitationem quis iusto totam! Repudiandae nobis nesciunt sequi iure! Eligendi, eius libero. Ex, repellat sapiente!
+    </div>
+  </div>
+  <div id="scroverlay"></div>
+      ''***** 
+        <link rel="stylesheet" type="text/css" href="Content/scrodal.css" />
+    <script src="Scripts/scrodal.js" ></script>
+-->
 </asp:Content>

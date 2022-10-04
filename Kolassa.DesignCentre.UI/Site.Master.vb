@@ -79,8 +79,30 @@ Public Class SiteMaster
         Dim lsUser = Web.HttpContext.Current.User.Identity.GetUserName
         u = myUserManager.FindByName(lsUser)
 
+
+
+
         '*** If u is nothing, No user logged in.  Get Out of here.
         If u Is Nothing Then Exit Sub
+        'Dim ac As application
+        Dim uc As New IdentityUserClaim
+        uc.ClaimType = "RealName"
+        uc.ClaimValue ="Mike"
+        Dim sc As New System.Security.Claims.Claim(uc.ClaimType, uc.ClaimValue)
+
+
+        u.Claims.Add(uc)
+        myUserManager.AddClaimAsync(lsUser, sc)
+        Dim nr As New IdentityUserRole
+        Dim lbAdmin As Boolean = False
+        For Each r As IdentityUserRole In u.Roles
+            Debug.Print(r.GetType.ToString)
+            If r.RoleId = "Admin" Then
+                lbAdmin = True
+
+                pnlNodeChange.Visible = True
+            End If
+        Next
 
         If Session("NodeID") = 0 Then
             Session("NodeID") = u.NodeID

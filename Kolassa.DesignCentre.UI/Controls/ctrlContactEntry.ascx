@@ -14,8 +14,11 @@
                     <div class="col-sm-4">
                     <div class="card" style="height: 18rem; width: 18rem;">
                         <div class="card-body">
-                        <h5 class="card-title"><asp:Label ID="lblName" runat="server" Text='<%#Eval("FirstName") & " " & Eval("LastName") %>' Font-Bold="true"/>  </h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Address Info</h6>
+                            <span id="starspan">
+                                <%#  IIf(Trim(Eval("Type")) = "Primary", "<i class='fa fa-star float-right float-top'> </i>", "") %>
+                            </span>
+                        <h5 class="card-title"><asp:Label ID="lblName" runat="server" Text='<%#Eval("FirstName") & " " & Eval("LastName") & " "   %>' Font-Bold="true"/>  </h5>
+
                             <a ID="lnkEditContact"  onclick="fSetContactFormValues(this)" href="#" data-toggle="modal" data-target="#contact_modal"
                                 data-id="<%#Eval("ID") %>"  
                                 data-parentid="<%#Eval("parentid") %>"  
@@ -28,8 +31,9 @@
                                 data-country="<%#Eval("Country") %>" 
                                 data-phone1="<%#Eval("Phone1") %>" 
                                 data-phone2="<%#Eval("Phone2") %>"  
+                                data-type="<%#Eval("Type") %>"  
                                 data-email1="<%#Eval("Email1") %>" 
-                                data-email2="<%#Eval("Email2") %>" ><i class='fa fa-cog float-right'></i>
+                                data-email2="<%#Eval("Email2") %>" ><i class='fa fa-edit float-right float-top'></i>
                                </a>
                             
                         <p class="card-text"><asp:literal ID="litAddress" runat="server" Text='<%#Eval("FullAddress") %>' /> 
@@ -92,6 +96,10 @@
                                           <label for="txtContactLast Name" class="col-form-label-sm">last</label>
                                            <asp:TextBox ID="txtContactLastName" MaxLength="50"  placeholder="Last name" CssClass="form-control"  runat="server" ></asp:TextBox>
                                         </div>
+                                        <div class="form-group col-sm-2">
+                                          <label for="chkPrimary" class="col-form-label-sm">Primary</label>
+                                           <asp:checkbox ID="chkPrimary" MaxLength="50"  placeholder="Primary" CssClass="form-control"  runat="server" ></asp:checkbox>
+                                        </div>
                                       </div>
                                  
                                       <div class="form-group">
@@ -134,7 +142,7 @@
                                           <asp:TextBox ID="txtContactEmail1"  MaxLength="50"  CssClass="form-control"  runat="server" ></asp:TextBox>
                                         </div>
                                         <div class="form-group col-md-12">
-                                          <label for="txtContactPhone2" class="col-form-label-sm">Email 2</label>
+                                          <label for="txtContactEmail2" class="col-form-label-sm">Email 2</label>
                                            <asp:TextBox ID="txtContactEmail2"  MaxLength="50"  CssClass="form-control"  runat="server" ></asp:TextBox>
                                         </div>
                                       </div>                                                 
@@ -179,11 +187,12 @@
         $('#<%= txtContactemail2.ClientID %>').val('');
         $('#<%= txtContactPhone1.ClientID %>').val('');
         $('#<%= txtContactPhone2.ClientID %>').val('');
+        $('#<%= chkPrimary.ClientID %>').checked = false;
     }
-        function fSetContactFormValues(tthis) {
-            var contact = $(tthis);
-            var sID = contact.data("id");
-  
+    function fSetContactFormValues(tthis) {
+        var contact = $(tthis);
+        var sID = contact.data("id");
+
         if (sID === undefined) { sID = contact.data("parentid"); }
         $('#<%= txtContactID.ClientID %>').val(sID);
         sID = contact.data("parentid");
@@ -212,7 +221,12 @@
         $('#<%= txtContactPhone1.ClientID %>').val(sID);
         sID = contact.data("phone2");
         $('#<%= txtContactPhone2.ClientID %>').val(sID);
-
+        sID = contact.data("type");
+        sID = sID.trim();
+        document.getElementById("<%= chkPrimary.ClientID %>").checked = false;
+        if (sID == 'Primary') { 
+            document.getElementById("<%= chkPrimary.ClientID %>").checked = true;
+    }
         $('#<%= txtContactID.ClientID %>').attr("data-Action", "update");
          //    document.getElementById('<%= btn_save.ClientID %>').click()
     //    $(tthis).addClass('table-active').siblings().removeClass('table-active');

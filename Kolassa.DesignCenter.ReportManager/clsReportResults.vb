@@ -528,8 +528,8 @@ Public Class ReportResults
                         If Not IsDBNull(dr("columnformat")) Then
                             formatstring = dr("columnformat")
                             If formatstring <> "" Then
-                                Select Case formatstring
-                                    Case "currency", "c", "C", "USD"
+                                Select Case formatstring.ToUpper
+                                    Case "CURRENCY", "C", "USD"
                                         bf.DataFormatString = "{0:c}"
                                     Case "D", "d"
                                         bf.DataFormatString = "{0:d}"

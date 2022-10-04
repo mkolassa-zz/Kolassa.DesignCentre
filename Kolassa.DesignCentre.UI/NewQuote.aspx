@@ -45,7 +45,7 @@
 			<div class="card">
 				<img src="images/2.png" class="card-img-top" style="width: 120px;" alt="...">
 				<div class="card-body">
-					<button id="cmdUnit" type="button" class="btn-group-lg btn-outline-primary" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-building"></i> Unit</button>			  
+					<button id="cmdUnit" type="button" class="btn-group-lg btn-outline-primary" data-toggle="modal" data-target="#UnitModal"><i class="fas fa-building"></i> Unit</button>			  
 					<h5 class="card-title"><asp:Label runat="server" ID ="lblSelectaUnit" Text ="Select a Unit" /></h5> 
 						<div class="panel-group">					
 							<div class="panel panel-default">
@@ -100,7 +100,7 @@
 	<!-- THIS IS THE PANEL FOR SEARCHING FOR A Project -->
 	<asp:Panel Runat="server" ID="pnlProjectLookup"   Width="400px" Visible = "true">
 		<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR SEARCHING FOR A Project -->
-		<div class="modal fade" id="ProjectModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal fade" id="ProjectModal2" tabindex="-1" role="dialog" aria-labelledby="ProjectModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -127,7 +127,7 @@
 	<!-- THIS IS THE PANEL FOR SEARCHING FOR A Unit -->
 	<asp:Panel Runat="server" ID="pnlQuoteLookup"   Visible = "true">
 		<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR SEARCHING FOR A QUOTE -->
-		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal fade" id="UnitModal" tabindex="-1" role="dialog" aria-labelledby="UnitModalLabel" aria-hidden="true">
 		  <div class="modal-dialog" role="document">
 			<div class="modal-content">
 			  <div class="modal-header">
@@ -152,7 +152,7 @@
 	<!-- THIS IS THE PANEL FOR SEARCHING FOR A CUstomer -->
 	<asp:Panel Runat="server" ID="pnlCustomerLookup"   Visible = "true">
 		<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR SEARCHING FOR A Customer -->
-		<div class="modal fade" id="CustomerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal fade" id="CustomerModal" tabindex="-1" role="dialog" aria-labelledby="CustomerModalLabel" aria-hidden="true">
 		  <div class="modal-dialog" role="document">
 			<div class="modal-content">
 			  <div class="modal-header">

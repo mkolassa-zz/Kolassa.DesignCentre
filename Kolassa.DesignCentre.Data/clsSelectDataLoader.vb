@@ -5,6 +5,7 @@ Imports System.Text.RegularExpressions
 'Imports System.IO
 Imports System.Configuration
 Imports Microsoft.AspNet.Identity
+
 'Imports Microsoft.AspNet.Identity.EntityFramework
 'Imports System.Security.Principal
 Public Class clsSelectDataLoader
@@ -209,8 +210,8 @@ Public Class clsSelectDataLoader
 			'response.write("No Project Selectedd")
 			Exit Function
 		End If
-        lsSQL = "SELECT F.NODEID, F.CODE ,F.ID, F.Name, F.Description, F.Active, F.Image, f.ImageURL, F.ProjectType , F.Code, F.ProjectTypeName    FROM " & NL &
-                "(Select P.NodeID, P.ID, P.Code, P.Name, P.Description, P.ImageURL, P.Active, P.Image, P.ProjectType, T.Code as typeCode, T.Name as ProjectTypeName  " & NL &
+        lsSQL = "SELECT F.NODEID, F.CODE ,F.ID, F.Name, F.Description, F.Active, F.Image, f.ImageURL, F.ProjectType , F.Code, F.ProjectTypeName  , f.addressmap, f.addressPrint, f.longitude, f.latitude  FROM " & NL &
+                "(Select P.NodeID, P.ID, P.Code, P.Name, P.Description, P.ImageURL, P.Active, P.Image, P.ProjectType, p.addressmap, p.addressPrint, p.longitude, p.latitude, T.Code as typeCode, T.Name as ProjectTypeName  " & NL &
                 "FROM tblProjects as P left join   tblProjectTypes as T on P.ProjectType = T.Code )  F                              " & NL &
                 "WHERE  ( NodeID=" & llNodeID & " " & IIf(lsWhere.Length > 4, " And " & lsWhere, "") &
                     IIf(lbActive = True, " And Active = 1 ", "") & ")" & NL &
@@ -229,57 +230,65 @@ Public Class clsSelectDataLoader
 		Dim lsSQL As String = "Update tblProjects Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'    WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeleteProjects = fRunSQL("SQLConnection", lscnStr, lsSQL)
 	End Function
-	Public Function InsertProjects(ByVal llNodeID As Long, ByVal lsName As String, lsDescription As String, ByVal lsImage As String, ByVal lsProjectType As String, lsCode As String) As Boolean
-		Dim lsSQL As String
-		Dim lscnStr As String = mscnDefault
-		Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
-		'*** Initialize
-		InsertProjects = False
-		'*** Check for No Selected Category
-		If llNodeID = 0 Then
-			'response.write("No Project Selectedd")
-			Exit Function
-		End If
-		lsSQL = "INSERT INTO tblProjects ( Name, Code, Description,  ProjectType, " &
-				"                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID ) " &
-				"Values ( '" & fTakeOutQuotes(lsName) & "', " & NL &
-						  "'" & fTakeOutQuotes(lsCode) & "', " & NL &
-						  "'" & fTakeOutQuotes(lsDescription) & "', " & NL &
-						  "'" & fTakeOutQuotes(lsProjectType) & "', " & NL &
-						  "'" & Now.ToString & "', " & NL &
-						  "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
-						  "'" & Now.ToString & "', " & NL &
-						  "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
-						   "1, '" & llNodeID & "'); "
-		'*** Run The SQL.
-		InsertProjects = fRunSQL("SQLConnection", lscnStr, lsSQL)
-	End Function
-	Public Function UpdateProjects(ByVal llNodeID As Long, ByVal lsName As String, ByVal lsDescription As String, ByVal lsImage As String, lsProjectType As String, ByVal lsActive As String, ByVal ID As String, lsCode As String) As Boolean
-		Dim lsSQL As String
-		Dim lscnStr As String = mscnDefault
-		Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
-		'*** Initialize
-		UpdateProjects = False
-		'*** Check for No Selected Category
-		If llNodeID = 0 Then
-			Exit Function
-		End If
-		lsSQL = "Update tblProjects  " &
-				"Set Name = '" & fTakeOutQuotes(lsName) & "', Description = " & NL &
-						  "'" & fTakeOutQuotes(lsDescription) & "', CODE= " & NL &
-						  "'" & fTakeOutQuotes(lsCode) & "', image= " & NL &
-						  "'" & fTakeOutQuotes(lsImage) & "', ProjectType= " & NL &
-						  "'" & fTakeOutQuotes(lsProjectType) & "', UpdateDate=" & NL &
-						  "'" & Now.ToString & "', UpdateUser=" & NL &
-						  "'" & fTakeOutQuotes(lsCurrentUser) & "', Active = " & lsActive & NL &
-				 " Where ID='" & ID & "';"
-		'*** Run The SQL.
-		UpdateProjects = fRunSQL("SQLConnection", lscnStr, lsSQL)
-	End Function
-	'*******************************************************
-	'*** Project Types
-	'*******************************************************
-	Public Function LoadProjectTypes(ByVal llNodeID As Long, ByVal lsWhere As String, ByVal lbActive As Boolean, ByVal llID As Long) As DataSet
+    Public Function InsertProjects(ByVal llNodeID As Long, ByVal lsName As String, lsDescription As String, ByVal lsImage As String, ByVal lsProjectType As String, lsCode As String, Address As String, AddressMap As String, Longitude As String, Latitude As String) As Boolean
+        Dim lsSQL As String
+        Dim lscnStr As String = mscnDefault
+        Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+        '*** Initialize
+        InsertProjects = False
+        '*** Check for No Selected Category
+        If llNodeID = 0 Then
+            'response.write("No Project Selectedd")
+            Exit Function
+        End If
+        lsSQL = "INSERT INTO tblProjects ( Name, Code, Description,  ProjectType, " &
+                "                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID,Address,AddressMap,Longitude,latitude ) " &
+                "Values ( '" & fTakeOutQuotes(lsName) & "', " & NL &
+                          "'" & fTakeOutQuotes(lsCode) & "', " & NL &
+                          "'" & fTakeOutQuotes(lsDescription) & "', " & NL &
+                          "'" & fTakeOutQuotes(lsProjectType) & "', " & NL &
+                          "'" & Now.ToString & "', " & NL &
+                          "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
+                          "'" & Now.ToString & "', " & NL &
+                          "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
+                          "1, '" & llNodeID & "' " &
+                          "," & fTakeOutQuotes(Address) & "' " &
+                          "," & fTakeOutQuotes(AddressMap) & "' " &
+                          "," & fTakeOutQuotes(Longitude) & "' " &
+                          "," & fTakeOutQuotes(Latitude) & "'); "
+        '*** Run The SQL.
+        InsertProjects = fRunSQL("SQLConnection", lscnStr, lsSQL)
+    End Function
+    Public Function UpdateProjects(ByVal llNodeID As Long, ByVal lsName As String, ByVal lsDescription As String, ByVal lsImage As String, lsProjectType As String, ByVal lsActive As String, ByVal ID As String, lsCode As String, Address As String, AddressMap As String, Longitude As String, Latitude As String) As Boolean
+        Dim lsSQL As String
+        Dim lscnStr As String = mscnDefault
+        Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+        '*** Initialize
+        UpdateProjects = False
+        '*** Check for No Selected Category
+        If llNodeID = 0 Then
+            Exit Function
+        End If
+        lsSQL = "Update tblProjects  " &
+                "Set Name = '" & fTakeOutQuotes(lsName) & "', Description = " & NL &
+                          "'" & fTakeOutQuotes(lsDescription) & "', CODE= " & NL &
+                          "'" & fTakeOutQuotes(lsCode) & "', image= " & NL &
+                          "'" & fTakeOutQuotes(lsImage) & "', ProjectType= " & NL &
+                          "'" & fTakeOutQuotes(lsProjectType) & "', AddressPrint= " & NL &
+                          "'" & fTakeOutQuotes(Address) & "', AddressMap= " & NL &
+                          "'" & fTakeOutQuotes(AddressMap) & "', Longitude= " & NL &
+                          "'" & fTakeOutQuotes(Longitude) & "', Latitude= " & NL &
+                          "'" & fTakeOutQuotes(Latitude) & "', UpdateDate=" & NL &
+                          "'" & Now.ToString & "', UpdateUser=" & NL &
+                          "'" & fTakeOutQuotes(lsCurrentUser) & "', Active = " & lsActive & NL &
+                 " Where ID='" & ID & "';"
+        '*** Run The SQL.
+        UpdateProjects = fRunSQL("SQLConnection", lscnStr, lsSQL)
+    End Function
+    '*******************************************************
+    '*** Project Types
+    '*******************************************************
+    Public Function LoadProjectTypes(ByVal llNodeID As Long, ByVal lsWhere As String, ByVal lbActive As Boolean, ByVal llID As Long) As DataSet
 		Dim lsSQL As String
 		Dim lscnStr As String = mscnDefault
 		'*** Initialize
@@ -938,8 +947,9 @@ Public Class clsSelectDataLoader
 		'debug.print(lsChartID & lsSQL & "**TABLES***" & ds.Tables.Count & " ***ROWS*** " & ds.Tables(0).Rows.Count)
 
 		'*** Load a data set.
-		LoadChartData.Tables.Add(ds.Tables(0).Copy)
-
+		If ds.Tables.Count > 0 Then
+			LoadChartData.Tables.Add(ds.Tables(0).Copy)
+		End If
 	End Function
 	'*******************************************************
 	'*** Contacts
@@ -956,21 +966,22 @@ Public Class clsSelectDataLoader
 			'response.write("No Project Selectedd")
 			Exit Function
 		End If
-		lsSQL = "Select (convert(nvarchar(50), f.ID)) as ID , f.ObjectID as ParentID 
+        lsSQL = "Select (convert(nvarchar(50), f.ID)) as ID , f.ObjectID as ParentID 
                 , F.FirstName, f.LastName, f.FullAddress, f.CIty, f.StateProvince, f.PostalCode, f.Country
                 , isnull( f.Phone1,'') as Phone1, isnull(f.Phone2,'') as Phone2, f.Email1, f.Email2, f.NodeID, f.Type, f.Active, f.CreateDate, f.CreateUser, f.UpdateDate, f.UpdateUser
                 , I.imageURL  , uc.username CreateUserName, uu.username UpdateUserName  " & NL &
-				"FROM tblContacts F     Left Join tblImages I on f.ID = I.OBJECTID 
+                "FROM tblContacts F     Left Join tblImages I on f.ID = I.OBJECTID 
                                         Left Join aspnetUsers as uc On f.createuser = convert(varchar(40), uc.ID )
                                         Left Join aspnetUsers as uu on f.UpdateUser = convert(varchar(40), uu.ID ) " & NL &
-				"WHERE  ( f.NodeID=" & llNodeID & " " & IIf(lsWhere.Length > 4, " And " & lsWhere, "") &
-					 IIf(lbActive = True, " And f.Active = 1 ", "") & NL &
-		IIf(lsObjectID = "", "", " And f.ObjectID ='" & lsObjectID & "'") & ")" & NL & ""
-		'IIf(llID > 0, " Or ID = '" & llID & "' ", "")
+                "WHERE  ( f.NodeID=" & llNodeID & " " & IIf(lsWhere.Length > 4, " And " & lsWhere, "") &
+                     IIf(lbActive = True, " And f.Active = 1 ", "") & NL &
+        IIf(lsObjectID = "", "", " And f.ObjectID ='" & lsObjectID & "'") & ")" & NL &
+        " order by iif(f.type = 'Primary',0,1), f.lastname, f.firstname "
+        'IIf(llID > 0, " Or ID = '" & llID & "' ", "")
 
 
-		'*** Load a data set.
-		Dim ds As New DataSet()
+        '*** Load a data set.
+        Dim ds As New DataSet()
 		' ds = fGetDataset(mscnType, lscnStr, lsSQL, "Contacts")
 		ds = fGetDataset("SQLConnection", lscnStr, lsSQL, "Contacts")
 		mdsContacts = ds
@@ -995,11 +1006,17 @@ Public Class clsSelectDataLoader
         Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
         '*** Initialize
         InsertContacts = False
-        '*** Check for No Selected Category
-        If llNodeID = 0 Then
-            'response.write("No Project Selectedd")
-            Exit Function
-        End If
+		'*** Check for No Selected Category
+		If llNodeID = 0 Then
+			'response.write("No Project Selectedd")
+			Exit Function
+		End If
+        If lsContactType = "Primary" Then
+			If lsObjectID.Length = 36 Then
+                lsSQL = "Update tblContacts set objType = 'Secondary' where objectID ='" & lsObjectID & "'"
+                InsertContacts = fRunSQL("SQLConnection", lscnStr, lsSQL)
+			End If
+		End If
         lsSQL = "INSERT INTO tblContacts ( FirstName, LastName,  Type, ObjectID, objType, " &
                  "                        FullAddress, City, StateProvince, PostalCode, Country, Phone1, Phone2, Email1, Email2, " &
                 "                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID ) " &
@@ -1037,7 +1054,13 @@ Public Class clsSelectDataLoader
 		If llNodeID = 0 Then
 			Exit Function
 		End If
-		lsSQL = "Update tblContacts  " &
+        If ContactType = "Primary" Then
+            If ParentID.Length = 36 Then
+                lsSQL = "Update tblContacts set type = 'Secondary' where objectID ='" & ParentID & "'"
+                UpdateContacts = fRunSQL("SQLConnection", lscnStr, lsSQL)
+            End If
+        End If
+        lsSQL = "Update tblContacts  " &
 				"Set FirstName = @FirstName, LastName=@LastName, FullAddress = @FullAddress , City= @City , " & NL &
 						" StateProvince = @StateProvince , PostalCode= @PostalCode ," & NL &
 						" Email1= @Email1 , Phone1= @Phone1 , Email2= @Email2 , Phone2= @Phone2 , Country= @Country , " & NL &
@@ -2954,13 +2977,13 @@ IIf(isGUID(ID), " OR ID = '" & ID & "' ", "")
 		End If
 
 
-		lsSQL = "Select reportcategorydescription as name, '' as Code, '' as Description, * from tblReportCategories  " &
-				"WHERE  ( (NodeID=0 or NodeID=" & llNodeID & ") " & IIf(lsWhere.Length > 4, " And " & lsWhere, "") &
-					IIf(lbActive = True, " And Active = 1 ", "") & ")" & NL &
-					IIf(isGUID(lsID), " AND ID = '" & lsID & "' ", "")
+        lsSQL = "Select  * from tblReportCategories  " &
+                "WHERE  ( (NodeID=0 or NodeID=" & llNodeID & ") " & IIf(lsWhere.Length > 4, " And " & lsWhere, "") &
+                    IIf(lbActive = True, " And Active = 1 ", "") & ")" & NL &
+                    IIf(isGUID(lsID), " AND ID = '" & lsID & "' ", "")
 
-		'*** Load a data set.
-		Dim ds As New DataSet()
+        '*** Load a data set.
+        Dim ds As New DataSet()
 		ds = fGetDataset(mscnType, mscnStr, lsSQL, "Categories")
 
 		mdsReportCategories = ds
@@ -3242,68 +3265,79 @@ LoadChildrenError:
 		mdsUnitTypes = ds
 		LoadThings = mdsUnitTypes
 	End Function
-	Public Function InsertThings(ByVal formValue As List(Of KeyValuePair(Of String, String)), ByVal lsTableName As String, ByVal lsID As String, ByVal llNodeID As Long,
-								 ByVal lsName As String, lsDescription As String, ByVal lsCode As String) As Boolean
+    Public Function InsertThings(ByVal formValue As List(Of KeyValuePair(Of String, String)), ByVal lsTableName As String, ByVal lsID As String, ByVal llNodeID As Long,
+                                 ByVal lsName As String, lsDescription As String, ByVal lsCode As String, ByVal lsObjectID As String) As Boolean
 
-		Dim cmd As SqlCommand
-		Dim c As Collection
-		Dim lsSQL As String
-		Dim lscnStr As String = mscnDefault
-		Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+        Dim cmd As SqlCommand
+        Dim c As Collection
+        Dim lsSQL As String
+        Dim lscnStr As String = mscnDefault
+        Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+		If lsObjectID Is Nothing Then
+			lsObjectID = ProjectID
+		Else
+            If lsObjectID.Length <> 36 Then
+                lsObjectID = ProjectID
+            End If
+        End If
+        '*** Initialize
+        InsertThings = False
 
-		'*** Initialize
-		InsertThings = False
+        '*** Check for No Selected Node
+        If llNodeID = 0 Then
+            Exit Function
+        End If
+        If Not isGUID(lsID) Then
+            Dim g As Guid
+            g = Guid.NewGuid
+            lsID = g.ToString
+        End If
+        c = New Collection
+        cmd = New SqlCommand
+        lsSQL = "INSERT INTO " & lsTableName & " (ObjectID, ID, Code,  Name,  Description, " &
+                "                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID ) " &
+                "Values ( '" & fTakeOutQuotes(lsObjectID) & "', " & NL &
+                            "'" & fTakeOutQuotes(lsID) & "', " & NL &
+                          "'" & fTakeOutQuotes(lsCode) & "', " &
+                          "'" & fTakeOutQuotes(lsName) & "', " & NL &
+                          "'" & fTakeOutQuotes(lsDescription) & "', " & NL &
+                          "'" & Now.ToString & "', " & NL &
+                          " convert(uniqueidentifier,'" & fTakeOutQuotes(lsCurrentUser) & "'), " & NL &
+                          "'" & Now.ToString & "', " & NL &
+                          " convert(uniqueidentifier,'" & fTakeOutQuotes(lsCurrentUser) & "'), " & NL &
+                           "1, " & llNodeID & "); "
+        cmd.CommandText = lsSQL
+        c.Add(cmd)
 
-		'*** Check for No Selected Node
-		If llNodeID = 0 Then
-			Exit Function
-		End If
-		If Not isGUID(lsID) Then
-			Dim g As Guid
-			g = Guid.NewGuid
-			lsID = g.ToString
-		End If
-		c = New Collection
-		cmd = New SqlCommand
-		lsSQL = "INSERT INTO " & lsTableName & " ( ID, Code,  Name,  Description, " &
-				"                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID ) " &
-				"Values ( '" & fTakeOutQuotes(lsID) & "', " & NL &
-						  "'" & fTakeOutQuotes(lsCode) & "', " &
-						  "'" & fTakeOutQuotes(lsName) & "', " & NL &
-						  "'" & fTakeOutQuotes(lsDescription) & "', " & NL &
-						  "'" & Now.ToString & "', " & NL &
-						  " convert(uniqueidentifier,'" & fTakeOutQuotes(lsCurrentUser) & "'), " & NL &
-						  "'" & Now.ToString & "', " & NL &
-						  " convert(uniqueidentifier,'" & fTakeOutQuotes(lsCurrentUser) & "'), " & NL &
-						   "1, " & llNodeID & "); "
-		cmd.CommandText = lsSQL
-		c.Add(cmd)
-
-		For Each p As KeyValuePair(Of String, String) In formValue
-			Select Case p.Key.ToUpper
-				Case "ID", "CODE", "NAME", "DESCRIPTION", "ACTIVE"
-				Case Else
-					If Not p.Value Is Nothing Then
-						cmd = New SqlCommand
-						lsSQL = "Update " & lsTableName & "  " &
-								"Set " & p.Key & " = @updateparam " &
-								"Where ID='" & lsID & "';"
-						cmd.CommandText = lsSQL
-						cmd.Parameters.AddWithValue("updateparam", p.Value)
+        For Each p As KeyValuePair(Of String, String) In formValue
+            Select Case p.Key.ToUpper
+                Case "ID", "CODE", "NAME", "DESCRIPTION", "ACTIVE"
+                Case Else
+                    If Not p.Value Is Nothing Then
+                        cmd = New SqlCommand
+                        lsSQL = "Update " & lsTableName & "  " &
+                                "Set " & p.Key & " = @updateparam " &
+                                "Where ID='" & lsID & "';"
+                        cmd.CommandText = lsSQL
+                        If p.Value = "--" Then
+                            cmd.Parameters.AddWithValue("updateparam", DBNull.Value)
+                        Else
+                            cmd.Parameters.AddWithValue("updateparam", p.Value)
+                        End If
 						c.Add(cmd)
-					End If
-			End Select
-		Next
+                    End If
+            End Select
+        Next
 
 
 
-		'*** Run The SQL.
-		InsertThings = fRunSQLCommands("SQLConnection", lscnStr, c)
+        '*** Run The SQL.
+        InsertThings = fRunSQLCommands("SQLConnection", lscnStr, c)
 
 
 
-	End Function
-	Public Function UpdateThings(ByVal formValue As List(Of KeyValuePair(Of String, String)), ByVal llNodeID As Long, ByVal lsName As String, ByVal lsDescription As String, ByVal lsCode As String, ByVal ID As String, ByVal lsTable As String, lsActive As String) As Boolean
+    End Function
+    Public Function UpdateThings(ByVal formValue As List(Of KeyValuePair(Of String, String)), ByVal llNodeID As Long, ByVal lsName As String, ByVal lsDescription As String, ByVal lsCode As String, ByVal ID As String, ByVal lsTable As String, lsActive As String) As Boolean
 		Dim lsSQL As String
 		Dim cmd As SqlCommand
 		Dim c As Collection
@@ -3412,12 +3446,12 @@ LoadChildrenError:
 					cns = New SqlClient.SqlConnection
 					cns.ConnectionString = lsCn
 					cns.Open()
-					' CheckdbConnection("SQLServer", lsCn)
-					'*** Set up a data set command object.
-					Dim dscmd As New SqlDataAdapter(lsSQL, cns)
+                    ' CheckdbConnection("SQLServer", lsCn)
+                    '*** Set up a data set command object.
+                    Dim dscmd As New SqlDataAdapter(lsSQL, cns)
 
-					'*** Load a data set.
-					dscmd.Fill(ds, lsTableName)
+                    '*** Load a data set.
+                    dscmd.Fill(ds, lsTableName)
 					cns.Close()
 				Case "OLEDB"
 					cno = New OleDb.OleDbConnection
@@ -4091,7 +4125,7 @@ fCheckForRequiredItems_Error:
         Dim lsSQL As String
         Dim lscnStr As String = mscnStr
         Dim llAutonumber As Double = 0
-        Dim lsCodePattern As String = "@"
+        Dim lsCodePattern As String = Left(ObjectType, 1) & "@"
         Dim lsID = "12341234-4321-5432-6543-653465346534"
         '*** Initialize
 
@@ -4114,17 +4148,38 @@ fCheckForRequiredItems_Error:
         ds = fGetDataset("SQLConnection", lscnStr, lsSQL, "Projects")
 
         If ds.Tables.Count > 0 Then
-            If ds.Tables(0).Rows.Count > 0 Then
-                t = ds.Tables(0)
-                r = t.Rows(0)
-                llAutonumber = r("CurrentCount")
-                lsCodePattern = r("CodePattern")
-                lsID = r("ID")
-                If InStr(lsCodePattern, "@") > 0 Then
-                    Replace(lsCodePattern, "@", CStr(llAutonumber + 1).Trim)
-                Else
-                    lsCodePattern = CStr(llAutonumber + 1).Trim
-                End If
+			If ds.Tables(0).Rows.Count > 0 Then
+				t = ds.Tables(0)
+				r = t.Rows(0)
+				llAutonumber = r("CurrentCount")
+				lsCodePattern = r("CodePattern")
+				lsID = r("ID")
+
+			Else
+				Dim lgID As String = Guid.NewGuid.ToString
+				Dim lsCurrentUser As String = fGetUser()
+                lsSQL = "INSERT INTO tblAutoNumber
+                          (ID   ,Code   ,Name  ,Description ,ObjectID   ,CodePattern ,CurrentCount
+							,UpdateDate  ,UpdateUser ,CreateDate  ,CreateUser,Active,NodeID)
+    					Values (  '" & fTakeOutQuotes(lgID) & "', " & NL &
+                            "'" & fTakeOutQuotes(ObjectType) & "', " & NL &
+                            "'" & fTakeOutQuotes(ObjectType) & "', " & NL &
+                            "'" & fTakeOutQuotes(ObjectType) & "', " & NL &
+                            "'" & fTakeOutQuotes(lsID) & "', " & NL &
+                            "'" & Left(ObjectType, 1) & "@', 1, " & NL &
+                            "Getdate(), " & NL &
+                            "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
+                            "GetDate(), " & NL &
+                            "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
+                            " 1, " & NodeID & "); "
+                llAutonumber = 1
+            End If
+            If InStr(lsCodePattern, "@") > 0 Then
+                Dim lsnum As String = "0000" & CStr(llAutonumber + 1).Trim
+                lsnum = Right(lsnum, 4)
+                Replace(lsCodePattern, "@", lsnum)
+            Else
+                lsCodePattern = CStr(llAutonumber + 1).Trim
             End If
         End If
         Dim cmd As SqlCommand
@@ -4136,33 +4191,136 @@ fCheckForRequiredItems_Error:
         Return lsCodePattern
     End Function
 
-    Public Function fAutoNumberExists(NodeID As Long, lsCode As String, TableName As String, ProjectID As String, ErrMsg As String) As Boolean
-        fAutoNumberExists = False
-        Dim lsSQL As String
-        Dim lscnStr As String = mscnStr
-        '*** Initialize
+	Public Function fAutoNumberExists(NodeID As Long, lsCode As String, TableName As String, ProjectID As String, ErrMsg As String) As Boolean
+		fAutoNumberExists = False
+		Dim lsSQL As String
+		Dim lscnStr As String = mscnStr
+		'*** Initialize
 
-        If NodeID = 0 Then
-            'response.write("No Project Selectedd")
-            Exit Function
-        End If
+		If NodeID = 0 Then
+			'response.write("No Project Selectedd")
+			Exit Function
+		End If
 
-        lsSQL = "Select ID from " & TableName & " 
+		lsSQL = "Select ID from " & TableName & " 
                  WHERE  NodeID = " & NodeID & " 
                     and Code = '" & lsCode & "' 
                     and ObjectID = '" & ProjectID & "'   --   And Active = 1"
 
 
-        '*** Load a data set.
-        Dim ds As New DataSet()
-        ds = fGetDataset("SQLConnection", lscnStr, lsSQL, "Projects")
+		'*** Load a data set.
+		Dim ds As New DataSet()
+		ds = fGetDataset("SQLConnection", lscnStr, lsSQL, "Projects")
 
-        If ds.Tables(0).Rows.Count > 0 Then
-            Return False
-        Else
-            Return True
+		If ds.Tables(0).Rows.Count > 0 Then
+			Return False
+		Else
+			Return True
+		End If
+
+	End Function
+
+    '****************************************************
+    '*** Roles
+
+    Public Function LoadAppUserRoles(UserID As String) As DataSet
+        Dim lsSQL As String = "SELECT userid,roleid from aspnetuserroles Where UserID='" & UserID & "'"
+        LoadAppUserRoles = fGetDataset(mscnType, mscnStr, lsSQL, "UserRoles")
+    End Function
+    Public Function DeleteAppUserRoles(ByVal lsUserID As String, lsRoleID As String) As Boolean
+        Dim lsSQL As String = "Delete From aspnetuserroles  WHERE  userid='" & lsUserID & "' AND roleID = '" & lsRoleID & "'"
+        DeleteAppUserRoles = fRunSQL(mscnType, mscnStr, lsSQL)
+    End Function
+    Public Function InsertAppUserRoles(ByVal lsUseriD As String, lsRoleID As String) As Boolean
+        Dim lsSQL As String
+        Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+        '*** Initialize
+        InsertAppUserRoles = False
+        '*** Check for No Selected Category
+        lsSQL = "Select * from aspnetuserroles 
+                 where userid ='" & fTakeOutQuotes(lsUseriD) & "' 
+				   and roleid ='" & fTakeOutQuotes(lsRoleID) & "' ) ; "
+        Dim ds As New DataSet
+        ds = fGetDataset(mscnType, mscnStr, lsSQL, "Roles")
+        If ds.Tables.Count > 0 Then
+            Dim dt As DataTable
+            dt = ds.Tables(0)
+            If dt.Rows.Count > 0 Then
+                Return False
+            End If
         End If
+        lsSQL = "INSERT INTO aspnetuserroles ( userid, roleid ) values ('" & fTakeOutQuotes(lsUseriD) & "','" & fTakeOutQuotes(lsRoleID) & "') "
 
+        '*** Run The SQL.
+        InsertAppUserRoles = fRunSQL(mscnType, mscnStr, lsSQL)
+        Return True
+    End Function
+    Public Function LoadAppRoles() As DataSet
+        Dim lsSQL As String = "SELECT ID,NAME from aspnetroles"
+        Return fGetDataset(mscnType, mscnStr, lsSQL, "Roles")
+    End Function
+    Public Function DeleteAppRoles(ByVal lsRoleID As String) As Boolean
+        Dim lsSQL As String = "Delete From aspnetroles  WHERE  id='" & lsRoleID & "' "
+        Return fRunSQL(mscnType, mscnStr, lsSQL)
+    End Function
+	Public Function InsertAppRoles(ByVal lsRoleName As String, lsRoleID As String) As Boolean
+		Dim lsSQL As String
+		Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+		'*** Initialize
+		InsertAppRoles = False
+		'*** Check for No Selected Category
+
+		lsSQL = "INSERT INTO aspnetroles ( ID, Name ) " &
+				"Values ( """ & fTakeOutQuotes(lsRoleID) & """, " & NL &
+						  """" & fTakeOutQuotes(lsRoleName) & """)
+                 WHERE Not Exists (Select * from aspnetroles where id = '" & fTakeOutQuotes(lsRoleID) & "' ; "
+		'*** Run The SQL.
+		Return fRunSQL(mscnType, mscnStr, lsSQL)
+	End Function
+    '***************************
+    '*** ASP NET Users
+    Public Function LoadAppUsers(Optional lsID As String = "") As DataSet
+        Dim lsNodeID As String
+        lsNodeID = System.Web.HttpContext.Current.Session("NodeID")
+        If lsNodeID Is Nothing Then lsNodeID = "0"
+        Dim lsSQL As String = "SELECT * from aspnetusers WHERE nodeID=" & lsNodeID
+        If Not lsID Is Nothing Then
+            If lsID.Length = 36 Then lsSQL = lsSQL & " and ID='" & lsID & "';"
+        End If
+        Return fGetDataset(mscnType, mscnStr, lsSQL, "Roles")
+    End Function
+    Public Function DeleteAppUsers(ByVal ID As String) As Boolean
+        Dim lsSQL As String = "Update aspnetusers set [LockoutEndDateUtc] = getdate() + 100000 WHERE  id='" & ID & "' "
+        Return fRunSQL(mscnType, mscnStr, lsSQL)
+    End Function
+	Public Function InsertAppUsers(ByVal lsRoleName As String, lsRoleID As String) As Boolean
+		Dim lsSQL As String
+		Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+		'*** Initialize
+		InsertAppUsers = False
+		'*** Check for No Selected Category
+
+		lsSQL = "INSERT INTO aspnetroles ( ID, Name ) " &
+				"Values ( """ & fTakeOutQuotes(lsRoleID) & """, " & NL &
+						  """" & fTakeOutQuotes(lsRoleName) & """)
+                 WHERE Not Exists (Select * from aspnetroles where id = '" & fTakeOutQuotes(lsRoleID) & "' ; "
+		'*** Run The SQL.
+		Return fRunSQL(mscnType, mscnStr, lsSQL)
+	End Function
+    Public Function UpdateAppUsers(ByVal lsFriendlyName As String, lsEmail As String, lsUserName As String, ByVal NodeID As Integer, lsID As string) As Boolean
+        Dim lsSQL As String
+        Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+        '*** Initialize
+        UpdateAppUsers = False
+        '*** Check for No Selected Category
+
+        lsSQL = "Update aspnetusers  Set ID = '" & lsID & "' " &
+                    IIf(lsUserName = "", "", " ,UserName = '" & lsUserName & "' ") &
+                    IIf(lsFriendlyName = "", "", " ,UserFriendlyName = '" & lsFriendlyName & "' ") &
+                    IIf(lsEmail = "", "", " ,Email = '" & lsEmail & "' ") &
+                    IIf(NodeID > 0, "", " ,NodeID = " & NodeID) &
+              " WHERE ID = '" & lsID & "' ; "
+        '*** Run The SQL.
+        Return fRunSQL(mscnType, mscnStr, lsSQL)
     End Function
 End Class
-

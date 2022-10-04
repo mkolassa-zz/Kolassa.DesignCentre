@@ -535,7 +535,7 @@ Public Class clsDataLoader
      VALUES
           (@ReportID           ,0           , 'String'           , 0           , 1           ,0
            ,getdate()           ,@UserID            ,getdate()           ,@UserID           ,0           ,''
-           ,''           ,''           ,''           ,''           ,0           ,newid()           ,'NewField') "
+           ,''           ,''           ,''           ,''           ,0           ,newid()           ,'NF" & Right("000000" & Int((100000 * Rnd())), 6) & "') "
 
 
 
@@ -898,13 +898,17 @@ LoadChildrenError:
     '*********************************
     '*** Autonumber
     '*********************************
+
     Public Function fGetNextCode(NodeID As Long, ObjectType As String, TableName As String, ProjectID As String, ErrMsg As String) As String
         fGetNextCode = ""
         Dim lsSQL As String
         Dim lscnStr As String = mscnStr
         Dim llAutonumber As Double = 0
-        Dim lsCodePattern As String = "@"
+        Dim lsCodePattern As String = Left(ObjectType, 1) & "@"
         Dim lsID = "12341234-4321-5432-6543-653465346534"
+        Dim cmd As SqlCommand
+        cmd = New SqlCommand
+        Dim lbRetVal As Boolean = False
         '*** Initialize
 
         If NodeID = 0 Then
@@ -932,19 +936,43 @@ LoadChildrenError:
                 llAutonumber = r("CurrentCount")
                 lsCodePattern = r("CodePattern")
                 lsID = r("ID").ToString
-                If InStr(lsCodePattern, "@") > 0 Then
-                    lsCodePattern = Replace(lsCodePattern, "@", CStr(llAutonumber + 1).Trim)
-                Else
-                    lsCodePattern = CStr(llAutonumber + 1).Trim
-                End If
+
+            Else
+                lsID = Guid.NewGuid.ToString
+                Dim lsCurrentUser As String = fGetUser()
+                lsSQL = "INSERT INTO tblAutoNumber
+                        (ID   ,Code   ,Name  ,Description ,ObjectID   ,CodePattern ,CurrentCount
+					    ,UpdateDate  ,UpdateUser ,CreateDate  ,CreateUser,Active,NodeID)
+    			    Values (  '" & fTakeOutQuotes(lsID) & "', " & NL &
+                            "'" & fTakeOutQuotes(ObjectType) & "', " & NL &
+                            "'" & fTakeOutQuotes(ObjectType) & "', " & NL &
+                            "'" & fTakeOutQuotes(ObjectType) & "', " & NL &
+                            "'" & fTakeOutQuotes(ProjectID) & "', " & NL &
+                            "'" & Left(ObjectType, 1) & "@', 1, " & NL &
+                            "Getdate(), " & NL &
+                            "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
+                            "GetDate(), " & NL &
+                            "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
+                            " 1, " & NodeID & "); "
+                cmd.CommandText = lsSQL
+                lbRetVal = fExecuteSQLCmd("SQLConnection", lscnStr, cmd)
+                llAutonumber = 1
+                lsCodePattern = Left(ObjectType, 1) & "@"
             End If
         End If
-        Dim cmd As SqlCommand
-        cmd = New SqlCommand
+        If InStr(lsCodePattern, "@") > 0 Then
+            Dim lsnum As String = "0000" & CStr(llAutonumber + 1).Trim
+            lsnum = Right(lsnum, 4)
+            lsCodePattern = Replace(lsCodePattern, "@", lsnum)
+        Else
+            lsCodePattern = CStr(llAutonumber + 1).Trim
+        End If
+
+
 
         lsSQL = "UPDATE TBLAUTONUMBER SET CurrentCount = " & llAutonumber + 1 & " Where ID = '" & lsID & "'"
         cmd.CommandText = lsSQL
-        Dim lbRetVal As Boolean = fExecuteSQLCmd("SQLConnection", lscnStr, cmd)
+        lbRetVal = fExecuteSQLCmd("SQLConnection", lscnStr, cmd)
         Return lsCodePattern
     End Function
 
@@ -1068,7 +1096,7 @@ Public Class clsReportField
         ' Exit Function
         ' End If
         If c.fRFFieldExists(0, FieldName, ReportID, ReportFieldID, Name, ErrorMessage) Then
-            Return False
+            Name = Name & CStr(10000 * Rnd())  ' Return False
         End If
 
         lsSQL = "INSERT INTO tblReportFields
@@ -1149,7 +1177,7 @@ Public Class clsReportField
         ' Exit Function
         ' End If nodeID As Long, fieldname As String, ReportID As String, ReportFieldID As String, controlname As String, 
         If c.fRFFieldExists(0, FieldName, ReportID, ReportFieldID, Name, ErrorMessage) Then
-            Return False
+            Name = Name & CStr(10000 * Rnd())  ' Return False
         End If
         lsSQL = "Update tblReportFields set
                      [ReportID] = @ReportID
@@ -1199,7 +1227,10 @@ Public Class clsReportField
         msSQLcmd.Parameters.AddWithValue("@pUser", c.fGetUser)
         msSQLcmd.Parameters.AddWithValue("@pContainerName", ContainerName)
         msSQLcmd.Parameters.AddWithValue("@pColumnSize", ColumnSize)
-        msSQLcmd.Parameters.AddWithValue("@pHelpText", HelpText)
+        If HelpText Is Nothing Then
+            HelpText = ""
+        End If
+        msSQLcmd.Parameters.AddWithValue("@pHelpText", IIf(IsDBNull(HelpText), "", HelpText))
         '*** Run The SQL.
 
         Update = c.fExecuteSQLCmd("SQLConnection", c.mscnStr, msSQLcmd)

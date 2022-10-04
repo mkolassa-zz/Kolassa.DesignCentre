@@ -96,6 +96,13 @@ Public Class ReportContainer
             msReportListSelectedClass = value
         End Set
     End Property
+    Public Sub DumpSelectedValues()
+        Dim r As ReportControl
+        For Each r In rptCtrls
+            Debug.Print(r.ReportControlID) '& r.SelectedItems.Count.ToString
+            r.SelectedItems.Clear()
+        Next
+    End Sub
     Protected Overrides Sub RecreateChildControls()
         'debug.print("<RecreateChildControls>")
         EnsureChildControls()
@@ -132,6 +139,7 @@ Public Class ReportContainer
 
         '*** Field Edit Modal ***
         RFModal = New System.Web.UI.HtmlControls.HtmlGenericControl("DIV")
+        RFModal.TagName = "wwooff"
         RFModal.Attributes.Add("class", "modal") ' arecnew show")
         RFModal.Attributes.Add("ID", "field_edit_modal")
         RFModal.Attributes.Add("role", "dialog")
@@ -1201,6 +1209,15 @@ LoadFromObject_Exit:
 
             '*** Find each Report Control and update from the Data Row
             For Each ReportControl In rpt.Controls
+                '      ReportControl.SelectedItems.Clear() '2022-08-26
+                lrli = New ReportListItem
+                lrli.Value = ""
+                lrli.Description = ""
+                ReportControl.SelectedItems.Add(lrli)
+
+
+
+
                 '* Get Ordered pairs of FieldName and value for form values
                 ' Loop over pairs.
                 For Each dt In ds.Tables
@@ -1330,6 +1347,7 @@ LoadFromObject_Exit:
             '** Find the UI Control Table on Container
             tbl = Me.FindControl("tbl")
             'debug.print("<msg count='" & tbl.Controls(0).Controls(0).Controls(0).Controls.Count.ToString & "' />")
+
 
             For Each rptctrl In rpt.Controls
                 '*** Iterate through all UI Controls, looking for controls

@@ -150,9 +150,10 @@ Partial Public Class Manage
 		u = myUserManager.FindByName(Web.HttpContext.Current.User.Identity.GetUserName)
 		If Not u Is Nothing And txtUserFriendlyName.Text <> "" Then
 			u.UserFriendlyName = Left(Trim(txtUserFriendlyName.Text), 30)
-			myUserManager.Update(u)
-			txtUserFriendlyName.Text = ""
-			Session("UserFriendlyName") = u.UserFriendlyName
+            myUserManager.Update(u)
+
+            txtUserFriendlyName.Text = ""
+            Session("UserFriendlyName") = u.UserFriendlyName
 			Response.Redirect("/Account/Manage")
 		End If
 	End Sub

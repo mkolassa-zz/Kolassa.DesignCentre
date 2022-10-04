@@ -40,4 +40,3 @@ Partial Public Class Register
         End If
     End Sub
 End Class
-

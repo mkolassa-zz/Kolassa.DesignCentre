@@ -26,9 +26,7 @@
 			<div class="card-body text-secondary">
 				<h5 class="card-title"><%= Session("ProjectName") %></h5>
 				<div id="projectAddress">
-					Trafalgar Square, Charing Cross, London WC2N 5DN, UK
-
-					+44 20 7747 2885<p></p>
+					<h5 class="card-title"><%= fGetProjectAddress() %></h5>
 					<nav class="nav nav-pills nav-fill">
 						<a class="nav-item nav-link active" href="frmQuote.aspx?search=true">Quote Lookup</a>
 					</nav>
@@ -45,7 +43,7 @@
 				<!-- div id="map_div" style="width: 400px; height: 400px"></!-->
 					<div class="mapouter"><div class="gmap_canvas">
 						<iframe width="600" height="300" id="gmap_canvas" 
-							src="https://maps.google.com/maps?q=Trafalgar%20Square%20London%20England&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+							src="<%= fGetProjectAddressmap() %>" 
 							frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
 						</iframe>
 						
@@ -335,67 +333,67 @@
         dataTable.addColumn({ type: 'date', id: 'Date' });
         dataTable.addColumn({ type: 'number', id: 'Won/Loss' });
         dataTable.addRows([
-            [new Date(2020, 6, 3), 37032],
-            [new Date(2020, 6, 4), 38024],
-            [new Date(2020, 6, 5), 38024],
-            [new Date(2020, 6, 6), 38108],
-            [new Date(2020, 6, 7), 38229],
-            [new Date(2020, 6, 9), 38177],
-            [new Date(2020, 6, 10), 38705],
-            [new Date(2020, 6, 12), 38210],
-            [new Date(2020, 6, 13), 38029],
-            [new Date(2020, 6, 19), 38823],
-            [new Date(2020, 6, 23), 38345],
-            [new Date(2020, 6, 24), 38436],
-            [new Date(2020, 7, 3), 37032],
-            [new Date(2020, 7, 4), 38024],
-            [new Date(2020, 7, 5), 38024],
-            [new Date(2020, 7, 6), 38108],
-            [new Date(2020, 7, 7), 38229],
-            [new Date(2020, 7, 9), 38177],
-            [new Date(2020, 7, 10), 38705],
-            [new Date(2020, 7, 12), 38210],
-            [new Date(2020, 7, 13), 38029],
-            [new Date(2020, 7, 19), 38823],
-            [new Date(2020, 7, 23), 38345],
-            [new Date(2020, 7, 24), 38436],
-            [new Date(2020, 8, 3), 37032],
-            [new Date(2020, 8, 4), 38024],
-            [new Date(2020, 8, 5), 38024],
-            [new Date(2020, 8, 6), 38108],
-            [new Date(2020, 8, 7), 38229],
-            [new Date(2020, 8, 9), 38177],
-            [new Date(2020, 8, 10), 38705],
-            [new Date(2020, 8, 12), 38210],
-            [new Date(2020, 8, 13), 38029],
-            [new Date(2020, 8, 19), 38823],
-            [new Date(2020, 8, 23), 38345],
-            [new Date(2020, 8, 24), 38436],
-            [new Date(2020, 9, 3), 37032],
-            [new Date(2020, 9, 4), 38024],
-            [new Date(2020, 9, 5), 38024],
-            [new Date(2020, 9, 6), 38108],
-            [new Date(2020, 9, 7), 38229],
-            [new Date(2020, 9, 9), 38177],
-            [new Date(2020, 9, 10), 38705],
-            [new Date(2020, 9, 12), 38210],
-            [new Date(2020, 9, 13), 38029],
-            [new Date(2020, 9, 19), 38823],
-            [new Date(2020, 9, 23), 38345],
-            [new Date(2020, 9, 24), 38436],
-            [new Date(2020, 10, 3), 37032],
-            [new Date(2020, 10, 4), 38024],
-            [new Date(2020, 10, 5), 38024],
-            [new Date(2020, 10, 6), 38108],
-            [new Date(2020, 10, 7), 38229],
-            [new Date(2020, 10, 9), 38177],
-            [new Date(2020, 10, 10), 38705],
-            [new Date(2020, 10, 12), 38210],
-            [new Date(2020, 10, 13), 38029],
-            [new Date(2020, 10, 19), 38823],
-            [new Date(2020, 10, 23), 38345],
-            [new Date(2020, 10, 24), 38436],
-            [new Date(2020, 10, 30), 38447]
+            [new Date(2022, 6, 3), 37032],
+            [new Date(2022, 6, 4), 38024],
+            [new Date(2022, 6, 5), 38024],
+            [new Date(2022, 6, 6), 38108],
+            [new Date(2022, 6, 7), 38229],
+            [new Date(2022, 6, 9), 38177],
+            [new Date(2022, 6, 10), 38705],
+            [new Date(2022, 6, 12), 38210],
+            [new Date(2022, 6, 13), 38029],
+            [new Date(2022, 6, 19), 38823],
+            [new Date(2022, 6, 23), 38345],
+            [new Date(2022, 6, 24), 38436],
+            [new Date(2022, 7, 3), 37032],
+            [new Date(2022, 7, 4), 38024],
+            [new Date(2022, 7, 5), 38024],
+            [new Date(2022, 7, 6), 38108],
+            [new Date(2022, 7, 7), 38229],
+            [new Date(2022, 7, 9), 38177],
+            [new Date(2022, 7, 10), 38705],
+            [new Date(2022, 7, 12), 38210],
+            [new Date(2022, 7, 13), 38029],
+            [new Date(2022, 7, 19), 38823],
+            [new Date(2022, 7, 23), 38345],
+            [new Date(2022, 7, 24), 38436],
+            [new Date(2022, 8, 3), 37032],
+            [new Date(2022, 8, 4), 38024],
+            [new Date(2022, 8, 5), 38024],
+            [new Date(2022, 8, 6), 38108],
+            [new Date(2022, 8, 7), 38229],
+            [new Date(2022, 8, 9), 38177],
+            [new Date(2022, 8, 10), 38705],
+            [new Date(2022, 8, 12), 38210],
+            [new Date(2022, 8, 13), 38029],
+            [new Date(2022, 8, 19), 38823],
+            [new Date(2022, 8, 23), 38345],
+            [new Date(2022, 8, 24), 38436],
+            [new Date(2022, 9, 3), 37032],
+            [new Date(2022, 9, 4), 38024],
+            [new Date(2022, 9, 5), 38024],
+            [new Date(2022, 9, 6), 38108],
+            [new Date(2022, 9, 7), 38229],
+            [new Date(2022, 9, 9), 38177],
+            [new Date(2022, 9, 10), 38705],
+            [new Date(2022, 9, 12), 38210],
+            [new Date(2022, 9, 13), 38029],
+            [new Date(2022, 9, 19), 38823],
+            [new Date(2022, 9, 23), 38345],
+            [new Date(2022, 9, 24), 38436],
+            [new Date(2022, 10, 3), 37032],
+            [new Date(2022, 10, 4), 38024],
+            [new Date(2022, 10, 5), 38024],
+            [new Date(2022, 10, 6), 38108],
+            [new Date(2022, 10, 7), 38229],
+            [new Date(2022, 10, 9), 38177],
+            [new Date(2022, 10, 10), 38705],
+            [new Date(2022, 10, 12), 38210],
+            [new Date(2022, 10, 13), 38029],
+            [new Date(2022, 10, 19), 38823],
+            [new Date(2022, 10, 23), 38345],
+            [new Date(2022, 10, 24), 38436],
+            [new Date(2022, 10, 30), 38447]
         ]);
 
         var chart = new google.visualization.Calendar(document.getElementById('calendar_basic'));

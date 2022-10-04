@@ -123,7 +123,7 @@
                     </ul>
                      <ul class="navbar-nav px-3">
                         <li class="nav-item text-nowrap">		
-						<%    If Session("NodeID") Is Nothing Then  %>
+						<%    If Session("NodeID") Is Nothing Or Context.User.IsInRole("Admin") = False Then  %>
             			 	<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#NodeModal" style="border:none;">
 									<i class="fa fa-search" ></i> Select Node
 							</button>
@@ -293,8 +293,7 @@
 	
         <asp:loginview ID="lg" runat="server">
              <AnonymousTemplate>
-                <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-              
+                <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">            
             </AnonymousTemplate>
 			 <LoggedInTemplate>
 
@@ -302,7 +301,7 @@
             <div id="main" style="border: none;">
                 <div class="w3-teal" style="float: left; border:none">
                       <!-- button ><span class="dark-blue-text">Hey<i     class="fas fa-bars fa-1x"></i></span></!-->
-                    <!-- button id="openNav" class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</!-->
+                      <!-- button id="openNav" class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</!-->
                         <!-- End Menu.js Markup Opening Tags-->
                         <!-- menu.js Markup Start -->
                         <div class="w3-sidebar w3-bar-block w3-card w3-animate-left" style="display:none" id="mySidebar">
@@ -324,6 +323,7 @@
 							data-parent="#sidebar" aria-expanded="false"><i class="fa fa-user-circle fa-2x"></i> 
 							<%:IIf(Session("UserFriendlyName") Is Nothing, Context.User.Identity.GetUserName(), Session("UserFriendlyName"))  %></a>
 						</span>
+
 						<!-- Page Info Pane -->
 						<div class="panel-group">
 							<div class="panel panel-default">
@@ -347,41 +347,38 @@
                 <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmBase?objType=Customers"><i class="dcmenu fa fa-users"     ></i> <span class="d-none d-md-inline">Customers</span></a>
         <!--    <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmContacts" ><i class="dcmenu fa fa-phone"     ></i> <span class="d-none d-md-inline">Contacts</span></a> -->
                 <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmQuote"    ><i class="dcmenu fa fa-quote-left"></i> <span class="d-none d-md-inline">Quotes</span></a>
-
-         		<li class="divider"></li>
-                <span class="d-block p-2 bg-dark text-white">Admin</span>
-
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=COMPANYINFO"        ><i class="dcmenu dc-home"              ></i><span class="d-none d-md-inline">Company Info      </span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ProjectTypes"       ><i class="dcmenu fa fa-angle-down"     ></i><span class="d-none d-md-inline">Project Types     </span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=PROJECTS"           ><i class="dcmenu dc-Projects"          ></i><span class="d-none d-md-inline">Projects          </span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ProjectPhases"      ><i class="dcmenu dc-Phases"            ></i><span class="d-none d-md-inline">Building Phases   </span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UnitTypes"          ><div class="dcmenu"><span class="dc-UnitTypes"         ></span></div><span class="d-none d-md-inline">Unit Types        </span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=Units"              ><div class="dcmenu"><span class="dc-Units"             ></span></div><span class="d-none d-md-inline">Units             </span></a>
-                
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UNITPROFILES"       ><span class="dcmenu dc-Appliances"               ></span><span class="d-none d-md-inline">Unit Profiles     </span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UnitTiers"          ><span class="dcmenu dc-quotes-left"       ></span><span class="d-none d-md-inline">Tiers             </span></a>
-
-                
-                
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=Floors"             ><i class="dcmenu dc-Floors"            ></i><span class="d-none d-md-inline">Floors            </span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ROOMS"              ><i class="dcmenu dc-Rooms"             ></i><span class="d-none d-md-inline">Rooms             </span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=VENDORS"            ><i class="dcmenu fa fa-people-carry"   ></i><span class="d-none d-md-inline">Vendors           </span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=LOGINS"             ><i class="dcmenu fa fa-users"          ></i><span class="d-none d-md-inline">Logins            </span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=DEPOSITCONDITIONS"  ><i class="dcmenu fa fa-money-bill-alt" ></i><span class="d-none d-md-inline">Deposit Contitions</span></a>
-                
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=REPORTCATEGORIES"   ><i class="dcmenu dc-ReportCategories"  ></i><span class="d-none d-md-inline">Report Categories </span></a>
-                <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=BASE"               ><i class="dcmenu dc-cross"           ></i><span class="d-none d-md-inline">Base              </span></a>		
-		</ul>
-	</div>
-</div>
+                        </ul>
+            	<% If Context.User.IsInRole("Admin") Then  %>
+                    <ul>
+         		        <li runat="server" id="mnuAdmin" class="divider"></li>
+                        <span class="d-block p-2 bg-dark text-white">Admin</span>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=COMPANYINFO"        ><i class="dcmenu dc-home"              ></i><span class="d-none d-md-inline">Company Info      </span></a>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ProjectTypes"       ><i class="dcmenu fa fa-angle-down"     ></i><span class="d-none d-md-inline">Project Types     </span></a>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=PROJECTS"           ><i class="dcmenu dc-Projects"          ></i><span class="d-none d-md-inline">Projects          </span></a>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ProjectPhases"      ><i class="dcmenu dc-Phases"            ></i><span class="d-none d-md-inline">Building Phases   </span></a>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UnitTypes"          ><div class="dcmenu"><span class="dc-UnitTypes"         ></span></div><span class="d-none d-md-inline">Unit Types        </span></a>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=Units"              ><div class="dcmenu"><span class="dc-Units"             ></span></div><span class="d-none d-md-inline">Units             </span></a>      
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UNITPROFILES"       ><span class="dcmenu dc-Appliances"               ></span><span class="d-none d-md-inline">Unit Profiles     </span></a>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UnitTiers"          ><span class="dcmenu dc-quotes-left"       ></span><span class="d-none d-md-inline">Tiers             </span></a>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=Floors"             ><i class="dcmenu dc-Floors"            ></i><span class="d-none d-md-inline">Floors            </span></a>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ROOMS"              ><i class="dcmenu dc-Rooms"             ></i><span class="d-none d-md-inline">Rooms             </span></a>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=VENDORS"            ><i class="dcmenu fa fa-people-carry"   ></i><span class="d-none d-md-inline">Vendors           </span></a>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=LOGINS"             ><i class="dcmenu fa fa-users"          ></i><span class="d-none d-md-inline">Logins            </span></a>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=DEPOSITCONDITIONS"  ><i class="dcmenu fa fa-money-bill-alt" ></i><span class="d-none d-md-inline">Deposit Contitions</span></a>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=REPORTCATEGORIES"   ><i class="dcmenu dc-ReportCategories"  ></i><span class="d-none d-md-inline">Report Categories </span></a>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=BASE"               ><i class="dcmenu dc-cross"           ></i><span class="d-none d-md-inline">Base              </span></a>		
+		            </ul>
+                <% End If  %>
+                </div>
+            </div>
            <!-- Start Menu.js Markup Main Div Tags-->
-            </div >
- </div>
-                </div> <!-- Closing Menu.js Div Tag -->
+        </div >
+    </div>
+</div> <!-- Closing Menu.js Div Tag -->
 
             <!-- Right Side Help Nav -->
-                 <link rel="stylesheet" href="Content/owl.carousel.min.css">
-                 <link rel="stylesheet" href="Content/helpstyle.css">
+                 <link rel="stylesheet" href="/Content/owl.carousel.min.css">
+                 <link rel="stylesheet" href="/Content/helpstyle.css">
                  <script src="Scripts/owl.carousel.min.js"></script>
                  <script src ="Scripts/helpmain.js"></script>
                  <aside class="sidebar">
@@ -518,7 +515,7 @@
             	<div class="container body-content" style="padding-top:5px;">
                      <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" >
 			 		<!-- THIS IS THE PANEL FOR SEARCHING FOR A NODE -->
-					<asp:Panel Runat="server" ID="Panel1"   Width="400px" Visible = "true">
+					<asp:Panel Runat="server" ID="pnlNodeChange"   Width="400px" Visible = "true">
 						<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR SEARCHING FOR A Project -->
 						<div class="modal fade" id="NodeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 						  <div class="modal-dialog" role="document">

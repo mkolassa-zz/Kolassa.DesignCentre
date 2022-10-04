@@ -61,6 +61,8 @@
         c.Phone2 = txtContactPhone2.Text
         c.Email1 = txtContactEmail1.Text
         c.Email2 = txtContactEmail2.Text
+        c.ContactType = IIf(chkPrimary.Checked, "Primary", "")
+        c.ObjectType = Request.QueryString("objType")
         c.Active = True
         Dim cs As New clsContacts
         If txtContactID.Text.Length = 36 Then

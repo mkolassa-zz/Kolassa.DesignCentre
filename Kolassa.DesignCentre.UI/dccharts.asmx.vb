@@ -118,7 +118,12 @@ Public Class dccharts
 			'*** Timed Out
 			'Exit Function
 		End If
+		If ds.Tables.Count = 0 Then
+
+			ds.Tables.Add(fgetblanktable("chartdata"))
+		End If
 		Dim liColCount As Integer = ds.Tables("chartdata").Columns.Count
+
 		Dim liCounter As Integer = 0
 
 		'*** Check to see if the type of chart requires a smaller set of columns
@@ -150,6 +155,13 @@ Public Class dccharts
 		Return chartData
 
 	End Function
+    Function fGetBlankTable(sTableName As String) As DataTable
+        Dim dt As New DataTable(sTableName)
+        dt.Columns.Add("rname", GetType(String))
+        dt.Columns.Add("cname", GetType(String))
+        dt.Columns.Add("chartval", GetType(Integer))
+        Return dt
+    End Function
 End Class
 Public Class cityPolulation
 	Public Property chartLabel As String

@@ -59,13 +59,13 @@ Partial Public Class SiteMaster
     Protected WithEvents ContentPlaceHolder1 As Global.System.Web.UI.WebControls.ContentPlaceHolder
 
     '''<summary>
-    '''Panel1 control.
+    '''pnlNodeChange control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents Panel1 As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents pnlNodeChange As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
     '''txtnodeid control.

@@ -172,6 +172,10 @@ Public Class mycontrol_
         cmdrfClose.Attributes.Add("onmousedown", "document.getElementById('divsaverecord').style.display = 'block';")
         cmdrfClose.Text = "Close"
         cmdrfClose.CssClass = "btn btn-secondary btn-sm px-2t"
+        cmdrfClose.Attributes.Add("data-toggle", "modal")
+        '  RFCLose.Attributes.Add("data-dismiss", "modal")
+        cmdrfClose.Attributes.Add("data-target", "#field_edit_modal")
+        cmdrfClose.Attributes.Add("class", "close")
         ' Below  Controls.Add(cmdrfClose)
 
         p = New Panel

@@ -241,8 +241,11 @@ End Class
 Public Class clsProject
 	Inherits clsBase
 	Public Property ProjectType As String
-
-	Public Sub New()
+    Public Property Address As String
+    Public Property AddressMap As String
+    Public Property Longitude As String
+    Public Property Latitude As String
+    Public Sub New()
 		NodeID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
 
@@ -278,8 +281,11 @@ Public Class clsProject
 						Case "ACTIVE" : Active = Trim(row.Item(column))
 						Case "IMAGEURL" : ImageUrl = row.Item(column)
 						Case "PROJECTTYPE" : ProjectType = row.Item(column)
-
-						Case "CREATEDATE"
+                        Case "LATITUDE" : Latitude = row.Item(column)
+                        Case "LONGITUDE" : Longitude = row.Item(column)
+                        Case "ADDRESSPRINT" : Address = row.Item(column)
+                        Case "ADDRESSMAP" : AddressMap = row.Item(column)
+                        Case "CREATEDATE"
 							Tempdate = row.Item(column)
 							If Tempdate > DateAdd("d", -100000, Now) Then CreateDate = Tempdate
 						Case "CREATEUSER" : CreateUser = row.Item(column)
@@ -305,8 +311,8 @@ Public Class clsProject
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		'Dim lsMsg As String
 		Dim lbOK As Boolean
-		lbOK = c.InsertProjects(NodeID, Name, Description, ImageUrl, ProjectType, Code)
-		ErrorMessage = c.ErrorMessage
+        lbOK = c.InsertProjects(NodeID, Name, Description, ImageUrl, ProjectType, Code, Address, AddressMap, Longitude, Latitude)
+        ErrorMessage = c.ErrorMessage
 		'NODEID, ObjectID, Name, Active, UnitTypeID, Availalbe, Tier, DepositTypeID)
 		If lbOK = False Then
 			'lsMsg = obj.ErrorMessage
@@ -314,8 +320,8 @@ Public Class clsProject
 	End Sub
 	Public Overrides Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdateProjects(NodeID, Name, Description, ImageUrl, ProjectType, Active, ID, Code)
-		ErrorMessage = c.ErrorMessage
+        c.UpdateProjects(NodeID, Name, Description, ImageUrl, ProjectType, Active, ID, Code, Address, AddressMap, Longitude, Latitude)
+        ErrorMessage = c.ErrorMessage
 		Update = 1
 	End Function
 End Class
@@ -1347,9 +1353,9 @@ Public Class clsUnits
 					colName = UCase(column.ColumnName)
 					Select Case colName
 						Case "ID" : cObject.ID = row.Item(column).ToString
-						Case "UNITNAME" : cObject.Name = row.Item(column)
+                        Case "NAME" : cObject.Name = row.Item(column)
 						Case "OBJECTID" : cObject.ObjectID = row.Item(column).ToString
-						Case "UNITCODE" : cObject.Code = row.Item(column)
+                        Case "CODE" : cObject.Code = row.Item(column)
                         Case "TIERID" : cObject.Tier = row.Item(column).ToString
                         Case "FLOORID" : cObject.FloorID = Trim(row.Item(column).ToString)
 						Case "UNITTYPEID" : cObject.UnitTypeID = row.Item(column).ToString
@@ -1518,15 +1524,21 @@ Public Class clsPayments
 		Update = 1
 	End Function
 End Class
+Class clsUser
+    Public Property ID As String
+    Public Property UserName As String
+    Public Property Email As String
+    Public Property UserFriendlyName As String
 
+End Class
 Public Class clsBase
 
 	Public Property ID As String
 	Public Property Name As String
 	Public Property Code As String
 	Public Property Description As String
-	Public Property Active As Boolean
-	Public Property CreateDate As Date
+    Public Property Active As Boolean = True
+    Public Property CreateDate As Date
 	Public Property CreateUser As String
 	Public Property UpdateDate As Date
 	Public Property UpdateUser As String
@@ -1581,15 +1593,16 @@ Public Class clsBase
 			End Select
 
 		Next
-        If CodeExists() Then
-            ErrorMessage = "Item Code already exists on another item.  Please change the code field."
-            lsString = ErrorMessage
-            Exit Sub
-        End If
-        If ID = "" Then
-			Insert()
-		Else
-			Update()
+		If CodeExists() Then
+			ErrorMessage = "Item Code already exists on another item.  Please change the code field."
+			lsString = ErrorMessage
+			Exit Sub
+		End If
+
+        If ID = "" Or ID = "00000000-0000-0000-0000-000000000000" Then
+            Insert()
+        Else
+            Update()
 		End If
 		lsString = lsString
 	End Sub
@@ -2279,8 +2292,8 @@ Public Class clsDBObjects
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		Dim lsMsg As String = ""
 		Dim lbOK As Boolean
-		lbOK = c.InsertThings(obj.FormValue, obj.TableName, obj.ID, obj.NodeID, obj.Name, obj.Description, obj.Code)
-		If lbOK = False Then
+        lbOK = c.InsertThings(obj.FormValue, obj.TableName, obj.ID, obj.NodeID, obj.Name, obj.Description, obj.Code, obj.ProjectID)
+        If lbOK = False Then
 			obj.ErrorMessage = lsMsg
 		End If
 	End Sub
@@ -2336,9 +2349,19 @@ Public Class clsDBObject
 	Public Overrides Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		Dim lsMsg As String = ""
-		Dim lbOK As Boolean
-		lbOK = c.InsertThings(FormValue, TableName, ID, NodeID, Name, Description, Code)
-		If lbOK = False Then
+        Dim lbOK As Boolean
+        If ProjectID Is Nothing Then ProjectID = System.Web.HttpContext.Current.Session("Project")
+        If ProjectID Is Nothing Then
+            ErrorMessage = "Project ID Must Be Supplied"
+
+            Exit Sub
+        End If
+        If ProjectID.Length <> 36 Or Code.Length = 0 Or Name.Length = 0 Or TableName.Length = 0 Then
+            ErrorMessage = "Name, Code and Project must be supplied"
+            Exit Sub
+        End If
+        lbOK = c.InsertThings(FormValue, TableName, ID, NodeID, Name, Description, Code, ProjectID)
+        If lbOK = False Then
             ErrorMessage = c.msErrorMsg
         End If
 	End Sub
@@ -2405,7 +2428,7 @@ Public Class clsDBObject
             lsString = ErrorMessage
             Exit Sub
         End If
-        If ID = "" Then 'INSERTUPDATE
+        If ID = "" Or ID = "00000000-0000-0000-0000-000000000000" Then 'INSERTUPDATE
             Insert()
         Else
             Update(Me)
