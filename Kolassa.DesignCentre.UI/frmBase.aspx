@@ -406,7 +406,7 @@
                             <div class="modal-footer" data-backdrop="static" style="background-color: white;">
                                  
                                 <div id="divsaverecord" style="background-color: white;">
-                                    <asp:Button ID="cmdSaveRecord" runat="server" Text="Save me"          class="btn btn-primary" ></asp:button> 	                           
+                                    <asp:Button ID="cmdSaveRecord" runat="server" Text="Save"          class="btn btn-primary" ></asp:button> 	                           
 					                <asp:Button ID="cmdSQL"        runat="server" Text="Load SQL"      class="btn btn-primary" Visible="false"></asp:button>
 					                <asp:Button ID="cmdLoad"       runat="server" Text="Load Record"   class="btn btn-primary" visible="false"></asp:button> 
 					                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>

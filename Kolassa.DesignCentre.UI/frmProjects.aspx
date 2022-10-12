@@ -21,6 +21,39 @@
 	<div style="padding-top: 0px;">
 
 <asp:Label runat="server" ID="lblProjectHomePageFor"  ></asp:Label> 
+
+        <div class="card-deck">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Units</h5>
+              <p class="card-text"> <%= Session("ProjectUnitsMetric") %></p>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">Number of Total Units</small>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Upgrades</h5>
+              <p class="card-text"> <%= Session("ProjectUpgradesMetric") %>.</p>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">Total number of selected Upgrades for <%= Session("ProjectName") %></small>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Total</h5>
+              <p class="card-text"> <%= Session("ProjectRevenueMetric") %> </p>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">Total Revenue for this project</small>
+            </div>
+          </div>
+        </div>
+
+
+
 	<div class="card-group">
 		<div class="card border-light mb-6" style="max-width: 180rem;">
 			<div class="card-body text-secondary">
@@ -34,7 +67,6 @@
 				</div>
 			</div>
 		</div>
-
 
 
 		<div class="card border-light mb-6" style="max-width: 180rem;">

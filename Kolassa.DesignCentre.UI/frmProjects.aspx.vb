@@ -11,29 +11,34 @@ Public Class frmProjects
     Dim mlRow As Long
 
 
-    Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Public Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         '*** Put user code to initialize the page here
         Page.Form.Enctype = "multipart/form-data"
-		System.Threading.Thread.Sleep(500)
+        System.Threading.Thread.Sleep(500)
+        Dim c As New clsSelectDataLoader
 
-		If Session("NodeID") Is Nothing Then Session("NodeID") = 0
-		ctrlGoogleChartPie1.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch001&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
-		ctrlGoogleChartPie2.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch002&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
-		ctrlGoogleChartPie3.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch003&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
-		ctrlGoogleChartPie4.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch004&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
 
-		If IsPostBack Then
-			' response.write(Session("msFilter"))
-			Return
+        Session("ProjectUnitsMetric") = c.fgetm("Units", Session("ProjectID"))
+        Session("ProjectUpgradesMetric") = "c.FgetMetric(Upgrades)"
+        Session("ProjectRevenueMetric") = "c.FgetMetric(Revenue)"
+        If Session("NodeID") Is Nothing Then Session("NodeID") = 0
+        ctrlGoogleChartPie1.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch001&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
+        ctrlGoogleChartPie2.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch002&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
+        ctrlGoogleChartPie3.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch003&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
+        ctrlGoogleChartPie4.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch004&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
+
+        If IsPostBack Then
+            ' response.write(Session("msFilter"))
+            Return
         Else : Session("msFilter") = ""
         End If
         'Me.cmdAddNew.Visible = True
         If imgAdd Is Nothing Then Exit Sub
         Me.imgAdd.Visible = True
         lblProjectHomePageFor.DataBind()
-	End Sub
+    End Sub
 
-	Protected Sub DataGridDisplay_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvPhases.RowDataBound
+    Protected Sub DataGridDisplay_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvPhases.RowDataBound
 		If gvPhases.EditIndex <> -1 Then
 			gvPhases.ShowFooter = False
 			'Me.cmdAddNew.Visible = False
@@ -391,4 +396,6 @@ Public Class frmProjects
 	Private Sub frmProjects_PreRender(sender As Object, e As EventArgs) Handles Me.PreRender
 
 	End Sub
+
+
 End Class

@@ -1163,16 +1163,16 @@ Public Class clsSelectDataLoader
 			'response.write("No Project Selectedd")
 			Exit Function
 		End If
-		lsSQL = "SELECT * " & NL &
-				"FROM tblRooms as R " & NL &
-				"WHERE  NodeID=" & llNodeID & " " &
-					IIf(lsWhere.Length > 4, " and " & lsWhere, "") & NL &
-					IIf(lbActive = True, " and Active = 1 ", "") & NL &
-					IIf(isGUID(lsID), " and ID = '" & lsID & "' ", "")
+        lsSQL = "SELECT P.name as Projectname, R.* " & NL &
+                "FROM tblProjects as p inner join tblRooms as R on P.ID = R.objectid  " & NL &
+                "WHERE  NodeID=" & llNodeID & " " &
+                    IIf(lsWhere.Length > 4, " and " & lsWhere, "") & NL &
+                    IIf(lbActive = True, " and Active = 1 ", "") & NL &
+                    IIf(isGUID(lsID), " and ID = '" & lsID & "' ", "")
 
 
-		'*** Load a data set.
-		Dim ds As New DataSet()
+        '*** Load a data set.
+        Dim ds As New DataSet()
 		ds = fGetDataset(mscnType, mscnStr, lsSQL, "Rooms")
 
 		mdsRooms = ds
@@ -3436,7 +3436,51 @@ LoadChildrenError:
 		mdsContacts = ds
 		LoadAdhoc = mdsContacts
 	End Function
-	Private Function fGetDataset(ByVal lsConnectionType As String, ByVal lsCn As String, ByVal lsSQL As String, ByVal lsTableName As String) As DataSet
+    Public Function fgetMike() As String
+        fgetMike = "Mike"
+    End Function
+
+    Public Function FgetMetric(ByVal lsMetric As String, ByVal lsObjectID As String) As String
+        Dim lsSQL As String
+        FgetMetric = ""
+        Select Case lsMetric.ToUpper
+            Case "UNITS"
+                lsSQL = "Select Count(ID) as Metric from tblunits where ObjectID='" & lsObjectID & "' and active=1;"
+
+            Case "UPGRADES"
+                lsSQL = "Select --ut.*, R.* --, 
+					Count(R.ID) as Metric 
+					from tblUnittypes ut inner join  tblRequestedUpgrades R  on ut.id = r.UnitTypeID
+					where r.nodeid=2 and  ut.ObjectID='" & lsObjectID & "' and r.active=1;"
+            Case "REVENUE"
+                lsSQL = "Select -- R.* --, 
+				   sum(R.Adjustments + (r.CustomerPrice * r.Quantity)) as Metric 
+				   from tblUnittypes ut inner join  tblRequestedUpgrades R  on ut.id = r.UnitTypeID
+				   where r.nodeid=2 and  ut.ObjectID='" & lsObjectID & "' and r.active=1;"
+            Case Else
+                lsSQL = ""
+        End Select
+
+        'llNodeID = 1
+        '*** Initialize
+
+        If lsObjectID.Length <> 36 Then
+            'response.write("No Project Selectedd")
+            Exit Function
+        End If
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        ds = fGetDataset(mscnType, mscnStr, lsSQL, "Units")
+
+
+        If ds.Tables.Count > 0 Then
+            If ds.Tables(0).Rows.Count > 0 Then
+                FgetMetric = ds.Tables(0).Rows(0)(0).ToString
+            End If
+        End If
+    End Function
+    Private Function fGetDataset(ByVal lsConnectionType As String, ByVal lsCn As String, ByVal lsSQL As String, ByVal lsTableName As String) As DataSet
 		Dim ds As DataSet = New DataSet
 		Try
 			'debug.print("<fGetDataset>" & lsSQL & "</fGetDataset>")
@@ -4307,20 +4351,21 @@ fCheckForRequiredItems_Error:
 		'*** Run The SQL.
 		Return fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
-    Public Function UpdateAppUsers(ByVal lsFriendlyName As String, lsEmail As String, lsUserName As String, ByVal NodeID As Integer, lsID As string) As Boolean
-        Dim lsSQL As String
-        Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
-        '*** Initialize
-        UpdateAppUsers = False
-        '*** Check for No Selected Category
+	Public Function UpdateAppUsers(ByVal lsFriendlyName As String, lsEmail As String, lsUserName As String, ByVal NodeID As Integer, lsID As String) As Boolean
+		Dim lsSQL As String
+		Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+		'*** Initialize
+		UpdateAppUsers = False
+		'*** Check for No Selected Category
 
-        lsSQL = "Update aspnetusers  Set ID = '" & lsID & "' " &
-                    IIf(lsUserName = "", "", " ,UserName = '" & lsUserName & "' ") &
-                    IIf(lsFriendlyName = "", "", " ,UserFriendlyName = '" & lsFriendlyName & "' ") &
-                    IIf(lsEmail = "", "", " ,Email = '" & lsEmail & "' ") &
-                    IIf(NodeID > 0, "", " ,NodeID = " & NodeID) &
-              " WHERE ID = '" & lsID & "' ; "
-        '*** Run The SQL.
-        Return fRunSQL(mscnType, mscnStr, lsSQL)
-    End Function
+		lsSQL = "Update aspnetusers  Set ID = '" & lsID & "' " &
+					IIf(lsUserName = "", "", " ,UserName = '" & lsUserName & "' ") &
+					IIf(lsFriendlyName = "", "", " ,UserFriendlyName = '" & lsFriendlyName & "' ") &
+					IIf(lsEmail = "", "", " ,Email = '" & lsEmail & "' ") &
+					IIf(NodeID > 0, "", " ,NodeID = " & NodeID) &
+			  " WHERE ID = '" & lsID & "' ; "
+		'*** Run The SQL.
+		Return fRunSQL(mscnType, mscnStr, lsSQL)
+	End Function
+
 End Class

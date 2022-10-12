@@ -6,6 +6,7 @@ Imports Microsoft.AspNet.Identity.Owin
 Imports Microsoft.Owin
 Imports Microsoft.Owin.Security
 Imports SendGrid
+Imports System.Net.Mail
 Imports System.Net
 Imports System.Configuration
 Imports System.Diagnostics
@@ -22,31 +23,90 @@ Public Class EmailService
 
     '*** Use NuGet to install SendGrid (Basic C# client lib) 
     Private Async Function configSendGridasync(message As IdentityMessage) As Task
+        'SendEmail()
+        Dim msg As String
+        ' Dim myMessage As SendGrid.SendGridMessage
+        ' myMessage = New SendGrid.SendGridMessage()
+        Try
 
+            Dim myMessage As MailMessage = New MailMessage()
+            myMessage.To.Add(message.Destination)
+            myMessage.From = New System.Net.Mail.MailAddress("michael.may@addisonstuart.com", "Addison Stuart")
+            myMessage.Subject = message.Subject
+            myMessage.Body = message.Body
+            Dim smtp As SmtpClient = New SmtpClient()
+            smtp.Host = "mail.addisonstuart.com" '"mail5008.site4now.net" '
+            smtp.Port = "8889" '"465" '25  "465" '
+            smtp.UseDefaultCredentials = False
+            Dim lsUserName, lsPassword As String
+            lsUserName = ConfigurationManager.AppSettings("emailServiceUserName")
+            lsPassword = ConfigurationManager.AppSettings("emailServicePassword")
+            smtp.Credentials = New System.Net.NetworkCredential(
+                                lsUserName,
+                               lsPassword)
+            smtp.EnableSsl = False 'True
 
-        Dim myMessage As sendgridmessage = New SendGridMessage()
-        myMessage.AddTo(message.Destination)
-        myMessage.From = New System.Net.Mail.MailAddress("michael.may@addisonstuart.com", "Addison Stuart")
-        myMessage.Subject = message.Subject
-        myMessage.Text = message.Body
-        myMessage.Html = message.Body
+            smtp.Send(myMessage)
+            'lblmsg.Text = "Mail Send ......."
 
-        Dim credentials As NetworkCredential = New NetworkCredential(
-                 ConfigurationManager.AppSettings("emailServiceUserName"),
-                 ConfigurationManager.AppSettings("emailServicePassword")
-                 )
+        Catch ex As Exception
+            msg = ex.Message
+            msg = msg & "!"
+        End Try
+        msg = msg & "!"
+        Exit Function
 
-        '*** Create a Web transport for sending email.
-        Dim transportWeb As Web = New Web(credentials)
+        '  Dim myMessage As sendgridmessage = New SendGridMessage()
+        '   myMessage.AddTo(message.Destination)
+        ' myMessage.From = New System.Net.Mail.MailAddress("michael.may@addisonstuart.com", "Addison Stuart")
+        ' myMessage.Subject = message.Subject
+        ' myMessage.Text = message.Body
+        ' myMessage.Html = message.Body
 
-        '*** Send the email.
-        If Not (transportWeb Is Nothing) Then
-            Await transportWeb.DeliverAsync(myMessage)
-        Else
-            Trace.TraceError("Failed to create Web transport.")
-            Await Task.FromResult(0)
-        End If
+        ' Dim credentials As NetworkCredential = New NetworkCredential(
+        ' ConfigurationManager.AppSettings("emailServiceUserName"),
+        ' ConfigurationManager.AppSettings("emailServicePassword")
+        '         )
+
+        '  '*** Create a Web transport for sending email.
+        '  Dim transportWeb As Web = New Web(credentials)
+
+        '  '*** Send the email.
+        '  If Not (transportWeb Is Nothing) Then
+        '  Await transportWeb.DeliverAsync(myMessage)
+        '  Else
+        ' Trace.TraceError("Failed to create Web transport.")
+        'Await Task.FromResult(0)
+        ' End If
     End Function
+    Sub SendEmail()
+        Dim lsmsg As String
+        ServicePointManager.SecurityProtocol = DirectCast(3072, SecurityProtocolType)
+
+        Dim strFrom = "michael.may@addisonstuart.com"  ''IMPORTANT: This must be same as your smtp authentication address.
+        Dim strTo = "mkolassa@gmail.com"
+        Dim MailMsg As New MailMessage(New MailAddress(strFrom.Trim()), New MailAddress(strTo))
+        MailMsg.BodyEncoding = Encoding.Default
+        MailMsg.Subject = "This is a test"
+        MailMsg.Body = "This is a sample message using SMTP authentication"
+        MailMsg.Priority = MailPriority.High
+        MailMsg.IsBodyHtml = True
+        'Smtpclient to send the mail message 
+
+        Dim SmtpMail As New SmtpClient
+        Dim basicAuthenticationInfo As New System.Net.NetworkCredential("michael.may@addisonstuart.com", "IPsum238$")
+
+        ''IMPORANT:  Your smtp login email MUST be same as your FROM address.
+
+        SmtpMail.Host = "mail.addisonstuart.com"
+        SmtpMail.UseDefaultCredentials = False
+        SmtpMail.Credentials = basicAuthenticationInfo
+        SmtpMail.Port = 8889 '25  '    //alternative port number Is 8889
+        SmtpMail.EnableSsl = False
+
+        SmtpMail.Send(MailMsg)
+        lsmsg = "Mail Sent"
+    End Sub
 End Class
 
 Public Class SmsService

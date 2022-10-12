@@ -187,11 +187,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 		</LoggedInTemplate>
 	</asp:LoginView>
-			<p>
-				<a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301948">Learn more &raquo;</a>
-				<asp:Button ID="cmdCSV" runat="server" Text="CSV" OnClick="cmdCSV_Click" />
-				<asp:FileUpload ID="fuCSV" runat="server" />
-			</p>
-    <uc1:ctrlImages runat="server" id="ctrlImages" />
+
 
 </asp:Content>

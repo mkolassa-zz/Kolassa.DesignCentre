@@ -43,16 +43,16 @@ Public Class _Default
 		Dim c As New clsTestCSV
 		Dim lsFileName As String
 
-		lsFileName = fucsv.FileName
-		If fuCSV.HasFile Then
-			lsFileName = ConfigurationManager.AppSettings("uploadFolder") & "/" & Guid.NewGuid.ToString & fuCSV.FileName
-			fuCSV.SaveAs(lsFileName)
-			fuCSV.ToolTip = "File uploaded successfully."
+        '	lsFileName = fucsv.FileName
+        ' If fuCSV.HasFile Then
+        ' lsFileName = ConfigurationManager.AppSettings("uploadFolder") & "/" & Guid.NewGuid.ToString & fuCSV.FileName
+        ' fuCSV.SaveAs(lsFileName)
+        ' fuCSV.ToolTip = "File uploaded successfully."
 
-			Session("objType") = Request.QueryString("objType")
-			c.ObjectType = Session("objType")
-			c.csvReadTest(lsFileName)
-			c.csvWriteTest()
-		End If
-	End Sub
+        ' Session("objType") = Request.QueryString("objType")
+        'c.ObjectType = Session("objType")
+        'c.csvReadTest(lsFileName)
+        'c.csvWriteTest()
+        'End If
+    End Sub
 End Class

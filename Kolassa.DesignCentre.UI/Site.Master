@@ -123,10 +123,8 @@
                     </ul>
                      <ul class="navbar-nav px-3">
                         <li class="nav-item text-nowrap">		
-						<%    If Session("NodeID") Is Nothing Or Context.User.IsInRole("Admin") = False Then  %>
-            			 	<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#NodeModal" style="border:none;">
-									<i class="fa fa-search" ></i> Select Node
-							</button>
+						<%    If Context.User.IsInRole("Admin") = False Then  %>
+            			 
           
 						<%Else  %>
 								<button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#NodeModal" style="padding-top:7px;border:none;">
@@ -146,10 +144,9 @@
                     
                         
       <div class="dropdown-menu">
-          <asp:LoginStatus class="py-2 d-none d-md-inline-block" runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />   
-        <a class="dropdown-item" href="#">Link 1</a>
-        <a class="dropdown-item" href="#">Link 2</a>
-        <a class="dropdown-item" href="#">Link 3</a>
+          <asp:LoginStatus class="dropdown-item" runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />   
+             <a class="dropdown-item" href="account/ManagePassword">Manage Account</a>
+             <a class="dropdown-item" href="account/AddPhoneNumber">Add Phone Number</a>
       </div>
     </li>
 

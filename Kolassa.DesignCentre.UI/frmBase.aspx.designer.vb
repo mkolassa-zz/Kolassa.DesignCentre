@@ -317,7 +317,7 @@ Partial Public Class frmBase
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents rptBase As Global.Kolassa.DesignCenter.ReportManager.reportcontainer
+    Protected WithEvents rptBase As Global.Kolassa.DesignCenter.ReportManager.ReportContainer
 
     '''<summary>
     '''cmdUpdateStuff control.
