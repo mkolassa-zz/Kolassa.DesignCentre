@@ -30,8 +30,8 @@ Public Class dccharts
 
 	<WebMethod()>
 	Public Function GetGanttDates() As List(Of ProjectDates)
-		Dim cn As New clsSelectDataLoader
-		Dim dr As DataRow
+        Dim cn As New clsSelectDataLoader
+        Dim dr As DataRow
 		Dim ds As DataSet
 		ds = cn.LoadCustomers(Context.Request.QueryString("Node"), " f.customerstate='UT'", True, "", "", "")
 		Dim s, f As Date

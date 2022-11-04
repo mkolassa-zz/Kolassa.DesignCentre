@@ -17,10 +17,10 @@ Public Class frmProjects
         System.Threading.Thread.Sleep(500)
         Dim c As New clsSelectDataLoader
 
-
-        Session("ProjectUnitsMetric") = c.fgetm("Units", Session("ProjectID"))
-        Session("ProjectUpgradesMetric") = "c.FgetMetric(Upgrades)"
-        Session("ProjectRevenueMetric") = "c.FgetMetric(Revenue)"
+        Dim lsProject As String = Session("Project")
+        Session("ProjectUnitsMetric") = FormatNumber(c.FgetMetric("Units", lsProject), 0)
+        Session("ProjectUpgradesMetric") = FormatNumber(Val(c.FgetMetric("Upgrades", lsProject)), 0)
+        Session("ProjectRevenueMetric") = FormatCurrency(Val(c.FgetMetric("Revenue", lsProject)), 0)
         If Session("NodeID") Is Nothing Then Session("NodeID") = 0
         ctrlGoogleChartPie1.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch001&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
         ctrlGoogleChartPie2.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch002&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"

@@ -21,14 +21,14 @@ Public Class dcwebservices
         Dim qs As String = Context.Request.QueryString("L")
 
         Dim ProjectID As String = project '1000
-        Dim ObjectTYpe As String = lsObjectType '1000
+        Dim ObjectType As String = lsObjectType '1000
         Dim TableName As String
         Dim errorMessage As String = ""
         Dim NodeID As Long = llNodeID
         TableName = "11112222-3333-4444-5555-666677778888"
 
         Dim c As New Kolassa.DesignCenter.ReportManager.clsDataLoader
-        Dim newcodestring As String = c.fGetNextCode(NodeID, ObjectTYpe, TableName, ProjectID, errorMessage)
+        Dim newcodestring As String = c.fGetNextCode(NodeID, ObjectType, TableName, ProjectID, errorMessage)
         Return newcodestring
         ' Dim nc As New newcode
         ' nc.Code = newcodestring
@@ -36,7 +36,21 @@ Public Class dcwebservices
         ' ncl.Add(nc)
         ' Return ncl
     End Function
+    <WebMethod()>
+    Public Function fchange(ByVal ID As String, lsRoomID As String, ByVal lsUnitTypeID As String, ByVal lsActive As String, lsproject As String, ByVal lsnode As String) As Boolean
+        Dim clsup As New clsUnitProfile
+        clsup.ProjectID = lsproject
+        clsup.NodeID = Val(lsnode)
+        clsup.ObjectID = lsproject
+        Dim lsProjectID As String = clsup.ProjectID
+        clsup.RoomID = lsRoomID
+        clsup.ID = ID
+        clsup.UnitTypeID = lsUnitTypeID
+        clsup.Active = lsActive
+        clsup.Update()
+        Return True
 
+    End Function
 End Class
 Public Class newcode
     Public Property Code As String

@@ -83,12 +83,6 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Kolassa.DesignCenter.ReportManager">
-      <HintPath>..\Kolassa.DesignCenter.ReportManager\bin\Kolassa.DesignCenter.ReportManager.dll</HintPath>
-    </Reference>
-    <Reference Include="Kolassa.DesignCentre.Data">
-      <HintPath>..\Kolassa.DesignCentre.Data\bin\Debug\Kolassa.DesignCentre.Data.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.4.0\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
     </Reference>
@@ -343,6 +337,7 @@
     <Content Include="Content\scrodal.css" />
     <Content Include="Content\sidebar.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="Controls\ctrlNotifications.ascx" />
     <Content Include="Controls\ctrlContactEntry.ascx" />
     <Content Include="Controls\ctrlImageLookup.ascx" />
     <Content Include="Controls\ctrlImageNew.ascx" />
@@ -794,6 +789,13 @@
     <Compile Include="App_Code\BootstrapAlerts.vb" />
     <Compile Include="App_Code\clsCSVReader.vb" />
     <Compile Include="App_Code\clsObjects.vb" />
+    <Compile Include="Controls\ctrlNotifications.ascx.designer.vb">
+      <DependentUpon>ctrlNotifications.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ctrlNotifications.ascx.vb">
+      <DependentUpon>ctrlNotifications.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Controls\ctrlContactEntry.ascx.designer.vb">
       <DependentUpon>ctrlContactEntry.ascx</DependentUpon>
     </Compile>
@@ -1153,6 +1155,16 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Scripts\index.d.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kolassa.DesignCenter.ReportManager\Kolassa.DesignCenter.ReportManager.vbproj">
+      <Project>{6b356dd9-6dd2-4fcf-aac4-caf1bbfea785}</Project>
+      <Name>Kolassa.DesignCenter.ReportManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kolassa.DesignCentre.Data\Kolassa.DesignCentre.Data.vbproj">
+      <Project>{e6e51be8-19f2-4c68-8106-8c0afac40d62}</Project>
+      <Name>Kolassa.DesignCentre.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

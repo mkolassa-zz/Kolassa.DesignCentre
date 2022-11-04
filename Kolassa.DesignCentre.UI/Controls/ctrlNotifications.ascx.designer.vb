@@ -11,41 +11,59 @@ Option Strict On
 Option Explicit On
 
 
-Partial Public Class frmTest
+Partial Public Class ctrlNotifications
 
     '''<summary>
-    '''upChecks control.
+    '''odsCommunications control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents upChecks As Global.System.Web.UI.UpdatePanel
+    Protected WithEvents odsCommunications As Global.System.Web.UI.WebControls.ObjectDataSource
 
     '''<summary>
-    '''Button1 control.
+    '''pnlComm control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents Button1 As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents pnlComm As Global.System.Web.UI.UpdatePanel
 
     '''<summary>
-    '''gvCrosstab control.
+    '''litID control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents gvCrosstab As Global.System.Web.UI.WebControls.GridView
+    Protected WithEvents litID As Global.System.Web.UI.WebControls.Literal
 
     '''<summary>
-    '''upProgress control.
+    '''rptDiscussion control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents upProgress As Global.System.Web.UI.UpdateProgress
+    Protected WithEvents rptDiscussion As Global.System.Web.UI.WebControls.Repeater
+
+    '''<summary>
+    '''txtComment control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtComment As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''cmdPostComm control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdPostComm As Global.System.Web.UI.WebControls.Button
 End Class

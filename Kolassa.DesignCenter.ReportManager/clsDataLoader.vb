@@ -93,7 +93,7 @@ Public Class clsDataLoader
                 "       tblReportDescriptions.ReportName,   s.SelectStatement ,  SearchClause,    " & NL &
                 "       tblReportDescriptions.EntityType, tblReportDescriptions.TableName         " & NL &
                 "FROM   tblReportDescriptions           " & NL &
-                "       Left Join tblReportSQL S on tblReportDescriptions.ReportID = S.ReportID " & NL &
+                  "       Left Join tblReportSQL S on tblReportDescriptions.ReportID = S.ReportID " & NL &
                 "WHERE  1=1 "
         If liReportID > 0 Then
             lsSQL = lsSQL & "   And   tblReportDescriptions.ReportID=" & liReportID & NL

@@ -1,4 +1,5 @@
 ﻿Imports System.Data
+
 Public Class clsMIKEMIKE 
 	Public m As string
 ENd Class
@@ -1273,7 +1274,52 @@ Public Class clsPhases
 	End Function
 
 End Class
+'*** UnitProfiles
+Public Class clsUnitProfile
+    Inherits clsBase
+    Public Property ObjectID As String
+    Private _UnitTypeID As String
 
+    Public Sub New()
+        'OK
+    End Sub
+
+    Public Property UnitTypeID As String
+        Get
+            Return _UnitTypeID
+        End Get
+        Set(ByVal value As String)
+            _UnitTypeID = value
+        End Set
+    End Property
+    Public Property RoomID As String
+
+    Public Overrides Sub Delete() 'ID As String)
+        Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+        c.DeleteUnitProfiles(ID, NodeID)
+    End Sub
+    Public Overrides Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
+        Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+        'Dim lsMsg As String
+        Dim lbOK As Boolean
+        lbOK = c.InsertUnitProfiles(NodeID, UnitTypeID, RoomID, ObjectID)
+        If lbOK = False Then
+            'lsMsg = obj.ErrorMessage
+        End If
+    End Sub
+    Public Overrides Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
+        Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+        Dim lsActive As String
+        If Active = True Then
+            lsActive = "true"
+        Else
+            lsActive = "false"
+        End If
+        c.UpdateUnitProfiles(NodeID, ID, UnitTypeID, lsActive, RoomID, ObjectID)
+        Update = 1
+    End Function
+End Class
+'*** Units
 Public Class clsUnit
 	Inherits clsBase
 	Private _UnitTypeID As String
@@ -1297,12 +1343,13 @@ Public Class clsUnit
 	Public Property Image As String
 
 	Public Property Level As String = "" ' Tells whether this is coming from the Project (Setting up Phases) or Quote
-	' Levels is important because at the Project Level we do not modify the Quote Level Fields
-	'Private Property NODEID As Long
-	Public Sub New()
-		NodeID = System.Web.HttpContext.Current.Session("NodeID")
-	End Sub
-	Public Overrides Sub Delete() 'ID As String)
+    ' Levels is important because at the Project Level we do not modify the Quote Level Fields
+    'Private Property NODEID As Long
+    Public Sub New()
+        On Error Resume Next
+        NodeID = System.Web.HttpContext.Current.Session("NodeID")
+    End Sub
+    Public Overrides Sub Delete() 'ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		c.DeleteUnits(ID, NodeID)
 	End Sub
@@ -1552,12 +1599,13 @@ Public Class clsBase
 	Public Property TableName As String
 	Public Property EditMode As Boolean
 	Public Property ObjectType As String
-	Public Sub New()
+    Public Sub New()
+        On Error Resume Next
         NodeID = System.Web.HttpContext.Current.Session("NodeID")
-        ProjectID = System.Web.HttpContext.Current.Session("Project")
-
+        ProjectID = IIf(System.Web.HttpContext.Current.Session("ProjectID") Is Nothing, "00000000-0000-0000-0000-000000000000", System.Web.HttpContext.Current.Session("ProjectID"))
+        Dim lsTest As String = ""
     End Sub
-	Public Overridable Sub processFormValues()
+    Public Overridable Sub processFormValues()
 		Dim lsString As String = ""
 		For Each kvp As KeyValuePair(Of String, String) In FormValue
 			lsString = lsString & Chr(13) & Chr(10) & kvp.Key & kvp.Value

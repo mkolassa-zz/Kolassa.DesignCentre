@@ -48,6 +48,25 @@
             background-color:moccasin;
         }
     </style>
+ <!-- Drop Down Hover Menu for notifications -->
+    <style>
+        .ddropdown {
+          position: relative;
+          display: inline-block;
+        }
+
+        .ddropdown-content {
+          display: none;
+          position: absolute;
+          background-color: #f9f9f9;
+          min-width: 160px;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          padding: 12px 16px;
+          z-index: 1;
+        }
+        .ddropdown:hover .dropdown-content {  display: block;}
+</style>
+
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <link href="Content/fontawesome-all.css" rel="stylesheet" />
     <link href="fonts/dc_fonts.css" rel="stylesheet" />
@@ -136,7 +155,11 @@
                     </ul>
                     <ul class="navbar-nav px-3">
                         <li class="nav-item text-nowrap" style="padding-top:7px;">  <i class="fas fa-envelope fa-x" ></i>
-                            <span class="badge badge-pill badge-danger" style="padding-top:7px;">9</span>&nbsp;&nbsp;</li>
+                            <span class="ddropdown badge badge-pill badge-danger " style="padding-top:7px;">9</span>&nbsp;&nbsp;</li>
+                          <div class="ddropdown"><span class="ddropdown">Mouse over me</span>
+  <div class="ddropdown-content">
+  <p>Hello World!</p>
+  </div></div>
                     </ul>
           
                     <li class="nav-item dropdown" style="list-style-type: none;">

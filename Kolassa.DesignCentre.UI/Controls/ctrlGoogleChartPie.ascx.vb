@@ -41,8 +41,8 @@ Public Class CtrlGoogleChartPie
 
 	Public Sub GetReportChartData()
 		Dim liColumnsForChart As Integer = 5
-		Dim cn As New clsSelectDataLoader
-		Dim ds As DataSet
+        Dim cn As New clsSelectDataLoader
+        Dim ds As DataSet
 		Dim llNodeID As Long = Session("NodeID")
 		Dim squerystring As String = ""
 		Dim lsChartID As String = Context.Request.QueryString("llChartID") '1000

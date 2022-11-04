@@ -340,7 +340,7 @@
 			            <div class="modal-content">
 				            <div class="modal-header">
 					            <h5 class="modal-title" id="Data"><asp:Label ID="lblReportFormLabel" runat="server" CssClass="h2" /></h5>
-					            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					            <button type="button" class="close" data-dismiss="modal" onclick="resetform()" aria-label="Close">
 					              <span aria-hidden="true">&times;</span>
 					            </button>
 				            </div>
@@ -409,7 +409,7 @@
                                     <asp:Button ID="cmdSaveRecord" runat="server" Text="Save"          class="btn btn-primary" ></asp:button> 	                           
 					                <asp:Button ID="cmdSQL"        runat="server" Text="Load SQL"      class="btn btn-primary" Visible="false"></asp:button>
 					                <asp:Button ID="cmdLoad"       runat="server" Text="Load Record"   class="btn btn-primary" visible="false"></asp:button> 
-					                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+					                <button type="button" class="btn btn-danger" onclick="resetform()" data-dismiss="modal">Close</button>
 					            </div>
                             </div> 
 
@@ -632,6 +632,18 @@
                 // Its a new record now go get the new code
           //      newrec(tthis);
           //  }
+        }
+        function resetform() {
+            /*  Not sure why this wont work */
+           // $("#MainContent_tcEditData_tabEdit_rptBase_tbl").remove;
+            var x = document.getElementById('MainContent_tcEditData_tabEdit_rptBase_tbl');
+            x.rows.remove;
+            var z = x.getElementsByTagName('tbody')[0];
+            z.firstChild.remove;
+            var y = document.getElementById('MainContent_tcEditData_tabEdit_rptBase_tblRow');
+            y.deleterow;
+            y.childNodes.remove;
+           
         }
         function fResetForm() {
             var x = document.getElementsByClassName("editmode")

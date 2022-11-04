@@ -5,6 +5,7 @@ Imports System.Text.RegularExpressions
 'Imports System.IO
 Imports System.Configuration
 Imports Microsoft.AspNet.Identity
+Imports System.Web.HttpContext
 
 'Imports Microsoft.AspNet.Identity.EntityFramework
 'Imports System.Security.Principal
@@ -54,13 +55,15 @@ Public Class clsSelectDataLoader
 
 
     Public Sub New()
-		Try
-			If System.Web.HttpContext.Current.Session("Project") Is Nothing Then
-			Else
+        Try
 
-
-				ProjectID = IIf(System.Web.HttpContext.Current.Session("Project") Is Nothing, "", System.Web.HttpContext.Current.Session("Project"))
-			End If
+            If Not Current.Session Is Nothing Then
+                If IsDBNull(Current.Session("Project")) Then
+                Else
+                    ProjectID = IIf(Current.Session("Project") Is Nothing, "", Current.Session("Project"))
+                End If
+            Else
+            End If
 		Catch
             ProjectID = ""
         End Try
@@ -242,7 +245,7 @@ Public Class clsSelectDataLoader
             Exit Function
         End If
         lsSQL = "INSERT INTO tblProjects ( Name, Code, Description,  ProjectType, " &
-                "                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID,Address,AddressMap,Longitude,latitude ) " &
+                "                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID,AddressPrint,AddressMap,Longitude,latitude ) " &
                 "Values ( '" & fTakeOutQuotes(lsName) & "', " & NL &
                           "'" & fTakeOutQuotes(lsCode) & "', " & NL &
                           "'" & fTakeOutQuotes(lsDescription) & "', " & NL &
@@ -250,12 +253,12 @@ Public Class clsSelectDataLoader
                           "'" & Now.ToString & "', " & NL &
                           "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
                           "'" & Now.ToString & "', " & NL &
-                          "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
+                          "'" & fTakeOutQuotes(lsCurrentUser) & "'," & NL &
                           "1, '" & llNodeID & "' " &
-                          "," & fTakeOutQuotes(Address) & "' " &
-                          "," & fTakeOutQuotes(AddressMap) & "' " &
-                          "," & fTakeOutQuotes(Longitude) & "' " &
-                          "," & fTakeOutQuotes(Latitude) & "'); "
+                          ",'" & fTakeOutQuotes(Address) & "' " &
+                          ",'" & fTakeOutQuotes(AddressMap) & "' " &
+                          ",'" & fTakeOutQuotes(Longitude) & "' " &
+                          ",'" & fTakeOutQuotes(Latitude) & "'); "
         '*** Run The SQL.
         InsertProjects = fRunSQL("SQLConnection", lscnStr, lsSQL)
     End Function
@@ -271,16 +274,16 @@ Public Class clsSelectDataLoader
         End If
         lsSQL = "Update tblProjects  " &
                 "Set Name = '" & fTakeOutQuotes(lsName) & "', Description = " & NL &
-                          "'" & fTakeOutQuotes(lsDescription) & "', CODE= " & NL &
-                          "'" & fTakeOutQuotes(lsCode) & "', image= " & NL &
-                          "'" & fTakeOutQuotes(lsImage) & "', ProjectType= " & NL &
-                          "'" & fTakeOutQuotes(lsProjectType) & "', AddressPrint= " & NL &
-                          "'" & fTakeOutQuotes(Address) & "', AddressMap= " & NL &
-                          "'" & fTakeOutQuotes(AddressMap) & "', Longitude= " & NL &
-                          "'" & fTakeOutQuotes(Longitude) & "', Latitude= " & NL &
-                          "'" & fTakeOutQuotes(Latitude) & "', UpdateDate=" & NL &
-                          "'" & Now.ToString & "', UpdateUser=" & NL &
-                          "'" & fTakeOutQuotes(lsCurrentUser) & "', Active = " & lsActive & NL &
+                           "'" & fTakeOutQuotes(lsDescription) & "', CODE= " & NL &
+                           "'" & fTakeOutQuotes(lsCode) & "', image= " & NL &
+                           "'" & fTakeOutQuotes(lsImage) & "', ProjectType= " & NL &
+                           "'" & fTakeOutQuotes(lsProjectType) & "', AddressPrint= " & NL &
+                           "'" & fTakeOutQuotes(Address) & "', AddressMap= " & NL &
+                           "'" & fTakeOutQuotes(AddressMap) & "', Longitude= " & NL &
+                           "'" & fTakeOutQuotes(Longitude) & "', Latitude= " & NL &
+                           "'" & fTakeOutQuotes(Latitude) & "', UpdateDate=" & NL &
+                           "'" & Now.ToString & "', UpdateUser=" & NL &
+                           "'" & fTakeOutQuotes(lsCurrentUser) & "', Active = " & If(lsActive.ToUpper.Trim = "TRUE", "1", "0") & NL &
                  " Where ID='" & ID & "';"
         '*** Run The SQL.
         UpdateProjects = fRunSQL("SQLConnection", lscnStr, lsSQL)
@@ -1164,7 +1167,7 @@ Public Class clsSelectDataLoader
 			Exit Function
 		End If
         lsSQL = "SELECT P.name as Projectname, R.* " & NL &
-                "FROM tblProjects as p inner join tblRooms as R on P.ID = R.objectid  " & NL &
+                "FROM (Select ID as pID, Name from tblProjects) as p inner join tblRooms as R on P.pID = R.objectid  " & NL &
                 "WHERE  NodeID=" & llNodeID & " " &
                     IIf(lsWhere.Length > 4, " and " & lsWhere, "") & NL &
                     IIf(lbActive = True, " and Active = 1 ", "") & NL &
@@ -1488,9 +1491,9 @@ Public Class clsSelectDataLoader
 			'response.write("No Project Selected")
 			Exit Function
 		End If
-        lsSQL = "INSERT INTO tblRooms (  Code, Name, Description,  " &
+        lsSQL = "INSERT INTO tblRooms ( ID, Code, Name, Description,  " &
                 "                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID, ObjectID ) " &
-                "Values ( '" & fTakeOutQuotes(lsCode) & "', " & NL & "'" & fTakeOutQuotes(lsName) & "', " & NL &
+                "Values ( '" & Guid.NewGuid.ToString.Trim & "', '" & fTakeOutQuotes(lsCode) & "', " & NL & "'" & fTakeOutQuotes(lsName) & "', " & NL &
                           "'" & fTakeOutQuotes(lsDescription) & "', " & NL &
                           "'" & Now.ToString & "', " & NL &
                           "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
@@ -1555,56 +1558,78 @@ Public Class clsSelectDataLoader
 		Dim lsSQL As String = "Update tblUnitProfiles Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE NodeID=" & llNodeID & " AND ID='" & RecordID & "'"
 		DeleteUnitProfiles = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
-	Public Function InsertUnitProfiles(ByVal llNodeID As Long, ByVal lsUnitTypeID As String, ByVal lsRoomID As String) As Boolean
-		Dim lsSQL As String
-		Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
-		'*** Initialize
-		InsertUnitProfiles = False
+    Public Function InsertUnitProfiles(ByVal llNodeID As Long, ByVal lsUnitTypeID As String, ByVal lsRoomID As String, ByVal lsProjectID As String) As Boolean
+        Dim lsSQL As String
+        Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+        '*** Initialize
+        InsertUnitProfiles = False
 		'*** Check for No Selected Category
 		If llNodeID = 0 Then
 			'response.write("No Project Selectedd")
 			Exit Function
 		End If
-		lsSQL = "INSERT INTO tblUnitProfiles ( UnitTypeID, RoomID,  " &
-				"                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID ) " &
-				"Values ( '" & lsUnitTypeID & "', " & NL &
-						  "'" & lsRoomID & "', " & NL &
-						  "'" & Now.ToString & "', " & NL &
-						  "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
-						  "'" & Now.ToString & "', " & NL &
-						  "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
-						   "1, " & llNodeID & "); "
-		'*** Run The SQL.
-		InsertUnitProfiles = fRunSQL(mscnType, mscnStr, lsSQL)
-	End Function
-	Public Function UpdateUnitProfiles(ByVal llNodeID As Long, ByVal UnitProfileID As String, ByVal lsUnitTypeID As String,
-									   ByVal lsActive As String, ByVal lsRoomID As String) As Boolean
-		Dim lsSQL As String
-		Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
-		'*** Initialize
-		UpdateUnitProfiles = False
+        If lsProjectID.Length <> 36 Then Exit Function
+        If lsUnitTypeID.Length <> 36 Then Exit Function
+        If lsRoomID.Length <> 36 Then Exit Function
+        lsSQL = "INSERT INTO tblUnitProfiles ( id, UnitTypeID, RoomID, objectid, " &
+                "                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID ) " &
+                "Values ( '" & Guid.NewGuid.ToString & "',  '" & lsUnitTypeID & "', " & NL &
+                          "'" & lsRoomID & "', " & NL &
+                          "'" & lsProjectID & "', " & NL &
+                          "'" & Now.ToString & "', " & NL &
+                          "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
+                          "'" & Now.ToString & "', " & NL &
+                          "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
+                           "1, " & llNodeID & "); "
+        '*** Run The SQL.
+        InsertUnitProfiles = fRunSQL(mscnType, mscnStr, lsSQL)
+    End Function
+    Public Function UpdateUnitProfiles(ByVal llNodeID As Long, ByVal UnitProfileID As String, ByVal lsUnitTypeID As String,
+                                       ByVal lsActive As String, ByVal lsRoomID As String, ByVal lsProjectID As String) As Boolean
+        Dim lsSQL As String
+        Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+        '*** Initialize
+        UpdateUnitProfiles = False
 		'*** Check for No Selected Category
 		If llNodeID = 0 Then
 			Exit Function
 		End If
-		lsSQL = "Update tblUnitProfiles  " &
-				"Set RoomID = """ & fTakeOutQuotes(lsRoomID) & "', UnitTypeID = " & NL &
-						  "'" & fTakeOutQuotes(lsUnitTypeID) & "', UpdateDate = " & NL &
-						  "'" & Now.ToString & "', UpdateUser=" & NL &
-						  "'" & fTakeOutQuotes(lsCurrentUser) & "', Active = " & lsActive & NL &
-				 " Where UnitProfileID'=" & UnitProfileID & "';"
-		'*** Run The SQL.
-		UpdateUnitProfiles = fRunSQL(mscnType, mscnStr, lsSQL)
-	End Function
+        If lsActive.ToUpper = "1" Or lsActive.ToUpper = "TRUE" Then
+            lsActive = "1"
+        Else
+            lsActive = "0"
+        End If
+        lsSQL = "Select * from tblunitprofiles where 1=1 
+                          and roomid ='" & lsRoomID & "' 
+                          and unittypeid = '" & lsUnitTypeID & "'"
+        Dim ds As DataSet
+        If fGetDataset(mscnType, mscnStr, lsSQL, "ProfileRecord").Tables(0).Rows.Count > 0 Then
+            '*** Record Exists, Update it
+            lsSQL = "Update tblUnitProfiles  " &
+                    "Set RoomID = '" & fTakeOutQuotes(lsRoomID) & "', ObjectID = " & NL &
+                              "'" & fTakeOutQuotes(lsProjectID) & "', UnitTypeID = " & NL &
+                              "'" & fTakeOutQuotes(lsUnitTypeID) & "', UpdateDate = " & NL &
+                              "'" & Now.ToString & "', UpdateUser=" & NL &
+                              "'" & fTakeOutQuotes(lsCurrentUser) & "', Active = " & lsActive & NL &
+                     " Where id='" & UnitProfileID & "';"
+        Else
+            '*** Record does not exist, insert it
+            InsertUnitProfiles(llNodeID, lsUnitTypeID, lsRoomID, lsProjectID)
+        End If
+
+
+        '*** Run The SQL.
+        UpdateUnitProfiles = fRunSQL(mscnType, mscnStr, lsSQL)
+    End Function
 
 
 
 
 
-	'****************************************************
-	'*** Floors
+    '****************************************************
+    '*** Floors
 
-	Public Function LoadFloors(ByVal llNodeID As Long, ByVal lsWhere As String, ByVal lbActive As Boolean, ByVal lsID As String) As DataSet
+    Public Function LoadFloors(ByVal llNodeID As Long, ByVal lsWhere As String, ByVal lbActive As Boolean, ByVal lsID As String) As DataSet
 		Dim lsSQL As String
 
 		'*** Initialize
@@ -2469,11 +2494,149 @@ IIf(isGUID(ID), " OR ID = '" & ID & "' ", "")
 		mdsTiers = ds
 		LoadMissingUpgrades = mdsTiers
 	End Function
+    '*****************************************************
+    '*** Grids of Checkboxes
+    Public Function LoadCheckGrid(ByVal llNodeID As Long, ByVal lsTblRow As String, ByVal lsTblCol As String, ByVal lsProjectID As String, ByVal lbActive As Boolean, ByVal lsID As String, ByVal lsWHere As String) As DataSet
+        Dim lsSQL As String
+        'llNodeID = 1
+        '*** Initialize
+        LoadCheckGrid = New DataSet
+        If lsWHere = Nothing Then lsWHere = ""
+        lsWHere.Replace("like '%%'", "")
+        If InStr(lsWHere, "'%%'") > 0 Then lsWHere = ""
+        lsWHere = Replace(lsWHere, "SearchText", " UPPER( isnull(U.code,'') + isnull(U.name ,'') + isnull( U.description ,'')   ) ")
+        If lsWHere = Nothing Then lsWHere = ""
+        '*** Check for No Selected Category
+        If llNodeID = 0 Then
+            'response.write("No Project Selectedd")
+            Exit Function
+        End If
+        '*** Rows
+        lsSQL = "SELECT * From " & lsTblRow & " " & NL &
+                      "WHERE (ObjectID='" & lsProjectID & "' and  NodeID=" & llNodeID & " " & IIf(lsWHere.Length > 4, " and " & lsWHere, "") & NL &
+                          IIf(lbActive = True, " and Active = 1 ", "") & ")" & NL &
+                          IIf(isGUID(lsID), " OR ID = '" & lsID & "' ", "")
+        '*** Load a data set.
+        Dim ds As New DataSet()
+        ds = fGetDataset(mscnType, mscnStr, lsSQL, "tblRows")
 
 
-	'****************************************************
-	'*** Tiers
-	Public Function LoadTiers(ByVal llNodeID As Long, ByVal lsWhere As String, ByVal lbActive As Boolean, ByVal lsID As String) As DataSet
+        '      '*** Columns
+        lsSQL = "SELECT * From " & lsTblCol & " " & NL &
+                      "WHERE ( objectID = '" & lsProjectID & "' and NodeID=" & llNodeID & " " & IIf(lsWHere.Length > 4, " and " & lsWHere, "") & NL &
+                          IIf(lbActive = True, " and Active = 1 ", "") & ")" & NL &
+                          IIf(isGUID(lsID), " OR ID = '" & lsID & "' ", "")
+        '*** Load a data set.
+        Dim dtRows, dtCols, dtCross, dtRO, dtRooms, dtUnits As DataTable
+        Dim ds2 As DataSet
+        ds2 = fGetDataset(mscnType, mscnStr, lsSQL, "Columns")
+        dtRows = ds.Tables(0)
+        dtCols = ds2.Tables(0)
+        dtRooms = New DataTable("Rooms")
+        dtUnits = New DataTable("Units")
+        dtCross = New DataTable("Cross")
+        dtRO = New DataTable("RO")
+        Dim dsProfile As New DataSet
+        lsSQL = "SELECT P.ID, P.NodeID, P.Active,
+                        T.ObjectID,T.name as UnitTypeName, T.ID as UnitTypeID, T.Code as UnitTypeCode
+						,R.Name as RoomName, R.ID as RoomID, r.Code as RoomCode, S.thecount
+				FROM tblUnitProfiles as P
+				INNER JOIN tblUnittypes as T ON T.ID = P.UnitTypeID
+				INNER JOIN tblRooms as R on R.ID = P.RoomID
+                LEFT  JOIN (  select UnitTypeID, RoomDescription, Count(*) as thecount 
+                              from tblRequestedUpgrades 
+                              where active = 1
+                              Group By Unittypeid, RoomDescription) as S 
+                       on T.id = s.UnitTypeID and r.name = s.RoomDescription
+				WHERE T.ObjectID ='" & lsProjectID & "' and  R.ObjectID ='" & lsProjectID & "'
+				  AND T.NodeID = " & llNodeID & "
+				  And R.Active = 1 and T.Active = 1
+				  Order By T.Name, R.Name"
+        dsProfile = fGetDataset(mscnType, mscnStr, lsSQL, "tblProfile")
+
+
+        Dim lsColName, lsColCaption, lsRoomID As String
+        Dim dc, dcro, dcUnitID, dcRoomID As DataColumn
+        lsColName = ""
+        '*** Add Columns
+        dtCross.Columns.Add("Code", GetType(String))
+        dtRO.Columns.Add("Code", GetType(String))
+        dtUnits.Columns.Add("ID", GetType(String))
+        dtRooms.Columns.Add("ID", GetType(String))
+        On Error Resume Next
+        For Each drc In dtCols.Rows
+            lsColName = drc("Code").ToString
+            lsColCaption = drc("Name").ToString
+            lsRoomID = drc("ID").ToString
+            dc = New DataColumn(lsColCaption, GetType(Boolean))
+            dcro = New DataColumn(lsColCaption, GetType(Integer))
+            dcRoomID = New DataColumn(lsRoomID, GetType(String))
+            dc.Caption = lsColName
+            dtCross.Columns.Add(dc)
+            dtRO.Columns.Add(dcro)
+            dtRooms.Columns.Add(dcRoomID)
+        Next
+        On Error GoTo 0
+        ''Now add Data
+        Dim dtp As DataTable = dsProfile.Tables(0)
+        Dim r, rr, rRoom, rUnits As DataRow
+        Dim lsRoom, lsRoom2 As String
+        Dim lsUnitCode, lsUnitCode2 As String
+        Dim liTheCount As Integer
+        For Each drc As DataRow In dtRows.Rows
+            lsUnitCode2 = drc("Code")
+
+            r = dtCross.NewRow
+            rr = dtRO.NewRow
+            rRoom = dtRooms.NewRow
+            rUnits = dtUnits.NewRow
+            rUnits("ID") = drc("ID")
+            r("Code") = drc("Code")
+
+			' r(3) = lsUnitCode2
+
+			For Each drr As DataRow In dtp.Rows
+				lsUnitCode = drr("UnitTypeCode").ToString
+				liTheCount = IIf(IsDBNull(drr("thecount")), 0, drr("thecount"))
+				' r(4) = lsUnitCode
+				If lsUnitCode = lsUnitCode2 Then
+					'*** Check for Room match
+
+					lsRoom2 = drr("RoomCode").ToString
+					'  r(5) = lsRoom2
+					For licol2 As Integer = 0 To dtCross.Columns.Count - 1
+						lsRoom = dtCross.Columns(licol2).Caption.ToString
+                        ' r(6) = lsRoom
+                        If lsRoom = lsRoom2 Then
+							If drr("Active") = True Then
+								r(licol2) = True
+							Else
+                                r(licol2) = False
+                            End If
+                            rr(licol2) = liTheCount
+                                rRoom(licol2) = drr("ID")
+                                'Exit For
+                            End If
+                    Next
+
+				End If
+			Next
+            dtUnits.Rows.Add(rUnits)
+            dtCross.Rows.Add(r)
+            dtRO.Rows.Add(rr)
+            dtRooms.Rows.Add(rRoom)
+        Next
+        Dim dsCross As New DataSet
+        dsCross.Tables.Add(dtCross)
+        dsCross.Tables.Add(dtRO)
+        dsCross.Tables.Add(dtUnits)
+        dsCross.Tables.Add(dtRooms)
+        Return dsCross
+    End Function
+
+    '****************************************************
+    '*** Tiers
+    Public Function LoadTiers(ByVal llNodeID As Long, ByVal lsWhere As String, ByVal lbActive As Boolean, ByVal lsID As String) As DataSet
 		Dim lsSQL As String
 		'llNodeID = 1
 		'*** Initialize
@@ -3276,9 +3439,18 @@ LoadChildrenError:
 		If lsObjectID Is Nothing Then
 			lsObjectID = ProjectID
 		Else
-            If lsObjectID.Length <> 36 Then
-                lsObjectID = ProjectID
-            End If
+			If lsObjectID.Length <> 36 Then
+				lsObjectID = ProjectID
+			End If
+		End If
+        If lsID Is Nothing Then
+            lsID = Guid.NewGuid.ToString
+        End If
+        If lsID = "00000000-0000-0000-0000-000000000000" Then
+			lsID = Guid.NewGuid.ToString
+		End If
+        If lsID.Length <> 36 Then
+            lsID = Guid.NewGuid.ToString
         End If
         '*** Initialize
         InsertThings = False
@@ -3443,6 +3615,7 @@ LoadChildrenError:
     Public Function FgetMetric(ByVal lsMetric As String, ByVal lsObjectID As String) As String
         Dim lsSQL As String
         FgetMetric = ""
+        If lsObjectID Is Nothing Then Return "No Project Selected"
         Select Case lsMetric.ToUpper
             Case "UNITS"
                 lsSQL = "Select Count(ID) as Metric from tblunits where ObjectID='" & lsObjectID & "' and active=1;"

@@ -25,8 +25,8 @@
         <div class="card-deck">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Units</h5>
-              <p class="card-text"> <%= Session("ProjectUnitsMetric") %></p>
+              <h5 class="card-text">Units</h5>
+              <h2 class="card-title"> <%= Session("ProjectUnitsMetric") %></h2>
             </div>
             <div class="card-footer">
               <small class="text-muted">Number of Total Units</small>
@@ -35,16 +35,16 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Upgrades</h5>
-              <p class="card-text"> <%= Session("ProjectUpgradesMetric") %>.</p>
+              <h2 class="card-title"> <%= Session("ProjectUpgradesMetric") %></h2>
             </div>
             <div class="card-footer">
-              <small class="text-muted">Total number of selected Upgrades for <%= Session("ProjectName") %></small>
+              <small class="text-muted">Total selected Upgrades for <%= Session("ProjectName") %></small>
             </div>
           </div>
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Total</h5>
-              <p class="card-text"> <%= Session("ProjectRevenueMetric") %> </p>
+              <h2 class="card-title"> <%= Session("ProjectRevenueMetric") %> </h2>
             </div>
             <div class="card-footer">
               <small class="text-muted">Total Revenue for this project</small>
