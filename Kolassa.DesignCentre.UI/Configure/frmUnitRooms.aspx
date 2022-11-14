@@ -1,4 +1,4 @@
-﻿<%@ Page Language="vb" EnableEventValidation="false" AutoEventWireup="false" MasterPageFile="~/Site.Master" CodeBehind="frmTest.aspx.vb" Inherits="Kolassa.DesignCentre.UI.frmTest" %>
+﻿<%@ Page Language="vb" EnableEventValidation="false" AutoEventWireup="false" MasterPageFile="~/Site.Master" CodeBehind="frmUnitRooms.aspx.vb" Inherits="Kolassa.DesignCentre.UI.frmUnitRooms" %>
 <%@ Register Assembly="Kolassa.DesignCenter.ReportManager" Namespace="Kolassa.DesignCenter.ReportManager" TagPrefix="cc1" %>
 <%@ Register Src="~/Controls/ctrlIncompatibilities.ascx" TagPrefix="uc1" TagName="ctrlIncompatibilities" %>
 
@@ -58,59 +58,31 @@
 
    </style>
 
-  <div class="container">
-  <h2>Activate Modal with JavaScript</h2>
-  <!-- Trigger the modal with a button -->
-  <button type="button" class="btn btn-info btn-lg" id="myBtn">Open Modal</button>
+ <div class="container">
+    <h2>Unit Types Room Configuration Form</h2>
+    <asp:UpdatePanel id="upChecks" runat="server" ChildrenAsTriggers="true">
+        <ContentTemplate>
+            <asp:Button CssClass="btn btn-primary" ID="cmdLoad" runat="server" Text="Load Grid" />
+            <!-- button class="btn btn-primary" onclick="fbind();">Bind</!-->
+            <asp:GridView ID="gvCrosstab" runat="server"> </asp:GridView>
+        </ContentTemplate>
+        <Triggers>
 
-  <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Modal Header</h4>
-        </div>
-        <div class="modal-body">
-          <p>Some text in the modal.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-        <asp:UpdatePanel id="upChecks" runat="server" ChildrenAsTriggers="true">
-            <ContentTemplate>
-                <asp:Button CssClass="btn btn-floating" ID="Button1" runat="server" Text="Button" />
-                <button class="btn btn-primary" onclick="fbind();">Bind</button>
-                <asp:GridView ID="gvCrosstab" runat="server"> </asp:GridView>
-            </ContentTemplate>
-            <Triggers>
-
-            </Triggers>
-        </asp:UpdatePanel>
-       <asp:UpdateProgress ID="upProgress" runat="server">
-           <ProgressTemplate>
+        </Triggers>
+    </asp:UpdatePanel>
+    <asp:UpdateProgress ID="upProgress" runat="server">
+        <ProgressTemplate>
             <img src="images/loadingH.gif" /><br />Loading . . .
-            </ProgressTemplate>
-       </asp:UpdateProgress>
-      
-  
+        </ProgressTemplate>
+    </asp:UpdateProgress>
 </div>
 
 <script>
-$(document).ready(function(){
-  $("#myBtn").click(function(){
-    $("#myModal").modal();
-  });
+    $(document).ready(function(){
 
+    });
 
-});
-     function fchange(tthis) {
+    function fchange(tthis) {
        //  alert('mike: ' + tthis.dataset.id);
          var cls = tthis.closest('span');
          var lsid = cls.dataset.id;
@@ -134,7 +106,6 @@ $(document).ready(function(){
             }
         });
     };
-    
 </script>
-    <uc1:ctrlIncompatibilities runat="server" id="ctrlIncompatibilities1" />
+   
 </asp:Content>

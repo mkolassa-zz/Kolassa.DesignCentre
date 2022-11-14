@@ -11,7 +11,7 @@ Option Strict On
 Option Explicit On
 
 
-Partial Public Class frmTest
+Partial Public Class frmUnitRooms
 
     '''<summary>
     '''upChecks control.
@@ -23,13 +23,13 @@ Partial Public Class frmTest
     Protected WithEvents upChecks As Global.System.Web.UI.UpdatePanel
 
     '''<summary>
-    '''Button1 control.
+    '''cmdLoad control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents Button1 As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents cmdLoad As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''gvCrosstab control.
@@ -48,13 +48,4 @@ Partial Public Class frmTest
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents upProgress As Global.System.Web.UI.UpdateProgress
-
-    '''<summary>
-    '''ctrlIncompatibilities1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ctrlIncompatibilities1 As Global.Kolassa.DesignCentre.UI.ctrlIncompatibilities
 End Class

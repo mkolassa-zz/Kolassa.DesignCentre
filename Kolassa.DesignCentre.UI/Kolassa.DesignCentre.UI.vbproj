@@ -313,6 +313,8 @@
     <Content Include="Account\ResetPasswordConfirmation.aspx" />
     <Content Include="Account\TwoFactorAuthenticationSignIn.aspx" />
     <Content Include="Account\VerifyPhoneNumber.aspx" />
+    <Content Include="Configure\frmIncompatibilities.aspx" />
+    <Content Include="Configure\frmUnitRooms.aspx" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-reboot.css" />
@@ -342,6 +344,7 @@
     <Content Include="Controls\ctrlImageLookup.ascx" />
     <Content Include="Controls\ctrlImageNew.ascx" />
     <Content Include="Controls\ctrlImagesDisplay.ascx" />
+    <Content Include="Controls\ctrlIncompatibilities.ascx" />
     <Content Include="Controls\ctrlSelectedUpgrades.ascx" />
     <Content Include="Controls\ctrlUpgradeItems.ascx" />
     <Content Include="Controls\ctrlPayments.ascx" />
@@ -789,6 +792,20 @@
     <Compile Include="App_Code\BootstrapAlerts.vb" />
     <Compile Include="App_Code\clsCSVReader.vb" />
     <Compile Include="App_Code\clsObjects.vb" />
+    <Compile Include="Configure\frmIncompatibilities.aspx.designer.vb">
+      <DependentUpon>frmIncompatibilities.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Configure\frmIncompatibilities.aspx.vb">
+      <DependentUpon>frmIncompatibilities.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Configure\frmUnitRooms.aspx.designer.vb">
+      <DependentUpon>frmUnitRooms.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Configure\frmUnitRooms.aspx.vb">
+      <DependentUpon>frmUnitRooms.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
     <Compile Include="Controls\ctrlNotifications.ascx.designer.vb">
       <DependentUpon>ctrlNotifications.ascx</DependentUpon>
     </Compile>
@@ -822,6 +839,13 @@
     </Compile>
     <Compile Include="Controls\ctrlImagesDisplay.ascx.vb">
       <DependentUpon>ctrlImagesDisplay.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ctrlIncompatibilities.ascx.designer.vb">
+      <DependentUpon>ctrlIncompatibilities.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ctrlIncompatibilities.ascx.vb">
+      <DependentUpon>ctrlIncompatibilities.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controls\ctrlSelectedUpgrades.ascx.designer.vb">

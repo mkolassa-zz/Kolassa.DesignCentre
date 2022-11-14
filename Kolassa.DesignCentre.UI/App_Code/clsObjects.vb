@@ -1,5 +1,5 @@
 ﻿Imports System.Data
-
+Imports System.Web.HttpContext
 Public Class clsMIKEMIKE 
 	Public m As string
 ENd Class
@@ -1400,11 +1400,11 @@ Public Class clsUnits
 					colName = UCase(column.ColumnName)
 					Select Case colName
 						Case "ID" : cObject.ID = row.Item(column).ToString
-                        Case "NAME" : cObject.Name = row.Item(column)
+						Case "NAME" : cObject.Name = row.Item(column)
 						Case "OBJECTID" : cObject.ObjectID = row.Item(column).ToString
-                        Case "CODE" : cObject.Code = row.Item(column)
-                        Case "TIERID" : cObject.Tier = row.Item(column).ToString
-                        Case "FLOORID" : cObject.FloorID = Trim(row.Item(column).ToString)
+						Case "CODE" : cObject.Code = row.Item(column)
+						Case "TIERID" : cObject.Tier = row.Item(column).ToString
+						Case "FLOORID" : cObject.FloorID = Trim(row.Item(column).ToString)
 						Case "UNITTYPEID" : cObject.UnitTypeID = row.Item(column).ToString
 						Case "AVAILABLE" : cObject.Availalbe = row.Item(column)
 						Case "DEPOSITTYPEID" : cObject.DepositTypeID = row.Item(column).ToString
@@ -1445,6 +1445,163 @@ Public Class clsUnits
 		c.UpdateUnits(NODEID, obj.Name, obj.FloorID, obj.UnitTypeID, obj.Availalbe, 0, obj.Tier, obj.DepositTypeID, obj.Active, obj.ID)
 		Update = 1
 	End Function
+End Class
+Public Class clsUnitType
+    Inherits clsBase
+    Private _UnitTypeID As String
+    Public Property ObjectID As String
+
+    Public Property UnitTypeName As String
+	Public Property UnitTypeID As String
+		Get
+			Return _UnitTypeID
+		End Get
+		Set(ByVal value As String)
+			_UnitTypeID = value
+		End Set
+	End Property
+	Public Sub New()
+        On Error Resume Next
+        NodeID = System.Web.HttpContext.Current.Session("NodeID")
+    End Sub
+    Public Overrides Sub Delete() 'ID As String)
+        Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+        c.DeleteUnitTypes(ID, NodeID)
+    End Sub
+    Public Overrides Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
+        Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+        'Dim lsMsg As String
+        Dim lbOK As Boolean
+        lbOK = c.InsertUnitTypes(NodeID, Name, Description, "", UnitTypeID, "", ObjectID)
+        If lbOK = False Then
+            'lsMsg = obj.ErrorMessage
+        End If
+    End Sub
+    Public Overrides Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
+        Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+        c.UpdateUnitTypes(ID, NodeID, Code, Name, Description, "", "", "", Active, ObjectID)
+        Update = 1
+    End Function
+End Class
+Public Class clsUnitTypes
+	Public NODEID As Long
+	Public Active As Boolean
+	Public ID As String
+	Public Sub New()
+		NODEID = System.Web.HttpContext.Current.Session("NodeID")
+	End Sub
+
+	Function GetRecords(lsWhere As String, ByVal lsID As String, lsObjectID As String, NODEID As Long) As IEnumerable(Of clsUnitType) 'DataSet
+		Dim ds As New DataSet
+		Dim CustDate As Date
+		Dim cObject As New clsUnitType
+		Dim colName As String
+		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+		If lsObjectID = "" Then lsObjectID = "11112222-3333-4444-5555-666677778888"
+		lsWhere = ""
+		ds = c.LoadUnitTypes(NODEID, lsWhere, True, lsObjectID)
+		'Return ds
+		'Exit Function
+
+		Dim result As New List(Of clsUnitType)
+		For Each row As DataRow In ds.Tables(0).Rows
+			Dim values As New List(Of Object)
+			cObject = New clsUnitType
+			For Each column As DataColumn In ds.Tables(0).Columns
+				If row.IsNull(column) Then
+					values.Add(Nothing)
+				Else
+					colName = UCase(column.ColumnName)
+					Select Case colName
+						Case "ID" : cObject.ID = row.Item(column).ToString
+						Case "NAME" : cObject.Name = row.Item(column)
+						Case "OBJECTID" : cObject.ObjectID = row.Item(column).ToString
+						Case "CODE" : cObject.Code = row.Item(column)
+					'	Case "TIERID" : cObject.Tier = row.Item(column).ToString
+						'Case "FLOORID" : cObject.FloorID = Trim(row.Item(column).ToString)
+						Case "UNITTYPEID" : cObject.UnitTypeID = row.Item(column).ToString
+					'	Case "AVAILABLE" : cObject.Availalbe = row.Item(column)
+						'Case "DEPOSITTYPEID" : cObject.DepositTypeID = row.Item(column).ToString
+						Case "CREATEUSERNAME" : cObject.CreateUserName = row.Item(column)
+						Case "UPDATEUSERNAME" : cObject.UpdateUserName = row.Item(column)
+						Case "ACTIVE" : cObject.Active = row.Item(column)
+						Case "CREATEDATE"
+							CustDate = row.Item(column)
+							If CustDate > DateAdd("d", -100000, Now) Then cObject.CreateDate = CustDate
+						Case "CREATEUSER" : cObject.CreateUser = row.Item(column).ToString
+						Case "UPDATEDATE" : cObject.UpdateDate = row.Item(column)
+							CustDate = row.Item(column)
+							If CustDate > DateAdd("d", -100000, Now) Then cObject.UpdateDate = CustDate
+						Case "UPDATEUSER" : cObject.UpdateUser = row.Item(column).ToString
+
+					End Select
+				End If
+			Next
+			result.Add(cObject)
+		Next
+		Return result
+	End Function
+	Public Sub Delete(obj As clsUnit) 'ID As String)
+		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+		c.DeleteUnits(obj.ID, obj.NodeID)
+	End Sub
+	Public Sub Insert(obj As clsUnit) 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
+		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+		Dim lsMsg As String
+		Dim lbOK As Boolean
+		lbOK = c.InsertUnits(NODEID, obj.ObjectID, obj.Name, obj.Active, obj.UnitTypeID, obj.Availalbe, obj.Tier, obj.DepositTypeID)
+		If lbOK = False Then
+			lsMsg = obj.ErrorMessage
+		End If
+	End Sub
+	Public Function Update(obj As clsUnit) As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
+		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+		c.UpdateUnits(NODEID, obj.Name, obj.FloorID, obj.UnitTypeID, obj.Availalbe, 0, obj.Tier, obj.DepositTypeID, obj.Active, obj.ID)
+		Update = 1
+	End Function
+End Class
+Public Class clsIncompatibility
+
+    Public Property ID As String
+    Public Property Unit As String
+    Public Property Location1 As String
+    Public Property Category1 As String
+    Public Property Level1 As String
+    Public Property Description1 As String
+    Public Property Model1 As String
+    Public Property Location2 As String
+    Public Property ObjectID As String
+    Public Property Category2 As String
+    Public Property Level2 As String
+
+    Public Property NodeID As Integer
+    Public Property Description2 As String
+    Public Property Model2 As String
+    Public Property EntityType As String
+    Public Property Severity As String
+    Public Property Active As Boolean
+    Public Property CreateDate As Date
+    Public Property CreateUser As String
+    Public Property UpdateDate As Date
+    Public Property UpdateUser As String
+    Public Property UpdateUserName As String
+    Public Property CreateUserName As String
+    Public Property ErrorMessage As String
+    Public Property Level As String = "" ' Tells whether this is coming from the Project (Setting up Phases) or Quote
+    ' Levels is important because at the Project Level we do not modify the Quote Level Fields
+
+    Public Sub New()
+        NodeID = System.Web.HttpContext.Current.Session("NodeID")
+    End Sub
+    Public Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
+        Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+        Dim lsMsg As String = ""
+        Dim lbOK As Boolean
+        lbOK = c.InsertIncompatibilities(NodeID, Unit, Location1, Location2, Category1, Category2, Level1, Level2, Description1, Description2, Model1, Model2, ObjectID, Severity, EntityType)
+        If lbOK = False Then
+            ErrorMessage = lsMsg
+        End If
+    End Sub
 End Class
 Public Class clsPayment
 
@@ -1731,6 +1888,13 @@ Public Class clsBases
                 GetObject.ObjectType = lsObjType
         End Select
         GetObject.ObjectType = lsObjType
+        If ProjectID Is Nothing Then
+            ProjectID = System.Web.HttpContext.Current.Session("Project")
+        Else
+            If ProjectID.Length <> 36 Then
+                ProjectID = System.Web.HttpContext.Current.Session("Project")
+            End If
+        End If
         GetObject.ProjectID = ProjectID
     End Function
 	Public Function GetTableNameFromObjType() As String

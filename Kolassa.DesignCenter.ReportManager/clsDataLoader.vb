@@ -220,8 +220,10 @@ Public Class clsDataLoader
         lsSQL = Replace(lsSQL, "@WHERE@", lsWhere)
         If ProjectID.Length = 36 Then
             lsSQL = Replace(lsSQL, "@OBJECTID@", "  ObjectID = '" & ProjectID & "' AND ")
+            lsSQL = Replace(lsSQL, "@PROJECTID@", "  ProjectID = '" & ProjectID & "' AND ")
         Else
             lsSQL = Replace(lsSQL, "@OBJECTID@", "")
+            lsSQL = Replace(lsSQL, "@PROJECTID@", "")
         End If
         lsSQL = Replace(lsSQL, "SearchText", " " + lsSearchClause + " ")
 
@@ -745,6 +747,7 @@ LoadChildrenError:
     ' End Function
     Private Function fGetDataset(ByVal lsConnectionType As String, ByVal lsCn As String, ByVal lsSQL As String, ByVal lsTableName As String) As DataSet
         'debug.print("<clsDataLoader.fGetDataset>" & lsSQL & "</clsDataLoader.fGetDataset>")
+        msErrorMsg = ""
         If lsSQL.Length > 4 Then
             If Right(Trim(lsSQL), 4).ToUpper = " AND" Then
                 lsSQL = Trim(lsSQL)
@@ -1000,7 +1003,7 @@ LoadChildrenError:
         Dim ds As New DataSet()
         ds = fGetDataset("SQLConnection", lscnStr, lsSQL, "Projects")
 
-        If ds.Tables(0).Rows.Count > 0 Then
+        If ds.Tables(0).Rows.Count > 0 Or msErrorMsg <> "" Then
             Return True
         Else
             Return False

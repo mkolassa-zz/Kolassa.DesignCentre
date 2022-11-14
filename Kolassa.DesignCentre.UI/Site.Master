@@ -383,10 +383,14 @@
                         <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=Floors"             ><i class="dcmenu dc-Floors"            ></i><span class="d-none d-md-inline">Floors            </span></a>
                         <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ROOMS"              ><i class="dcmenu dc-Rooms"             ></i><span class="d-none d-md-inline">Rooms             </span></a>
                         <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=VENDORS"            ><i class="dcmenu fa fa-people-carry"   ></i><span class="d-none d-md-inline">Vendors           </span></a>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/Configure/frmUnitRooms"             ><i class="dcmenu fa fa-arrow-alt-circle-right"          ></i><span class="d-none d-md-inline">Unit Type / Rooms            </span></a>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UPGRADEOPTIONS"     ><i class="dcmenu fa fa-bars"          ></i><span class="d-none d-md-inline">Upgrade Options            </span></a>
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/Configure/frmIncompatibilities"     ><i class="dcmenu fa fa-xing"          ></i><span class="d-none d-md-inline">Incompatibilities            </span></a>
                         <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=LOGINS"             ><i class="dcmenu fa fa-users"          ></i><span class="d-none d-md-inline">Logins            </span></a>
                         <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=DEPOSITCONDITIONS"  ><i class="dcmenu fa fa-money-bill-alt" ></i><span class="d-none d-md-inline">Deposit Contitions</span></a>
                         <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=REPORTCATEGORIES"   ><i class="dcmenu dc-ReportCategories"  ></i><span class="d-none d-md-inline">Report Categories </span></a>
                         <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=BASE"               ><i class="dcmenu dc-cross"           ></i><span class="d-none d-md-inline">Base              </span></a>		
+                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmTest"               ><i class="dcmenu dc-cross"           ></i><span class="d-none d-md-inline">Test Form              </span></a>		
 		            </ul>
                 <% End If  %>
                 </div>

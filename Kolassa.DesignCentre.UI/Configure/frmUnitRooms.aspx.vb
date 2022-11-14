@@ -1,5 +1,5 @@
-﻿Public Class frmTest
-	Inherits System.Web.UI.Page
+﻿Public Class frmUnitRooms
+    Inherits System.Web.UI.Page
     Public Sub popGrid()
         Dim cn As New clsSelectDataLoader
         Dim ds As New DataSet
@@ -58,13 +58,8 @@
     Sub checkchange(sender As Object, e As EventArgs)
         Dim chk = DirectCast(sender, CheckBox)
         System.Threading.Thread.Sleep(5000)
-
     End Sub
-    Protected Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+    Protected Sub Button1_Click(sender As Object, e As EventArgs) Handles cmdLoad.Click
         popGrid()
-    End Sub
-
-    Private Sub frmTest_Load(sender As Object, e As EventArgs) Handles Me.Load
-        ctrlIncompatibilities1.ProjectID = Session("Project")
     End Sub
 End Class

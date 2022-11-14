@@ -984,10 +984,7 @@ ph1Status_Error:
         If Not l Is Nothing And Not Session("QuoteID") Is Nothing Then l.Text = "QuoteID: " & Session("QuoteID")
         litID.Text = Session("QuoteID")
 		If Session("NodeID") Is Nothing Then Session("NodeID") = 0
-		'If Session("UnitType") Is Nothing Then
-		'	Session("UnitType") = "R134A"
-		'End If	
-		If Session("Project") Is Nothing Then
+        If Session("Project") Is Nothing Then
             pnlButtons.Visible = False
         Else
             pnlButtons.Visible = True

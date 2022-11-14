@@ -17,8 +17,20 @@ Public Class frmProjects
         System.Threading.Thread.Sleep(500)
         Dim c As New clsSelectDataLoader
 
-        Dim lsProject As String = Session("Project")
-        Session("ProjectUnitsMetric") = FormatNumber(c.FgetMetric("Units", lsProject), 0)
+        Dim lsProject As String = Request.QueryString("ProjectID")
+        If lsProject.Length = 36 Then
+			If lsProject <> Session("Project") Then
+                Session("Project") = lsProject
+                Dim cp = New clsProject
+                cp.ID = lsProject
+                cp.GetRecord(lsProject, True)
+                Session("ProjectObject") = cp
+                Session("ProjectName") = cp.Name
+            End If
+		Else
+                lsProject = Session("Project")
+		End If
+		Session("ProjectUnitsMetric") = FormatNumber(c.FgetMetric("Units", lsProject), 0)
         Session("ProjectUpgradesMetric") = FormatNumber(Val(c.FgetMetric("Upgrades", lsProject)), 0)
         Session("ProjectRevenueMetric") = FormatCurrency(Val(c.FgetMetric("Revenue", lsProject)), 0)
         If Session("NodeID") Is Nothing Then Session("NodeID") = 0
