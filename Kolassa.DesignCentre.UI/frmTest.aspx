@@ -1,6 +1,8 @@
 ﻿<%@ Page Language="vb" EnableEventValidation="false" AutoEventWireup="false" MasterPageFile="~/Site.Master" CodeBehind="frmTest.aspx.vb" Inherits="Kolassa.DesignCentre.UI.frmTest" %>
 <%@ Register Assembly="Kolassa.DesignCenter.ReportManager" Namespace="Kolassa.DesignCenter.ReportManager" TagPrefix="cc1" %>
 <%@ Register Src="~/Controls/ctrlIncompatibilities.ascx" TagPrefix="uc1" TagName="ctrlIncompatibilities" %>
+<%@ Register Src="~/Controls/ctrlNotifications.ascx" TagPrefix="uc1" TagName="ctrlNotifications" %>
+
 
 
 <asp:Content ID="Content1" runat="server" ContentPlaceHolderID="MainContent" >
@@ -59,6 +61,8 @@
    </style>
 
   <div class="container">
+        <asp:button runat="server"  type="button" class="btn btn-info btn-lg" id="cmdSendEmail" Text="Send Email" />
+
   <h2>Activate Modal with JavaScript</h2>
   <!-- Trigger the modal with a button -->
   <button type="button" class="btn btn-info btn-lg" id="myBtn">Open Modal</button>
@@ -99,7 +103,7 @@
             </ProgressTemplate>
        </asp:UpdateProgress>
       
-  
+      <uc1:ctrlNotifications runat="server" id="ctrlNotifications" />
 </div>
 
 <script>

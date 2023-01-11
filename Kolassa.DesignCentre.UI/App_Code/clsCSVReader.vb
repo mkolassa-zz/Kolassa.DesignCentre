@@ -28,7 +28,7 @@ Public Class CsvFileWriter
     ''' <summary>
     ''' Writes a single row to a CSV file.
     ''' </summary>
-    ''' <paramname="row">The row to be written</param>
+    '''  paramname="row">The row to be writtenparamname
     Public Sub WriteRow(ByVal row As CsvRow)
         Dim builder As StringBuilder = New StringBuilder()
         Dim firstColumn = True
@@ -69,7 +69,7 @@ Public Class CsvFileReader
     ''' <summary>
     ''' Reads a row of data from a CSV file
     ''' </summary>
-    ''' <paramname="row"></param>
+    ''' paramname "row"> paramname>
     ''' <returns></returns>
     Public Function ReadRow(ByVal row As CsvRow) As Boolean
         row.LineText = ReadLine()

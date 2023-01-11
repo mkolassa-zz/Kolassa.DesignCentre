@@ -14,6 +14,15 @@ Option Explicit On
 Partial Public Class frmTest
 
     '''<summary>
+    '''cmdSendEmail control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdSendEmail As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
     '''upChecks control.
     '''</summary>
     '''<remarks>
@@ -48,6 +57,15 @@ Partial Public Class frmTest
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents upProgress As Global.System.Web.UI.UpdateProgress
+
+    '''<summary>
+    '''ctrlNotifications control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ctrlNotifications As Global.Kolassa.DesignCentre.UI.ctrlNotifications
 
     '''<summary>
     '''ctrlIncompatibilities1 control.

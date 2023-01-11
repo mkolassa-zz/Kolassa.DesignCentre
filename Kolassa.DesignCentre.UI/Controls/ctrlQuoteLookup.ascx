@@ -65,8 +65,7 @@
 		</Columns>
 </asp:GridView>
 
-	<asp:ObjectDataSource ID="odsQuoteLookup" runat="server" 
-                SelectMethod="LoadAllQuotes" TypeName="Kolassa.DesignCentre.Data.clsSelectDataLoader">
+	<asp:ObjectDataSource ID="odsQuoteLookup" runat="server" SelectMethod="LoadAllQuotes" TypeName="Kolassa.DesignCentre.Data.clsSelectDataLoader">
         <SelectParameters>
             <asp:SessionParameter DefaultValue="1" Name="llNodeID" SessionField="NodeID"      Type="Int64" />
             <asp:Parameter DefaultValue="" Name="lsWhere" Type="String" />

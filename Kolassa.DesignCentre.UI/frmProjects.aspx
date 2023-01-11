@@ -1,4 +1,4 @@
-<%@ Page Language="vb" EnableEventValidation=false AutoEventWireup="false" MasterPageFile="~/Site.Master" Debug="true" Inherits="Kolassa.DesignCentre.UI.frmProjects" Codebehind="frmProjects.aspx.vb" %>
+<%@ Page Language="vb" EnableEventValidation=false AutoEventWireup="false" MasterPageFile="~/Site.Master" Debug="true"  Inherits="Kolassa.DesignCentre.UI.frmProjects" Codebehind="frmProjects.aspx.vb" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 
@@ -59,7 +59,11 @@
 			<div class="card-body text-secondary">
 				<h5 class="card-title"><%= Session("ProjectName") %></h5>
 				<div id="projectAddress">
-					<h5 class="card-title"><%= fGetProjectAddress() %></h5>
+					<h5 class="card-title">
+                    <% 
+                        Dim c As Kolassa.DesignCentre.UI.clsProject = Session("ProjectObject")
+                        Response.Write(c.Address) 'Do something
+                         %></h5>
 					<nav class="nav nav-pills nav-fill">
 						<a class="nav-item nav-link active" href="frmQuote.aspx?search=true">Quote Lookup</a>
 					</nav>
@@ -67,7 +71,7 @@
 				</div>
 			</div>
 		</div>
-
+  
 
 		<div class="card border-light mb-6" style="max-width: 180rem;">
 			<div class="card-body text-secondary">
@@ -75,7 +79,10 @@
 				<!-- div id="map_div" style="width: 400px; height: 400px"></!-->
 					<div class="mapouter"><div class="gmap_canvas">
 						<iframe width="600" height="300" id="gmap_canvas" 
-							src="<%= fGetProjectAddressmap() %>" 
+							src="<% 
+                            ' Dim c As clsProject = Session("ProjectObject")
+                            Response.Write(c.AddressMap) 'Do something
+                         %>" 
 							frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
 						</iframe>
 						

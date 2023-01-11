@@ -121,7 +121,11 @@ Partial Public Class ManageLogins
 
             Dim accounts = manager.GetLogins(lsUserID)
             CanRemoveExternalLogins = accounts.Count() > 1 OrElse HasPassword(manager)
-            Return accounts
+            Dim c As New Collection
+            For Each au As UserLoginInfo In accounts
+                c.Add(au)
+            Next
+            Return c
         End If
         Return Nothing
     End Function
@@ -154,7 +158,7 @@ Partial Public Class ManageLogins
 
 
     Protected Sub OnRowDataBound(sender As Object, e As GridViewRowEventArgs) Handles grdUsers.RowDataBound
-        Dim ID As String
+        Dim ID As String = ""
         If e.Row.RowType = DataControlRowType.DataRow Then
           '  e.Row.Attributes("onclick") = Page.ClientScript.GetPostBackClientHyperlink(grdUsers, "Select$" & e.Row.RowIndex)
             e.Row.ToolTip = "Click to select this row."
@@ -191,7 +195,7 @@ Partial Public Class ManageLogins
     Protected Sub cmdSubmit_Click(sender As Object, e As EventArgs) Handles cmdSubmit.Click
         Dim lsEmail, lsUserName, lsFriendlyName, lsID, lsNode As String
         Dim liNodeID As Integer = CInt(txtNodeID.Text)
-        Dim Roles() As String
+        '2022  Dim Roles() As String
         Dim chk As CheckBox
         lsEmail = txtEmail.Text
         lsUserName = txtUserName.Text

@@ -1,15 +1,10 @@
-﻿Public Class ctrlNotifications
+﻿Imports Microsoft.AspNet.Identity
+Imports Microsoft.AspNet.Identity.EntityFramework
+Public Class ctrlNotifications
     Inherits System.Web.UI.UserControl
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         Page.Form.Enctype = "multipart/form-data"
-    End Sub
-
-
-    Protected Sub odsCommunications_Selecting(sender As Object, e As ObjectDataSourceSelectingEventArgs) Handles odsCommunications.Selecting
-        Dim lsOID As String = GetObjectID()
-        e.InputParameters("lsObjectID") = lsOID
-        litID.Text = lsOID
     End Sub
     Function GetObjectID() As String
         Dim lsObjectID As String
@@ -33,20 +28,12 @@
         GetObjectID = lsObjectID
     End Function
 
-
-    Protected Sub odsCommunications_Inserting(sender As Object, e As ObjectDataSourceMethodEventArgs) Handles odsCommunications.Inserting
-        Dim lsOID As String = GetObjectID()
-        e.InputParameters("lsObjectID") = lsOID
-        litID.Text = lsOID
-    End Sub
-
-    Private Sub ctrlCommunications_Init(sender As Object, e As EventArgs) Handles Me.Init
-        txtComment.Text = ""
+    Protected Sub gvData_DataBinding(sender As Object, e As EventArgs) Handles gvData.DataBinding
+        Dim t As New clsTasks()
+        gvData.DataSource = t.GetRecords("", "", Session("Project"), Session("NodeID"), HttpContext.Current.User.Identity.GetUserId)
     End Sub
 
     Protected Sub cmdPostComm_Click(sender As Object, e As EventArgs) Handles cmdPostComm.Click
-        odsCommunications.Insert()
-        odsCommunications.DataBind()
-        txtComment.Text = ""
+        gvData.DataBind()
     End Sub
 End Class

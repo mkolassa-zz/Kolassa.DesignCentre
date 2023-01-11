@@ -519,8 +519,14 @@ Public Class ReportResults
                     'gv.Columns.Add(cf)
 
                 End If
+                Dim colVisExists As Boolean
                 For Each dr In dsCol.Tables(0).Rows
-                    If dr("columnVisible") = True Then
+                    Try
+                        colVisExists = dr("columnVisible")
+                    Catch ex As Exception
+                        colVisExists = False
+                    End Try
+                    If colVisExists = True Then
                         Dim bf As BoundField = New BoundField()
                         bf.DataField = dr("FieldName")
                         bf.SortExpression = dr("FieldName")

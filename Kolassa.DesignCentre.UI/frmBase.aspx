@@ -568,11 +568,11 @@
             }));
     </script>
     <script> 
-        ///<summary>
-        ///  This will fire on initial page load, 
-        ///  and all subsequent partial page updates made 
-        ///  by any update panel on the page
-        ///</summary>
+       /// ***<summary>
+       /// '***  This will fire on initial page load, 
+       /// '***  and all subsequent partial page updates made 
+       /// '***  by any update panel on the page
+       /// '***</summary>
         function pageLoad() {
             bindEvents();
         }
@@ -1025,11 +1025,11 @@
         }
     </script>
     <script> 
-        ///<summary>
-        ///  This will fire on initial page load, 
-        ///  and all subsequent partial page updates made 
-        ///  by any update panel on the page
-        ///</summary>
+        ///***<summary>
+        ///'***  This will fire on initial page load, 
+        ///'***  and all subsequent partial page updates made 
+        ///'***  by any update panel on the page
+        ///'***</summary>
   //      function pageLoad() { alert('page loaded!') }
     </script>
 

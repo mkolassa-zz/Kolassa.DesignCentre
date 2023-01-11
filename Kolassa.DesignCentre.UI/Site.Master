@@ -2,10 +2,7 @@
 <%@ Import Namespace="Kolassa.DesignCentre.UI" %>
 <%@ Import Namespace="Microsoft.AspNet.Identity" %>
 <%@ Register Src="~/Controls/ctrlProjectList.ascx" TagPrefix="uc1" TagName="ctrlProjectList" %>
-
 <!DOCTYPE html>
-
-
 <html lang="en">
 <head runat="server">
     <meta charset="utf-8" />
@@ -80,7 +77,7 @@
 	
     <form runat="server">
         <script src="/Scripts/modernizr-2.8.3.js"></script>
-        <script src="Scripts/popper.js"></script>
+        <script src="Scripts/umd/popper.js"></script><!-- Found Popper -->
       <asp:ScriptManager runat="server" EnablePageMethods="true" > 
             <Scripts>
                 <asp:ScriptReference Name="jquery" />   
@@ -101,12 +98,8 @@
                 <%--Site Scripts--%>
             </Scripts>
         </asp:ScriptManager> 
-		
-    
 
-
-
-
+        <%="" %>
 		<nav class="swite-header sticky-top py-0" style="background-color:cornsilk">
         <div class="container d-flex flex-column flex-md-row justify-content-between">
             <a class="py-2" href="#">
@@ -138,179 +131,64 @@
 								    <i class="fa fa-arrow-circle-down" ></i> <%: Session("ProjectName")  %></a>
 								</button>
 						<%End If %>&nbsp;
-				        </li>
-                    </ul>
-                     <ul class="navbar-nav px-3">
-                        <li class="nav-item text-nowrap">		
-						<%    If Context.User.IsInRole("Admin") = False Then  %>
-            			 
-          
-						<%Else  %>
-								<button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#NodeModal" style="padding-top:7px;border:none;">
-								    <i class="fa fa-arrow-circle-down" ></i>&nbsp;Node:&nbsp; <%: Session("NodeID")  %></a>
-
-								</button>
-						<%End If %>&nbsp;
-				        </li>
-                    </ul>
-                    <ul class="navbar-nav px-3">
-                        <li class="nav-item text-nowrap" style="padding-top:7px;">  <i class="fas fa-envelope fa-x" ></i>
-                            <span class="ddropdown badge badge-pill badge-danger " style="padding-top:7px;">9</span>&nbsp;&nbsp;</li>
-                          <div class="ddropdown"><span class="ddropdown">Mouse over me</span>
-  <div class="ddropdown-content">
-  <p>Hello World!</p>
-  </div></div>
-                    </ul>
-          
-                    <li class="nav-item dropdown" style="list-style-type: none;">
-                        <a class="nav-link dropdown-toggle" id="navbardrop" data-toggle="dropdown" runat="server" href="~/Account/Manage" title="Manage your account">Hello, <%:IIf(Session("UserFriendlyName") Is Nothing, Context.User.Identity.GetUserName(), Session("UserFriendlyName"))  %>!</a>
-                    
-                        
-      <div class="dropdown-menu">
-          <asp:LoginStatus class="dropdown-item" runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />   
-             <a class="dropdown-item" href="account/ManagePassword">Manage Account</a>
-             <a class="dropdown-item" href="account/AddPhoneNumber">Add Phone Number</a>
-      </div>
-    </li>
-
-			        <!--		<div class="btn-group">
-		        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			        Action
-		        </button>
-		        <div class="dropdown-menu">
-			        <a class="dropdown-item" href="#">Action</a>
-			        <a class="dropdown-item" href="#">Another action</a>
-			        <a class="dropdown-item" href="#">Something else here</a>
-			        <div class="dropdown-divider"></div>
-			        <a class="dropdown-item" href="#">Separated link</a>
-		        </div>
-	        </div> -->
-                </LoggedInTemplate>
-            </asp:LoginView>
-        </div>
-        </nav>
+				    </li>
+                </ul>
+                <ul class="navbar-nav px-3">
+                    <li class="nav-item text-nowrap">		
+					<%If Context.User.IsInRole("Admin") = False Then  %>
+					<%Else  %>
+							<button  type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#NodeModal" style="padding-top:7px;border:none;">
+								<i class="fa fa-arrow-circle-down" ></i>&nbsp;Node:&nbsp; <% Response.Write(Session("NodeID"))  %></a>
+							</button>
+					<%End If %>&nbsp;
+				    </li>
+                </ul>
+                    <!--<ul>
+                        <a href="#submenuManages" data-toggle="collapse" aria-expanded="false" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-start align-items-center">
+                                <span class="fa dc-home fa-fw mr-3"></span>
+                                <span class="menu-collapsed">Hello!</span>
+                                <span class="fa fa-chevron-circle-down  ml-auto"></span>
+                            </div>
+                        </a>
+                         Submenu content 
+                        <div id='submenuManage' class="collapse sidebar-submenu">
+                            <a runat="server"  href="~/frmbase?objType=USERS" class="list-group-item list-group-item-action bg-dark text-white">
+                                <span class="menu-collapsed">Users</span>
+                            </a>
+                        </div>
+                    </ul>-->
+                <ul class="navbar-nav px-3">
+                 <li class="nav-item dropdown" style="list-style-type: none;">
+                     <a class="nav-link dropdown-toggle" id="navbardrop" data-toggle="dropdown"  onclick="var a = document.getElementById('dropmen');if(a.className=='dropdown-menu'){ a.className = 'dropdown-menu show';} else {a.className = 'dropdown-menu'}" runat="server" href="~/Account/Manage" title="Manage your account"> <%:  Session("UserFriendlyName")  %>!</a>
+                      <div class="dropdown-menu" id="dropmen">
+                          <asp:LoginStatus class="dropdown-item" runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />   
+                             <a class="dropdown-item" href="account/ManagePassword">Manage Account</a>
+                             <a class="dropdown-item" href="account/AddPhoneNumber">Add Phone Number</a>
+                      </div>
+                </li>
+                </ul>
+                                 <ul class="navbar-nav px-3">
+                    <li class="nav-item text-nowrap" style="padding-top:7px;">  <i class="fas fa-envelope fa-x" ></i>
+                        <span class="ddropdown badge badge-pill badge-danger " style="padding-top:7px;"><% Response.Write(Session("TaskCount")) %></span>&nbsp;&nbsp;
+                    </li>
+  
+                 </ul>
+            </LoggedInTemplate>
+        </asp:LoginView>
+    </div>
+</nav>
 
 
-		<style>
-			 
-      nav.sidebar, .main{
-          -webkit-transition: margin 200ms ease-out;
-          -moz-transition: margin 200ms ease-out;
-          -o-transition: margin 200ms ease-out;
-          transition: margin 200ms ease-out;
-      }
 
-      .main{
-        padding: 10px 10px 0 10px;
-      }
 
-    @media (min-width: 765px) {
 
-	.main {
-		position: absolute;
-		width: calc(100% - 40px);
-		margin-left: 40px;
-		float: right;
-	}
 
-    nav.sidebar:hover + .main{
-      margin-left: 200px;
-    }
 
-    nav.sidebar.navbar.sidebar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand {
-      margin-left: 0px;
-    }
-
-    nav.sidebar .navbar-brand, nav.sidebar .navbar-header{
-      text-align: center;
-      width: 100%;
-      margin-left: 0px;
-    }
-    
-    nav.sidebar a{
-      padding-right: 13px;
-    }
-
-    nav.sidebar .navbar-nav > li:first-child{
-      border-top: 1px #e5e5e5 solid;
-    }
-
-    nav.sidebar .navbar-nav > li{
-      border-bottom: 1px #e5e5e5 solid;
-    }
-
-    nav.sidebar .navbar-nav .open .dropdown-menu {
-      position: static;
-      float: none;
-      width: auto;
-      margin-top: 0;
-      background-color: transparent;
-      border: 0;
-      -webkit-box-shadow: none;
-      box-shadow: none;
-    }
-
-    nav.sidebar .navbar-collapse, nav.sidebar .container-fluid{
-      padding: 0 0px 0 0px;
-    }
-
-    .navbar-inverse .navbar-nav .open .dropdown-menu>li>a {
-      color: #777;
-    }
-
-    nav.sidebar{
-      width: 200px;
-      height: 100%;
-      margin-left: -160px;
-      float: left;
-      margin-bottom: 0px;
-    }
-
-    nav.sidebar li {
-      width: 100%;
-    }
-
-    nav.sidebar:hover{
-      margin-left: 0px;
-    }
-
-    .forAnimate{
-      opacity: 0;
-    }
-  }
-   
-  @media (min-width: 1330px) {
-
-    .main{
-      width: calc(100% - 200px);
-      margin-left: 200px;
-    }
-
-    nav.sidebar{
-      margin-left: 0px;
-      float: left;
-    }
-
-    nav.sidebar .forAnimate{
-      opacity: 1;
-    }
-  }
-
-  nav.sidebar .navbar-nav .open .dropdown-menu>li>a:hover, nav.sidebar .navbar-nav .open .dropdown-menu>li>a:focus {
-    color: #CCC;
-    background-color: transparent;
-  }
-
-  nav:hover .forAnimate{
-    opacity: 1;
-  }
-  section{
-    padding-left: 15px;
-  }
-
-		</style>
 
 	
+
+
         <asp:loginview ID="lg" runat="server">
              <AnonymousTemplate>
                 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">            
@@ -336,65 +214,227 @@
 				<div class="row d-flex d-md-block flex-nowrap wrapper">
 					</div></div>
 				
-				<div ><!-- class="dc-max-width col-xs-1 float-left col-1 pl-0 pr-0 collapse width " 	id="sidebar"> -->
-					<div class="list-group border-0 card text-center text-md-left" onclick="w3_close()">
-						<span class="d-none d-md-inline">
-						<a runat="server" href="#" class="list-group-item d-inline-block collapsed" style="width:100%;" data-toggle="collapse" 
-							data-parent="#sidebar" aria-expanded="false"><i class="fa fa-user-circle fa-2x"></i> 
-							<%:IIf(Session("UserFriendlyName") Is Nothing, Context.User.Identity.GetUserName(), Session("UserFriendlyName"))  %></a>
-						</span>
 
-						<!-- Page Info Pane -->
-						<div class="panel-group">
-							<div class="panel panel-default">
-							  <div class="panel-heading">
-								<bs-label class="">
-								  <span class="d-block p-2  text-white" style="background-color:cornsilk;"><a data-toggle="collapse" href="#collapse1">Options</a></span>
-								</bs-label>
-							  </div>
-							  <div id="collapse1" class="panel-collapse collapse">
-								<div class="list-group-item d-inline-block collapsed">Project ID: <%: Session("Project")  %></div>
-								<div class="list-group-item d-inline-block collapsed"><asp:literal runat="server" ID="litPageInfo"></asp:literal></div>
-							  </div>
-							</div>
-						</div>
-						<!-- End Page Info Pane -->
 
-						 
-						
-					
-                <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmProjects" ><i class="dcmenu fa fa-th"        ></i> <span class="d-none d-md-inline">Project Dashboard</span></a>
-                <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmBase?objType=Customers"><i class="dcmenu fa fa-users"     ></i> <span class="d-none d-md-inline">Customers</span></a>
-        <!--    <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmContacts" ><i class="dcmenu fa fa-phone"     ></i> <span class="d-none d-md-inline">Contacts</span></a> -->
-                <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmQuote"    ><i class="dcmenu fa fa-quote-left"></i> <span class="d-none d-md-inline">Quotes</span></a>
-                        </ul>
-            	<% If Context.User.IsInRole("Admin") Then  %>
-                    <ul>
-         		        <li runat="server" id="mnuAdmin" class="divider"></li>
-                        <span class="d-block p-2 bg-dark text-white">Admin</span>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=COMPANYINFO"        ><i class="dcmenu dc-home"              ></i><span class="d-none d-md-inline">Company Info      </span></a>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ProjectTypes"       ><i class="dcmenu fa fa-angle-down"     ></i><span class="d-none d-md-inline">Project Types     </span></a>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=PROJECTS"           ><i class="dcmenu dc-Projects"          ></i><span class="d-none d-md-inline">Projects          </span></a>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ProjectPhases"      ><i class="dcmenu dc-Phases"            ></i><span class="d-none d-md-inline">Building Phases   </span></a>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UnitTypes"          ><div class="dcmenu"><span class="dc-UnitTypes"         ></span></div><span class="d-none d-md-inline">Unit Types        </span></a>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=Units"              ><div class="dcmenu"><span class="dc-Units"             ></span></div><span class="d-none d-md-inline">Units             </span></a>      
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UNITPROFILES"       ><span class="dcmenu dc-Appliances"               ></span><span class="d-none d-md-inline">Unit Profiles     </span></a>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UnitTiers"          ><span class="dcmenu dc-quotes-left"       ></span><span class="d-none d-md-inline">Tiers             </span></a>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=Floors"             ><i class="dcmenu dc-Floors"            ></i><span class="d-none d-md-inline">Floors            </span></a>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=ROOMS"              ><i class="dcmenu dc-Rooms"             ></i><span class="d-none d-md-inline">Rooms             </span></a>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=VENDORS"            ><i class="dcmenu fa fa-people-carry"   ></i><span class="d-none d-md-inline">Vendors           </span></a>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/Configure/frmUnitRooms"             ><i class="dcmenu fa fa-arrow-alt-circle-right"          ></i><span class="d-none d-md-inline">Unit Type / Rooms            </span></a>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=UPGRADEOPTIONS"     ><i class="dcmenu fa fa-bars"          ></i><span class="d-none d-md-inline">Upgrade Options            </span></a>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/Configure/frmIncompatibilities"     ><i class="dcmenu fa fa-xing"          ></i><span class="d-none d-md-inline">Incompatibilities            </span></a>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=LOGINS"             ><i class="dcmenu fa fa-users"          ></i><span class="d-none d-md-inline">Logins            </span></a>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=DEPOSITCONDITIONS"  ><i class="dcmenu fa fa-money-bill-alt" ></i><span class="d-none d-md-inline">Deposit Contitions</span></a>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=REPORTCATEGORIES"   ><i class="dcmenu dc-ReportCategories"  ></i><span class="d-none d-md-inline">Report Categories </span></a>
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmbase?objType=BASE"               ><i class="dcmenu dc-cross"           ></i><span class="d-none d-md-inline">Base              </span></a>		
-                        <a runat="server" class="list-group-item d-block collapsed" data-parent="#sidebar" href="~/frmTest"               ><i class="dcmenu dc-cross"           ></i><span class="d-none d-md-inline">Test Form              </span></a>		
-		            </ul>
-                <% End If  %>
+<!-- SideNav -->
+                            
+         <div id="sidebar-container" class="sidebar-expanded d-none d-md-block">
+        <!-- d-* hiddens the Sidebar in smaller devices. Its itens can be kept on the Navbar 'Menu' -->
+        <!-- Bootstrap List Group -->
+        <ul class="list-group">
+            <!-- Separator with title -->
+            <li class="list-group-item sidebar-separator-title text-muted d-flex align-items-center menu-collapsed">
+                <small>MAIN MENU</small>
+            </li>
+            <!-- /END Separator -->
+   
+            <a href="#submenu2" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-start align-items-center">
+                    <span class="fa fa-user fa-fw mr-3"></span>
+                    <span class="menu-collapsed"><%:IIf(Session("UserFriendlyName") Is Nothing, Context.User.Identity.GetUserName(), Session("UserFriendlyName"))  %></span>
+                    <span class="fa fa-chevron-circle-down ml-auto"></span>
                 </div>
+            </a>
+            <!-- Submenu content -->
+            <div id='submenu2' class="collapse sidebar-submenu">
+  						<!-- Page Info Pane -->
+		       <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Project ID: <%: Session("Project")  %>
+                        <asp:literal runat="server" ID="litPageInfo"></asp:literal></span></a>
+						<!-- End Page Info Pane -->
+                <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Settings</span>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Password</span>
+                </a>
             </div>
+                <a runat="server" class="bg-dark list-group-item list-group-item-action" href="~/frmProjects" ><div class="d-flex w-100 justify-content-start align-items-center"><span class="fa fa-th fa-fw mr-3"></span><span class="menu-collapsed">Project Dashboard</span></div></a>
+                <a runat="server" class="bg-dark list-group-item list-group-item-action" href="~/frmBase?objType=Customers"><div class="d-flex w-100 justify-content-start align-items-center"><span class="fa fa-users fa-fw mr-3"></span><span class="menu-collapsed">Customers</span></div></a>
+        <!--    <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmContacts" ><i class="dcmenu fa fa-phone"     ></i> <span class="d-none d-md-inline">Contacts</span></a> -->
+                <a runat="server" class="bg-dark list-group-item list-group-item-action" href="~/frmQuote"    ><div class="d-flex w-100 justify-content-start align-items-center"><span class="fa fa-quote-left fa-fw mr-3"></span><span class="menu-collapsed">Quotes</span></div></a>
+            <a href="#" class="bg-dark list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-start align-items-center"><span class="fa fa-tasks fa-fw mr-3"></span><span class="menu-collapsed">Tasks</span></div>
+            </a>
+            <!-- Separator with title -->
+            <li class="list-group-item sidebar-separator-title text-muted d-flex align-items-center menu-collapsed">
+                <small>Admin</small>
+            </li>
+            <!-- /END Separator -->
+        	<% If Context.User.IsInRole("Admin") Then  %>
+            <!-- Menu with submenu -->
+            <a href="#submenu1" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-start align-items-center">
+                    <span class="fa dc-home fa-fw mr-3"></span>
+                    <span class="menu-collapsed">Project Info</span>
+                    <span class="fa fa-chevron-circle-down  ml-auto"></span>
+                </div>
+            </a>
+            <!-- Submenu content -->
+            <div id='submenu1' class="collapse sidebar-submenu">
+                <a runat="server" href="~/frmbase?objType=COMPANYINFO" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Company Info</span>
+                </a>
+                <a runat="server"  href="~/frmbase?objType=ProjectTypes" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Project Types</span>
+                </a>
+                <a runat="server"  href="~/frmbase?objType=Projects" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Projects</span>
+                </a>
+                <a runat="server"  href="~/frmbase?objType=PROJECTPHASES" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Project Phases</span>
+                </a>
+            </div>
+            <a href="#submenuUnit" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-start align-items-center">
+                    <span class="fa dc-Units fa-fw mr-3"></span>
+                    <span class="menu-collapsed">Unit Info</span>
+                    <span class="fa fa-chevron-circle-down  ml-auto"></span>
+                </div>
+            </a>
+            <!-- Submenu content -->
+            <div id='submenuUnit' class="collapse sidebar-submenu">
+                <a runat="server"  href="~/frmbase?objType=UNITTYPES" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Unit Types</span>
+                </a>
+                <a runat="server"  href="~/frmbase?objType=UNITPROFILES" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Unit Profiles</span>
+                </a>
+                <a runat="server"  href="~/frmbase?objType=UNITTIERS" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Unit Tiers</span>
+                </a>
+                <a runat="server"  href="~/frmbase?objType=UNITS" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Units</span>
+                </a>
+                <a runat="server"  href="~/frmbase?objType=FLOORS" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Floors</span>
+                </a>
+                <a runat="server"  href="~/frmbase?objType=ROOMS" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Rooms</span>
+                </a>
+                <a runat="server"  href="~/Configure/frmUnitRooms" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Unit Rooms</span>
+                </a>
+            </div>
+            <a href="#submenuUpgrade" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-start align-items-center">
+                    <span class="fa fa-bars fa-fw mr-3"></span>
+                    <span class="menu-collapsed">Upgrade Info</span>
+                    <span class="fa fa-chevron-circle-down  ml-auto"></span>
+                </div>
+            </a>
+            <!-- Submenu content -->
+            <div id='submenuUpgrade' class="collapse sidebar-submenu">
+                <a runat="server"  href="~/frmbase?objType=UPGRADECATEGORIES" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Upgrade Categories</span>
+                </a>
+                                <a runat="server"  href="~/Configure/frmUpgradecategoriesmap" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Upgrade Category Map</span>
+                </a>
+                <a runat="server"  href="~/frmbase?objType=UPGRADEOPTIONS" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Upgrade Options</span>
+                </a>
+                <a runat="server"  href="~/frmbase?objType=INCOMPATIBILITIES" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Incompatibilities</span>
+                </a>
+            </div>
+            <a href="#submenuReports" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-start align-items-center">
+                    <span class="fa fa-file fa-fw mr-3"></span>
+                    <span class="menu-collapsed">Reports</span>
+                    <span class="fa fa-chevron-circle-down  ml-auto"></span>
+                </div>
+            </a>
+            <!-- Submenu content -->
+            <div id='submenuReports' class="collapse sidebar-submenu">
+                <a runat="server" a href="~/frmbase?objType=REPORTCATEGORIES" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Report Categories</span>
+                </a>
+                <a runat="server"  href="~/frmbase?objType=REPORTDESCRIPTIONS" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Report Descriptions</span>
+                </a>
+
+                <a runat="server"  href="~/frmbase?objType=REPORTSQL" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Report SQL</span>
+                </a>
+            </div>
+            <a href="#submenuUsers" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-start align-items-center">
+                    <span class="fa fa-users fa-fw mr-3"></span>
+                    <span class="menu-collapsed">User Info</span>
+                    <span class="fa fa-chevron-circle-down  ml-auto"></span>
+                </div>
+            </a>
+            <!-- Submenu content -->
+            <div id='submenuUsers' class="collapse sidebar-submenu">
+                <a runat="server"  href="~/frmbase?objType=USERS" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Users</span>
+                </a>
+                <a runat="server"  href="~/frmbase?objType=LOGINS" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Logins</span>
+                </a>
+                <a runat="server"  href="~/frmbase?objType=BASE" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Base</span>
+                </a>
+            </div>
+            <a href="#submenuFinancials" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-start align-items-center">
+                    <span class="fa fa-dollar-sign fa-fw mr-3"></span>
+                    <span class="menu-collapsed">Financial Info</span>
+                    <span class="fa fa-chevron-circle-down  ml-auto"></span>
+                </div>
+            </a>
+            <!-- Submenu content -->
+            <div id='submenuFinancials' class="collapse sidebar-submenu">
+                <a runat="server"  href="~/frmbase?objType=DEPOSITCONDITIONS" class="list-group-item list-group-item-action bg-dark text-white">
+                    <span class="menu-collapsed">Deposit Conditions</span>
+                </a>
+            </div>
+        <% End If  %>
+            <a runat="server"  href="#" class="bg-dark list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-start align-items-center">
+                    <span class="fa fa-calendar fa-fw mr-3"></span>
+                    <span class="menu-collapsed">Calendar</span>
+                </div>
+            </a>
+            <a href="#" class="bg-dark list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-start align-items-center">
+                    <span class="fa fa-envelope-o fa-fw mr-3"></span>
+                    <span class="menu-collapsed">Messages <span class="badge badge-pill badge-primary ml-2"><% Response.Write(Session("TaskCount")) %></span></span>
+                </div>
+            </a>
+            <!-- Separator without title -->
+            <li class="list-group-item sidebar-separator menu-collapsed"></li>
+            <!-- /END Separator -->
+            <a href="#" class="bg-dark list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-start align-items-center">
+                    <span class="fa fa-question fa-fw mr-3"></span>
+                    <span class="menu-collapsed">Help</span>
+                </div>
+            </a>
+            <a href="#top" data-toggle="sidebar-colapse" class="bg-dark list-group-item list-group-item-action d-flex align-items-center">
+                <div class="d-flex w-100 justify-content-start align-items-center">
+                    <span id="collapse-icon" class="fa fa-2x mr-3"></span>
+                    <span id="collapse-text" class="menu-collapsed">Collapse</span>
+                </div>
+            </a>
+        </ul><!-- List Group END-->
+    </div><!-- sidebar-container END -->
+
+
+<!-- End SideNave -->
+
+
+
+
+
+
+            
+               
+                 
+
+
+
            <!-- Start Menu.js Markup Main Div Tags-->
         </div >
     </div>
@@ -480,23 +520,6 @@
                               </a>
                             </li>
                           </ul>
-                        </div>
-                        <div class="user-profile">
-                          <div>
-                            <a href="#" class="d-flex align-items-center" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-offset="0,20">
-                              <div class="user-pic mr-3">
-                                <img src="images/logo2.png" alt="" class="img-fluid">
-                              </div>
-                              <div class="user-name">
-                                <span>Dan Smith</span>
-                              </div>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
-                              <a class="dropdown-item" href="#">Action</a>
-                              <a class="dropdown-item" href="#">Another action</a>
-                              <a class="dropdown-item" href="#">Something else here</a>
-                            </div>
-                           </div>
                         </div>
                       </div>
                     </aside>
@@ -605,24 +628,117 @@
                 document.getElementById("openNav").style.display = "inline-block";
             }
     </script>
+    <script>
+        // Hide submenus
+        $('#body-row .collapse').collapse('hide');
+
+        // Collapse/Expand icon
+        $('#collapse-icon').addClass('fa-angle-double-left');
+
+        // Collapse click
+        $('[data-toggle=sidebar-colapse]').click(function () {
+            SidebarCollapse();
+        });
+
+        function SidebarCollapse() {
+            $('.menu-collapsed').toggleClass('d-none');
+            $('.sidebar-submenu').toggleClass('d-none');
+            $('.submenu-icon').toggleClass('d-none');
+            $('#sidebar-container').toggleClass('sidebar-expanded sidebar-collapsed');
+
+            // Treating d-flex/d-none on separators with title
+            var SeparatorTitle = $('.sidebar-separator-title');
+            if (SeparatorTitle.hasClass('d-flex')) {
+                SeparatorTitle.removeClass('d-flex');
+            } else {
+                SeparatorTitle.addClass('d-flex');
+            }
+
+            // Collapse/Expand icon
+            $('#collapse-icon').toggleClass('fa-angle-double-left fa-angle-double-right');
+        }
+    </script>
+    <style>
+#body-row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+#sidebar-container {
+    min-height: 100vh;
+    background-color: #333;
+    padding: 0;
+}
+
+/* Sidebar sizes when expanded and expanded */
+.sidebar-expanded {
+    width: 230px;
+}
+
+.sidebar-collapsed {
+    width: 60px;
+}
+
+/* Menu item*/
+#sidebar-container .list-group a {
+    height: 50px;
+    color: white;
+}
+
+/* Submenu item*/
+#sidebar-container .list-group .sidebar-submenu a {
+    height: 45px;
+    padding-left: 30px;
+}
+
+.sidebar-submenu {
+    font-size: 0.9rem;
+}
+
+/* Separators */
+.sidebar-separator-title {
+    background-color: #333;
+    height: 35px;
+}
+
+.sidebar-separator {
+    background-color: #333;
+    height: 25px;
+}
+
+.logo-separator {
+    background-color: #333;
+    height: 60px;
+}
+
+/* Closed submenu icon */
+#sidebar-container .list-group .list-group-item[aria-expanded="false"] .submenu-icon::after {
+    content: " \f0d7";
+    font-family: FontAwesome;
+    display: inline;
+    text-align: right;
+    padding-left: 10px;
+}
+
+/* Opened submenu icon */
+#sidebar-container .list-group .list-group-item[aria-expanded="true"] .submenu-icon::after {
+    content: " \f0da";
+    font-family: FontAwesome;
+    display: inline;
+    text-align: right;
+    padding-left: 10px;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+    </style>
 	<!-- end menu.js stuff -->
-    	<script>
+    <script>
             $('#CustomersModal').on('show.bs.modal', function (e) {
-                // do something...
-                // alert('mike');
-                //    var p = document.getElementsByTagName("p");
-                //    var frm = document.getElementsByTagName("form");
                 var formcount = document.forms.length;
                 for (var i = 0; i < formcount; i++) {
                     var frm = document.forms[i];
                 frm.reset;
             }
-             //   alert('d');
-               // frm.trigger("reset");
             })
-
-       
-        </script>
+    </script>
 </body>
-	
 </html>

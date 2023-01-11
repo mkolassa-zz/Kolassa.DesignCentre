@@ -99,10 +99,10 @@ Public Class ctrlPivot
 
 
 
-
-    Protected Sub Render(writer As HtmlTextWriter)
-        RenderSubControls(writer)
-    End Sub
+    '2022-12-10 Caused Warning
+    '  Protected Sub Render(writer As HtmlTextWriter)
+    '      RenderSubControls(writer)
+    '  End Sub
     Protected Overridable Sub RenderSubControls(writer As HtmlTextWriter)
         '	lblTitle2.RenderControl(writer)
     End Sub
@@ -201,10 +201,10 @@ Public Class pivot
     ''***  <summary> 
     ''***  Creates an advanced 3D Pivot table. 
     ''***  </summary> 
-    '/// <param name="xAxisField">The main heading at the top of the report.</param> 
-    '/// <param name="yAxisField">The heading on the left of the report.</param> 
-    '/// <param name="zAxisFields">The sub heading at the top of the report.</param> 
-    '/// <returns>HtmlTable Control.</returns> 
+    ''*** <param name="xAxisField">The main heading at the top of the report.</param> 
+    ''*** <param name="yAxisField">The heading on the left of the report.</param> 
+    ''*** <param name="zAxisFields">The sub heading at the top of the report.</param> 
+    ''*** <returns>HtmlTable Control.</returns> 
     Public Function PivotTable(xAxisField As String, yAxisField As String, zAxisFields As String()) As HtmlTable
             Dim Table As HtmlTable = New HtmlTable()
             '//style table 

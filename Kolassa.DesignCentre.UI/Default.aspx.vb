@@ -41,7 +41,7 @@ Public Class _Default
 
 	Protected Sub cmdCSV_Click(sender As Object, e As EventArgs)
 		Dim c As New clsTestCSV
-		Dim lsFileName As String
+        'Dim lsFileName As String
 
         '	lsFileName = fucsv.FileName
         ' If fuCSV.HasFile Then

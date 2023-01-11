@@ -46,7 +46,7 @@ Public Class ctrlImageLookup
     End Property
 
     Protected Sub btnUpload_Click(sender As Object, e As EventArgs) 'Handles btnUpload.Click
-        Dim lsFileName As String
+        Dim lsFileName As String = ""
 
         ' lsFileName = FileUpload1.FileName
         '  If FileUpload1.HasFile Then
@@ -55,8 +55,8 @@ Public Class ctrlImageLookup
         ' lsFIleName = RadUpload1.UploadedFiles(0).FileName.ToString
         If lsFileName = "" Then Exit Sub
         Dim intImageSize As Int64
-        Dim strImageType As String
-        Dim ImageStream As Stream
+        Dim strImageType As String = ""
+        'Dim ImageStream As Stream '= New Stream( )
 
         '*** Gets the Size of the Image
         '   intImageSize = FileUpload1.PostedFile.ContentLength
@@ -71,7 +71,7 @@ Public Class ctrlImageLookup
 
         Dim ImageContent(intImageSize) As Byte
         Dim intStatus As Integer
-        intStatus = ImageStream.Read(ImageContent, 0, intImageSize)
+        intStatus = 1 ' Fix this ImageStream.Read(ImageContent, 0, intImageSize)
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
         Dim liNode As String = System.Web.HttpContext.Current.Session("NodeID")
         If liNode < 2 Then liNode = 2

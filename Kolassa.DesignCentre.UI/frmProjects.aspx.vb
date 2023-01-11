@@ -9,7 +9,9 @@ Public Class frmProjects
     Dim mlRecordID As Long
     Dim msID As String
     Dim mlRow As Long
-
+    Protected Function GetStatusString(status As String) As String
+        Return If(status = "A", "Absent", "Present")
+    End Function
 
     Public Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         '*** Put user code to initialize the page here
@@ -18,8 +20,11 @@ Public Class frmProjects
         Dim c As New clsSelectDataLoader
 
         Dim lsProject As String = Request.QueryString("ProjectID")
+        If lsProject Is Nothing Then
+            lsProject = Session("Project")
+        End If
         If lsProject.Length = 36 Then
-			If lsProject <> Session("Project") Then
+            If lsProject <> Session("Project") Then
                 Session("Project") = lsProject
                 Dim cp = New clsProject
                 cp.ID = lsProject
@@ -27,7 +32,7 @@ Public Class frmProjects
                 Session("ProjectObject") = cp
                 Session("ProjectName") = cp.Name
             End If
-		Else
+        Else
                 lsProject = Session("Project")
 		End If
 		Session("ProjectUnitsMetric") = FormatNumber(c.FgetMetric("Units", lsProject), 0)
@@ -76,9 +81,7 @@ Public Class frmProjects
 
 
 	End Sub
-    Function fGetRoles() As DataTable
-        Dim u As ApplicationUser
-    End Function
+
     Function fGetProjectAddress() As String
         Dim c As clsProject = Session("ProjectObject")
 
@@ -88,8 +91,9 @@ Public Class frmProjects
             Return ""
         End If
     End Function
-    Function fGetProjectAddressMap() As String
-        Dim c As clsProject = Session("ProjectObject")
+    Public Function fGetProjectAddressMap() As String
+        Dim c As New clsProject
+        c = Session("ProjectObject")
         If Not c Is Nothing Then
             Return " https://maps.google.com/maps?q=" & Trim(c.Longitude) & "," & Trim(c.Latitude) & "&output=svembed"
         Else
@@ -217,16 +221,11 @@ Public Class frmProjects
 		e.InputParameters("lsActive") = lsActive
 	End Sub
 
-
-	Public Overrides Sub VerifyRenderingInServerForm(ByVal Control As Control)
+    Public Overrides Sub VerifyRenderingInServerForm(ByVal Control As Control)
 		Return
 	End Sub
 
-
-
-
-
-	Protected Sub imgAdd_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgAdd.Click
+    Protected Sub imgAdd_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgAdd.Click
 		gvPhases.EditIndex = -1
 		gvPhases.ShowFooter = True
 	End Sub
@@ -408,6 +407,10 @@ Public Class frmProjects
 	Private Sub frmProjects_PreRender(sender As Object, e As EventArgs) Handles Me.PreRender
 
 	End Sub
-
+    Function fGetRoles() As DataTable
+        '  Dim u As ApplicationUser
+        Dim dt As New DataTable
+        Return dt
+    End Function
 
 End Class

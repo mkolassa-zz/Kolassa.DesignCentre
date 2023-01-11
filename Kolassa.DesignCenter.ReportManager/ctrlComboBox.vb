@@ -96,14 +96,14 @@ Public Class ctrlComboBox
 
 
 
-        Controls.Add(lblFieldName)
+        uPanel1.ContentTemplateContainer.Controls.Add(lblFieldName)
 
 
         uPanel1.ContentTemplateContainer.Controls.Add(fGetFieldButton)
         uPanel1.ContentTemplateContainer.Controls.Add(fGetFieldDeleteButton)
 
 
-        Controls.Add(DropDownList1)
+        uPanel1.ContentTemplateContainer.Controls.Add(DropDownList1)
         Controls.Add(uPanel1)
 
 
@@ -131,7 +131,7 @@ Public Class ctrlComboBox
         '	On Error Resume Next
 
         DropDownList1.RenderControl(writer)
-        lblFieldName.RenderControl(writer)
+        '   lblFieldName.RenderControl(writer)
         lblField1.RenderControl(writer)
         lblField2.RenderControl(writer)
         uPanel1.RenderControl(writer)

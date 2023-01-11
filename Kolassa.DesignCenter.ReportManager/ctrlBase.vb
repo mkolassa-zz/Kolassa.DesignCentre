@@ -15,7 +15,7 @@ Public Class ctrlBase
 	Public ctrlHelpText As Label
     '******************************************
     Public msControlPanelcss As String
-    Dim EditMode As Boolean
+    '  Dim EditMode As Boolean
     Dim mnuCTRL1 As Menu
 	Dim mnuCTRL As DropDownList
 	Dim cmdFieldDef As LinkButton

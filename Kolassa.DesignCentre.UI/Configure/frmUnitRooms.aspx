@@ -59,6 +59,7 @@
    </style>
 
  <div class="container">
+
     <h2>Unit Types Room Configuration Form</h2>
     <asp:UpdatePanel id="upChecks" runat="server" ChildrenAsTriggers="true">
         <ContentTemplate>
@@ -94,7 +95,7 @@
          var datas = '{"ID": "'+lsid+'", "lsRoomID": "'+lsrid+'", "lsUnitTypeID": "'+lsuid+'", "lsActive": "'+lsactive+'", "lsproject": "'+lsproject+'", "lsnode": "'+lsnode+'"}'
         $.ajax({
             type: "POST",
-            url: "dcwebservices.asmx/fchange",
+            url: "dcConfigure.asmx/fchange",
             data: datas,
             contentType: "application/json; charset=utf-8",
             dataType: "json",

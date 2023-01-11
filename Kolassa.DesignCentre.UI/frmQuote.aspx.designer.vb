@@ -158,6 +158,51 @@ Partial Public Class frmQuote
     Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
+    '''Panel3 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents Panel3 As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''upAssignedTo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents upAssignedTo As Global.System.Web.UI.UpdatePanel
+
+    '''<summary>
+    '''cboAssignedTo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cboAssignedTo As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''cmdAssign control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdAssign As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
+    '''lblQuoteID control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblQuoteID As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''pnlQuoteLookup control.
     '''</summary>
     '''<remarks>
@@ -336,6 +381,15 @@ Partial Public Class frmQuote
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlQuote As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''litName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents litName As Global.System.Web.UI.WebControls.Literal
 
     '''<summary>
     '''cmdAddNewOption control.

@@ -59,27 +59,27 @@ Public Class ctrlImagesNew
 
 
     Protected Sub btnUpload_Click(sender As Object, e As EventArgs) 'Handles btnUpload.Click
-        Dim lsFileName As String
+        Dim lsFileName As String = ""
 
         If lsFileName = "" Then Exit Sub
         Dim intImageSize As Int64
         Dim strImageType As String
-        Dim ImageStream As Stream
+        ' Dim ImageStream As Stream
 
         '*** Gets the Size of the Image
         '   intImageSize = FileUpload1.PostedFile.ContentLength
 
         '*** Gets the Image Type
         '   strImageType = FileUpload1.PostedFile.ContentType
-
+        strImageType = "" 'Fix this
         '*** Reads the Image
         '   ImageStream = FileUpload1.PostedFile.InputStream
-
+        ' ImageStream = DirectCast()
 
 
         Dim ImageContent(intImageSize) As Byte
         Dim intStatus As Integer
-        intStatus = ImageStream.Read(ImageContent, 0, intImageSize)
+        intStatus = 1 ' ImageStream.Read(ImageContent, 0, intImageSize)
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
         Dim liNode As String = System.Web.HttpContext.Current.Session("NodeID")
         If liNode < 2 Then liNode = 2

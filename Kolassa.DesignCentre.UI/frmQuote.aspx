@@ -61,18 +61,13 @@
 		</SelectParameters>
 	</asp:ObjectDataSource>
 
-	<asp:ObjectDataSource ID="odsCategories" runat="server" 
-		SelectMethod="LoadRoomCategories" TypeName="Kolassa.DesignCentre.Data.clsSelectDataLoader">
+	<asp:ObjectDataSource ID="odsCategories" SelectMethod="LoadRoomCategories" runat="server" TypeName="Kolassa.DesignCentre.Data.clsSelectDataLoader">
 		<SelectParameters>
-			<asp:SessionParameter DefaultValue="1" Name="llNodeID" SessionField="NodeID" 
-				Type="Int64" />
-			<asp:SessionParameter DefaultValue="00000000-0000-0000-0000-000000000000" Name="lsUnitType" 
-                				SessionField="UnitTypeID" Type="String" />
-            		<asp:SessionParameter DefaultValue="" Name="lsQuoteID" SessionField="QuoteID"  Type="String" />
-			<asp:ControlParameter ControlID="rblPhase" DefaultValue="1" Name="lsPhase" 
-				PropertyName="SelectedValue" Type="String" />
-			<asp:ControlParameter ControlID="lstRooms2" DefaultValue="" Name="lsRoom" 
-				PropertyName="SelectedValue" Type="String" />
+			<asp:SessionParameter DefaultValue="1" Name="llNodeID" SessionField="NodeID" Type="Int64" />
+			<asp:SessionParameter DefaultValue="00000000-0000-0000-0000-000000000000" Name="lsUnitType" SessionField="UnitTypeID" Type="String" />
+            <asp:SessionParameter DefaultValue="" Name="lsQuoteID" SessionField="QuoteID"  Type="String" />
+			<asp:ControlParameter ControlID="rblPhase" DefaultValue="1" Name="lsPhase" PropertyName="SelectedValue" Type="String" />
+			<asp:ControlParameter ControlID="lstRooms2" DefaultValue="" Name="lsRoom" PropertyName="SelectedValue" Type="String" />
 		</SelectParameters>
 	</asp:ObjectDataSource>
 
@@ -265,7 +260,38 @@
 		</table>
 	
 
-
+		<!-- THIS IS THE PANEL FOR Assigning a Resource -->
+		<asp:Panel Runat="server" ID="Panel3"   Visible = "true">
+			<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR SEARCHING FOR A QUOTE -->
+			<div class="modal fade" id="modAssignResource" tabindex="-1" role="dialog" aria-labelledby="quoteSearchModalLabel" aria-hidden="true" >
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content" style="width:700px;">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="modAssignResourceTitle">Assign Resource</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						  <span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<asp:UpdatePanel  ID="upAssignedTo" runat="server" ChildrenAsTriggers="true" >
+							<ContentTemplate><div class="form-row">
+								<asp:DropDownList ID="cboAssignedTo" runat="server" title="AssignedToTitle" AutoPostBack="false" EnableViewState="true" />
+								<asp:linkButton ID="cmdAssign" CssClass="btn btn-sm btn-primary" Text="Assign" runat="server" />
+								</br><asp:Label ID="lblQuoteID" runat="server" CssClass="d-none"/>
+							</ContentTemplate>
+							<Triggers>
+								<asp:AsyncPostBackTrigger ControlID="cboAssignedTo" EventName="SelectedIndexChanged" />	
+							</Triggers>		
+							</asp:UpdatePanel>
+					</div>
+					  <div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					  </div>
+				</div>
+			  </div>
+			</div>
+		</asp:Panel>
+		<!-- END QUOTE LOOKUP PANEL -->
 	
 
 
@@ -452,9 +478,20 @@
 				
 				<div class="dropup">
 					<div class="lauto-style1">
-						<table>
-							<tr>
-								<td>
+							<table>
+								<tr>
+									<td>
+										<asp:literal ID="litName" runat="server" />
+										<button  id="btnAssignResource" type="button" class="btn btn-default btn-sm"
+											data-toggle="modal" data-target="#modAssignResource" >
+											<i class="fa fa-user-plus"></i> Assign Resource</button>
+									</td>			
+								</tr>
+							</table>			
+
+							<table>
+								<tr>
+									<td>
                                     <nav class="Kolassa" >
                                         <ul class="Kolassa" style="padding:unset;">
 									        <button type="button" class="btn btn-primary btn-sm" id="cmdSave" ><i class="fa fa-save" ></i> Save</button>
@@ -480,7 +517,9 @@
                                             </li>
                                         </ul>
                                     </nav>
-								
+														</td>
+							</tr>
+						</table>
 								
 								</td>
 							</tr>
@@ -1020,7 +1059,8 @@
 
   
 	<script>
-        $(document).ready(function () {
+		$(document).ready(function () {
+
             bindphase(); //Binds fsetphase to the Phase Grid
 
             $('#MainContent_lstSelectedUpgrade_btnEditSelectedItem_0').on('click', function (event) {

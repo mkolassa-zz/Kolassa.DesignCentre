@@ -14,15 +14,6 @@ Option Explicit On
 Partial Public Class ctrlNotifications
 
     '''<summary>
-    '''odsCommunications control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents odsCommunications As Global.System.Web.UI.WebControls.ObjectDataSource
-
-    '''<summary>
     '''pnlComm control.
     '''</summary>
     '''<remarks>
@@ -41,13 +32,13 @@ Partial Public Class ctrlNotifications
     Protected WithEvents litID As Global.System.Web.UI.WebControls.Literal
 
     '''<summary>
-    '''rptDiscussion control.
+    '''gvData control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents rptDiscussion As Global.System.Web.UI.WebControls.Repeater
+    Protected WithEvents gvData As Global.System.Web.UI.WebControls.GridView
 
     '''<summary>
     '''txtComment control.

@@ -62,4 +62,7 @@
     Protected Sub Button1_Click(sender As Object, e As EventArgs) Handles cmdLoad.Click
         popGrid()
     End Sub
+    Shared Function fHey() As String
+        Return "Whassssupppp?"
+    End Function
 End Class

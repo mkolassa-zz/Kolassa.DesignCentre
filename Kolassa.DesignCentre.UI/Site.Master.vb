@@ -99,69 +99,70 @@ Public Class SiteMaster
             Debug.Print(r.GetType.ToString)
             If r.RoleId = "Admin" Then
                 lbAdmin = True
-
                 pnlNodeChange.Visible = True
             End If
         Next
 
         If Session("NodeID") = 0 Then
             Session("NodeID") = u.NodeID
+            Session("UserEmail") = u.Email
         End If
         If lsUser <> "" Then
-            '*** Set the Sesion Variables for the User if they got lost
-            If Session("UserFriendlyName") Is Nothing Or Session("UserFriendlyName") = "" Then
-
-
-
-                If u.UserFriendlyName Is Nothing Or u.UserFriendlyName = "" Then
-                    Session("UserFriendlyName") = Web.HttpContext.Current.User.Identity.GetUserName
-                Else
-                    Session("UserFriendlyName") = u.UserFriendlyName
+            If Not Me.IsPostBack Then
+                '*** Set the Sesion Variables for the User if they got lost
+                If Session("UserFriendlyName") Is Nothing Or Session("UserFriendlyName") = "" Then
+                    If u.UserFriendlyName Is Nothing Or u.UserFriendlyName = "" Then
+                        Session("UserFriendlyName") = Web.HttpContext.Current.User.Identity.GetUserName
+                    Else
+                        Session("UserFriendlyName") = u.UserFriendlyName
+                    End If
                 End If
+                Dim ltasks As New clsTasks
+                ltasks.GetRecords("", "", "", Session("NodeID"), HttpContext.Current.User.Identity.GetUserId)
+                Session("TaskCount") = ltasks.ObjectCount
 
             End If
-
             '*** Ask the Personal Data Object (Activity Log) for the Last Project Selected
             cp.getlastValue("Project")
-            lsLast = cp.GuidValue
+                lsLast = cp.GuidValue
 
-            '*** Was there a project ID in the querystring? Iff Not we need to get it from the log
-            If lsProject Is Nothing Or lsProject = "" Then
-                If Session("ProjectName") = "" Or Session("ProjectName") Is Nothing Then
-                    '*** Load Project from Database from personal data table for last Project
-                    If a.isGUIDString(lsLast) Then lsProject = lsLast
+                '*** Was there a project ID in the querystring? Iff Not we need to get it from the log
+                If lsProject Is Nothing Or lsProject = "" Then
+                    If Session("ProjectName") = "" Or Session("ProjectName") Is Nothing Then
+                        '*** Load Project from Database from personal data table for last Project
+                        If a.isGUIDString(lsLast) Then lsProject = lsLast
+                    Else
+                        '*** We still have all the data in the Session variables
+                        Exit Sub
+                    End If
                 Else
-                    '*** We still have all the data in the Session variables
+                    If a.isGUIDString(lsProject) Then
+                        cp = New clsPersonalData
+                        cp.GuidValue = lsProject
+                        cp.UsageType = "Project"
+                        cp.Insert()
+                    End If
+                End If
+
+
+                If Not a.isGUIDString(lsProject) Then lsProject = ""
+                Dim lsCurrentProj As String = Session("Project")
+                If Session("Project") Is Nothing Then lsCurrentProj = ""
+                If lsProject Is Nothing Then lsProject = ""
+                If lsProject = "" Then
                     Exit Sub
                 End If
-            Else
-                If a.isGUIDString(lsProject) Then
-                    cp = New clsPersonalData
-                    cp.GuidValue = lsProject
-                    cp.UsageType = "Project"
-                    cp.Insert()
+                If Session("Project") = lsProject Then
+                    Exit Sub
                 End If
-            End If
+                Session("Project") = lsProject
 
-
-            If Not a.isGUIDString(lsProject) Then lsProject = ""
-            Dim lsCurrentProj As String = Session("Project")
-            If Session("Project") Is Nothing Then lsCurrentProj = ""
-            If lsProject Is Nothing Then lsProject = ""
-            If lsProject = "" Then
-                Exit Sub
+                Dim c = New clsProject
+                c.ID = lsProject
+                c.GetRecord(lsProject, True)
+                Session("ProjectObject") = c
+                Session("ProjectName") = c.Name
             End If
-            If Session("Project") = lsProject Then
-                Exit Sub
-            End If
-            Session("Project") = lsProject
-
-            Dim c = New clsProject
-            c.ID = lsProject
-            c.GetRecord(lsProject, True)
-            Session("ProjectObject") = c
-            Session("ProjectName") = c.Name
-        End If
 
 
 

@@ -6,6 +6,12 @@
 
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+<style>	kcard-body > img {
+  max-height: 100%;
+  max-width: 100%;
+}
+</style>
+	
 		<asp:LoginView ID="LoginView1" runat="server">
 			<AnonymousTemplate>
 				<div class="jumbotron">
@@ -59,7 +65,7 @@
 				</div>
             </AnonymousTemplate>
  
-			<LoggedInTemplate >
+			<LoggedInTemplate>
                  <style>
 						#test {
 							width:100%;
@@ -130,22 +136,26 @@
 						<br />
 						<h5>Select a Project</h5>
 						<div class="card-deck" >
-						<asp:Repeater ID="Repeater1" runat="server" DataSourceID="odsProjects" >
-						<ItemTemplate>
-							<div class="card mb-3" style="width: 18rem;">
-							  <asp:image  ID="imgProj" runat="server" style="clip:rect(0px,100px,200px,0px);"  cssclass="card-img-top img-thumbnail" src='<%#Eval("imageURL") %>' AlternateText='<%#Eval("ProjectTYpeName") %>' />
-							  <div class="card-body">
-								<h5 class="card-title"><a href="frmProjects.aspx?ProjectID=<%#Eval("ID") %>"><%#Eval("Name") %></a></h5>
-								<p class="card-text"> <%#Eval("Description") %>
-								<br /><%#Eval("ProjectTYpeName") %></p>
-							  </div>
-							</div>
-						</ItemTemplate>
-					</asp:Repeater>
-				</div>
-  			</div>
-  
-				
+							<asp:Repeater ID="Repeater1" runat="server" DataSourceID="odsProjects" >
+								<ItemTemplate>
+									<div class="card mb-3" style="width: 18rem;">
+									  <asp:image  ID="imgProj" runat="server" style="height:400px;clip-path:inset(0px,100px,200px,0px,round,50px);"  cssclass="card-img-top kcard-body img-thumbnail" src='<%#Eval("imageURL") %>' AlternateText='<%#Eval("ProjectTYpeName") %>' onError="this.onerror=null;this.src='/images/newconstruction.png';" />
+									  <div class="card-body">
+										<h5 class="card-title"><a href="frmProjects.aspx?ProjectID=<%#Eval("ID") %>"><%#Eval("Name") %></a></h5>
+										<p class="card-text"> <%#Eval("Description") %>
+										<br /><%#Eval("ProjectTYpeName") %></p>
+									  </div>
+									</div>
+								
+									<!-- <div>
+  										<asp:image  ID="imgPro3j" runat="server" style="height:100px;clip:rect(0px,100px,200px,0px);"  cssclass="card-img-top kcard-body img-thumbnail" src='<%#Eval("imageURL") %>' AlternateText='<%#Eval("ProjectTYpeName") %>' onError="this.onerror=null;this.src='/images/newconstruction.png';" />
+									</div> -->
+
+								</ItemTemplate>
+							</asp:Repeater>
+						</div>
+  					</div>
+
 
             <asp:ObjectDataSource ID="odsProjects" runat="server" 
 				SelectMethod="LoadProjects" TypeName="Kolassa.DesignCentre.Data.clsSelectDataLoader" 

@@ -66,7 +66,7 @@ Public Class clsDataLoader
 
         '*** Debugging Start
         Dim dt As DataTable = ds.Tables.Item("Reports")
-        Dim rowCustomer As DataRow
+        'Dim rowCustomer As DataRow
 
 
         '*** Debugging End
@@ -226,7 +226,7 @@ Public Class clsDataLoader
             lsSQL = Replace(lsSQL, "@PROJECTID@", "")
         End If
         lsSQL = Replace(lsSQL, "SearchText", " " + lsSearchClause + " ")
-
+        If Right(lsSQL, 4).Trim.ToUpper = "AND" Then lsSQL = Left(lsSQL, lsSQL.Length - 4)
 
         '*** Load a data set.
 
@@ -757,6 +757,7 @@ LoadChildrenError:
             fGetDataset = New DataSet
             Exit Function
         End If
+
         Dim ds As DataSet = New DataSet
         If lsCn = "" Then
             lsCn = mscnStr
@@ -784,6 +785,10 @@ LoadChildrenError:
                     msErrorMsg = e.Message
                     ds = New DataSet
                     Dim dt As New DataTable("Empty")
+                    Dim dc As New DataColumn("Name", GetType(String))
+
+                    dt.Columns.Add(dc)
+                    dt.Rows.Add(fTakeOutQuotes(msErrorMsg))
                     ds.Tables.Add(dt)
                 End Try
                 cns.Close()

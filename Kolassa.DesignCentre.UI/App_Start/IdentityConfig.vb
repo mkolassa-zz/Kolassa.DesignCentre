@@ -5,7 +5,7 @@ Imports Microsoft.AspNet.Identity.EntityFramework
 Imports Microsoft.AspNet.Identity.Owin
 Imports Microsoft.Owin
 Imports Microsoft.Owin.Security
-Imports SendGrid
+'Imports SendGrid SAYS UNNECESSARY
 Imports System.Net.Mail
 Imports System.Net
 Imports System.Configuration
@@ -24,7 +24,7 @@ Public Class EmailService
     '*** Use NuGet to install SendGrid (Basic C# client lib) 
     Private Async Function configSendGridasync(message As IdentityMessage) As Task
         'SendEmail()
-        Dim msg As String
+        Dim msg As String = ""
         ' Dim myMessage As SendGrid.SendGridMessage
         ' myMessage = New SendGrid.SendGridMessage()
         Try

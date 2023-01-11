@@ -290,9 +290,28 @@ Err_txtPhase2CompleteDate_DblClick:
 
 	End Sub
 
+    Private Sub cmdAssign_Click(sender As Object, e As EventArgs) Handles cmdAssign.Click
+        Dim lsID As String = lblQuoteID.Text 'Session("QuoteID")
+        Dim q As New clsQuote(lsID)
+
+        Dim lsAssignedToID As String = ""
+		For Each key As String In Request.Form.AllKeys
+			If (key.Contains("cboAssignedTo")) Then
+				lsAssignedToID = Request.Form(key)
+				Exit For
+			End If
+		Next
+        Dim lsURL As String = Request.Url.ToString & "?QuoteID=" + lsID
+        If lsID.Length = 36 And lsAssignedToID.Length = 36 Then
+            q.AssignQuoteToSales(lsID, lsAssignedToID, lsURL)
+            litName.Text = q.AssignedToEmail
+        End If
+
+    End Sub
 
 
-	Sub sDisplayListbox(ByVal lst As ListBox)
+
+    Sub sDisplayListbox(ByVal lst As ListBox)
 		'*** This outputs the values of a listbox for debugging
 		Dim liCounter As Integer = 0
 		Dim lsMsg As String = ""
@@ -304,11 +323,11 @@ Err_txtPhase2CompleteDate_DblClick:
 
 	End Sub
 
-	Private Sub Form_Load()
-		checkQuoteID()
-		LoadQUote()
-	End Sub
-	Private Sub LoadQUote()
+    Private Sub Form_Load()
+        checkQuoteID()
+        LoadQUote()
+    End Sub
+    Private Sub LoadQUote()
 		checkQuoteID()
 		Dim cmbStatus As DropDownList
 		If rblPhase.SelectedValue = 1 Then
@@ -377,13 +396,12 @@ Err_txtPhase2CompleteDate_DblClick:
 		If lsQuoteID = "" Then
 			Exit Sub
 		End If
-		If Session("QuoteID") = lsQuoteID Then
-			Exit Sub
+        fvQuote.Caption = lsQuoteID ' 2023-01
+
+        If Session("QuoteID") = lsQuoteID Then
+            Exit Sub
 		End If
 		Session("QuoteID") = lsQuoteID
-
-
-
 	End Sub
 	'*******************************************************
 	'*** END OF LEGACY CODE Already converted
@@ -958,8 +976,23 @@ ph1Status_Error:
 	End Sub
 
 	Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-		loadPage()
-	End Sub
+        If Not Page.IsPostBack Then
+            Dim li As ListItem
+            cboAssignedTo.Items.Clear()
+            cboAssignedTo.Items.Add("-- Assign Sales Consultant --")
+            Dim c As New clsSelectDataLoader
+            Dim ds As DataSet = c.LoadAppUsers
+            For Each dt As DataTable In ds.Tables
+                For Each dr As DataRow In dt.Rows
+                    li = New ListItem
+                    li.Value = dr("ID").ToString
+                    li.Text = dr("userFriendlyName") & " - " & dr("email")
+                    cboAssignedTo.Items.Add(li)
+                Next
+            Next
+        End If
+        loadPage()
+    End Sub
 	Function getQuoteID() As String
 		Return String.Format("QuoteID={0}", Eval("QuoteID"))
 	End Function
@@ -975,7 +1008,9 @@ ph1Status_Error:
 
         Dim dc As New GlobalFunctionsDC
         If dc.isGUIDString(lsQuoteID) Then Session("QuoteID") = lsQuoteID
+
         Dim q As New clsQuote
+
 
         Session("QuoteString") = Replace(q.ToHTML, """", "'")
         Session("UnitType") = q.UnitTypeName
@@ -1211,9 +1246,16 @@ ph1Status_Error:
 		sCheckPhaseComplete()
 		If txtSelectedItemID Is Nothing Then Exit Sub
 		If Session("NodeID") = 0 Then Exit Sub
-		loadPage() 'Stop
-		txtPhaseID.Attributes.Add("readonly", "readonly")
-		txtPhaseName.Attributes.Add("readonly", "readonly")
+        loadPage() 'Stop
+		If Not Page.IsPostBack Then
+			lblQuoteID.Text = Session("QuoteID")
+		End If
+
+        Dim q As New clsQuote(Session("QuoteID"))
+        cboAssignedTo.SelectedValue = q.AssignedTo
+        litName.Text = q.AssignedToEmail
+        txtPhaseID.Attributes.Add("readonly", "readonly")
+        txtPhaseName.Attributes.Add("readonly", "readonly")
 
 		ctrlCommunications.DataBind()
 		CtrlAdjustments.DataBind()
@@ -1247,15 +1289,11 @@ ph1Status_Error:
 
 			rblPhase.Items.Clear()
 			For Each row In c.GetRecords("Name", "1", Session("Project"))
+                l = New ListItem
+                l.Value = row.Code
+                l.Text = " " & row.Name
 
-				l = New ListItem
-				'l.Attributes.Add("class", "form-check-input form-check-label")
-
-				l.Value = row.Code
-				l.Text = " " & row.Name
-
-
-				For Each rowp In cpc
+                For Each rowp In cpc
 					If rowp.Code = row.Code Then
 						If Trim(rowp.PhaseStatus) = "Completed" Or Trim(rowp.PhaseStatus) = "Closed" Then
 							l.Enabled = False
@@ -1350,7 +1388,6 @@ ph1Status_Error:
 
 			If IsDate(sComplete) And sStatus = "Completed" Then
 				p.PhaseCompleteDate = CDate(sComplete)
-
 			End If
 			p.Active = True
 			p.Level = "Quote"
@@ -1359,15 +1396,34 @@ ph1Status_Error:
 			grdPhases.DataBind()
 			upPhase.DataBind()
 			grdPhases.DataBind()
-
-		Else
+            CreateTask(lblQuoteID.Text, cboAssignedTo.SelectedValue, "frmQuote?ID=" & lblQuoteID.Text, " Phase Update for Phase: " & txtPhaseName.Text &
+                " Status: " & ddlPhaseStatus.Text)
+        Else
 			lsMsg = ConvertDataTableToHTML(ds.Tables(0))
 			ScriptManager.RegisterClientScriptBlock(Me, Me.GetType(), "Required" & Guid.NewGuid.ToString, "ShowMessage('" & lsMsg & "','Error','Data NOT Valid!',);", True)
 
 		End If
 	End Sub
+    Function CreateTask(lsID As String, lsAssignedToID As String, lsURL As String _
+                        , lsDescription As String) As Boolean
 
-	Protected Sub upPhase_DataBinding(sender As Object, e As EventArgs) Handles upPhase.DataBinding
+        If lsID.Length = 36 And lsAssignedToID.Length = 36 Then
+            Dim q As New clsQuote(lsID)
+            Dim AssignTask As New clstask
+            AssignTask.ProjectID = q.ProjectID
+            AssignTask.NodeID = Session("NodeID")
+            AssignTask.ObjectID = lblQuoteID.Text
+            AssignTask.Code = q.Code
+            AssignTask.Description = q.UnitCode + ": " + q.UnitName & lsDescription
+            AssignTask.Name = "Phase Update " & txtPhaseName.Text
+            AssignTask.AssignedToEmail = q.AssignedToEmail
+            AssignTask.AssignedTo = q.AssignedTo
+            AssignTask.AppUrl = lsURL
+            AssignTask.Insert()
+        End If
+        Return True
+    End Function
+    Protected Sub upPhase_DataBinding(sender As Object, e As EventArgs) Handles upPhase.DataBinding
 		'Stop
 	End Sub
 
@@ -1563,33 +1619,33 @@ Err_cmdAutoPick_Click:
     Protected Sub lstRooms_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lstRooms.SelectedIndexChanged
 
     End Sub
-    Public Function ConvertDataTableToHTML(dt As DataTable) As String
-        Dim i, j As Integer
-        '  Dim lsColName As String
-        Dim html As String = "<table>"
-        '//add header row
+	Public Function ConvertDataTableToHTML(dt As DataTable) As String
+		Dim i, j As Integer
+		'  Dim lsColName As String
+		Dim html As String = "<table>"
+		'//add header row
 
-        '       For i = 0 To dt.Columns.Count - 1
-        'lsColName = dt.Columns(i).ColumnName
+		'       For i = 0 To dt.Columns.Count - 1
+		'lsColName = dt.Columns(i).ColumnName
 
-        'html = html & "<th style='display:None;'>"
-        'html = html & dt.Columns(i).ColumnName
+		'html = html & "<th style='display:None;'>"
+		'html = html & dt.Columns(i).ColumnName
 
-        'html = html & "</th>"
-        'Next
-        '//add rows
+		'html = html & "</th>"
+		'Next
+		'//add rows
 
-        For i = 0 To dt.Rows.Count - 1
-            html = html & "<tr>"
-            For j = 0 To dt.Columns.Count - 1
-                html = html & "<td>" + dt.Rows(i)(j).ToString() + "</td>"
-            Next
-            html = html & "</tr>"
-        Next
+		For i = 0 To dt.Rows.Count - 1
+			html = html & "<tr>"
+			For j = 0 To dt.Columns.Count - 1
+				html = html & "<td>" + dt.Rows(i)(j).ToString() + "</td>"
+			Next
+			html = html & "</tr>"
+		Next
 
-        html = html & "</table>"
-        Return html
-    End Function
+		html = html & "</table>"
+		Return html
+	End Function
 
 
 End Class
