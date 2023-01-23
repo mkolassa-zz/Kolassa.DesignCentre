@@ -647,7 +647,12 @@ Public Class ReportResults
         Dim lsView As String = GetViewID.ToString
         If lsView = "00000000-0000-0000-0000-000000000000" Then lsView = ddlView.SelectedValue
         Dim c As New clsDataLoader
-
+        If lsView = "" Then
+            Dim ds As New DataSet
+            Dim dt As New DataTable
+            ds.Tables.Add(dt)
+            Return ds
+        End If
         GetColumns = c.LoadReportViewColumns(lsView)
 
     End Function

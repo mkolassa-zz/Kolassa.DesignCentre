@@ -1,6 +1,8 @@
-﻿<%@ Page Language="vb" EnableEventValidation="false" AutoEventWireup="false" MasterPageFile="~/Site.Master" CodeBehind="frmUnitRooms.aspx.vb" Inherits="Kolassa.DesignCentre.UI.frmUnitRooms" %>
+﻿<%@ Page Language="vb" EnableEventValidation="false" AutoEventWireup="false" MasterPageFile="~/Site.Master" CodeBehind="frmUpgradeItems.aspx.vb" Inherits="Kolassa.DesignCentre.UI.frmUpgradeItems" %>
 <%@ Register Assembly="Kolassa.DesignCenter.ReportManager" Namespace="Kolassa.DesignCenter.ReportManager" TagPrefix="cc1" %>
-<%@ Register Src="~/Controls/ctrlIncompatibilities.ascx" TagPrefix="uc1" TagName="ctrlIncompatibilities" %>
+<%@ Register Src="~/Controls/ctrlUpgradeCategories.ascx" TagPrefix="uc1" TagName="ctrlUpgradeCategories" %>
+<%@ Register Src="~/Controls/ctrlNotifications.ascx" TagPrefix="uc1" TagName="ctrlNotifications" %>
+
 
 
 <asp:Content ID="Content1" runat="server" ContentPlaceHolderID="MainContent" >
@@ -58,33 +60,23 @@
 
    </style>
 
- <div class="container">
+  <div class="container">
 
-    <h2>Unit Types Room Configuration Form</h2>
-         <h3>Click 'Load Grid' to retreive all Unit Types and Rooms for this project.  Check items for which a room should be associated.  Disabled items have Selected Upgrade Items already Selected.</h3>
-    <asp:UpdatePanel id="upChecks" runat="server" ChildrenAsTriggers="true">
-        <ContentTemplate>
-            <asp:Button CssClass="btn btn-primary" ID="cmdLoad" runat="server" Text="Load Grid" />
-            <!-- button class="btn btn-primary" onclick="fbind();">Bind</!-->
-            <asp:GridView ID="gvCrosstab" runat="server"> </asp:GridView>
-        </ContentTemplate>
-        <Triggers>
+  <h2>Upgrade Items </h2>
 
-        </Triggers>
-    </asp:UpdatePanel>
-    <asp:UpdateProgress ID="upProgress" runat="server">
-        <ProgressTemplate>
-            <img src="images/loadingH.gif" /><br />Loading . . .
-        </ProgressTemplate>
-    </asp:UpdateProgress>
+
+ 
 </div>
 
 <script>
-    $(document).ready(function(){
+$(document).ready(function(){
+  $("#myBtn").click(function(){
+    $("#myModal").modal();
+  });
 
-    });
 
-    function fchange(tthis) {
+});
+     function fchange(tthis) {
        //  alert('mike: ' + tthis.dataset.id);
          var cls = tthis.closest('span');
          var lsid = cls.dataset.id;
@@ -96,7 +88,7 @@
          var datas = '{"ID": "'+lsid+'", "lsRoomID": "'+lsrid+'", "lsUnitTypeID": "'+lsuid+'", "lsActive": "'+lsactive+'", "lsproject": "'+lsproject+'", "lsnode": "'+lsnode+'"}'
         $.ajax({
             type: "POST",
-            url: "dcConfigure.asmx/fchange",
+            url: "dcwebservices.asmx/fchange",
             data: datas,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -108,6 +100,9 @@
             }
         });
     };
+    
 </script>
-   
+    <uc1:ctrlUpgradeCategories runat="server" id="ucCategories" />
+    <asp:Button ID="cmdGetUpgradeCategoryData" runat="server" Text="Get Category Data" CssClass="btn btn-danger" />
+    <asp:Literal ID ="litMsg" runat="server" />
 </asp:Content>

@@ -18,11 +18,11 @@ Public Class EmailService
     '  Return Task.FromResult(0)
     ' End Function
     Public Async Function SendAsync(message As IdentityMessage) As Task Implements IIdentityMessageService.SendAsync
-        Await configSendGridasync(message)
+        Await configSendGridasync(message) ' Fixes 
     End Function
 
     '*** Use NuGet to install SendGrid (Basic C# client lib) 
-    Private Async Function configSendGridasync(message As IdentityMessage) As Task
+    Private Function configSendGridasync(message As IdentityMessage) As Task '*** Used tobe async
         'SendEmail()
         Dim msg As String = ""
         ' Dim myMessage As SendGrid.SendGridMessage
@@ -54,7 +54,7 @@ Public Class EmailService
             msg = msg & "!"
         End Try
         msg = msg & "!"
-        Exit Function
+
 
         '  Dim myMessage As sendgridmessage = New SendGridMessage()
         '   myMessage.AddTo(message.Destination)
@@ -78,7 +78,10 @@ Public Class EmailService
         ' Trace.TraceError("Failed to create Web transport.")
         'Await Task.FromResult(0)
         ' End If
+        Return New Task(New Action(AddressOf Test))
     End Function
+    Sub Test()
+    End Sub
     Sub SendEmail()
         Dim lsmsg As String
         ServicePointManager.SecurityProtocol = DirectCast(3072, SecurityProtocolType)
@@ -129,27 +132,27 @@ Public Class ApplicationUserManager
         Dim manager = New ApplicationUserManager(New UserStore(Of ApplicationUser)(context.[Get](Of ApplicationDbContext)()))
         ' Configure validation logic for usernames
         manager.UserValidator = New UserValidator(Of ApplicationUser)(manager) With {
-          .AllowOnlyAlphanumericUserNames = False,
-          .RequireUniqueEmail = True
-        }
+        .AllowOnlyAlphanumericUserNames = False,
+        .RequireUniqueEmail = True
+                }
 
         ' Configure validation logic for passwords
         manager.PasswordValidator = New PasswordValidator() With {
-          .RequiredLength = 6,
-          .RequireNonLetterOrDigit = True,
-          .RequireDigit = True,
-          .RequireLowercase = True,
-          .RequireUppercase = True
-        }
+        .RequiredLength = 6,
+        .RequireNonLetterOrDigit = True,
+        .RequireDigit = True,
+        .RequireLowercase = True,
+        .RequireUppercase = True
+                }
         ' Register two factor authentication providers. This application uses Phone and Emails as a step of receiving a code for verifying the user. 
         ' You can write your own provider and plug in here.
         manager.RegisterTwoFactorProvider("Phone Code", New PhoneNumberTokenProvider(Of ApplicationUser)() With {
-          .MessageFormat = "Your security code is {0}"
-        })
+        .MessageFormat = "Your security code is {0}"
+                })
         manager.RegisterTwoFactorProvider("Email Code", New EmailTokenProvider(Of ApplicationUser)() With {
-          .Subject = "Security Code",
-          .BodyFormat = "Your security code is {0}"
-        })
+              .Subject = "Security Code",
+        .BodyFormat = "Your security code is {0}"
+                })
 
         ' Configure user lockout defaults
         manager.UserLockoutEnabledByDefault = True

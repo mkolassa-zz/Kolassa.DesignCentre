@@ -976,6 +976,7 @@ ph1Status_Error:
 	End Sub
 
 	Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        '     Exit Sub
         If Not Page.IsPostBack Then
             Dim li As ListItem
             cboAssignedTo.Items.Clear()
@@ -997,6 +998,24 @@ ph1Status_Error:
 		Return String.Format("QuoteID={0}", Eval("QuoteID"))
 	End Function
     Private Sub loadPage()
+        '   Exit Sub
+        '*** Make Sure we have the propert Quote ID
+        '*** Is there an ID in the URL? IF so, Use that
+        Dim lsQuoteID As String = Request.QueryString("QuoteID")
+        '*** If So, Set the Session Variable 'Might want to not use Session, but . . . 
+        Dim dc As New GlobalFunctionsDC
+        If dc.isGUIDString(lsQuoteID) Then Session("QuoteID") = lsQuoteID
+        '*** if Not, check the page.  See if we have been working on a quote already
+        If Not lblQuoteID.Text Is Nothing Then
+            If lblQuoteID.Text.Length = 36 Then
+                lsQuoteID = lblQuoteID.Text
+            Else
+                lsQuoteID = Request.QueryString("QuoteID")
+            End If
+        End If
+        '*** Finally, Try the Session Variable
+        If lsQuoteID Is Nothing Then lsQuoteID = Session("QuoteID")
+
         If txtSelectedItemID Is Nothing Then
             Exit Sub
         End If
@@ -1004,21 +1023,18 @@ ph1Status_Error:
         txtItemText.Attributes.Add("readonly", "readonly")
         txtItemPrice.Attributes.Add("readonly", "readonly")
 
-        Dim lsQuoteID As String = Request.QueryString("QuoteID")
-
-        Dim dc As New GlobalFunctionsDC
-        If dc.isGUIDString(lsQuoteID) Then Session("QuoteID") = lsQuoteID
-
-        Dim q As New clsQuote
-
-
+        Dim q As New clsQuote(lsQuoteID)
+        If q.ID Is Nothing Then
+            'Exit Sub '*** Took this out to hide the Quote Panel 2023-01
+        End If
         Session("QuoteString") = Replace(q.ToHTML, """", "'")
         Session("UnitType") = q.UnitTypeName
         Session("UnitTypeID") = q.UnitTypeID
+        txtUnitTypeID.Text = q.UnitTypeID
         Dim l As Literal = Master.FindControl("LitPageInfo")
         If Not l Is Nothing And Not Session("QuoteID") Is Nothing Then l.Text = "QuoteID: " & Session("QuoteID")
         litID.Text = Session("QuoteID")
-		If Session("NodeID") Is Nothing Then Session("NodeID") = 0
+        If Session("NodeID") Is Nothing Then Session("NodeID") = 0
         If Session("Project") Is Nothing Then
             pnlButtons.Visible = False
         Else
@@ -1048,15 +1064,15 @@ ph1Status_Error:
             End If
             Dim b As LinkButton
             b = pnlQuote.FindControl("cmdCustomerReceipt")
-			If Not b Is Nothing Then
-				b.Attributes.Add("OnClick", "javascript:w= window.open('frmReport.aspx?ReportName=rptQuoteReceipt&QuoteID=" & Session("QuoteID") & "&Phase=" & lsPhase & "','mywin','left=20,top=20,width=1000,height=1000,toolbar=0,resizable=0');")
-			End If
-			b = pnlQuote.FindControl("cmdVendorInstallationReport")
-			If Not b Is Nothing Then
-				b.Attributes.Add("OnClick", "javascript:w= window.open('frmReport.aspx?ReportName=rptVendorInstall&QuoteID=" & Session("QuoteID") & "&Phase=" & lsPhase & "','mywin','left=20,top=20,width=1000,height=1000,toolbar=0,resizable=0');")
-			End If
-			'Session("QuoteID") = 1
-		End If
+            If Not b Is Nothing Then
+                b.Attributes.Add("OnClick", "javascript:w= window.open('frmReport.aspx?ReportName=rptQuoteReceipt&QuoteID=" & Session("QuoteID") & "&Phase=" & lsPhase & "','mywin','left=20,top=20,width=1000,height=1000,toolbar=0,resizable=0');")
+            End If
+            b = pnlQuote.FindControl("cmdVendorInstallationReport")
+            If Not b Is Nothing Then
+                b.Attributes.Add("OnClick", "javascript:w= window.open('frmReport.aspx?ReportName=rptVendorInstall&QuoteID=" & Session("QuoteID") & "&Phase=" & lsPhase & "','mywin','left=20,top=20,width=1000,height=1000,toolbar=0,resizable=0');")
+            End If
+            'Session("QuoteID") = 1
+        End If
 
         If rblPhase.SelectedIndex < 0 Then
             rblPhase.SelectedIndex = 0
@@ -1243,8 +1259,9 @@ ph1Status_Error:
 	End Sub
 
 	Private Sub frmQuote_LoadComplete(sender As Object, e As EventArgs) Handles Me.LoadComplete
-		sCheckPhaseComplete()
-		If txtSelectedItemID Is Nothing Then Exit Sub
+        '   Exit Sub
+        sCheckPhaseComplete()
+        If txtSelectedItemID Is Nothing Then Exit Sub
 		If Session("NodeID") = 0 Then Exit Sub
         loadPage() 'Stop
 		If Not Page.IsPostBack Then
@@ -1270,8 +1287,9 @@ ph1Status_Error:
 	End Sub
 
 	Protected Sub rblPhase_Init(sender As Object, e As EventArgs) Handles rblPhase.Init
-		sSetPhase
-	End Sub
+        ' Exit Sub
+        sSetPhase()
+    End Sub
 	Protected Sub sSetPhase()
 		Dim c As New clsPhases
 		Dim cp As New clsPhases
@@ -1432,9 +1450,10 @@ ph1Status_Error:
 	End Sub
 
 	Protected Sub lstStyle_ItemCommand1(sender As Object, e As ListViewCommandEventArgs) Handles lstStyle.ItemCommand
-		'Stop
-		'System.Threading.Thread.Sleep(1000)
-		Dim p As Panel = pnlSelectedUpgrades
+        Exit Sub
+        'Stop
+        'System.Threading.Thread.Sleep(1000)
+        Dim p As Panel = pnlSelectedUpgrades
 		'Dim lbl As Label = p.FindControl("lblTIme")
 		'lbl.Text = Now.ToLongDateString
 		'	Exit Sub
@@ -1456,8 +1475,9 @@ ph1Status_Error:
 	End Sub
 
 	Private Sub frmQuote_Init(sender As Object, e As EventArgs) Handles Me.Init
-		Dim lsQuoteID As String = Request.QueryString("QuoteID")
-		checkQuoteID()
+        '        Exit Sub
+        Dim lsQuoteID As String = Request.QueryString("QuoteID")
+        checkQuoteID()
 		Dim dc As New GlobalFunctionsDC
 		If dc.isGUIDString(lsQuoteID) Then Session("QuoteID") = lsQuoteID
 

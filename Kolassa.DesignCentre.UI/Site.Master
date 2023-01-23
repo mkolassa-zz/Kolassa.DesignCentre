@@ -331,7 +331,7 @@
                                 <a runat="server"  href="~/Configure/frmUpgradecategoriesmap" class="list-group-item list-group-item-action bg-dark text-white">
                     <span class="menu-collapsed">Upgrade Category Map</span>
                 </a>
-                <a runat="server"  href="~/frmbase?objType=UPGRADEOPTIONS" class="list-group-item list-group-item-action bg-dark text-white">
+                <a runat="server"  href="~/frmUpgradeitems" class="list-group-item list-group-item-action bg-dark text-white">
                     <span class="menu-collapsed">Upgrade Options</span>
                 </a>
                 <a runat="server"  href="~/frmbase?objType=INCOMPATIBILITIES" class="list-group-item list-group-item-action bg-dark text-white">

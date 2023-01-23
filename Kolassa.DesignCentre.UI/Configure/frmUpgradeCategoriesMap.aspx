@@ -61,9 +61,11 @@
  <div class="container">
 
     <h2>Unit Types Room Configuration Form</h2>
+     <h3>Click 'Load Grid' to retreive all Unit Types and Rooms for this project.  Check items for which a room should be associated.  Disabled items have Selected Upgrade Items already Selected.</h3>
     <asp:UpdatePanel id="upChecks" runat="server" ChildrenAsTriggers="true">
         <ContentTemplate>
-            <asp:Button CssClass="btn btn-primary" ID="cmdLoad" runat="server" Text="Load Grid" />
+            <h3>Select the items from each group for which you want to Associate entities.  Then Click Submit </h3>
+            <asp:Button CssClass="btn btn-primary d-none" ID="cmdLoad" runat="server" Text="Load Grid" />
            
         </ContentTemplate>
         <Triggers>
@@ -74,13 +76,13 @@
             <asp:ListBox ID="lstCateories" style="height:500px; resize:both;" runat="server" class="card list-group" SelectionMode="Multiple" >  
                
             </asp:ListBox>  
-        <div class="btn-group-vertical card-columns ">
+        <div class="btn-group-vertical card-columns d-none">
             <asp:button ID="ImageButton1" runat="server" class="btn btn-secondary" text=">"  />  
             <asp:button ID="ImageButton2" runat="server" class="btn btn-secondary" text="<"  /> 
             <asp:Button ID="ImageButton3" runat="server" class="btn btn-secondary" text="> >" />  
             <asp:Button ID="ImageButton4" runat="server" class="btn btn-secondary" Text="<<" />  
         </div>                
-        <asp:ListBox ID="lstAdded" style="height:500px; resize:both;" runat="server" class="card" SelectionMode="Multiple"></asp:ListBox>  
+        <asp:ListBox ID="lstAdded" style="height:500px; resize:both;" runat="server" class="card d-none" SelectionMode="Multiple"></asp:ListBox>  
         <asp:ListBox ID="lstPhase" style="height:500px; resize:both;" runat="server" class="card" SelectionMode="Multiple"></asp:ListBox>  
         <asp:ListBox ID="LstUnitType" style="height:500px; resize:both;" runat="server" class="card" SelectionMode="Multiple"></asp:ListBox>  
         <asp:ListBox ID="lstRoom" style="height:500px; resize:both; top: 0px; left: 0px;" runat="server" class="card" SelectionMode="Multiple"></asp:ListBox>  

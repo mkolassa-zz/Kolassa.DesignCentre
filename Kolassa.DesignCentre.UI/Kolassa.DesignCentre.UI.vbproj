@@ -342,6 +342,7 @@
     <Content Include="Content\scrodal.css" />
     <Content Include="Content\sidebar.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="Controls\ctrlUpgradeCategories.ascx" />
     <Content Include="Controls\ctrlNotifications.ascx" />
     <Content Include="Controls\ctrlContactEntry.ascx" />
     <Content Include="Controls\ctrlImageLookup.ascx" />
@@ -367,6 +368,7 @@
     <Content Include="fonts\designcenter.svg" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="frmReports.aspx" />
+    <Content Include="frmUpgradeItems.aspx" />
     <Content Include="images\download.png" />
     <Content Include="images\eye.png" />
     <Content Include="images\loadingH.gif" />
@@ -821,6 +823,13 @@
       <DependentUpon>frmUnitRooms.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
+    <Compile Include="Controls\ctrlUpgradeCategories.ascx.designer.vb">
+      <DependentUpon>ctrlUpgradeCategories.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ctrlUpgradeCategories.ascx.vb">
+      <DependentUpon>ctrlUpgradeCategories.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Controls\ctrlNotifications.ascx.designer.vb">
       <DependentUpon>ctrlNotifications.ascx</DependentUpon>
     </Compile>
@@ -890,6 +899,13 @@
     </Compile>
     <Compile Include="frmReports.aspx.vb">
       <DependentUpon>frmReports.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="frmUpgradeItems.aspx.designer.vb">
+      <DependentUpon>frmUpgradeItems.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmUpgradeItems.aspx.vb">
+      <DependentUpon>frmUpgradeItems.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="frmTest.aspx.designer.vb">

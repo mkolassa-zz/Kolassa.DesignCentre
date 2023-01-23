@@ -118,17 +118,27 @@ Public Class dcwebservices
 
         lsValue = ""
         lsWhere = ""
-        ds = c.LoadUpgradeOptionComponents(2, lsUnitType, lsType, lsPhase, lslocation, lsCat, lsLevel,
+        Dim llNodeID As Long = 0 'Session("NodeID")
+        ds = c.LoadUpgradeOptionComponents(llNodeID, lsUnitType, lsType, lsPhase, lslocation, lsCat, lsLevel,
                                            lsDescription, lsModel, lsValue, lsWhere, 1, lsProject)
         Dim dt As DataTable
         dt = ds.Tables(0)
         If lsType <> "phase" Then
-            values.Add(New CascadingDropDownNameValue("(Anything)", "(Anything)"))
+            Dim clsc As New clsCCDNI
+            clsc.value = "(Anything)"
+            clsc.name = "(Anything)"
+            clsc.Description = "(Anything)"
+            values.Add(clsc) 'CascadingDropDownNameValue
         End If
         If dt.Rows.Count = 0 Then
             Else
-                For Each dr As DataRow In dt.Rows
-                values.Add(New CascadingDropDownNameValue(dr(1), dr(0).ToString()))
+            For Each dr As DataRow In dt.Rows
+                Dim ccdni As New clsCCDNI
+                ccdni.value = dr(0).ToString
+                If dr.Table.Columns.Count > 2 Then ccdni.Description = dr(2).ToString
+                ccdni.name = dr(1).ToString
+
+                values.Add(ccdni)
             Next
         End If
         Return values.ToArray()
@@ -136,4 +146,8 @@ Public Class dcwebservices
 End Class
 Public Class newcode
     Public Property Code As String
+End Class
+Public Class clsCCDNI
+    Inherits CascadingDropDownNameValue
+    Public Property Description As String
 End Class

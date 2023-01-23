@@ -118,7 +118,9 @@ Public Class SiteMaster
                     End If
                 End If
                 Dim ltasks As New clsTasks
-                ltasks.GetRecords("", "", "", Session("NodeID"), HttpContext.Current.User.Identity.GetUserId)
+                Dim lsUserID As String = HttpContext.Current.User.Identity.GetUserId
+                Dim liNodeID As Integer = Session("NodeID")
+                ltasks.GetRecords("", "", "", liNodeID, lsUserID)
                 Session("TaskCount") = ltasks.ObjectCount
 
             End If

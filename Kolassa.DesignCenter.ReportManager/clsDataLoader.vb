@@ -746,7 +746,7 @@ LoadChildrenError:
     '     End If
     ' End Function
     Private Function fGetDataset(ByVal lsConnectionType As String, ByVal lsCn As String, ByVal lsSQL As String, ByVal lsTableName As String) As DataSet
-        'debug.print("<clsDataLoader.fGetDataset>" & lsSQL & "</clsDataLoader.fGetDataset>")
+        'Debug.Print("<clsDataLoader.fGetDataset>" & lsSQL & "</clsDataLoader.fGetDataset>")
         msErrorMsg = ""
         If lsSQL.Length > 4 Then
             If Right(Trim(lsSQL), 4).ToUpper = " AND" Then
@@ -923,6 +923,7 @@ LoadChildrenError:
             'response.write("No Project Selectedd")
             Exit Function
         End If
+        If ProjectID Is Nothing Then ProjectID = "00000000-0000-0000-0000-000000000000"
 
         lsSQL = "Select * from tblAutonumber
                  WHERE  NodeID = " & NodeID & " 
@@ -998,8 +999,11 @@ LoadChildrenError:
         lsSQL = "Select ID from " & TableName & " 
                  WHERE  NodeID = " & NodeID & " 
                     and Code = '" & Code & "' 
-                    and ObjectID = '" & ProjectID & "'
                     and Active = 1 "
+        If ProjectID Is Nothing Then
+        Else
+            lsSQL = lsSQL & "   and ObjectID = '" & ProjectID & " '"
+        End If
         If Not ID Is Nothing Then
             If ID.Length = 36 Then lsSQL = lsSQL & " and ID<>'" & ID & "' "
         End If

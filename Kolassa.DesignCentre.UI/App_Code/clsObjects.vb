@@ -617,8 +617,8 @@ Public Class clsRooms
 End Class
 Public Class clsQuote
     Inherits clsBase
-    Public Property ID As String
-    Public NodeID As Long
+    '   Public Property ID As String
+    '   Public NodeID As Long
     Public Property UnitTypeID As String
     Public Property QuoteStatus As String
     Public Property Phase1Status As String
@@ -635,9 +635,9 @@ Public Class clsQuote
     Public Property UnitTypeCode As String
     Public Property UnitTypeName As String
     Public Property UnitTypeDescription As String
-    Public Property Code As String
-    Public Property Name As String
-    Public Property ProjectID As String
+    '  Public Property Code As String
+    '  Public Property Name As String
+    '  Public Property ProjectID As String
     Public Property ProjectName As String
     Public Property ProjectLogoURL As String
     Public Property ProjectDescription As String
@@ -646,7 +646,7 @@ Public Class clsQuote
     Public Property AssignedToEmail As String
     Public Property CustomerName As String
 
-    Public ErrorMessage As String
+    ' Public ErrorMessage As String
     Public Sub New(Optional lsID As String = "11111111-1111-1111-1111-1111222223333")
 		If lsID = "11111111-1111-1111-1111-1111222223333" Then
 			ID = lsID
@@ -1078,7 +1078,7 @@ Public Class clsUpgradeOption
      LeadVendorID As String, CustomerPrice As Double, DeveloperPrice As Double,
      ToVendorPrice As Double, BuildingPhase As Integer, PricingRevNumber As Integer,
      OptionStatus As String, Standard As String, AdditionalFileToPrint1 As String,
-     AdditionalFileToPrint2 As String, lbActive As Boolean, UnitTypeID As String ',ID As String
+     AdditionalFileToPrint2 As String, lbActive As Boolean, UnitTypeID As String, UpgradeCategoryDetailID As String ',ID As String
     Public Overrides Sub processFormValues()
         Dim lsString As String = ""
         For Each kvp As KeyValuePair(Of String, String) In FormValue
@@ -1117,7 +1117,8 @@ Public Class clsUpgradeOption
                     Standard = kvp.Value
                 Case "UNITTYPEID".ToUpper
                     UnitTypeID = kvp.Value
-
+                Case "UPGRADECATEGORYDETAILID".ToUpper
+                    UpgradeCategoryDetailID = kvp.Value
 
                 Case "NAME"
                     Name = kvp.Value
@@ -1175,6 +1176,7 @@ Public Class clsUpgradeOption
         If UnitType = "" Then ErrorMessage = ErrorMessage & "Unit Type cannot be empty<br />"
         If Location = "" Then ErrorMessage = ErrorMessage & "Location cannot be empty<br/>"
         If UpgradeCategory = "" Then ErrorMessage = ErrorMessage & "Category cannot be empty<br/>"
+        If UpgradeCategoryDetailID = "" Then ErrorMessage = ErrorMessage & "Category Detail ID cannot be empty<br/>"
         If UpgradeLevel = "" Then ErrorMessage = ErrorMessage & "Level cannot be empty<br/>"
         If Description = "" Then ErrorMessage = ErrorMessage & "Description cannot be empty<br/>"
         If ModelOrStyle = "" Then ErrorMessage = ErrorMessage & "Model cannot be empty<br/>"
@@ -1184,9 +1186,9 @@ Public Class clsUpgradeOption
         Else
             If LeadVendorID.Length <> 36 Then ErrorMessage = ErrorMessage & "Lead Vendor cannot be empty<br/>"
         End If
-        If CustomerPrice = 0 Then ErrorMessage = ErrorMessage & "Customer Price cannot be empty<br/>"
-        If DeveloperPrice = 0 Then ErrorMessage = ErrorMessage & "Developer Price cannot be empty<br/>"
-        If ToVendorPrice = 0 Then ErrorMessage = ErrorMessage & "To Vendor Price cannot be empty<br/>"
+        If Not IsNumeric(CustomerPrice) Then ErrorMessage = ErrorMessage & "Customer Price cannot be empty and must be numeric<br/>"
+        If Not IsNumeric(DeveloperPrice) Then ErrorMessage = ErrorMessage & "Developer Price cannot be empty and must be numeric<br/>"
+        If Not IsNumeric(ToVendorPrice) Then ErrorMessage = ErrorMessage & "To Vendor Price cannot be empty and must be numeric<br/>"
         If BuildingPhase = 0 Then ErrorMessage = ErrorMessage & "Building Phase cannot be empty<br/>"
         If PricingRevNumber = 0 Then ErrorMessage = ErrorMessage & "Pricing Rev Number cannot be empty<br/>"
         If OptionStatus Is Nothing Then
@@ -1216,7 +1218,7 @@ Public Class clsUpgradeOption
                      ToVendorPrice, BuildingPhase, PricingRevNumber,
                      OptionStatus, Standard, AdditionalFileToPrint1,
                      AdditionalFileToPrint2, lbActive, UnitTypeID,
-                     ID, Code, Name)
+                     ID, Code, Name, UpgradeCategoryDetailID)
 
             If lbOK = False Then
 				ErrorMessage = c.ErrorMessage
@@ -1249,7 +1251,7 @@ End Class
 Public Class clsUpgradeOptions
 	Public Property ErrorMessage As String
     Public UnitType As String,
-     Location As String, UpgradeCategory As String, UpgradeLevel As String,
+     Location As String, UpgradeCategory As String, UpgradeCategoryDetailID As String, UpgradeLevel As String,
      Description As String, ModelOrStyle As String, Comments As String,
      LeadVendor As String, CustomerPrice As Double, DeveloperPrice As Double,
      ToVendorPrice As Double, BuildingPhase As Integer, PricingRevNumber As Integer,
@@ -1334,9 +1336,14 @@ Public Class clsUpgradeOptions
 		ErrorMessage = c.ErrorMessage
 	End Sub
 	Public Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
-		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+        Dim lbOK As Boolean
+		If UpgradeCategoryDetailID = "" Then
+			ErrorMessage = "No Upgrade Category Detail Record Associated with this item.  It cannot be added."
+			lbOK = False
+            Exit Sub
+        End If
 
-		Dim lbOK As Boolean
+		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 
         lbOK = c.InsertUpgradeOptions(NODEID, UnitType,
      Location, UpgradeCategory, UpgradeLevel,
@@ -1345,7 +1352,7 @@ Public Class clsUpgradeOptions
      ToVendorPrice, BuildingPhase, PricingRevNumber,
      OptionStatus, Standard, AdditionalFileToPrint1,
      AdditionalFileToPrint2, lbActive, UnitTypeID,
-     ID, Code, Name)
+     ID, code, name, upgradecategorydetailid)
         ErrorMessage = c.ErrorMessage
 	End Sub
 	Public Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
@@ -1420,64 +1427,70 @@ Public Class clsPhase
 End Class
 
 Public Class clsPhases
-	Public NODEID As Long
-	Public Active As Boolean
-	Public ID As String
-	Public Sub New()
-		NODEID = System.Web.HttpContext.Current.Session("NodeID")
-	End Sub
+    Public ErrorMessage As String
+    Public NODEID As Long
+    Public Active As Boolean
+    Public ID As String
+    Public Sub New()
+        NODEID = System.Web.HttpContext.Current.Session("NodeID")
+    End Sub
 
-	Function GetRecords(SortExpression As String, SortOrder As String, lsObjectID As String) As IEnumerable(Of clsPhase) 'DataSet
-		Dim ds As New DataSet
-		Dim CustDate As Date
-		Dim cPhase As New clsPhase
-		Dim colName As String
-		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-
-        ds = c.LoadPhases(NODEID, ID, lsObjectID)
-        'Return ds
-        'Exit Function
+    Function GetRecords(SortExpression As String, SortOrder As String, lsObjectID As String) As IEnumerable(Of clsPhase) 'DataSet
+        Dim ds As New DataSet
+        Dim CustDate As Date
+        Dim cPhase As New clsPhase
+        Dim colName As String
+        Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
         Dim result As New List(Of clsPhase)
-		For Each row As DataRow In ds.Tables(0).Rows
-			Dim values As New List(Of Object)
-			cPhase = New clsPhase
-			For Each column As DataColumn In ds.Tables(0).Columns
-				If row.IsNull(column) Then
-					values.Add(Nothing)
-				Else
-					colName = UCase(column.ColumnName)
-					Select Case colName
-						Case "ID" : cPhase.ID = row.Item(column).ToString.Trim
-						Case "NAME" : cPhase.Name = row.Item(column).ToString.Trim
-						Case "OBJECTID" : cPhase.ObjectID = row.Item(column).ToString.Trim
-						Case "CODE" : cPhase.Code = row.Item(column).ToString.Trim
-						Case "DESCRIPTION" : cPhase.Description = row.Item(column).ToString.Trim
-						Case "PHASETARGETDATE"
-							cPhase.PhaseTargetDate = Trim(row.Item(column))
-							cPhase.PhaseTargetDateString = Format(row.Item(column), "yyyy-MM-dd").ToString.Trim
-						Case "PHASESTATUS" : cPhase.PhaseStatus = row.Item(column).ToString.Trim
-						Case "PHASECOMPLETEDATE"
-							cPhase.PhaseCompleteDate = row.Item(column)
-							cPhase.PhaseCompleteDateString = Format(row.Item(column), "yyyy-MM-dd").ToString.Trim
-						Case "NODEID" : cPhase.NodeID = row.Item(column)
-						Case "SORTORDER" : cPhase.SortOrder = row.Item(column)
-						Case "ACTIVE" : cPhase.Active = row.Item(column)
-						Case "CREATEDATE"
-							CustDate = row.Item(column)
-							If CustDate > DateAdd("d", -100000, Now) Then cPhase.CreateDate = CustDate
-						Case "CREATEUSER" : cPhase.CreateUser = row.Item(column).ToString.Trim
-						Case "UPDATEDATE" : cPhase.UpdateDate = row.Item(column)
-							CustDate = row.Item(column)
-							If CustDate > DateAdd("d", -100000, Now) Then cPhase.UpdateDate = CustDate
-						Case "UPDATEUSER" : cPhase.UpdateUser = row.Item(column).ToString.Trim
+        Try
+            ds = c.LoadPhases(NODEID, ID, lsObjectID)
+            'Return ds
+            'Exit Function
 
-					End Select
-				End If
-			Next
-			result.Add(cPhase)
-		Next
-		Return result
-	End Function
+            For Each row As DataRow In ds.Tables(0).Rows
+                Dim values As New List(Of Object)
+                cPhase = New clsPhase
+                For Each column As DataColumn In ds.Tables(0).Columns
+                    If row.IsNull(column) Then
+                        values.Add(Nothing)
+                    Else
+                        colName = UCase(column.ColumnName)
+                        Select Case colName
+                            Case "ID" : cPhase.ID = row.Item(column).ToString.Trim
+                            Case "NAME" : cPhase.Name = row.Item(column).ToString.Trim
+                            Case "OBJECTID" : cPhase.ObjectID = row.Item(column).ToString.Trim
+                            Case "CODE" : cPhase.Code = row.Item(column).ToString.Trim
+                            Case "DESCRIPTION" : cPhase.Description = row.Item(column).ToString.Trim
+                            Case "PHASETARGETDATE"
+                                cPhase.PhaseTargetDate = Trim(row.Item(column))
+                                cPhase.PhaseTargetDateString = Format(row.Item(column), "yyyy-MM-dd").ToString.Trim
+                            Case "PHASESTATUS" : cPhase.PhaseStatus = row.Item(column).ToString.Trim
+                            Case "PHASECOMPLETEDATE"
+                                cPhase.PhaseCompleteDate = row.Item(column)
+                                cPhase.PhaseCompleteDateString = Format(row.Item(column), "yyyy-MM-dd").ToString.Trim
+                            Case "NODEID" : cPhase.NodeID = row.Item(column)
+                            Case "SORTORDER" : cPhase.SortOrder = row.Item(column)
+                            Case "ACTIVE" : cPhase.Active = row.Item(column)
+                            Case "CREATEDATE"
+                                CustDate = row.Item(column)
+                                If CustDate > DateAdd("d", -100000, Now) Then cPhase.CreateDate = CustDate
+                            Case "CREATEUSER" : cPhase.CreateUser = row.Item(column).ToString.Trim
+                            Case "UPDATEDATE" : cPhase.UpdateDate = row.Item(column)
+                                CustDate = row.Item(column)
+                                If CustDate > DateAdd("d", -100000, Now) Then cPhase.UpdateDate = CustDate
+                            Case "UPDATEUSER" : cPhase.UpdateUser = row.Item(column).ToString.Trim
+
+                        End Select
+                    End If
+                Next
+                result.Add(cPhase)
+            Next
+        Catch
+            Dim lsError As String = Err.Description
+            ErrorMessage = lsError
+        End Try
+        Return result
+    End Function
 
 End Class
 '*** UnitProfiles
@@ -1774,7 +1787,12 @@ Public Class clsUpgradeCategoryDetials
         Dim llNodeID As Long = HttpContext.Current.Session("NodeID")
         If llNodeID = 0 Then Return False
 
-        Return c.InsertUpgradeCategoryDetails(llNodeID, Phases, UnitTypes, Rooms, Categories)
+        Insert = c.InsertUpgradeCategoryDetails(llNodeID, Phases, UnitTypes, Rooms, Categories)
+        If c.ErrorMessage = "" Then
+            ErrorMessage = ""
+        Else
+            ErrorMessage = c.ErrorMessage
+        End If
     End Function
 End Class
 Public Class clsIncompatibility
@@ -2569,6 +2587,7 @@ Public Class clsTasks
         'Exit Function
 
         Dim result As New List(Of clstask)
+        If ds Is Nothing Then Return result
         If ds.Tables.Count > 0 Then
             ObjectCount = ds.Tables(0).Rows.Count
             For Each row As DataRow In ds.Tables(0).Rows
@@ -2945,20 +2964,28 @@ Public Class clsDBObject
 		Dim lsMsg As String = ""
         Dim lbOK As Boolean
         If ProjectID Is Nothing Then ProjectID = System.Web.HttpContext.Current.Session("Project")
-		If ProjectID Is Nothing Then
-			ErrorMessage = "Project ID Must Be Supplied"
+        If Current.Request("objType").ToUpper = "PROJECTTYPES" Then
 
-			Exit Sub
-		End If
-		If Name Is Nothing Then
+        Else
+			If ProjectID Is Nothing Then
+				ErrorMessage = "Project ID Must Be Supplied"
+				Exit Sub
+			End If
+            If ProjectID.Length <> 36 Then
+                ErrorMessage = "Name, Code and Project must be supplied"
+                Exit Sub
+            End If
+        End If
+
+        If Name Is Nothing Then
             ErrorMessage = "Name Must be Supplied."
             Exit Sub
         Else
-			If ProjectID.Length <> 36 Or Code.Length = 0 Or Name.Length = 0 Or TableName.Length = 0 Then
-				ErrorMessage = "Name, Code and Project must be supplied"
-				Exit Sub
-			End If
-		End If
+            If Code.Length = 0 Or Name.Length = 0 Or TableName.Length = 0 Then
+                ErrorMessage = "Name, Code and Project must be supplied"
+                Exit Sub
+            End If
+        End If
 		lbOK = c.InsertThings(FormValue, TableName, ID, NodeID, Name, Description, Code, ProjectID)
         If lbOK = False Then
             ErrorMessage = c.msErrorMsg

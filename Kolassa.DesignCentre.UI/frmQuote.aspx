@@ -64,7 +64,7 @@
 	<asp:ObjectDataSource ID="odsCategories" SelectMethod="LoadRoomCategories" runat="server" TypeName="Kolassa.DesignCentre.Data.clsSelectDataLoader">
 		<SelectParameters>
 			<asp:SessionParameter DefaultValue="1" Name="llNodeID" SessionField="NodeID" Type="Int64" />
-			<asp:SessionParameter DefaultValue="00000000-0000-0000-0000-000000000000" Name="lsUnitType" SessionField="UnitTypeID" Type="String" />
+			<asp:ControlParameter ControlID="txtUnitTypeID" DefaultValue="00000000-0000-0000-0000-000000000000" Name="lsUnitType" PropertyName="Text"  Type="String" />
             <asp:SessionParameter DefaultValue="" Name="lsQuoteID" SessionField="QuoteID"  Type="String" />
 			<asp:ControlParameter ControlID="rblPhase" DefaultValue="1" Name="lsPhase" PropertyName="SelectedValue" Type="String" />
 			<asp:ControlParameter ControlID="lstRooms2" DefaultValue="" Name="lsRoom" PropertyName="SelectedValue" Type="String" />
@@ -238,7 +238,9 @@
 				</h4>
 			  </div>
 			  <div id="collapseQuote" class="panel-collapse collapse">
-				<div class="panel-body"><asp:Literal  ID="litID" runat="server" /></div>
+				<div class="panel-body"><asp:Literal  ID="litID" runat="server" />
+					UnitTypeID: <asp:Label runat="server" ID="txtUnitTypeID"  />
+				</div>
 				<div class="panel-footer"><asp:literal runat="server" ID="litPageInfo"></asp:literal></div>
 			  </div>
 			</div>
@@ -277,6 +279,7 @@
 							<ContentTemplate><div class="form-row">
 								<asp:DropDownList ID="cboAssignedTo" runat="server" title="AssignedToTitle" AutoPostBack="false" EnableViewState="true" />
 								<asp:linkButton ID="cmdAssign" CssClass="btn btn-sm btn-primary" Text="Assign" runat="server" />
+								<br>
 								</br><asp:Label ID="lblQuoteID" runat="server" CssClass="d-none"/>
 							</ContentTemplate>
 							<Triggers>

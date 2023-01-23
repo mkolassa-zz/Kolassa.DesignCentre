@@ -209,6 +209,11 @@
         UCD.Rooms = getSelectedValuesFromListBox(lstRoom).ToArray
         UCD.Categories = getSelectedValuesFromListBox(lstCateories).ToArray
         UCD.Insert()
+        If UCD.ErrorMessage = "" Then
+            lblMsg.Text = "Categories Loaded Successfully"
+        Else
+            lblMsg.Text = UCD.ErrorMessage
+        End If
     End Sub
     Public Shared Function getSelectedValuesFromListBox(ByVal objListBox As ListBox) As String()
         Dim listOfIndices As List(Of Integer) = objListBox.GetSelectedIndices().ToList()
