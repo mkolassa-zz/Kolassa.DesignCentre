@@ -368,6 +368,7 @@
     <Content Include="fonts\designcenter.svg" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="frmReports.aspx" />
+    <Content Include="frmTasks.aspx" />
     <Content Include="frmUpgradeItems.aspx" />
     <Content Include="images\download.png" />
     <Content Include="images\eye.png" />
@@ -899,6 +900,13 @@
     </Compile>
     <Compile Include="frmReports.aspx.vb">
       <DependentUpon>frmReports.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="frmTasks.aspx.designer.vb">
+      <DependentUpon>frmTasks.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmTasks.aspx.vb">
+      <DependentUpon>frmTasks.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="frmUpgradeItems.aspx.designer.vb">

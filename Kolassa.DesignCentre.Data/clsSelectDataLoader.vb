@@ -215,11 +215,14 @@ Public Class clsSelectDataLoader
 		End If
         Dim lsUser As String = fGetUser()
 
-        lsSQL = "SELECT TOP 100 *    " & NL &
-                "FROM tblTasks                      " & NL &
-                "WHERE  ( AssignedTo = '" & lsUser & "' AND NodeID=" & llNodeID & " " & IIf(lsWhere.Length > 4, " And " & lsWhere, "") &
-        IIf(lbActive = True, " And Active = 1 ", "") & ")" & NL &
-                    IIf(isGUID(lsID), " AND ID = '" & lsID & "' ", "") & " ORDER BY CREATEDATE DESC"
+        lsSQL = "SELECT TOP 100 p.name as project, u.email, cu.email as createusername, uu.email as updateusername, t.*    " & NL &
+                    "FROM tblTasks    t left join tblprojects p on t.projectid = p.ID    
+						LEFT JOIN aspnetusers u on t.assignedto = u.id" & NL &
+                    "	LEFT JOIN aspnetusers cu on t.Createuser = cu.id" & NL &
+                    "   LEFT JOIN aspnetusers uu on t.UpdateUser  = uu.id" & NL &
+                "WHERE  ( AssignedTo = '" & lsUser & "' AND t.NodeID=" & llNodeID & " " & IIf(lsWhere.Length > 4, " And " & lsWhere, "") &
+        IIf(lbActive = True, " And t.Active = 1 ", "") & ")" & NL &
+                    IIf(isGUID(lsID), " AND t.ID = '" & lsID & "' ", "") & " ORDER BY t.CREATEDATE DESC"
 
         '*** Return a data set.
         Return fGetDataset("SQLConnection", lscnStr, lsSQL, "Tasks")

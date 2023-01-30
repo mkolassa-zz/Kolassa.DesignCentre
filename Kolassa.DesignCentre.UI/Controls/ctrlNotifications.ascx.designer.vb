@@ -41,6 +41,15 @@ Partial Public Class ctrlNotifications
     Protected WithEvents gvData As Global.System.Web.UI.WebControls.GridView
 
     '''<summary>
+    '''repeaterData control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents repeaterData As Global.System.Web.UI.WebControls.Repeater
+
+    '''<summary>
     '''txtComment control.
     '''</summary>
     '''<remarks>
@@ -50,6 +59,15 @@ Partial Public Class ctrlNotifications
     Protected WithEvents txtComment As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''uprg control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uprg As Global.System.Web.UI.UpdateProgress
+
+    '''<summary>
     '''cmdPostComm control.
     '''</summary>
     '''<remarks>
@@ -57,4 +75,13 @@ Partial Public Class ctrlNotifications
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdPostComm As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''cmdBindData control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdBindData As Global.System.Web.UI.WebControls.Button
 End Class

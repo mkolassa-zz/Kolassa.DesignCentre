@@ -139,7 +139,7 @@
 							<asp:Repeater ID="Repeater1" runat="server" DataSourceID="odsProjects" >
 								<ItemTemplate>
 									<div class="card mb-3" style="width: 18rem;">
-									  <asp:image  ID="imgProj" runat="server" style="height:400px;clip-path:inset(0px,100px,200px,0px,round,50px);"  cssclass="card-img-top kcard-body img-thumbnail" src='<%#Eval("imageURL") %>' AlternateText='<%#Eval("ProjectTYpeName") %>' onError="this.onerror=null;this.src='/images/newconstruction.png';" />
+									  <asp:image  ID="imgProj" runat="server"  style="height:400px;clip-path:inset(0px,100px,200px,0px,round,50px);"  cssclass="card-img-top kcard-body img-thumbnail" src='<%#Eval("imageURL") %>' AlternateText='<%#Eval("ProjectTYpeName") %>' title="Project" onError="this.onerror=null;this.src='/images/newconstruction.png';" />
 									  <div class="card-body">
 										<h5 class="card-title"><a href="frmProjects.aspx?ProjectID=<%#Eval("ID") %>"><%#Eval("Name") %></a></h5>
 										<p class="card-text"> <%#Eval("Description") %>

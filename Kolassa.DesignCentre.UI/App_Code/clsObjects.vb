@@ -702,7 +702,7 @@ Public Class clsQuote
             Next
         Next
     End Sub
-    Function AssignQuoteToSales(lsID As String, lsAssignedToID As String, lsURL As String) As Boolean
+    Function AssignQuoteToSales(lsID As String, lsAssignedToID As String, lsURL As String, baseURL As String) As Boolean
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
         If lsID.Length = 36 And lsAssignedToID.Length = 36 Then
             If ProjectID Is Nothing Then ProjectID = Current.Session("Project")
@@ -715,11 +715,12 @@ Public Class clsQuote
             AssignTask.ProjectID = ProjectID
             AssignTask.NodeID = NodeID
             AssignTask.Code = Trim(Code)
-            AssignTask.Description = Trim(UnitCode) + ": " + UnitName
+            AssignTask.Description = "Quote: " & Code & " For Unit: " & Trim(UnitCode) + ": " + UnitName & " has been Assigned to you."
             AssignTask.Name = Name
             AssignTask.AssignedToEmail = AssignedToEmail
             AssignTask.AssignedTo = lsAssignedToID
             AssignTask.AppUrl = lsURL
+            AssignTask.BaseURL = baseURL
             AssignTask.Insert()
         End If
         Return True
@@ -2492,17 +2493,20 @@ End Class
 
 
 '*********************************************************
-'**** Tasks
+'**** Task
 '*********************************************************
 Public Class clstask
     Inherits clsBase
     Public Property AssignedTo As String
     Public Property AssignedToEmail As String
+    Public Property email As String
+    Public Property Project As String
     Public Property Complete As Boolean
     Public Property Read As Boolean
     Public Property Comments As String
     Public Property ObjectID As String
     Public Property AppUrl As String
+    Public Property BaseURL As String
     Public Sub New()
         NodeID = System.Web.HttpContext.Current.Session("NodeID")
         ProjectID = System.Web.HttpContext.Current.Session("Project")
@@ -2510,7 +2514,7 @@ Public Class clstask
     End Sub
     Public Sub SendEmail()
         CreateDate = Now()
-        CreateUser = Current.User.ToString
+        CreateUser = Current.User.Identity.GetUserName
         Dim email As New clsEmail
         email.strMailTo = AssignedToEmail
         Dim lsBody As String
@@ -2528,7 +2532,7 @@ Public Class clstask
             lsBody = lsBody.Replace("CREATEDATE", CreateDate)
             lsBody = lsBody.Replace("CREATEDBY", CreateUser)
 
-            lsBody = lsBody.Replace("PAGEURL", AppUrl)
+            lsBody = lsBody.Replace("PAGEURL", BaseURL & AppUrl)
             email.SendNewCustomerEmail(lsBody, "New Task Notification from DesignCentre")
         Catch e As Exception
             ErrorMessage = e.Message
@@ -2598,7 +2602,10 @@ Public Class clsTasks
                         values.Add(Nothing)
                     Else
                         colName = UCase(column.ColumnName)
-                        Select Case colName
+                        Select Case colName.ToUpper
+                            Case "PROJECT" : cObject.Project = row.Item(column).ToString
+                            Case "DESCRIPTION" : cObject.Description = row.Item(column).ToString
+                            Case "EMAIL" : cObject.AssignedToEmail = row.Item(column).ToString
                             Case "ID" : cObject.ID = row.Item(column).ToString
                             Case "NAME" : cObject.Name = row.Item(column)
                             Case "OBJECTID" : cObject.ObjectID = row.Item(column).ToString
@@ -2606,7 +2613,7 @@ Public Class clsTasks
                             Case "ASSIGNEDTO" : cObject.AssignedTo = row.Item(column).ToString
                             Case "READ", "TASKREAD" : cObject.Read = row.Item(column)
                             Case "COMPLETED", "TASKCOMPLETED" : cObject.Complete = row.Item(column)
-
+                            Case "APPURL", "TASKURL" : cObject.AppUrl = row.Item(column)
                             Case "COMMENTS", "TASKCOMMENTS" : cObject.Comments = row.Item(column)
                             Case "CREATEUSERNAME" : cObject.CreateUserName = row.Item(column)
                             Case "UPDATEUSERNAME" : cObject.UpdateUserName = row.Item(column)

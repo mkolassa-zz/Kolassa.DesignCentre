@@ -57,7 +57,7 @@ Public Class frmReport
 		Implements IReportServerCredentials
 
 		Private _UserName As String = "mkolassa-001"
-        Private _PassWord As String = "Design2023!"
+        Private _PassWord As String = "DCKolassa22!"
         Private _DomainName As String = "SQL5090" ' "ifc"
 		Public Function GetFormsCredentials(ByRef authCookie As Cookie,
 										ByRef userName As String,

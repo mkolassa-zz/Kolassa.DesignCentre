@@ -27,13 +27,23 @@ Public Class ctrlNotifications
 
         GetObjectID = lsObjectID
     End Function
-
+    Public Sub BindData()
+        gvData.DataBind()
+        repeaterData.DataBind()
+    End Sub
     Protected Sub gvData_DataBinding(sender As Object, e As EventArgs) Handles gvData.DataBinding
         Dim t As New clsTasks()
         gvData.DataSource = t.GetRecords("", "", Session("Project"), Session("NodeID"), HttpContext.Current.User.Identity.GetUserId)
+        repeaterData.DataSource = gvData.DataSource
     End Sub
-
     Protected Sub cmdPostComm_Click(sender As Object, e As EventArgs) Handles cmdPostComm.Click
         gvData.DataBind()
+        repeaterData.DataBind()
+    End Sub
+    Protected Sub cmdBindData_Click(sender As Object, e As EventArgs) Handles cmdBindData.Click
+        BindData()
+    End Sub
+    Protected Sub gvData_RowCreated(sender As Object, e As GridViewRowEventArgs)
+        e.Row.CssClass = "table border"
     End Sub
 End Class

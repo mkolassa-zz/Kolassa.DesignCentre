@@ -301,10 +301,13 @@ Err_txtPhase2CompleteDate_DblClick:
 				Exit For
 			End If
 		Next
-        Dim lsURL As String = Request.Url.ToString & "?QuoteID=" + lsID
+        Dim lsURL As String = "frmQuote" & "?QuoteID=" + lsID
         If lsID.Length = 36 And lsAssignedToID.Length = 36 Then
-            q.AssignQuoteToSales(lsID, lsAssignedToID, lsURL)
+            q.AssignQuoteToSales(lsID, lsAssignedToID, lsURL, Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd("/") + "/")
             litName.Text = q.AssignedToEmail
+            lblAssigned.Text = "Assigned to " & litName.Text
+            cmdAssign.Enabled = False
+            cmdAssign.CssClass = "btn btn-secondary"
         End If
 
     End Sub
@@ -396,7 +399,7 @@ Err_txtPhase2CompleteDate_DblClick:
 		If lsQuoteID = "" Then
 			Exit Sub
 		End If
-        fvQuote.Caption = lsQuoteID ' 2023-01
+        '  fvQuote.Caption = lsQuoteID ' 2023-01
 
         If Session("QuoteID") = lsQuoteID Then
             Exit Sub
@@ -1433,10 +1436,11 @@ ph1Status_Error:
             AssignTask.ObjectID = lblQuoteID.Text
             AssignTask.Code = q.Code
             AssignTask.Description = q.UnitCode + ": " + q.UnitName & lsDescription
-            AssignTask.Name = "Phase Update " & txtPhaseName.Text
+            AssignTask.Name = "Quote Phase Information has been Updated:  " & txtPhaseName.Text
             AssignTask.AssignedToEmail = q.AssignedToEmail
             AssignTask.AssignedTo = q.AssignedTo
             AssignTask.AppUrl = lsURL
+            AssignTask.BaseURL = Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd("/") + "/"
             AssignTask.Insert()
         End If
         Return True

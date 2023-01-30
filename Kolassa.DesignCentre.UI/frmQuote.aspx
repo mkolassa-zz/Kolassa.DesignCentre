@@ -276,11 +276,14 @@
 					</div>
 					<div class="modal-body">
 						<asp:UpdatePanel  ID="upAssignedTo" runat="server" ChildrenAsTriggers="true" >
-							<ContentTemplate><div class="form-row">
+							<ContentTemplate><div class="">
+
 								<asp:DropDownList ID="cboAssignedTo" runat="server" title="AssignedToTitle" AutoPostBack="false" EnableViewState="true" />
-								<asp:linkButton ID="cmdAssign" CssClass="btn btn-sm btn-primary" Text="Assign" runat="server" />
+								<asp:linkButton ID="cmdAssign" CssClass="btn btn-small btn-primary" Text="Assign" runat="server" />
 								<br>
-								</br><asp:Label ID="lblQuoteID" runat="server" CssClass="d-none"/>
+								</br>
+								<asp:Label ID="lblAssigned" runat="server" CssClass=" text-primary"/>
+								<asp:Label ID="lblQuoteID" runat="server" CssClass="d-none"/>
 							</ContentTemplate>
 							<Triggers>
 								<asp:AsyncPostBackTrigger ControlID="cboAssignedTo" EventName="SelectedIndexChanged" />	
@@ -585,8 +588,7 @@
 					   <asp:GridView ID="grdPhases" runat="server" AutoGenerateColumns="False" 
 						   class="table table-bordered table-sm" 
 						   DataSourceID="odsPhases" DataKeyNames="ID" >
-						   <Columns>
-						   
+						   <Columns>		   
 								<asp:BoundField DataField="ObjectID" HeaderText="ObjectID" SortExpression="ObjectID" Visible="false" />
 								<asp:BoundField DataField="Code" HeaderText="Code" SortExpression="Code" Visible="false"/>
 								<asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="card-title" />

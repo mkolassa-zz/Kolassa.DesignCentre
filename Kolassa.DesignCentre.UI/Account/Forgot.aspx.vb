@@ -28,7 +28,9 @@ Partial Public Class ForgotPassword
             '*** Next 3 lines were commented out to bypass forgot
             Dim code = manager.GeneratePasswordResetToken(user.Id)
             Dim callbackUrl = IdentityHelper.GetResetPasswordRedirectUrl(code, Request)
-            manager.SendEmail(user.Id, "Reset Password", "Please reset your password by clicking <a href=""" & callbackUrl & """>here</a>.")
+            Dim body As String = "Please reset your password by clicking <a href=\"" + callbackUrl + " \ ">here</a>" &
+                "" '"Please reset your password by clicking " & callbackUrl
+            manager.SendEmail(user.Id, "Reset Password", body)
 
             loginForm.Visible = False
             DisplayEmail.Visible = True

@@ -185,7 +185,7 @@
 		    <asp:label   id="lblSearch" runat="server" class="d-none form-control my-1 py-1"  />
 	        <asp:Button  ID="cmdSearch" runat="server" class="fa-search" Text ="Search" Visible="false"></asp:button>
             <asp:Button ID="btnAjax" runat="server" OnClientClick="callAjaxMethod(event)" visible="false" Text="Call method using Ajax" />
-                <asp:linkbutton ID="cmdClearSelectedItems" runat="server" CssClass="clearSelectedItems button"  visible="true" Text="Clear Selected Items" > 
+                <asp:linkbutton ID="cmdClearSelectedItems" runat="server" CssClass="clearSelectedItems button d-none"  visible="true" Text="Clear Selected Items" > 
                     Clear Selected Items
                     </asp:linkbutton>
  

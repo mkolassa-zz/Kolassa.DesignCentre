@@ -203,6 +203,15 @@ Partial Public Class frmQuote
     Protected WithEvents cmdAssign As Global.System.Web.UI.WebControls.LinkButton
 
     '''<summary>
+    '''lblAssigned control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblAssigned As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''lblQuoteID control.
     '''</summary>
     '''<remarks>
