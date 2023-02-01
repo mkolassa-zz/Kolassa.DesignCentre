@@ -1002,7 +1002,11 @@ LoadChildrenError:
                     and Active = 1 "
         If ProjectID Is Nothing Then
         Else
-            lsSQL = lsSQL & "   and ObjectID = '" & ProjectID & " '"
+            If TableName.ToUpper = "TBLPROJECTS" Then
+            Else
+
+                lsSQL = lsSQL & "   and ObjectID = '" & ProjectID & " '"
+            End If
         End If
         If Not ID Is Nothing Then
             If ID.Length = 36 Then lsSQL = lsSQL & " and ID<>'" & ID & "' "

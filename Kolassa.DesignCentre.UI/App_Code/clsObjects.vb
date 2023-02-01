@@ -645,6 +645,8 @@ Public Class clsQuote
     Public Property AssignedTo As String
     Public Property AssignedToEmail As String
     Public Property CustomerName As String
+    Public Property SortOrder As String
+    Public Property NumRecs As Integer
 
     ' Public ErrorMessage As String
     Public Sub New(Optional lsID As String = "11111111-1111-1111-1111-1111222223333")
@@ -659,7 +661,7 @@ Public Class clsQuote
         Dim colName, colVal As String
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 
-        ds = c.LoadQuotes(NodeID, "", True, ID)
+        ds = c.LoadQuotes(NodeID, "", True, ID, NumRecs, SortOrder)
         If ds Is Nothing Then Exit Sub
         If ds.Tables.Count = 0 Then Exit Sub
         For Each row As DataRow In ds.Tables(0).Rows

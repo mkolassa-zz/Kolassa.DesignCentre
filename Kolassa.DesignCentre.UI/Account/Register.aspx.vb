@@ -9,11 +9,11 @@ Imports Owin
 
 Partial Public Class Register
     Inherits Page
-    Protected Sub CreateUser_Click(sender As Object, e As EventArgs)
+	Protected Sub CreateUser_Click(sender As Object, e As EventArgs)
 		Dim userName As String = Email.Text
 		Dim userFriendlyName As String = txtUserFriendlyName.text
 		Dim manager = Context.GetOwinContext().GetUserManager(Of ApplicationUserManager)()
-        Dim signInManager = Context.GetOwinContext().Get(Of ApplicationSignInManager)()
+		Dim signInManager = Context.GetOwinContext().Get(Of ApplicationSignInManager)()
 		Dim user = New ApplicationUser() With {.UserName = userName, .Email = userName, .UserFriendlyName = userFriendlyName}
 		Dim result = manager.Create(user, Password.Text)
 		If result.Succeeded Then
@@ -25,18 +25,32 @@ Partial Public Class Register
 
 			'*** SendGrid Code
 			Dim code As String = manager.GenerateEmailConfirmationToken(user.Id)
-			Dim callbackUrl As String = IdentityHelper.GetUserConfirmationRedirectUrl(code, user.Id, Request)
-			manager.SendEmail(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + " \ ">here</a>.")
-			'*** SendGrid Code END
+            Dim callbackUrl As String = IdentityHelper.GetUserConfirmationRedirectUrl(code, user.Id, Request)
+            Dim lsBody As String = "Confirm your account, Please confirm your account by clicking <a href='" + callbackUrl + "'>here</a>.<br />"
+            ' manager.SendEmail(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + " \ ">here</a>.")
+            SendEmail(Email.Text, lsBody)
+            '*** SendGrid Code END
 
-			If user.EmailConfirmed Then
+            If user.EmailConfirmed Then
 				signInManager.SignIn(user, isPersistent:=False, rememberBrowser:=False)
 				IdentityHelper.RedirectToReturnUrl(Request.QueryString("ReturnUrl"), Response)
 			Else
 				ErrorMessage.Text = "An email has been sent to your account.  Please view the email and confirm your account to complete the registration process"
 			End If
 		Else
-				ErrorMessage.Text = result.Errors.FirstOrDefault()
-        End If
+			ErrorMessage.Text = result.Errors.FirstOrDefault()
+		End If
+	End Sub
+    Public Sub SendEmail(lsTo As String, lsBody As String)
+
+        Dim email As New clsEmail
+        email.strMailTo = lsTo
+
+        Try
+            email.SendNewCustomerEmail(lsBody, "Confirm Registration from DesignCentre")
+        Catch e As Exception
+            ErrorMessage.Text = e.Message
+        End Try
+
     End Sub
 End Class

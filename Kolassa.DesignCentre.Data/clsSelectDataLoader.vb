@@ -398,7 +398,7 @@ Public Class clsSelectDataLoader
         lsSQL = "Update tblProjects  " &
                 "Set Name = '" & fTakeOutQuotes(lsName) & "', Description = " & NL &
                            "'" & fTakeOutQuotes(lsDescription) & "', CODE= " & NL &
-                           "'" & fTakeOutQuotes(lsCode) & "', image= " & NL &
+                           "'" & fTakeOutQuotes(lsCode) & "', imageURL= " & NL &
                            "'" & fTakeOutQuotes(lsImage) & "', ProjectType= " & NL &
                            "'" & fTakeOutQuotes(lsProjectType) & "', AddressPrint= " & NL &
                            "'" & fTakeOutQuotes(Address) & "', AddressMap= " & NL &
@@ -494,49 +494,49 @@ Public Class clsSelectDataLoader
 		UpdateProjectTypes = fRunSQL("SQLConnection", lscnStr, lsSQL)
 	End Function
 
-	'*******************************************************
-	'*** Quotes
-	'*******************************************************
-	Public Function LoadQuotes(ByVal llNodeID As Long, ByVal lsWhere As String, ByVal lbActive As Boolean, ByVal lsID As String) As DataSet
-		Dim lsSQL As String
+    '*******************************************************
+    '*** Quotes
+    '*******************************************************
+    Public Function LoadQuotes(ByVal llNodeID As Long, ByVal lsWhere As String, ByVal lbActive As Boolean, ByVal lsID As String, liNumRecs As Integer, SortOrder As String) As DataSet
+        Dim lsSQL As String
 
-		'*** Initialize
-		LoadQuotes = Nothing
-		If lsWhere = Nothing Then lsWhere = ""
-		'*** Check for No Selected Category
-		If llNodeID = 0 Then
-			'response.write("No Project Selectedd")
-			'	Exit Function
-		End If
-		'*** insert Phases if they Do not exist
-		Dim lsCurrentUser As String = fGetUser()
-		If Not isGUID(lsCurrentUser) Then
+        '*** Initialize
+        LoadQuotes = Nothing
+        If lsWhere = Nothing Then lsWhere = ""
+        '*** Check for No Selected Category
+        If llNodeID = 0 Then
+            'response.write("No Project Selectedd")
+            '	Exit Function
+        End If
+        '*** insert Phases if they Do not exist
+        Dim lsCurrentUser As String = fGetUser()
+        If Not isGUID(lsCurrentUser) Then
 
-			Exit Function
-		End If
-
-
-
-		If isGUID(lsID) Then
-			InsertQuotePhases(lsID, lsCurrentUser)
-		Else
-			lsID = "00001111-0000-0000-0000-111122223333"
-		End If
-		lsSQL = "SELECT * " & NL &
-				"FROM v_QuoteLookup                                   " & NL &
-				"WHERE ( 1=1 " &
-					 IIf(1 = 2, " AND NodeID=" & llNodeID & " ", " ") &
-					 IIf(lsWhere.Length > 4, " And " & lsWhere, "") &
-					 IIf(lbActive = True, " And Active = 1 ", "") & ")" & NL &
-					 IIf(lsID = "", "", " And ID = '" & lsID & "' ")
+            Exit Function
+        End If
 
 
-		'*** Load a data set.
-		Dim ds As New DataSet()
+
+        If isGUID(lsID) Then
+            InsertQuotePhases(lsID, lsCurrentUser)
+        Else
+            lsID = "00001111-0000-0000-0000-111122223333"
+        End If
+        lsSQL = "SELECT " & IIf(liNumRecs > 0, " TOP " & liNumRecs & " ", "") & "* " & NL &
+                "FROM v_QuoteLookup                                   " & NL &
+                "WHERE ( 1=1 " &
+                     IIf(1 = 2, " AND NodeID=" & llNodeID & " ", " ") &
+                     IIf(lsWhere.Length > 4, " And " & lsWhere, "") &
+                     IIf(lbActive = True, " And Active = 1 ", "") & ")" & NL &
+                     IIf(lsID = "", "", " And ID = '" & lsID & "' ") & NL &
+                      IIf(SortOrder = "", "", " Order By " & SortOrder & " ")
+
+        '*** Load a data set.
+        Dim ds As New DataSet()
         Return fGetDataset(mscnType, mscnStr, lsSQL, "Quote")
 
     End Function
-	Public Function LoadAllQuotes(ByVal llNodeID As Long, ByVal lsWhere As String, ByVal lbActive As Boolean, ByVal llID As Long, ParentID As String, ProjectID As String) As DataSet
+    Public Function LoadAllQuotes(ByVal llNodeID As Long, ByVal lsWhere As String, ByVal lbActive As Boolean, ByVal llID As Long, ParentID As String, ProjectID As String) As DataSet
 		Dim lsSQL As String
 
 		'*** Initialize
