@@ -370,6 +370,7 @@
     <Content Include="frmReports.aspx" />
     <Content Include="frmTasks.aspx" />
     <Content Include="frmUpgradeItems.aspx" />
+    <Content Include="images\DCLogoSM.png" />
     <Content Include="images\download.png" />
     <Content Include="images\eye.png" />
     <Content Include="images\loadingH.gif" />

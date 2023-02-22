@@ -517,12 +517,14 @@ Public Class clsSelectDataLoader
 
 
 
-        If isGUID(lsID) Then
-            InsertQuotePhases(lsID, lsCurrentUser)
-        Else
-            lsID = "00001111-0000-0000-0000-111122223333"
+		If isGUID(lsID) Then
+			InsertQuotePhases(lsID, lsCurrentUser)
+		Else
+            If liNumRecs = 0 Then
+                lsID = "00001111-0000-0000-0000-111122223333"
+            End If
         End If
-        lsSQL = "SELECT " & IIf(liNumRecs > 0, " TOP " & liNumRecs & " ", "") & "* " & NL &
+            lsSQL = "SELECT " & IIf(liNumRecs > 0, " TOP " & liNumRecs & " ", "") & "* " & NL &
                 "FROM v_QuoteLookup                                   " & NL &
                 "WHERE ( 1=1 " &
                      IIf(1 = 2, " AND NodeID=" & llNodeID & " ", " ") &

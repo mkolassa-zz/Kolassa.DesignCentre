@@ -49,6 +49,8 @@
 			<asp:Parameter DefaultValue="" Name="lsWhere" Type="String" />
 			<asp:Parameter DefaultValue="True" Name="lbActive" Type="Boolean" />
 			<asp:SessionParameter DefaultValue="" Name="lsID" SessionField="QuoteID"  Type="String" />
+			<asp:Parameter DefaultValue="" Name="liNumRecs" Type="Int16" />
+			<asp:Parameter DefaultValue="" Name="SortOrder" Type="Boolean" />
 		</SelectParameters>
 	</asp:ObjectDataSource>
 
@@ -254,16 +256,59 @@
                             data-toggle="modal" data-target="#quoteSearchModal" >
                             <i class="fa fa-search"></i> Search Quotes</button>
 						<a href="NewQuote.aspx" id="btnNewQuote" class="btn btn-default btn-sm" role="button"><i class="fa fa-plus-square"></i> New Quotes</a>
+						<asp:LinkButton  runat="server" id="lnkRecent" class="btn btn-default btn-sm" 
+							data-toggle="modal" data-target="#modRecentQuotes" role="button"><i class="fa fa-clock"></i> Recent Quotes</asp:LinkButton>
 					</asp:Panel>
-
 				</td>
 				<td></td>
 			</tr>
 		</table>
 	
+		<!-- THIS IS THE PANEL FOR RECENT Quotes -->
+		<asp:Panel Runat="server" ID="pnlRecent"   Visible = "true">
+			<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR Recent QUOTE -->
+			<div class="modal fade" id="modRecentQuotes" tabindex="-1" role="dialog" aria-labelledby="RecentLabel" aria-hidden="true" >
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content" style="width:700px;">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="modRecentTitle">Recent Quotes</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						  <span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<asp:UpdatePanel ID="upRecent" runat="server">
+							<ContentTemplate>
+							<div class="card-deck">
+ 								<asp:Repeater ID="rptRecentQuotes" runat ="server" EnableTheming="False"  >
+									<ItemTemplate>
+										<div class="card border-success mb-3" style="max-width: 18rem;">
+											<div class="card-header bg-transparent border-success"><p class="card-text"> <%#Eval("updatedate") %>
+												</p></div>
+											<div class="card-body text-success">
+											<h5 class="card-title"><a href="frmQuote?QuoteID=<%#Eval("ID") %>"><%#Eval("UnitCode") %> <%#Eval("UnitTypeDescription") %></a></h5>
+											<p class="card-text"><%#Eval("CustomerName") %></p>
+											</div>
+										</div>
+									</ItemTemplate>
+								</asp:Repeater>
+							</div>
+							</ContentTemplate>
+						</asp:UpdatePanel>
+					</div>
+					  <div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					  </div>
+				</div>
+			  </div>
+			</div>
+		</asp:Panel>
+		<!-- END RECENT QUOTE PANEL -->
+		
+	
 
 		<!-- THIS IS THE PANEL FOR Assigning a Resource -->
-		<asp:Panel Runat="server" ID="Panel3"   Visible = "true">
+		<asp:Panel Runat="server" ID="pnlAssignResource"   Visible = "true">
 			<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR SEARCHING FOR A QUOTE -->
 			<div class="modal fade" id="modAssignResource" tabindex="-1" role="dialog" aria-labelledby="quoteSearchModalLabel" aria-hidden="true" >
 			  <div class="modal-dialog" role="document">
@@ -277,7 +322,6 @@
 					<div class="modal-body">
 						<asp:UpdatePanel  ID="upAssignedTo" runat="server" ChildrenAsTriggers="true" >
 							<ContentTemplate><div class="">
-
 								<asp:DropDownList ID="cboAssignedTo" runat="server" title="AssignedToTitle" AutoPostBack="false" EnableViewState="true" />
 								<asp:linkButton ID="cmdAssign" CssClass="btn btn-small btn-primary" Text="Assign" runat="server" />
 								<br>
@@ -411,7 +455,7 @@
                            ID="txtComment" runat="server" class="form-control"  Rows="5"  MaxLength="1000"/>
 				    </div>
 				</div>
-			  <div class="modal-footer">
+				<div class="modal-footer">
 					<asp:button runat="server" OnClick="cmdSelectedItemSave_Click" UseSubmitBehavior="false" 
 						ID="cmdSelectedItemSave"  class="btn btn-primary"  data-dismiss="modal" Text="Save">
 					</asp:button>
@@ -427,7 +471,7 @@
 	<!-- THIS IS THE PANEL FOR ITEM IMAGES -->
 	<asp:Panel Runat="server" ID="pnlItemImages"   >
 		<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR Item Images -->
-		<div class="modal fade" id="ItemImagesModal" tabindex="-1" role="dialog" aria-labelledby="lblItemImages" aria-hidden="true">
+		<div class="modal fade" id="ItemImagesModal" tabindex="-2" role="dialog" aria-labelledby="lblItemImages" aria-hidden="true">
 		  <div class="modal-dialog modal-xl" role="document">
 			<div class="modal-content">
 			  <div class="modal-header" style="background-color:white;">
@@ -478,12 +522,11 @@
 
 
 <asp:Panel runat="server" ID="pnlQuote">     
-	<div class="card-group">
+	<div class="card-deck">
 		<div class="card col-3">
-			<div class="card-body">
-				
+			<div class="card-body">			
 				<div class="dropup">
-					<div class="lauto-style1">
+						<div class="lauto-style1">
 							<table>
 								<tr>
 									<td>
@@ -494,48 +537,42 @@
 									</td>			
 								</tr>
 							</table>			
-
 							<table>
 								<tr>
 									<td>
-                                    <nav class="Kolassa" >
-                                        <ul class="Kolassa" style="padding:unset;">
-									        <button type="button" class="btn btn-primary btn-sm" id="cmdSave" ><i class="fa fa-save" ></i> Save</button>
-                                        </ul>
-								    </nav>	 
-								</td>
-								<td>
-                                    <nav class="Kolassa" >
-                                        <ul class="Kolassa">
-                                                <li class="btn btn-danger dropdown-toggle btn-sm"><a class="Kolassa" href="#">Action</a>
-                                                <ul class="Kolassa">
-	                                                <asp:linkButton ID="cmdAddNewOption"      runat="server" class="dropdown-item" ><i class='fas fa-plus'></i> Add New Option</asp:linkButton> 
-										            <asp:linkButton ID="cmdAutoPick"          runat="server" class="dropdown-item" ><i class='fas fa-adjust'></i> Auto Pick</asp:linkButton> 		
-									                <!--	<asp:linkButton ID="btnAutoPop"           runat="server" class="dropdown-item" ><i class="material-icons">flash_auto</i> Auto Populate</asp:linkButton> 		-->
-										            <button type="button" class="dropdown-item" data-toggle="modal" data-target="#PaymentsModal"><i class="fas fa-dollar-sign"></i> Payments</button>
-										            <button type="button" class="dropdown-item btn-sm" data-toggle="modal" data-target="#AdjustmentsModal"><i class="fas fa-adjust"></i> Adjustments</button>
-							      		            <asp:label ID="lblReports" runat="server"><i class='fas fa-file-code'></i> Reports</asp:label>
-										            <asp:linkbutton ID="cmdMissingSelections"           runat="server" class="dropdown-item" ><i class='fas fa-file-code'></i> Missing Report</asp:linkbutton>
-										            <asp:linkButton ID="cmdCustomerReceipt"             runat="server" class="dropdown-item" ><i class='fas fa-file-alt'></i> Preview Receipt</asp:linkButton>   
-										            <asp:linkbutton ID="cmdStandardReport"              runat="server" class="dropdown-item" ><i class='fas fa-file'></i> Standard Selections Report</asp:linkbutton>	
-													<asp:linkbutton ID="cmdVendorInstallationReport"    runat="server" class="dropdown-item" ><i class='fas fa-chevron-right'></i> Vendor Installation Report</asp:linkbutton>	
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </nav>
-														</td>
-							</tr>
-						</table>
-								
-								</td>
-							</tr>
-						</table>
-					</div>
+										<nav class="Kolassa" >
+											<ul class="Kolassa" style="padding:unset;">
+												<button type="button" class="btn btn-primary btn-sm" id="cmdSave" ><i class="fa fa-save" ></i> Save</button>
+											</ul>
+										</nav>	 
+									</td>
+									<td>
+										<nav class="Kolassa" >
+											<ul class="Kolassa">
+												<li class="btn btn-danger dropdown-toggle btn-sm"><a class="Kolassa" href="#">Action</a>
+													<ul class="Kolassa">
+														<asp:linkButton ID="cmdAddNewOption"      runat="server" class="dropdown-item" ><i class='fas fa-plus'></i> Add New Option</asp:linkButton> 
+														<asp:linkButton ID="cmdAutoPick"          runat="server" class="dropdown-item" ><i class='fas fa-adjust'></i> Auto Pick</asp:linkButton> 		
+														<!--	<asp:linkButton ID="btnAutoPop"           runat="server" class="dropdown-item" ><i class="material-icons">flash_auto</i> Auto Populate</asp:linkButton> 		-->
+														<button type="button" class="dropdown-item" data-toggle="modal" data-target="#PaymentsModal"><i class="fas fa-dollar-sign"></i> Payments</button>
+														<button type="button" class="dropdown-item btn-sm" data-toggle="modal" data-target="#AdjustmentsModal"><i class="fas fa-adjust"></i> Adjustments</button>
+							      						<asp:label ID="lblReports" runat="server"><i class='fas fa-file-code'></i> Reports</asp:label>
+														<asp:linkbutton ID="cmdMissingSelections"           runat="server" class="dropdown-item" ><i class='fas fa-file-code'></i> Missing Report</asp:linkbutton>
+														<asp:linkButton ID="cmdCustomerReceipt"             runat="server" class="dropdown-item" ><i class='fas fa-file-alt'></i> Preview Receipt</asp:linkButton>   
+														<asp:linkbutton ID="cmdStandardReport"              runat="server" class="dropdown-item" ><i class='fas fa-file'></i> Standard Selections Report</asp:linkbutton>	
+														<asp:linkbutton ID="cmdVendorInstallationReport"    runat="server" class="dropdown-item" ><i class='fas fa-chevron-right'></i> Vendor Installation Report</asp:linkbutton>	
+													</ul>
+												</li>
+											</ul>
+										</nav>
+									</td>
+								</tr>
+							</table>
+						</div>
 				</div>
-
 				<h5 class="card-title">Customer	<button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#CommunicationsModal"><i class="fas fa-comments"></i></button></h5>
 				<p class="card-text">
-				<asp:Repeater ID="Repeater1" runat="server" DataSourceID="odsQuotes">
+				<asp:Repeater ID="Repeater1" runat="server" DataSourceID="odsQuotes" >
 					<ItemTemplate>
 						<asp:Label runat="server" ID="lblName" Text='<%# Eval("CustomerName") %>' CssClass="card-subtitle font-weight-bold" /><br />
 						<asp:Label runat="server" ID="lblUnitName"     Text='<%# Eval("UnitName") %>' /><br />
@@ -859,7 +896,7 @@
 											data-target="#ItemImagesModal" 
 											data-id='<%# 1%>'
 											Text="Photos"  ><!-- DataBinder.Eval(Container.DataItem, "RequestedUpgradeID") -->
-                                        <i class="fa-picture-o editselecteditem"  onclick="fSetSelectedImages(this)"/>
+                                        <i class="fa-picture-o editselectedimage"  onclick="fSetSelectedImages(this)"/>
         								<i class="material-symbols-outlined">photo_camera</i>
 									</asp:LinkButton> 
 									</td>
@@ -928,30 +965,27 @@
                             <tr>
                                 <td style="width:40px">
 									<asp:LinkButton runat="server" ID="DeleteCategoryButton" CommandName="DeleteRequestedItem" 
-										CommandArgument='<%#Eval("RequestedUpgradeID") %>'   Text="Delete"  ><i class="material-icons">delete</i></asp:LinkButton> 
-									<asp:LinkButton 
+										CommandArgument='<%#Eval("RequestedUpgradeID") %>'   Text="Delete"  >
+										<i class="material-icons">delete</i>
+									</asp:LinkButton> 
+									<asp:LinkButton  OnClientClick="fSetSelectedItems(this)"
                                         runat="server" 
                                         ID="btnEditSelectedItem" 
                                         data-toggle="modal" 
                                         data-target="#SelectedItemsModal" 
                                         data-id='<%# DataBinder.Eval(Container.DataItem, "RequestedUpgradeID")%>' Text="Edit"  >
-                                        <i class="fa-pencil editselecteditem"  onclick="fSetSelectedItems(this)"/>
+                                        <i class="fa-pencil editselecteditem"  onclick="fSetSelectedItems(this)"></i>
                                         <i class="material-icons">edit</i>
 									</asp:LinkButton> 
-									<asp:LinkButton 
+									<asp:LinkButton  OnClientClick="fSetSelectedImages(this)"
                                         runat="server" 
                                         ID="lnkSelectedPhoto" 
                                         data-toggle="modal" 
                                         data-target="#ItemImagesModal" 
                                         data-id='<%# DataBinder.Eval(Container.DataItem, "RequestedUpgradeID")%>'   Text="Photos"  >
-                                        <i class="fa-picture-o editselecteditem"  onclick="fSetSelectedImages(this)"/>
+                                        <i class="fa-picture-o editselectedimage"  onclick="fSetSelectedImages(this)"/>
         								<i class="material-symbols-outlined">photo_camera</i>
 									</asp:LinkButton> 
-
-                                    <!-- button ID="btnSelectedItem"                                     
-                                        data-id='<%# DataBinder.Eval(Container.DataItem, "RequestedUpgradeID")%>'>
-                                        <i class="fa-pencil editselecteditem"  onclick="fSetSelectedItems(this)"/>
-									</!--> 
                                 </td>
                                 <td id="id" class="d-none"><%#Eval("RequestedUpgradeID")%></td>
 								<td id="OptionID" class="d-none"><%#Eval("OptionID")%></td>
@@ -1133,7 +1167,8 @@
             var currow = $(tthis).closest('tr');
             var sID = currow.find("td[id='OptionID']").text();
 			//alert(sID);
-            $("#MainContent_ctrlImagesDisplay_txtImageObjectID").val(sID);
+			$("#MainContent_ctrlImagesDisplay_txtImageObjectID").val(sID);
+            $("#SelectedItemsModal").attr("style", "display:none;");
         }
 
 	//********************************************

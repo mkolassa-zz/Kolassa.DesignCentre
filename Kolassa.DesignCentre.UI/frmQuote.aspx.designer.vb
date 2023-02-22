@@ -167,13 +167,49 @@ Partial Public Class frmQuote
     Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''Panel3 control.
+    '''lnkRecent control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents Panel3 As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents lnkRecent As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
+    '''pnlRecent control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlRecent As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''upRecent control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents upRecent As Global.System.Web.UI.UpdatePanel
+
+    '''<summary>
+    '''rptRecentQuotes control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rptRecentQuotes As Global.System.Web.UI.WebControls.Repeater
+
+    '''<summary>
+    '''pnlAssignResource control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlAssignResource As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
     '''upAssignedTo control.

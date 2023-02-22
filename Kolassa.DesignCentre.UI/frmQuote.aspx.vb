@@ -986,16 +986,20 @@ ph1Status_Error:
             cboAssignedTo.Items.Add("-- Assign Sales Consultant --")
             Dim c As New clsSelectDataLoader
             Dim ds As DataSet = c.LoadAppUsers
-            For Each dt As DataTable In ds.Tables
-                For Each dr As DataRow In dt.Rows
-                    li = New ListItem
-                    li.Value = dr("ID").ToString
-                    li.Text = dr("userFriendlyName") & " - " & dr("email")
-                    cboAssignedTo.Items.Add(li)
-                Next
-            Next
+			For Each dt As DataTable In ds.Tables
+				For Each dr As DataRow In dt.Rows
+					li = New ListItem
+					li.Value = dr("ID").ToString
+					li.Text = dr("userFriendlyName") & " - " & dr("email")
+					cboAssignedTo.Items.Add(li)
+				Next
+			Next
+            ds = c.LoadQuotes(Session("NodeID"), "", True, "", 4, " updateDate DESC")
+            rptRecentQuotes.DataSource = ds
+            rptRecentQuotes.DataBind()
         End If
         loadPage()
+
     End Sub
 	Function getQuoteID() As String
 		Return String.Format("QuoteID={0}", Eval("QuoteID"))

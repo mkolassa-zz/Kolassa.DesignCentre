@@ -4,8 +4,13 @@
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
     <div class="m-4 p-xl-5">
-        <h2><%: Title %>.</h2>
-
+       <div class="container">
+           <div class="row">
+               <div class="col"><h2><%: Title %>.</h2></div>
+               <div class="col"> <img src="../images/DCLogoSM.png" style="height:70px;" alt="Design Centre" title="Design Cetnre" /></div>
+             </div>
+       </div> 
+       
         <div class="row">
             <div class="col-md-8">
                 <section id="loginForm">

@@ -143,14 +143,9 @@
 									  <div class="card-body">
 										<h5 class="card-title"><a href="frmProjects.aspx?ProjectID=<%#Eval("ID") %>"><%#Eval("Name") %></a></h5>
 										<p class="card-text"> <%#Eval("Description") %>
-										<br /><%#Eval("ProjectTYpeName") %></p>
+										<br /><%#Eval("ProjectTypeName") %></p>
 									  </div>
 									</div>
-								
-									<!-- <div>
-  										<asp:image  ID="imgPro3j" runat="server" style="height:100px;clip:rect(0px,100px,200px,0px);"  cssclass="card-img-top kcard-body img-thumbnail" src='<%#Eval("imageURL") %>' AlternateText='<%#Eval("ProjectTYpeName") %>' onError="this.onerror=null;this.src='/images/newconstruction.png';" />
-									</div> -->
-
 								</ItemTemplate>
 							</asp:Repeater>
 						</div>
