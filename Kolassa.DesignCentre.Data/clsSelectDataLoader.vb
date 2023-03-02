@@ -511,30 +511,36 @@ Public Class clsSelectDataLoader
         '*** insert Phases if they Do not exist
         Dim lsCurrentUser As String = fGetUser()
         If Not isGUID(lsCurrentUser) Then
-
             Exit Function
         End If
-
-
 
 		If isGUID(lsID) Then
 			InsertQuotePhases(lsID, lsCurrentUser)
 		Else
-            If liNumRecs = 0 Then
-                lsID = "00001111-0000-0000-0000-111122223333"
-            End If
-        End If
+			If liNumRecs = 0 Then
+				lsID = "00001111-0000-0000-0000-111122223333"
+			End If
+		End If
+		If liNumRecs > 0 Then
+            lsSQL = "Select top " & liNumRecs & " r.maxdate, case when r.maxdate> q.updatedate then r.maxdate else q.updatedate end as recentdate, Q.*
+					from v_quotelookup q left join 
+						( Select quoteid, max(updatedate) as maxdate from tblRequestedUpgrades 
+							Where updateuser = '" & lsCurrentUser & "' 
+							group by quoteid) R on q.id = r.QuoteID
+					WHERE NODEID = " & llNodeID & " and (updateuser = '" & lsCurrentUser & "' or assignedTo='" & lsCurrentUser & "')
+					Order by recentdate desc"
+        Else
             lsSQL = "SELECT " & IIf(liNumRecs > 0, " TOP " & liNumRecs & " ", "") & "* " & NL &
                 "FROM v_QuoteLookup                                   " & NL &
                 "WHERE ( 1=1 " &
-                     IIf(1 = 2, " AND NodeID=" & llNodeID & " ", " ") &
+                     IIf(1 = 1, " AND NodeID=" & llNodeID & " ", " ") &
                      IIf(lsWhere.Length > 4, " And " & lsWhere, "") &
                      IIf(lbActive = True, " And Active = 1 ", "") & ")" & NL &
                      IIf(lsID = "", "", " And ID = '" & lsID & "' ") & NL &
                       IIf(SortOrder = "", "", " Order By " & SortOrder & " ")
-
-        '*** Load a data set.
-        Dim ds As New DataSet()
+        End If
+		'*** Load a data set.
+		Dim ds As New DataSet()
         Return fGetDataset(mscnType, mscnStr, lsSQL, "Quote")
 
     End Function

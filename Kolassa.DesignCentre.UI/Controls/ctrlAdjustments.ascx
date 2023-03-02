@@ -17,7 +17,7 @@
 				</h4>
 			  </div>
 			  <div id="collapseAdjust" class="panel-collapse collapse">
-				<div class="panel-body">Project ID: <%: Session("Project")  %></div>
+				<div class="panel-body small">Project ID:<br/> <%: Session("Project")  %></div>
 				<div class="panel-footer">Quote:	<asp:Literal ID="litID" runat="server"></asp:Literal><br /></div>
 			  </div>
 			</div>

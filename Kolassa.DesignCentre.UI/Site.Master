@@ -268,15 +268,11 @@
             <div id='submenu2' class="collapse sidebar-submenu">
   						<!-- Page Info Pane -->
 		       <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-                    <span class="menu-collapsed">Project ID: <%: Session("Project")  %>
+                    <span class="menu-collapsed small">Project ID:<br/> <%: Session("Project")  %>
                         <asp:literal runat="server" ID="litPageInfo"></asp:literal></span></a>
 						<!-- End Page Info Pane -->
-                <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-                    <span class="menu-collapsed">Settings</span>
-                </a>
-                <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-                    <span class="menu-collapsed">Password</span>
-                </a>
+ <a runat="server" class="bg-dark list-group-item list-group-item-action" href="~/account/addphonenumber.aspx" ><div class="d-flex w-100 justify-content-start align-items-center"><span class="fa fa-cog fa-fw mr-3"></span><span class="menu-collapsed">Settings</span></div></a>
+ <a runat="server" class="bg-dark list-group-item list-group-item-action" href="~/account/managepassword.aspx" ><div class="d-flex w-100 justify-content-start align-items-center"><span class="fa fa-key fa-fw mr-3"></span><span class="menu-collapsed">Password</span></div></a>
             </div>
                 <a runat="server" class="bg-dark list-group-item list-group-item-action" href="~/frmProjects" ><div class="d-flex w-100 justify-content-start align-items-center"><span class="fa fa-th fa-fw mr-3"></span><span class="menu-collapsed">Project Dashboard</span></div></a>
                 <a runat="server" class="bg-dark list-group-item list-group-item-action" href="~/frmBase?objType=Customers"><div class="d-flex w-100 justify-content-start align-items-center"><span class="fa fa-users fa-fw mr-3"></span><span class="menu-collapsed">Customers</span></div></a>
