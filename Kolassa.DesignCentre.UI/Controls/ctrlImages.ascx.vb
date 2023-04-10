@@ -92,4 +92,11 @@ Public Class ctrlImages
     Private Sub lnkrefresh_Click(sender As Object, e As EventArgs) Handles lnkrefresh.Click
         gvImages.DataBind()
     End Sub
+
+    Protected Sub lnkImageUpload_Click(sender As Object, e As EventArgs) Handles lnkImageUpload.Click
+        Dim intId As Integer = 100
+        ' Passing intId to popup window.
+        Dim strPopup As String = "<script language='javascript' ID='script1'>" + "window.open('frmImagePopOut.aspx?ObjType=" & Request.QueryString("ObjType") & "&ObjectID=" & lblObjectID.Text & "&data=" + HttpUtility.UrlEncode(intId.ToString()) + "','new window', 'top=90, left=200, width=600, height=300, dependant=no, location=0, alwaysRaised=no, menubar=no, resizeable=no, scrollbars=n, toolbar=no, status=no, center=yes')" + "</script>"
+        ScriptManager.RegisterStartupScript(DirectCast(HttpContext.Current.Handler, Page), GetType(Page), "Script1", strPopup, False)
+    End Sub
 End Class

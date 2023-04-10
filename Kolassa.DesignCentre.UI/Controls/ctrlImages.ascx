@@ -1,4 +1,4 @@
-﻿<%@ Control Language="vb" AutoEventWireup="false"  CodeBehind="ctrlImages.ascx.vb"  Inherits="Kolassa.DesignCentre.UI.ctrlImages"  %>
+﻿<%@ Control Language="vb" AutoEventWireup="true"  CodeBehind="ctrlImages.ascx.vb"  Inherits="Kolassa.DesignCentre.UI.ctrlImages"  %>
 
 
 <%@ Register Src="~/Controls/ctrlImageNew.ascx" TagPrefix="uc1" TagName="ctrlImageNew" %>
@@ -34,6 +34,9 @@
     .rounded_corners table table td
     {
         border-style: none;
+    }
+    .dclink {
+        color: black;
     }
 </style>
 <script>
@@ -82,9 +85,10 @@
         <br />   
         <!-- Trigger the modal with a button -->
         <label  data-toggle="modal" data-target="#modal-image-url"><i class='fa fa-plus-square  padding-left:80px;'></i> Add Url </label>&nbsp;&nbsp;
-        <label  data-toggle="modal" data-target="#modal-image-upload"><i class='fa fa-upload  padding-left:80px;'></i> Upload </label>&nbsp;&nbsp;
-        <label  data-toggle="modal" data-target="#modal-image"><i class='fa fa-search  padding-left:80px;'></i> Find Existing</label>
-                <asp:linkbutton ID="lnkrefresh" runat="server"><i class='fa fa-recycle  padding-left:80px;'></i> Refresh</asp:linkbutton>
+        <asp:linkbutton ID="lnkImageUpload" runat="server" CssClass="dclink" ><i class=" dclink fa fa-upload padding-left:80px;"></i> Upload </asp:linkbutton>&nbsp;&nbsp;
+        <label  data-toggle="modal" data-target="#modal-image"><i class='fa fa-search  padding-left:80px;'></i> Find Existing</label>&nbsp;&nbsp;
+        <asp:linkbutton ID="lnkrefresh" runat="server" CssClass="dclink"><i class=' dclink fa fa-recycle  padding-left:80px; text-decoration-none !important'></i> Refresh</asp:linkbutton>
+        <label  data-toggle="modal" data-target="#modal-image-upload" class="d-none"><i class='fa fa-upload d-none padding-left:80px;'></i> Upload </label>&nbsp;&nbsp;
         <!-- Modal -->
         <div class="modal fade" id="modal-image-url" role="dialog">
             <div class="modal-dialog">

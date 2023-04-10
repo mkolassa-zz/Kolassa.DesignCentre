@@ -140,6 +140,33 @@ Partial Public Class frmBase
     Protected WithEvents ReportContainer1 As Global.Kolassa.DesignCenter.ReportManager.ReportContainer
 
     '''<summary>
+    '''Label2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents Label2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''fuImage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fuImage As Global.System.Web.UI.WebControls.FileUpload
+
+    '''<summary>
+    '''cmdfuImage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdfuImage As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
     '''uppnlReport control.
     '''</summary>
     '''<remarks>
@@ -228,6 +255,33 @@ Partial Public Class frmBase
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdCSV As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''lblUploadImage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblUploadImage As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblafuImage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblafuImage As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''afuImage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents afuImage As Global.AjaxControlToolkit.AjaxFileUpload
 
     '''<summary>
     '''pnlMessage control.

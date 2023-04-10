@@ -1680,6 +1680,9 @@ Err_Cmdrunreport_Click:
                     ctrl = New ctrlComboBox(ReportControl)
                     ctrl.mrptCtrl = ReportControl
                     ' AddHandler ctrl.ControlUpdated, AddressOf sUpdateChildren '(sender, e) ' sUpdateChildren
+                Case "IMAGE"
+                    ctrl = New ctrlImage(ReportControl)
+                    ctrl.mrptCtrl = ReportControl
                 Case Else
                     ctrl = New ctrlTextBox(ReportControl) 'LoadControl("ctrlTextBox.ascx")
                     ctrl.mrptCtrl = ReportControl

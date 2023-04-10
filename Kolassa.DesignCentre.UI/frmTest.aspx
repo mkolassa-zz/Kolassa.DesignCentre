@@ -61,6 +61,15 @@
    </style>
 
   <div class="container">
+                    <div class=""><asp:TextBox ID="txtSaveAs" runat="server" />
+                        <asp:Literal ID="litinfo" runat="server" />
+                                <p> <asp:Label ID="lblfileupload" runat="server" AssociatedControlID="fuCSV" Text="file: " />
+                                   <ajaxToolkit:AjaxFileUpload ID="fuCSV" runat="server" CssClass="lbtn lbtn-light"  />
+				                   <asp:Button ID="cmdCSV" class="btn btn-primary" runat="server" Text="Upload CSV" /> 
+                                    <asp:FileUpload ID="fu" runat="server" />
+                                    <asp:Button ID="cmdfu" runat="server" Text="File Upload" />
+				                </p>
+                            </div>      
         <asp:button runat="server"  type="button" class="btn btn-info btn-lg" id="cmdSendEmail" Text="Send Email" />
 
   <h2>Activate Modal with JavaScript</h2>

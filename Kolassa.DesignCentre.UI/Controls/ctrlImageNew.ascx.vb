@@ -4,6 +4,7 @@ Imports Kolassa.DesignCentre.Data
 Public Class ctrlImagesNew
     Inherits System.Web.UI.UserControl
     Dim msObjectID As String
+    Dim ErrorMessage As String
     Public Event SomethingHappened(sender As Object, e As EventArgs)
 
     Public Sub ProcessHappen() Handles Me.SomethingHappened
@@ -11,7 +12,7 @@ Public Class ctrlImagesNew
         Dim x As Integer = 9
     End Sub
     Public Sub New()
-
+        ' litMessage.Text = "Start Uploading Docs!"
     End Sub
     Public Property ObjectID() As String
         Get
@@ -28,6 +29,7 @@ Public Class ctrlImagesNew
             '      txtobj.Text = msObjectID
             AjaxFileUpload1.Attributes.Remove("objectID")
             AjaxFileUpload1.Attributes.Add("objectID", msObjectID)
+
             Me.Attributes.Remove("objectID")
             Me.Attributes.Add("objectID", msObjectID)
             Dim lb As Label
@@ -53,125 +55,179 @@ Public Class ctrlImagesNew
             GetSelectedValue = "742D682D-278F-4CF3-B527-C9115C5028A7"
             Exit Function
         End If
-
-
     End Function
-
-
     Protected Sub btnUpload_Click(sender As Object, e As EventArgs) 'Handles btnUpload.Click
-        Dim lsFileName As String = ""
+        Try
+            Dim lsFileName As String = ""
 
-        If lsFileName = "" Then Exit Sub
-        Dim intImageSize As Int64
-        Dim strImageType As String
-        ' Dim ImageStream As Stream
+            If lsFileName = "" Then Exit Sub
+            Dim intImageSize As Int64
+            Dim strImageType As String
+            ' Dim ImageStream As Stream
 
-        '*** Gets the Size of the Image
-        '   intImageSize = FileUpload1.PostedFile.ContentLength
+            '*** Gets the Size of the Image
+            '   intImageSize = FileUpload1.PostedFile.ContentLength
 
-        '*** Gets the Image Type
-        '   strImageType = FileUpload1.PostedFile.ContentType
-        strImageType = "" 'Fix this
-        '*** Reads the Image
-        '   ImageStream = FileUpload1.PostedFile.InputStream
-        ' ImageStream = DirectCast()
+            '*** Gets the Image Type
+            '   strImageType = FileUpload1.PostedFile.ContentType
+            strImageType = "" 'Fix this
+            '*** Reads the Image
+            '   ImageStream = FileUpload1.PostedFile.InputStream
+            ' ImageStream = DirectCast()
 
 
-        Dim ImageContent(intImageSize) As Byte
-        Dim intStatus As Integer
-        intStatus = 1 ' ImageStream.Read(ImageContent, 0, intImageSize)
-        Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-        Dim liNode As String = System.Web.HttpContext.Current.Session("NodeID")
-        If liNode < 2 Then liNode = 2
-        Dim lsObjectID As String = GetSelectedValue()
-        If lsObjectID = "" Then
-            'No File
-        Else
-
-            c.InsertImages(lsObjectID, Request.QueryString("objType"), liNode, lsFileName, txtDescription.Text, 1, ImageContent, strImageType, "", Session("Project"))
-        End If
+            Dim ImageContent(intImageSize) As Byte
+            Dim intStatus As Integer
+            intStatus = 1 ' ImageStream.Read(ImageContent, 0, intImageSize)
+            Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+            Dim liNode As String = System.Web.HttpContext.Current.Session("NodeID")
+            If liNode < 2 Then liNode = 2
+            Dim lsObjectID As String = GetSelectedValue()
+            If lsObjectID = "" Then
+                'No File
+            Else
+                Dim lsObjType As String = Request.QueryString("objType")
+                Dim lsProject As String = Session("Project")
+                If lsObjType.ToUpper = "PROJECT" Then lsProject = lsObjectID
+                c.InsertImages(lsObjectID, lsObjType, liNode, lsFileName, txtDescription.Text, 1, ImageContent, strImageType, "", lsProject)
+            End If
+        Catch ex As Exception
+            ErrorMessage = ErrorMessage & ex.Message
+            litMessage.Text = ErrorMessage
+        End Try
     End Sub
 
     Protected Sub UploadCompleteAll(sender As Object, e As AjaxControlToolkit.AjaxFileUploadCompleteAllEventArgs) Handles AjaxFileUpload1.UploadCompleteAll
-
+        litMessage.Text = litMessage.Text & " Finished"
     End Sub
+    Protected Sub cmdfu_Click(sender As Object, e As EventArgs) Handles cmdfu.Click
+        Dim s As String = Server.MapPath("customerfiles")
 
+        If (fu.HasFile) Then
+            savefile(fu.FileName, "what", fu.Attributes("objectid"))
+            Dim j As String = txtfileupload.Text
+        End If
+    End Sub
     Protected Sub uploadcomplete(sender As Object, e As AjaxControlToolkit.AjaxFileUploadEventArgs) Handles AjaxFileUpload1.UploadComplete
-        Dim fPath As String = "~/customerfiles"
-        Dim objID As String = AjaxFileUpload1.Attributes("objectid")
-        If HttpContext.Current.Request.Cookies("objectID") IsNot Nothing Then
-            objID = HttpContext.Current.Request.Cookies("objectID").Value.ToString()
-            If objID = "" Then
-                objID = AjaxFileUpload1.ToolTip
-                Dim qscoll As NameValueCollection = HttpUtility.ParseQueryString(Page.ClientQueryString)
-                AjaxFileUpload1.ToolTip = qscoll("contextKey")
-                objID = qscoll("contextKey")
-                If ObjectID = "" Then ObjectID = Me.Attributes("objectID")
-                If ObjectID = "" Then
-                    ObjectID = objID 'e.FileId
-                End If
-                If ObjectID = "" Then ObjectID = Session("Project")
-                ObjectID = objID 'Me.ID
-            End If
-        End If
-        Dim lsDescription As String = ""
-        If HttpContext.Current.Request.Cookies("txtdescription") IsNot Nothing Then
-            lsDescription = HttpContext.Current.Request.Cookies("txtdescription").Value.ToString()
-        End If
-
-
-        If Not Directory.Exists(fPath) Then Directory.CreateDirectory(fPath)
-        Dim c As Control = Me.Parent
-        Dim lsCust As String = Session("NodeID").ToString
-        lsCust = "000" & Trim(lsCust)
-        lsCust = Right(lsCust, 3)
-        fPath = fPath & "/cust" & lsCust
-        If Not Directory.Exists(fPath) Then Directory.CreateDirectory(fPath)
-        Dim fileNametoupload As String = Server.MapPath(fPath) + "\" + Guid.NewGuid.ToString + e.FileName.ToString()
-        fileNametoupload = fPath + "\" + Guid.NewGuid.ToString + e.FileName.ToString()
-        AjaxFileUpload1.SaveAs(fileNametoupload)
-
-        Dim o As clsImage = New clsImage
-        o.Description = lsDescription
-        o.Name = e.FileName
-        o.ImageURL = fileNametoupload
-        o.ImageOrder = 1
-        o.ImageType = e.ContentType
-        o.ObjectID = objID
-        o.ObjectType = Request.QueryString("objType")
-        o.Insert()
+        Dim objectid As String = AjaxFileUpload1.Attributes("objectid")
+        If objectid = "" Then objectid = AjaxFileUpload1.ToolTip
+        savefile(e.FileName, e.ContentType, AjaxFileUpload1.Attributes("objectid"))
     End Sub
+    Protected Sub savefile(filename As String, contenttype As String, objectid As String)
+        Try
 
-    Protected Sub lnkbSave_Click(sender As Object, e As EventArgs) Handles lnkbSave.Click
+            Dim fPath As String = "customerfiles"
+            ProcessDirectory(fPath)
+            '       fPath = Server.MapPath(fPath)
+            Dim objID As String = objectid 'AjaxFileUpload1.Attributes("objectid")
+            If HttpContext.Current.Request.Cookies("objectID") IsNot Nothing Then
+                objID = HttpContext.Current.Request.Cookies("objectID").Value.ToString()
+                If objID = "" Then
+                    objID = AjaxFileUpload1.ToolTip
+                    Dim qscoll As NameValueCollection = HttpUtility.ParseQueryString(Page.ClientQueryString)
+                    AjaxFileUpload1.ToolTip = qscoll("contextKey")
+                    fu.ToolTip = qscoll("contextKey")
+                    objID = qscoll("contextKey")
+                    If objectid = "" Then objectid = Me.Attributes("objectID")
+                    If objectid = "" Then
+                        objectid = objID 'e.FileId
+                    End If
+                    If objectid = "" Then objectid = Session("Project")
+                    objectid = objID 'Me.ID
+                End If
+            End If
+            Dim lsDescription As String = ""
+            If HttpContext.Current.Request.Cookies("txtdescription") IsNot Nothing Then
+                lsDescription = HttpContext.Current.Request.Cookies("txtdescription").Value.ToString()
+            End If
+
+            If Not Directory.Exists(fPath) Then
+                Session("ErrorMessage") = Session("ErrorMessage") & "Creating: " & fPath
+                Directory.CreateDirectory(fPath)
+            Else
+                Session("ErrorMessage") = Session("ErrorMessage") & " " & (fPath) & " Already Exists. "
+                Page.Response.Write(Session("ErrorMessage"))
+            End If
+
+            Dim c As Control = Me.Parent
+            Dim lsCust As String = Session("NodeID").ToString
+            lsCust = "000" & Trim(lsCust)
+            lsCust = Right(lsCust, 3)
+            fPath = fPath & "/cust" & lsCust
+            If Not Directory.Exists(fPath) Then Directory.CreateDirectory(fPath)
+            '  fPath = Server.MapPath(fPath)
+            Dim fileNametoupload As String ' = Server.MapPath(fPath) + "/" + Guid.NewGuid.ToString + e.FileName.ToString()
+            fileNametoupload = "~/" & fPath + "/" + Guid.NewGuid.ToString + filename.ToString()
+            ' AjaxFileUpload1.SaveAs(fileNametoupload)
+            fu.SaveAs(fileNametoupload)
+            Dim o As clsImage = New clsImage
+            o.Description = lsDescription
+            o.Name = filename
+            o.ImageUrl = fileNametoupload
+            o.ImageOrder = 1
+            o.ImageType = contenttype
+            o.ObjectID = objID
+            o.ObjectType = Request.QueryString("objType")
+            o.Insert()
+        Catch ex As Exception
+            Session("ErrorMessage") = Session("ErrorMessage") & ex.Message
+            litMessage.Text = litMessage.Text + ErrorMessage
+            Throw ex
+        End Try
+        Session("ErrorMessage") = Session("ErrorMessage") & " Done!"
+        litMessage.Text = Session("ErrorMessage")
+        Page.Response.Write(Session("ErrorMessage"))
+    End Sub
+    Public Sub ProcessDirectory(targetDirectory As String)
+        Dim liCounter As Integer = 0
+        '// Process the list of files found in the directory.
+        Dim fileEntries() As String = Directory.GetFiles(targetDirectory)
+        For Each fileName As String In fileEntries
+            liCounter = liCounter + 1
+            ProcessFile(fileName, liCounter)
+        Next
+        ' // Recurse into subdirectories of this directory.
+        Dim subdirectoryEntries() As String = Directory.GetDirectories(targetDirectory)
+        For Each subdirectory As String In subdirectoryEntries
+            ProcessDirectory(subdirectory)
+        Next
+    End Sub
+    Sub ProcessFile(path As String, liCounter As Integer)
+        System.Diagnostics.Debug.WriteLine("Processed file '{1}' '{0}'.", ResolveUrl(path), liCounter)
+    End Sub
+    Protected Sub lnkbSave_Click(sender As Object, e As EventArgs) Handles lnkbSaveImageURL.Click
         Dim lsImageURL, lsImageName, lsImageType As String
         Dim liTemp, liTemp2 As Integer
-        lsImageURL = txtImageURL.Text
-        If lsImageURL = "" Then
-            Exit Sub
-        End If
-        lsImageType = "Image"
-        lsImageName = "Image"
-        liTemp = InStrRev(lsImageURL, "/")
-        liTemp2 = InStrRev(lsImageURL, "\")
-        If liTemp2 > liTemp Then liTemp = liTemp2
-        If liTemp > 0 Then
-            lsImageName = Right(lsImageURL, lsImageURL.Length - liTemp)
-            liTemp = InStrRev(lsImageName, ".")
-            lsImageType = Right(lsImageName, lsImageName.Length - liTemp)
-        End If
-        Dim o As clsImage = New clsImage
-        '   ObjectID = txtobj.Text
-        ObjectID = lblObjectID.Text
-        If ObjectID = "" Then ObjectID = Session("Project")
-        o.ObjectID = ObjectID
-        o.Description = txtDescription.Text
-        o.Name = lsImageName
-        o.ImageURL = lsImageURL
-        o.ImageOrder = 1
-        o.ImageType = fgetImageType(lsImageType)
-        o.ObjectType = Request.QueryString("objType")
-        o.Insert()
+        Try
+            lsImageURL = txtImageURL.Text
+            If lsImageURL = "" Then
+                Exit Sub
+            End If
+            lsImageType = "Image"
+            lsImageName = "Image"
+            liTemp = InStrRev(lsImageURL, "/")
+            liTemp2 = InStrRev(lsImageURL, "\")
+            If liTemp2 > liTemp Then liTemp = liTemp2
+            If liTemp > 0 Then
+                lsImageName = Right(lsImageURL, lsImageURL.Length - liTemp)
+                liTemp = InStrRev(lsImageName, ".")
+                lsImageType = Right(lsImageName, lsImageName.Length - liTemp)
+            End If
+            Dim o As clsImage = New clsImage
+            '   ObjectID = txtobj.Text
+            ObjectID = lblObjectID.Text
+            If ObjectID = "" Then ObjectID = Session("Project")
+            o.ObjectID = ObjectID
+            o.Description = txtDescription.Text
+            o.Name = lsImageName
+            o.ImageUrl = lsImageURL
+            o.ImageOrder = 1
+            o.ImageType = fgetImageType(lsImageType)
+            o.ObjectType = Request.QueryString("objType")
+            o.Insert()
+        Catch ex As Exception
 
+        End Try
     End Sub
     Function fgetImageType(lsImageType As String) As String
         fgetImageType = lsImageType
@@ -193,16 +249,20 @@ Public Class ctrlImagesNew
                 upExisting.Visible = True
         End Select
     End Sub
-
-
-
     Private Sub AjaxFileUpload1_UploadStart(sender As Object, e As AjaxFileUploadStartEventArgs) Handles AjaxFileUpload1.UploadStart
-
+        Session("ErrorMessage") = "Start"
+        'litMessage.Text = ErrorMessage
     End Sub
-
-
     Protected Sub txtDescription_TextChanged(sender As Object, e As EventArgs) Handles txtDescription.TextChanged
         Dim cookie As HttpCookie = New HttpCookie("txtdescription", txtDescription.Text)
         cookie.Expires = DateTime.Now.AddMinutes(30)
+    End Sub
+
+    Protected Sub btnMessage_Click(sender As Object, e As EventArgs) Handles btnMessage.Click
+        Session("ErrorMessage") = litMessage.Text & " My Message " & Session("ErrorMessage") & ResolveUrl("~/customerfiles")
+        litMessage.Text = Session("ErrorMessage")
+        hdMessage.Value = Session("ErrorMessage")
+        Debug.Print("<Debug>")
+        Response.Write("Dude:" & Session("ErrorMessage"))
     End Sub
 End Class

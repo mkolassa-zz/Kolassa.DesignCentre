@@ -478,6 +478,7 @@ Public Class clsDataLoader
     Function fGetUser() As String
         fGetUser = "11111111-2222-3333-4444-555566667777" '
         fGetUser = Web.HttpContext.Current.User.Identity.GetUserId()
+        If fGetUser = "" Then Return "11111111-2222-3333-4444-555566667777" '
     End Function
     Public Function InsertReportView(ByVal lsViewID As String, ByVal lsName As String,
                                     ByVal lsTYpe As String, ByVal lsForm As String, liReportID As Integer,

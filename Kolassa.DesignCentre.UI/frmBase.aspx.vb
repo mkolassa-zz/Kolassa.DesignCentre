@@ -23,8 +23,9 @@ Partial Class frmBase
 		fTakeOutQuotes = Trim(lsStr)
 	End Function
 	Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load, Me.Load
-		'ShowMessage("Hey", "Error")
-		If mlRecordCount = 0 Then
+        'ShowMessage("Hey", "Error")
+        'txtSearch.Text = "Path is:" & Path.GetTempPath
+        If mlRecordCount = 0 Then
 			Exit Sub
 		End If
 		'Dim iRows = grdData.Rows.Count
@@ -400,13 +401,14 @@ Partial Class frmBase
 	End Sub
 
 	Private Sub cmdSearch_Click(sender As Object, e As EventArgs) Handles cmdSearch.Click
-        Dim ls As String
-        ls = "sdf"
-    End Sub
-    Protected Sub uploadcomplete(sender As Object, e As AjaxControlToolkit.AjaxFileUploadEventArgs) Handles fuCSV.UploadComplete
+		Dim ls As String
+		ls = "sdf"
+	End Sub
+
+	Protected Sub uploadcomplete(sender As Object, e As AjaxControlToolkit.AjaxFileUploadEventArgs) Handles fuCSV.UploadComplete
         Dim c As New clsTestCSV
         Dim lsFileName As String
-        Dim fPath As String = "~/customerfiles"
+        Dim fPath As String = "customerfiles"
 
         If Not Directory.Exists(fPath) Then Directory.CreateDirectory(fPath)
 
@@ -428,7 +430,25 @@ Partial Class frmBase
         c.csvWriteTest()
 
     End Sub
+    Protected Sub afuuploadcomplete(sender As Object, e As AjaxControlToolkit.AjaxFileUploadEventArgs) Handles afuImage.UploadComplete
 
+        Dim lsFileName As String
+        Dim fPath As String = Server.MapPath("customerfiles")
+
+        If Not Directory.Exists(fPath) Then Directory.CreateDirectory(fPath)
+
+        Dim lsCust As String = Session("NodeID").ToString
+        lsCust = "000" & Trim(lsCust)
+        lsCust = Right(lsCust, 3)
+        fPath = fPath & "/cust" & lsCust
+        If Not Directory.Exists(fPath) Then Directory.CreateDirectory(fPath)
+
+        lsFileName = fPath & "/" & Guid.NewGuid.ToString & fTakeOutQuotes(e.FileName)
+        afuImage.SaveAs(lsFileName)
+        Session("objType") = Request.QueryString("objType")
+
+
+    End Sub
     Protected Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
 		Dim lsx As String
 		lsx = "asdf"
@@ -441,6 +461,14 @@ Partial Class frmBase
 
     Private Sub cmdClearSelectedItems_Click(sender As Object, e As EventArgs) Handles cmdClearSelectedItems.Click
         rptBase.DumpSelectedValues()
+    End Sub
+
+    Private Sub cmdfuImage_Click(sender As Object, e As EventArgs) Handles cmdfuImage.Click
+        Dim s As String = Server.MapPath("customerfiles")
+        If (fuImage.HasFile) Then
+            fuImage.SaveAs(fuImage.FileName)
+
+        End If
     End Sub
 
 

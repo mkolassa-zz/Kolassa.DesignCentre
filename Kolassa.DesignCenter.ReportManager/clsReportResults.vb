@@ -36,7 +36,7 @@ Public Class ReportResults
     Dim trig, trigView, trigControl As AsyncPostBackTrigger
     Dim cn As clsDataLoader
     Dim imgSort As ImageButton
-    Dim lnkDel As LinkButton
+    Dim lnkDel, lnkImg, lnkImg2 As LinkButton
     Dim radShowAll As RadioButtonList
     Dim msHide As String = "d-none " ' *** Hides CSS Element
     Public ShowAll As String
@@ -586,11 +586,21 @@ Public Class ReportResults
             l.ID = "lbl"
             l.Attributes.Add("data-id", lsID)
             cell(0).Controls.Add(l)
-            Dim lnk As LinkButton
+            Dim lnk, lnkImg, lnkImg2 As LinkButton
             lnk = cell(0).FindControl("lnkDel")
             If Not lnk Is Nothing Then
                 lnk.CommandArgument = lsID
                 lnk.Attributes.Add("data-id", lsID)
+            End If
+            lnkImg = cell(0).FindControl("lnkImg")
+            If Not lnkImg Is Nothing Then
+                lnkImg.CommandArgument = lsID
+                lnkImg.Attributes.Add("data-id", lsID)
+            End If
+            lnkImg2 = cell(0).FindControl("lnkImg2")
+            If Not lnkImg2 Is Nothing Then
+                lnkImg2.CommandArgument = lsID
+                lnkImg2.Attributes.Add("data-id", lsID)
             End If
         End If
     End Sub
@@ -801,11 +811,19 @@ Public Class LinkColumn : Implements ITemplate
     Public Sub InstantiateIn(container As Control) Implements ITemplate.InstantiateIn
         'Throw New NotImplementedException()
         Dim lnkDel As LinkButton = New LinkButton
-
         AddHandler lnkDel.DataBinding, AddressOf l_Databinding
         lnkDel.ID = "lnkDel"
-
         container.Controls.Add(lnkDel)
+
+        'Dim lnkImg As LinkButton = New LinkButton
+        'AddHandler lnkImg.DataBinding, AddressOf img_Databinding
+        'lnkImg.ID = "lnkImg"
+        'container.Controls.Add(lnkImg)
+
+        'Dim lnkImg2 As LinkButton = New LinkButton
+        'AddHandler lnkImg2.DataBinding, AddressOf img2_Databinding
+        'lnkImg2.ID = "lnkImg2"
+        'container.Controls.Add(lnkImg2)
     End Sub
     Private Sub l_Databinding(sender As Object, e As EventArgs)
         Dim l As LinkButton = sender
@@ -820,4 +838,30 @@ Public Class LinkColumn : Implements ITemplate
             l.CommandName = ""
         End If
     End Sub
+    'Private Sub img_Databinding(sender As Object, e As EventArgs)
+    '    Dim l As LinkButton = sender
+    '    Dim gvr As GridViewRow = l.NamingContainer
+    '    Dim drv As DataRowView = gvr.DataItem
+
+    '    If drv("Active").ToString.ToUpper = "TRUE" Then
+    '        l.Text = "<i class='dc dc-images del table-hover' ></i>"
+    '        'l.CommandName = "gv_delete"
+    '    Else
+    '        l.Text = ""
+    '        l.CommandName = ""
+    '    End If
+    'End Sub
+    'Private Sub img2_Databinding(sender As Object, e As EventArgs)
+    '    Dim l As LinkButton = sender
+    '    Dim gvr As GridViewRow = l.NamingContainer
+    '    Dim drv As DataRowView = gvr.DataItem
+
+    '    If drv("Active").ToString.ToUpper = "TRUE" Then
+    '        l.Text = "<i class='dc dc-image del table-hover' ></i>"
+    '        'l.CommandName = "gv_delete"
+    '    Else
+    '        l.Text = ""
+    '        l.CommandName = ""
+    '    End If
+    'End Sub
 End Class

@@ -131,6 +131,7 @@
     <Compile Include="ctrlListBox.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ctrlImage.vb" />
     <Compile Include="ctrlTextBox.vb" />
     <Compile Include="ReportContainer.vb" />
     <Compile Include="ctrlCheckBox.vb" />

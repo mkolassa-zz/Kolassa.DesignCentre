@@ -367,6 +367,8 @@
     <Content Include="fonts\dc_fonts.css" />
     <Content Include="fonts\designcenter.svg" />
     <Content Include="fonts\fontawesome-webfont.svg" />
+    <Content Include="frmImagePopOut.aspx" />
+    <Content Include="frmQuoteCustomer.aspx" />
     <Content Include="frmReports.aspx" />
     <Content Include="frmTasks.aspx" />
     <Content Include="frmUpgradeItems.aspx" />
@@ -380,6 +382,7 @@
     <Content Include="images\TabBacgroundActive.png" />
     <Content Include="images\TabBackgroundInactive.png" />
     <Content Include="images\tools.png" />
+    <Content Include="Oops.html" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -421,6 +424,9 @@
     <Content Include="Scripts\esm\popper.js" />
     <Content Include="Scripts\esm\popper.min.js" />
     <Content Include="Scripts\helpmain.js" />
+    <Content Include="Scripts\image-picker\image-picker.css" />
+    <Content Include="Scripts\image-picker\image-picker.js" />
+    <Content Include="Scripts\image-picker\image-picker.min.js" />
     <Content Include="Scripts\index.js.flow" />
     <Content Include="Scripts\esm\popper.min.js.map" />
     <Content Include="Scripts\esm\popper.js.map" />
@@ -896,6 +902,20 @@
       <DependentUpon>dcwebservices.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="frmImagePopOut.aspx.designer.vb">
+      <DependentUpon>frmImagePopOut.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmImagePopOut.aspx.vb">
+      <DependentUpon>frmImagePopOut.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="frmQuoteCustomer.aspx.designer.vb">
+      <DependentUpon>frmQuoteCustomer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmQuoteCustomer.aspx.vb">
+      <DependentUpon>frmQuoteCustomer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="frmReports.aspx.designer.vb">
       <DependentUpon>frmReports.aspx</DependentUpon>
     </Compile>
@@ -1143,13 +1163,6 @@
     <Compile Include="ViewSwitcher.ascx.designer.vb">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Site.Mobile.Master.vb">
-      <DependentUpon>Site.Mobile.Master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Site.Mobile.Master.designer.vb">
-      <DependentUpon>Site.Mobile.Master</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201806022156160_UserFriendlyName.resx">
@@ -1177,7 +1190,6 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
-    <Content Include="Site.Mobile.Master" />
     <Content Include="ViewSwitcher.ascx" />
     <None Include="packages.config" />
     <Content Include="Site.Master" />
@@ -1202,6 +1214,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="cfiles\" />
     <Folder Include="images\flickr\NewFolder1\" />
     <Folder Include="Reports\" />
   </ItemGroup>

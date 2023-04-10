@@ -1,4 +1,4 @@
-<%@ Page Language="vb" EnableEventValidation=false AutoEventWireup="false" MasterPageFile="~/Site.master" Codebehind="frmBase.aspx.vb" Inherits="Kolassa.DesignCentre.UI.frmBase"%>
+<%@ Page Language="vb" EnableEventValidation=false AutoEventWireup="false" MasterPageFile="~/Site.master" Codebehind="frmBase.aspx.vb" Inherits="Kolassa.DesignCentre.UI.frmBase" Trace="false"%>
 <%@ Register Assembly="Kolassa.DesignCenter.ReportManager" Namespace="Kolassa.DesignCenter.ReportManager" TagPrefix="cc1" %>
 <%@ Register assembly="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" namespace="System.Web.UI" tagprefix="asp" %>
 <%@ Register Src="~/Controls/ctrlImageNew.ascx" TagPrefix="uc1" TagName="ctrlImageNew" %>
@@ -167,7 +167,9 @@
                       </button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" href="#">&nbsp;<i class="dc-Download"></i>&nbsp;Download Template</a>
-                        <a class="dropdown-item" data-toggle="modal" data-target="#modalupload"  href="#">&nbsp;<i class='fa fa-upload  padding-left:80px;'></i>&nbsp;Upload File</a>
+                        <!-- <a class="dropdown-item" data-toggle="modal" data-target="#modalupload"  href="#">&nbsp;<i class='fa fa-upload  padding-left:80px;'></i>&nbsp;Upload File</a>
+                        <a class="dropdown-item" data-toggle="modal" data-target="#modaluploadimage"  href="#">&nbsp;<i class='fa fa-upload  padding-left:80px;'></i>&nbsp;Upload Images</a> -->
+                        <a class="dropdown-item" data-toggle="modal" data-target="#modaluploadimage2"  href="#">&nbsp;<i class='fa fa-upload  padding-left:80px;'></i>&nbsp;Upload Images</a>
                       </div>
                     </li>
                 <li class="nav-item" style="padding-left:20px;padding-right:10px; padding-top:5px;">
@@ -208,10 +210,32 @@
             </div>
         </div>
     </div>
+                     <!-- Modal image Upload Data -->
+                     <div class="modal" id="modaluploadimage2">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title"><asp:Label ID="Label2" runat="server" />Upload Image File</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                             <!-- Modal body -->
+                            <div class="modal-body">
+                                <div class="card">
+                                <asp:FileUpload AllowMultiple="true" ID="fuImage" runat="server" /> <asp:Button ID="cmdfuImage" runat="server" Text ="UPLOAD" />       
+                                </div>
+                            </div>       
+                         </div>
+                      </div>
+                    </div>
         <asp:UpdatePanel ID="uppnlReport" runat="server" >
             <ContentTemplate> 
 	            <div class="container">
-                    <!-- The Modal -->
+                    <!-- **********************************************************
+                         *** MODALS                                             ***
+                         **********************************************************
+                         *** REPORT COLUMNS MODAL
+                    -->
                     <div class="modal" id="modalColumns">
                         <div class="modal-xl modal-dialog">
                             <div class="modal-content">
@@ -232,7 +256,8 @@
                           </div>
                         </div>
                       </div>     
-                     <!-- The Modal -->
+
+                     <!-- *** Not sure what this is The Modal -->
                      <div class="modal" id="modalWhere">
                         <div class="modal-dialog">
                           <div class="modal-content">
@@ -252,6 +277,7 @@
                           </div>
                         </div>
                       </div>
+
                      <!-- Modal Upload Data -->
                      <div class="modal" id="modalupload">
                         <div class="modal-dialog">
@@ -268,14 +294,31 @@
 				                   <asp:Button ID="cmdCSV" class="btn btn-primary" runat="server" Text="Upload CSV" /> 
 				                </p>
                             </div>       
-                            <!-- Modal footer -->
-                            <!-- div class="modal-footer">
-                              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                            </div -->       
-                          </div>
-                        </div>
+                         </div>
                       </div>
-                  </div>
+                    </div>
+ 
+                     <!-- Modal image Upload Data -->
+                     <div class="modal" id="modaluploadimage">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title"><asp:Label ID="lblUploadImage" runat="server" />Upload Image File</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                             <!-- Modal body -->
+                            <div class="modal-body">
+                                 <p> <asp:Label ID="lblafuImage" runat="server" AssociatedControlID="afuimage" Text="Image file: " />
+                                   <ajaxToolkit:AjaxFileUpload ID="afuImage" runat="server" CssClass="lbtn lbtn-light"  />
+				                </p>
+                            </div>       
+                         </div>
+                      </div>
+                    </div>
+
+
+                </div>
                 <asp:Panel ID="pnlMessage" runat="server"></asp:Panel>
                   <div class="container-fluid">
                        <cc1:ReportResults ID="ReportResults" runat="server" />

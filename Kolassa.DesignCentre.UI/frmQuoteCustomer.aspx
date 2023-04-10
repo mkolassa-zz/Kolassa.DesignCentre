@@ -1,4 +1,4 @@
-<%@ Page Language="vb" EnableEventValidation="false" AutoEventWireup="false" MasterPageFile="~/Site.master" codebehind="frmQuote.aspx.vb" Inherits="Kolassa.DesignCentre.UI.frmQuote"%>
+<%@ Page Language="vb" EnableEventValidation="false" AutoEventWireup="false" MasterPageFile="~/Site.master" codebehind="frmQuoteCustomer.aspx.vb" Inherits="Kolassa.DesignCentre.UI.frmQuoteCustomer"%>
 
 <%@ Register Assembly="Microsoft.ReportViewer.WebForms" Namespace="Microsoft.Reporting.WebForms" TagPrefix="rsweb" %>
 
@@ -522,214 +522,246 @@
 
 
 <asp:Panel runat="server" ID="pnlQuote">     
-	<div class="container pb-2">
-		<div class="row">
-			<div class="col-md-3">
-				<div class="card h-100">
-					<div class="card-body">			
-					<div class="dropup">
-							<div class="lauto-style1">
-								<table>
-									<tr>
-										<td>
-											<asp:literal ID="litName" runat="server" />
-											<button  id="btnAssignResource" type="button" class="btn btn-default btn-sm"
-												data-toggle="modal" data-target="#modAssignResource" >
-												<i class="fa fa-user-plus"></i> Assign Resource</button>
-										</td>			
-									</tr>
-								</table>			
-								<table>
-									<tr>
-										<td>
-											<nav class="Kolassa" >
-												<ul class="Kolassa" style="padding:unset;">
-													<button type="button" class="btn btn-primary btn-sm" id="cmdSave" ><i class="fa fa-save" ></i> Save</button>
-												</ul>
-											</nav>	 
-										</td>
-										<td>
-											<nav class="Kolassa" >
-												<ul class="Kolassa">
-													<li class="btn btn-danger dropdown-toggle btn-sm"><a class="Kolassa" href="#">Action</a>
-														<ul class="Kolassa">
-															<asp:linkButton ID="cmdAddNewOption"      runat="server" class="dropdown-item" ><i class='fas fa-plus'></i> Add New Option</asp:linkButton> 
-															<asp:linkButton ID="cmdAutoPick"          runat="server" class="dropdown-item" ><i class='fas fa-adjust'></i> Auto Pick</asp:linkButton> 		
-															<!--	<asp:linkButton ID="btnAutoPop"           runat="server" class="dropdown-item" ><i class="material-icons">flash_auto</i> Auto Populate</asp:linkButton> 		-->
-															<button type="button" class="dropdown-item" data-toggle="modal" data-target="#PaymentsModal"><i class="fas fa-dollar-sign"></i> Payments</button>
-															<button type="button" class="dropdown-item btn-sm" data-toggle="modal" data-target="#AdjustmentsModal"><i class="fas fa-adjust"></i> Adjustments</button>
-							      							<asp:label ID="lblReports" runat="server"><i class='fas fa-file-code'></i> Reports</asp:label>
-															<asp:linkbutton ID="cmdMissingSelections"           runat="server" class="dropdown-item" ><i class='fas fa-file-code'></i> Missing Report</asp:linkbutton>
-															<asp:linkButton ID="cmdCustomerReceipt"             runat="server" class="dropdown-item" ><i class='fas fa-file-alt'></i> Preview Receipt</asp:linkButton>   
-															<asp:linkbutton ID="cmdStandardReport"              runat="server" class="dropdown-item" ><i class='fas fa-file'></i> Standard Selections Report</asp:linkbutton>	
-															<asp:linkbutton ID="cmdVendorInstallationReport"    runat="server" class="dropdown-item" ><i class='fas fa-chevron-right'></i> Vendor Installation Report</asp:linkbutton>	
-														</ul>
-													</li>
-												</ul>
-											</nav>
-										</td>
-									</tr>
-								</table>
-							</div>
-					</div>
-					<h5 class="card-title">Customer	<button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#CommunicationsModal"><i class="fas fa-comments"></i></button></h5>
-					<p class="card-text">
-					<asp:Repeater ID="Repeater1" runat="server" DataSourceID="odsQuotes" >
-						<ItemTemplate>
-							<asp:Label runat="server" ID="lblName" Text='<%# Eval("CustomerName") %>' CssClass="card-subtitle font-weight-bold" /><br />
-							<asp:Label runat="server" ID="lblUnitName"     Text='<%# Eval("UnitName") %>' /><br />
-							<asp:Label runat="server" ID="lblUnitTypeName" Text='<%# Eval("UnitTypeName") %>' /><br />
-							<asp:Label runat="server" ID="lblUnitTypeDesc" Text='<%# Eval("UnitTypeDescription") %>' />
-						</ItemTemplate>
-					</asp:Repeater></p>
-				</div>
-				</div>
-			</div>
-			<div class="col-md-6">
-				 <div class="card h-100">
-					<div class="card-body">
-				  <h5 class="card-title">Phase Status</h5>
-					<p class="card-text">
-						<asp:FormView ID="fvQuote" runat="server" DataSourceID="odsQuotes" BorderStyle="None" BorderWidth="0px">
-							<EditItemTemplate >
-								<table>
-									<tr>
-										<td> 
-											 <asp:Label ID="lblQuoteStatus" runat="server" Height="20px">Quote Status</asp:Label>
-										</td>
-									</tr>
-								</table>
-							</EditItemTemplate>
-							<ItemTemplate>
-								<table>
-									<tr>
-										<td >
-											<asp:LinkButton ID="EditButton" Text="Edit" CommandName="Edit" RunAt="server"/>
-											<asp:Label ID="lblQuoteStatus" runat="server" Height="20px">Quote Status</asp:Label>
-										</td>
-										<td >
-											<%#Eval("QuoteStatus")%>
-										</td>
-									</tr>
-								</table>
-							</ItemTemplate>
-						</asp:FormView>
-					  <asp:UpdatePanel ID="upPhase" runat="server" >
-						  <ContentTemplate >
-							  <asp:ObjectDataSource ID="odsPhases" runat="server" 
-								SelectMethod="GetRecords" TypeName="Kolassa.DesignCentre.UI.clsPhases" InsertMethod="Insert" 
-								UpdateMethod="Update" DeleteMethod="Delete" DataObjectTypeName="Kolassa.DesignCentre.UI.clsPhase"   >
-								<SelectParameters>
-									<asp:Parameter DefaultValue="Name" Name="SortExpression" Type="String" />
-									<asp:Parameter DefaultValue="1" Name="SortOrder" Type="String" />
-									<asp:SessionParameter Name="lsObjectID" SessionField="QuoteID" Type="String" DefaultValue="" />
-								</SelectParameters>
-							</asp:ObjectDataSource>
-
-						   <asp:GridView ID="grdPhases" runat="server" AutoGenerateColumns="False" 
-							   class="table table-bordered table-sm" 
-							   DataSourceID="odsPhases" DataKeyNames="ID" >
-							   <Columns>		   
-									<asp:BoundField DataField="ObjectID" HeaderText="ObjectID" SortExpression="ObjectID" Visible="false" />
-									<asp:BoundField DataField="Code" HeaderText="Code" SortExpression="Code" Visible="false"/>
-									<asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="card-title" />
-									<asp:BoundField DataField="Description" HeaderText="Description" SortExpression="Description" Visible="false"/>
-						   			<asp:TemplateField HeaderText="Status">
-										<ItemTemplate><label id="lbl" data-id="<%# Eval("ID") %>"><%# Eval("PhaseStatus") %></label>
-										</ItemTemplate>
-									</asp:TemplateField>
-									<asp:BoundField DataField="ProjectType" HeaderText="ProjectType" SortExpression="ProjectType" Visible="false"/>
-									<asp:BoundField DataField="PhaseTargetDateString" HeaderText="Target" SortExpression="PhaseTargetDate" DataFormatString="{0:yyyy-MM-dd}" />
-									<asp:BoundField DataField="PhaseCompleteDateString" HeaderText="Completed" SortExpression="PhaseCompleteDate" DataFormatString="{0:yyyy-MM-dd}" />
-									<asp:BoundField DataField="CustomerEmail" HeaderText="CustomerEmail" SortExpression="CustomerEmail" Visible="false"/>
-									<asp:BoundField DataField="NodeID" HeaderText="NodeID" SortExpression="NodeID" Visible="false"/>
-									<asp:BoundField DataField="Image" HeaderText="Image" SortExpression="Image" Visible="false"/>
-									<asp:BoundField DataField="SortOrder" HeaderText="SortOrder" SortExpression="SortOrder" Visible="false"/>
-									<asp:CheckBoxField DataField="Active" HeaderText="Active" SortExpression="Active" Visible="false"/>
-									<asp:BoundField DataField="CreateDate" HeaderText="CreateDate" SortExpression="CreateDate" Visible="false"/>
-									<asp:BoundField DataField="CreateUser" HeaderText="CreateUser" SortExpression="CreateUser" Visible="false"/>
-									<asp:BoundField DataField="UpdateDate" HeaderText="UpdateDate" SortExpression="UpdateDate" Visible="false"/>
-									<asp:BoundField DataField="UpdateUser" HeaderText="UpdateUser" SortExpression="UpdateUser" Visible="false"/>
-									<asp:BoundField DataField="UpdateUserName" HeaderText="UpdateUserName" SortExpression="UpdateUserName" Visible="false"/>
-									<asp:BoundField DataField="CreateUserName" HeaderText="CreateUserName" SortExpression="CreateUserName" Visible="false"/>
-									<asp:BoundField DataField="ErrorMessage" HeaderText="ErrorMessage" SortExpression="ErrorMessage" Visible="false"/>
-									<asp:BoundField DataField="Level" HeaderText="Level" SortExpression="Level" Visible="false"/>
-									<asp:BoundField DataField="ID" HeaderText="ID" SortExpression="ID" Visible="true" ControlStyle-Font-Size="XX-Small" />
-							   </Columns>
-						   </asp:GridView>
-					  	   
-		<!-- THIS IS THE PANEL FOR Phase Edits -->
-			<asp:Panel Runat="server" ID="pnlPhaseEdit"   Visible = "true">
-			<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR Phase Edits -->
-			<div class="modal fade" id="PhaseModal" tabindex="-1" role="dialog" aria-labelledby="lblPhaseInfo" aria-hidden="true">
-			  <div class="modal-dialog" role="document">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<h5 class="modal-title" id="lblPhaseInfo">Phase Information</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						  <span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body" id="phasebody">
-						 <div class="form-group">
-							<label for="txtPhaseName">Phase</label>
-							<asp:textbox ID="txtPhaseName" runat="server" class="form-control"  />
-							<label for="txtPhaseID">Phase ID</label>
-							<asp:textbox ID="txtPhaseID" runat="server" class="form-control"  />
-							<label for="ddlPhaseStatus">Phase Status</label>
-							<asp:DropDownList ID="ddlPhaseStatus" runat="server" class="form-control" 
-								DataValueField="DESCRIPTION"  DataSourceID="odsPhase1Status">	</asp:DropDownList>
+	<div class="card-deck">
+		<div class="card col-3">
+			<div class="card-body">			
+				<div class="dropup">
+						<div class="lauto-style1">
+							<table>
+								<tr>
+									<td>
+										<asp:literal ID="litName" runat="server" />
+										<button  id="btnAssignResource" type="button" class="btn btn-default btn-sm"
+											data-toggle="modal" data-target="#modAssignResource" >
+											<i class="fa fa-user-plus"></i> Assign Resource</button>
+									</td>			
+								</tr>
+							</table>			
+							<table>
+								<tr>
+									<td>
+										<nav class="Kolassa" >
+											<ul class="Kolassa" style="padding:unset;">
+												<button type="button" class="btn btn-primary btn-sm" id="cmdSave" ><i class="fa fa-save" ></i> Save</button>
+											</ul>
+										</nav>	 
+									</td>
+									<td>
+										<nav class="Kolassa" >
+											<ul class="Kolassa">
+												<li class="btn btn-danger dropdown-toggle btn-sm"><a class="Kolassa" href="#">Action</a>
+													<ul class="Kolassa">
+														<asp:linkButton ID="cmdAddNewOption"      runat="server" class="dropdown-item" ><i class='fas fa-plus'></i> Add New Option</asp:linkButton> 
+														<asp:linkButton ID="cmdAutoPick"          runat="server" class="dropdown-item" ><i class='fas fa-adjust'></i> Auto Pick</asp:linkButton> 		
+														<!--	<asp:linkButton ID="btnAutoPop"           runat="server" class="dropdown-item" ><i class="material-icons">flash_auto</i> Auto Populate</asp:linkButton> 		-->
+														<button type="button" class="dropdown-item" data-toggle="modal" data-target="#PaymentsModal"><i class="fas fa-dollar-sign"></i> Payments</button>
+														<button type="button" class="dropdown-item btn-sm" data-toggle="modal" data-target="#AdjustmentsModal"><i class="fas fa-adjust"></i> Adjustments</button>
+							      						<asp:label ID="lblReports" runat="server"><i class='fas fa-file-code'></i> Reports</asp:label>
+														<asp:linkbutton ID="cmdMissingSelections"           runat="server" class="dropdown-item" ><i class='fas fa-file-code'></i> Missing Report</asp:linkbutton>
+														<asp:linkButton ID="cmdCustomerReceipt"             runat="server" class="dropdown-item" ><i class='fas fa-file-alt'></i> Preview Receipt</asp:linkButton>   
+														<asp:linkbutton ID="cmdStandardReport"              runat="server" class="dropdown-item" ><i class='fas fa-file'></i> Standard Selections Report</asp:linkbutton>	
+														<asp:linkbutton ID="cmdVendorInstallationReport"    runat="server" class="dropdown-item" ><i class='fas fa-chevron-right'></i> Vendor Installation Report</asp:linkbutton>	
+													</ul>
+												</li>
+											</ul>
+										</nav>
+									</td>
+								</tr>
+							</table>
 						</div>
-						<div class="form-group">
-							<label for="txtTargetDate">Target Date</label>
-							<asp:textbox runat="server"  type="date" class="form-control" id="txtTargetDate" />
-						</div>
-						<div class="form-group">
-							<label for="txtCompleteDate">Complete Date</label>
-							<asp:textbox runat="server"  type="date" class="form-control" id="txtCompleteDate" />
-						</div>
-					</div>
-				  <div class="modal-footer">
-					<asp:button runat="server" onclientclick="fCheckPhases()" OnClick="cmdPhaseStatusSave_Click" UseSubmitBehavior="false" ID="cmdPhaseStatusSave"  class="btn btn-primary"  data-dismiss="modal" Text="Save"></asp:button>
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-				  </div>
 				</div>
-			  </div>
-			</div>
-		</asp:Panel>
-		<!-- END Phase Edit PANEL -->
-
-				</ContentTemplate>
-				<Triggers>
-					<asp:AsyncPostBackTrigger ControlID="cmdPhaseStatusSave" EventName="Click" />
-				</Triggers>
-			</asp:UpdatePanel>
-
-			<asp:UpdateProgress ID="upprogPhase" runat="server" AssociatedUpdatePanelID="upPhase">
-				<ProgressTemplate>
-					<asp:Image ID="imgLoadingPhase" runat="server" ImageUrl="~/images/loadingH.gif"  Height="20px"  />
-				</ProgressTemplate>
-			</asp:UpdateProgress>
-		  </div>
-				</div>
-			</div>
-			<div class=" col-md-3">
-				<div class="card h-100">
-					<div class="card-body">
-						<h5 class="card-title">Current Phase</h5>
-							<asp:RadioButtonList  ID="rblPhase" runat="server" AutoPostBack="True" 
-								CssClass="card border-0 form-check form-check-label form-check-input"> </asp:RadioButtonList>
-					</div>
-				</div>
+				<h5 class="card-title">Customer	<button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#CommunicationsModal"><i class="fas fa-comments"></i></button></h5>
+				<p class="card-text">
+				<asp:Repeater ID="Repeater1" runat="server" DataSourceID="odsQuotes" >
+					<ItemTemplate>
+						<asp:Label runat="server" ID="lblName" Text='<%# Eval("CustomerName") %>' CssClass="card-subtitle font-weight-bold" /><br />
+						<asp:Label runat="server" ID="lblUnitName"     Text='<%# Eval("UnitName") %>' /><br />
+						<asp:Label runat="server" ID="lblUnitTypeName" Text='<%# Eval("UnitTypeName") %>' /><br />
+						<asp:Label runat="server" ID="lblUnitTypeDesc" Text='<%# Eval("UnitTypeDescription") %>' />
+					</ItemTemplate>
+				</asp:Repeater></p>
 			</div>
 		</div>
+		<div class="card col-6">
+			<div class="card-body">
+			  <h5 class="card-title">Phase Status</h5>
+				<p class="card-text">
+					<asp:FormView ID="fvQuote" runat="server" DataSourceID="odsQuotes" BorderStyle="None" BorderWidth="0px">
+						<EditItemTemplate >
+							<table>
+								<tr>
+									<td> 
+										 <asp:Label ID="lblQuoteStatus" runat="server" Height="20px">Quote Status</asp:Label>
+									</td>
+								</tr>
+							</table>
+						</EditItemTemplate>
+						<ItemTemplate>
+							<table>
+								<tr>
+									<td >
+										<asp:LinkButton ID="EditButton" Text="Edit" CommandName="Edit" RunAt="server"/>
+										<asp:Label ID="lblQuoteStatus" runat="server" Height="20px">Quote Status</asp:Label>
+									</td>
+									<td >
+										<%#Eval("QuoteStatus")%>
+									</td>
+								</tr>
+							</table>
+						</ItemTemplate>
+					</asp:FormView>
+				  <asp:UpdatePanel ID="upPhase" runat="server" >
+					  <ContentTemplate >
+						  <asp:ObjectDataSource ID="odsPhases" runat="server" 
+							SelectMethod="GetRecords" TypeName="Kolassa.DesignCentre.UI.clsPhases" InsertMethod="Insert" 
+							UpdateMethod="Update" DeleteMethod="Delete" DataObjectTypeName="Kolassa.DesignCentre.UI.clsPhase"   >
+							<SelectParameters>
+								<asp:Parameter DefaultValue="Name" Name="SortExpression" Type="String" />
+								<asp:Parameter DefaultValue="1" Name="SortOrder" Type="String" />
+								<asp:SessionParameter Name="lsObjectID" SessionField="QuoteID" Type="String" DefaultValue="" />
+							</SelectParameters>
+						</asp:ObjectDataSource>
+
+					   <asp:GridView ID="grdPhases" runat="server" AutoGenerateColumns="False" 
+						   class="table table-bordered table-sm" 
+						   DataSourceID="odsPhases" DataKeyNames="ID" >
+						   <Columns>		   
+								<asp:BoundField DataField="ObjectID" HeaderText="ObjectID" SortExpression="ObjectID" Visible="false" />
+								<asp:BoundField DataField="Code" HeaderText="Code" SortExpression="Code" Visible="false"/>
+								<asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="card-title" />
+								<asp:BoundField DataField="Description" HeaderText="Description" SortExpression="Description" Visible="false"/>
+						   		<asp:TemplateField HeaderText="Status">
+									<ItemTemplate><label id="lbl" data-id="<%# Eval("ID") %>"><%# Eval("PhaseStatus") %></label>
+									</ItemTemplate>
+								</asp:TemplateField>
+								<asp:BoundField DataField="ProjectType" HeaderText="ProjectType" SortExpression="ProjectType" Visible="false"/>
+								<asp:BoundField DataField="PhaseTargetDateString" HeaderText="Target" SortExpression="PhaseTargetDate" DataFormatString="{0:yyyy-MM-dd}" />
+								<asp:BoundField DataField="PhaseCompleteDateString" HeaderText="Completed" SortExpression="PhaseCompleteDate" DataFormatString="{0:yyyy-MM-dd}" />
+								<asp:BoundField DataField="CustomerEmail" HeaderText="CustomerEmail" SortExpression="CustomerEmail" Visible="false"/>
+								<asp:BoundField DataField="NodeID" HeaderText="NodeID" SortExpression="NodeID" Visible="false"/>
+								<asp:BoundField DataField="Image" HeaderText="Image" SortExpression="Image" Visible="false"/>
+								<asp:BoundField DataField="SortOrder" HeaderText="SortOrder" SortExpression="SortOrder" Visible="false"/>
+								<asp:CheckBoxField DataField="Active" HeaderText="Active" SortExpression="Active" Visible="false"/>
+								<asp:BoundField DataField="CreateDate" HeaderText="CreateDate" SortExpression="CreateDate" Visible="false"/>
+								<asp:BoundField DataField="CreateUser" HeaderText="CreateUser" SortExpression="CreateUser" Visible="false"/>
+								<asp:BoundField DataField="UpdateDate" HeaderText="UpdateDate" SortExpression="UpdateDate" Visible="false"/>
+								<asp:BoundField DataField="UpdateUser" HeaderText="UpdateUser" SortExpression="UpdateUser" Visible="false"/>
+								<asp:BoundField DataField="UpdateUserName" HeaderText="UpdateUserName" SortExpression="UpdateUserName" Visible="false"/>
+								<asp:BoundField DataField="CreateUserName" HeaderText="CreateUserName" SortExpression="CreateUserName" Visible="false"/>
+								<asp:BoundField DataField="ErrorMessage" HeaderText="ErrorMessage" SortExpression="ErrorMessage" Visible="false"/>
+								<asp:BoundField DataField="Level" HeaderText="Level" SortExpression="Level" Visible="false"/>
+								<asp:BoundField DataField="ID" HeaderText="ID" SortExpression="ID" Visible="true" ControlStyle-Font-Size="XX-Small" />
+						   </Columns>
+					   </asp:GridView>
+					  	   
+	<!-- THIS IS THE PANEL FOR Phase Edits -->
+		<asp:Panel Runat="server" ID="pnlPhaseEdit"   Visible = "true">
+		<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR Phase Edits -->
+		<div class="modal fade" id="PhaseModal" tabindex="-1" role="dialog" aria-labelledby="lblPhaseInfo" aria-hidden="true">
+		  <div class="modal-dialog" role="document">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<h5 class="modal-title" id="lblPhaseInfo">Phase Information</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body" id="phasebody">
+					 <div class="form-group">
+						<label for="txtPhaseName">Phase</label>
+						<asp:textbox ID="txtPhaseName" runat="server" class="form-control"  />
+						<label for="txtPhaseID">Phase ID</label>
+						<asp:textbox ID="txtPhaseID" runat="server" class="form-control"  />
+						<label for="ddlPhaseStatus">Phase Status</label>
+						<asp:DropDownList ID="ddlPhaseStatus" runat="server" class="form-control" 
+							DataValueField="DESCRIPTION"  DataSourceID="odsPhase1Status">	</asp:DropDownList>
+					</div>
+					<div class="form-group">
+						<label for="txtTargetDate">Target Date</label>
+						<asp:textbox runat="server"  type="date" class="form-control" id="txtTargetDate" />
+					</div>
+					<div class="form-group">
+						<label for="txtCompleteDate">Complete Date</label>
+						<asp:textbox runat="server"  type="date" class="form-control" id="txtCompleteDate" />
+					</div>
+				</div>
+			  <div class="modal-footer">
+				<asp:button runat="server" onclientclick="fCheckPhases()" OnClick="cmdPhaseStatusSave_Click" UseSubmitBehavior="false" ID="cmdPhaseStatusSave"  class="btn btn-primary"  data-dismiss="modal" Text="Save"></asp:button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	</asp:Panel>
+	<!-- END Phase Edit PANEL -->
+
+	        </ContentTemplate>
+	        <Triggers>
+		        <asp:AsyncPostBackTrigger ControlID="cmdPhaseStatusSave" EventName="Click" />
+	        </Triggers>
+        </asp:UpdatePanel>
+
+		<asp:UpdateProgress ID="upprogPhase" runat="server" AssociatedUpdatePanelID="upPhase">
+			<ProgressTemplate>
+				<asp:Image ID="imgLoadingPhase" runat="server" ImageUrl="~/images/loadingH.gif"  Height="20px"  />
+			</ProgressTemplate>
+		</asp:UpdateProgress>
+	  </div>
 	</div>
+
+
+
+
+	<div class="card col-3">
+		<div class="card-body">
+			<h5 class="card-title">Current Phase</h5>
+			<p class="card-text">
+			<asp:RadioButtonList  ID="rblPhase" runat="server" AutoPostBack="True" CssClass="form-check form-check-label form-check-input"> </asp:RadioButtonList>
+		</div>
+	</div>
+</div>
 	
 
     <!-- **********************************************************************************************************
          *** Container
          *********************************************************************************************************** -->
 	<div class="container"> <!-- style="padding-left:0px;padding-right:0px;"> -->
+		
+		
+		<div class="row">
+			<asp:UpdatePanel ID="upRoomHorizontal" runat="server"  Height="250px">       
+						<ContentTemplate>
+							<asp:ListView ID="lvRoomHorizontal"   runat="server" DataSourceID="odsRooms" DataKeyNames="RoomName"  >
+								<LayoutTemplate>
+									<table style="width:100%;height:250px" class="table-bordered table-hover" id="gradient-style">
+										<tr>
+										<asp:PlaceHolder ID="itemPlaceholder" runat="server"></asp:PlaceHolder>
+										</tr>
+									</table>
+								</LayoutTemplate>
+								<ItemTemplate>
+										<td class="table-light border-0">
+											<asp:LinkButton runat="server" ID="SelectCategoryButton"  Text='<%#Eval("UpgradeCount")%>' CommandName="Select" />
+										</td>
+								</ItemTemplate>
+								<SelectedItemTemplate>
+										<td class="table-success font-weight-bold"><asp:LinkButton runat="server" ID="SelectCategoryButton" 
+											Text='<%#Eval("UpgradeCount")%>' CommandName="Select" /></td>
+								</SelectedItemTemplate>
+							</asp:ListView>
+	
+						</ContentTemplate>
+						<Triggers >
+							<asp:AsyncPostBackTrigger ControlID="lvRoomHorizontal" EventName="SelectedIndexChanged" />
+							<asp:AsyncPostBackTrigger ControlID="lstRooms2" EventName="SelectedIndexChanged" />
+							<asp:asyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemDeleted"  />
+							<asp:AsyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemInserted"  />					
+							<asp:AsyncPostBackTrigger ControlID="cmdAutoPick" EventName="Click" />
+							<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemCommand" />
+							<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemDeleting" />
+						</Triggers>
+					</asp:UpdatePanel>
+		</div>
 		<div class="row">
 		<!-- **********************************************************************************************************
          *** LOCATION
@@ -738,49 +770,45 @@
 			<div class="col-md-3" style="padding-left:0px;padding-right:0px;">
 				<div class="card w-100">
 					<div class="card-body">
-				<h5 class="card-title"">Location</h5>
-                <asp:Panel ID="pnlLoca" runat="server"  Height="270px" style="overflow-y:auto;padding-left:3px"  CssClass="border border-primary">       
-                <asp:UpdatePanel ID="upRoom" runat="server"  Height="250px">       
-                    <ContentTemplate>
-                        <asp:ListView ID="lstRooms2"   runat="server" DataSourceID="odsRooms" DataKeyNames="RoomName"  >
-                            <LayoutTemplate>
-                                <table style="width:100%;height:250px" class="table-bordered table-hover" id="gradient-style">
-                                    <asp:PlaceHolder ID="itemPlaceholder" runat="server"></asp:PlaceHolder>
-                                </table>
-                            </LayoutTemplate>
-                            <ItemTemplate>
-                                <tr>
-                                    <td class="table-light border-0">
-                                        <asp:LinkButton runat="server" ID="SelectCategoryButton"  Text='<%#Eval("UpgradeCount")%>' CommandName="Select" />
-                                    </td>
-                                </tr>
-                            </ItemTemplate>
-                            <SelectedItemTemplate>
-                                <tr>
-                                    <td class="table-success font-weight-bold"><asp:LinkButton runat="server" ID="SelectCategoryButton" 
-                                        Text='<%#Eval("UpgradeCount")%>' CommandName="Select" /></td>
-                                </tr>
-                            </SelectedItemTemplate>
-                        </asp:ListView>
-                        <asp:Listbox   class="d-none"  id="lstRooms" runat="server" 
-                            Rows="10"  Width="99%"     Height="250px" 
-                            DataSourceID="odsRooms"    DataTextField="UpgradeCount" 
-                            DataValueField="RoomName"  AutoPostBack="True"         >
-                        </asp:Listbox>
-                    </ContentTemplate>
-                    <Triggers >
-                        <asp:AsyncPostBackTrigger ControlID="lstRooms2" EventName="SelectedIndexChanged" />
-						<asp:asyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemDeleted"  />
-						<asp:AsyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemInserted"  />					
-						<asp:AsyncPostBackTrigger ControlID="cmdAutoPick" EventName="Click" />
-						<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemCommand" />
-						<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemDeleting" />
-                    </Triggers>
-                </asp:UpdatePanel>
-                    </asp:Panel>
+					<h5 class="card-title"">Location</h5>
+					<asp:Panel ID="pnlLoca" runat="server"  Height="270px" style="overflow-y:auto;padding-left:3px"  CssClass="border border-primary">       
+					<asp:UpdatePanel ID="upRoom" runat="server"  Height="250px">       
+						<ContentTemplate>
+							<asp:ListView ID="lstRooms2"   runat="server" DataSourceID="odsRooms" DataKeyNames="RoomName"  >
+								<LayoutTemplate>
+									<table style="width:100%;height:250px" class="table-bordered table-hover" id="gradient-style">
+										<asp:PlaceHolder ID="itemPlaceholder" runat="server"></asp:PlaceHolder>
+									</table>
+								</LayoutTemplate>
+								<ItemTemplate>
+									<tr>
+										<td class="table-light border-0">
+											<asp:LinkButton runat="server" ID="SelectCategoryButton"  Text='<%#Eval("UpgradeCount")%>' CommandName="Select" />
+										</td>
+									</tr>
+								</ItemTemplate>
+								<SelectedItemTemplate>
+									<tr>
+										<td class="table-success font-weight-bold"><asp:LinkButton runat="server" ID="SelectCategoryButton" 
+											Text='<%#Eval("UpgradeCount")%>' CommandName="Select" /></td>
+									</tr>
+								</SelectedItemTemplate>
+							</asp:ListView>
+	
+						</ContentTemplate>
+						<Triggers >
+							<asp:AsyncPostBackTrigger ControlID="lstRooms2" EventName="SelectedIndexChanged" />
+							<asp:asyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemDeleted"  />
+							<asp:AsyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemInserted"  />					
+							<asp:AsyncPostBackTrigger ControlID="cmdAutoPick" EventName="Click" />
+							<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemCommand" />
+							<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemDeleting" />
+						</Triggers>
+					</asp:UpdatePanel>
+						</asp:Panel>
+				</div>
 			</div>
 		</div>
-	</div>
 
     <!-- **********************************************************************************************************
          *** Categories
@@ -920,7 +948,45 @@
 
                     </asp:ListView>
 					</asp:Panel>
-						</div></div></div>
+								<!-- Image Selector -->
+								<script src="Scripts/image-picker/image-picker.js"></script>
+								<script src="Scripts/image-picker/image-picker.min.js"></script>
+								<link href="Scripts/image-picker/image-picker.css" rel="stylesheet" />
+								<select class="image-picker show-labels show-html d-block">
+								  <option data-img-label="Awww" data-img-src="http://placekitten.com/220/200" value="1">Cute Kitten 1</option>
+								  <option data-img-label="Yeah" data-img-src="http://placekitten.com/180/200" value="2">Cute Kitten 2</option>
+								  <option data-img-label="Ohai" data-img-src="http://placekitten.com/130/200" value="3">Cute Kitten 3</option>
+								  <option data-img-label="Plop" data-img-src="http://placekitten.com/270/200" value="4">Cute Kitten 4</option>
+								</select>
+								<select class="image-picker show-labels show-html d-block">
+								  <option data-img-label="Awww" data-img-src="http://placekitten.com/220/200" value="1">Cute Kitten 1</option>
+								  <option data-img-label="Yeah" data-img-src="http://placekitten.com/180/200" value="2">Cute Kitten 2</option>
+								  <option data-img-label="Ohai" data-img-src="http://placekitten.com/130/200" value="3">Cute Kitten 3</option>
+								  <option data-img-label="Plop" data-img-src="http://placekitten.com/270/200" value="4">Cute Kitten 4</option>
+								</select>
+						<select class="show-labels image-picker show-html d-inline ">
+  <optgroup label="Cats">
+    <option  data-img-label="Awww" data-img-src="http://placekitten.com/120/200" value="1">Cute Kitten 1</option>
+    <option  data-img-label="THis is very Nice" data-img-src="http://placekitten.com/150/200" value="2">Cute Kitten 2</option>
+    <option  data-img-label="Run Away from Me" data-img-src="http://placekitten.com/180/200" value="3">Cute Kitten 3</option>
+    <option data-img-label="This is the item" data-img-src="http://placekitten.com/190/200" value="4">Cute Kitten 4</option>
+  </optgroup>
+  <optgroup label="Animals">
+    <option data-img-src="http://picsum.photos/200/300" value="5">Animal 1</option>
+    <option data-img-src="http://picsum.photos/200/280" value="6">Animal 2</option>
+    <option data-img-src="http://picsum.photos/200/250" value="7">Animal 3</option>
+    <option data-img-src="https://s3.img-b.com/image/private/c_lpad,f_auto,h_1200,t_base,w_1200/v3/product/signaturehardware/signature-hardware-482574-2329065.jpg" value="8">Animal 4</option>
+  </optgroup>
+</select>
+						<asp:ListBox ID="lstitems" runat="server" CssClass="show-labels image-picker show-html d-inline "
+						DataSourceID="odsStyle" DataKeyNames="ID" DataTextField="Description"	>
+
+						</asp:ListBox>
+		
+								<!-- End Image Selector -->
+							</div>
+						</div>
+					</div>
 				</ContentTemplate>
 				<Triggers>
 					<asp:AsyncPostBackTrigger ControlID="lstLevels" EventName="SelectedIndexChanged" />
@@ -1204,6 +1270,18 @@
 
 
 <script type="text/javascript">
+
+
+    ///<summary>
+    ///  This will fire on initial page load,
+    ///  and all subsequent partial page updates made
+    ///  by any update panel on the page
+    ///</summary>
+	Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
+	function EndRequestHandler(sender, args) {
+				$(".image-picker").imagepicker("show_label: true");
+	} 
+
 	//********************************************
 	//*** Javascript Display Error Messages  *****
 	//********************************************

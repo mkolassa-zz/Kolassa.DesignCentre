@@ -246,6 +246,7 @@ Public Class clsProject
     Public Property AddressMap As String
     Public Property Longitude As String
     Public Property Latitude As String
+    'Public Property LogoURL As String
     Public Sub New()
 		NodeID = System.Web.HttpContext.Current.Session("NodeID")
 	End Sub
@@ -321,7 +322,7 @@ Public Class clsProject
 	End Sub
 	Public Overrides Function Update() As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-        c.UpdateProjects(NodeID, Name, Description, ImageUrl, ProjectType, Active, ID, Code, Address, AddressMap, Longitude, Latitude)
+        c.UpdateProjects(NodeID, Name, Description, ImageUrl, LogoURL, ProjectType, Active, ID, Code, Address, AddressMap, Longitude, Latitude)
         ErrorMessage = c.ErrorMessage
 		Update = 1
 	End Function
@@ -756,7 +757,19 @@ Public Class clsQuote
 End Class
 
 
+Public Class clsLogin
+    Inherits clsBase
+    Public Function Insert() As Boolean
+        ObjectType = "Logins"
+        TableName = "tblLogins"
 
+        If Code = "" Then Code = GetNextCode()
+        Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+        Dim lbSuccess As Boolean = c.InsertLogins(NodeID, Name, Code, Description)
+        ErrorMessage = c.ErrorMessage
+        Insert = True
+    End Function
+End Class
 
 
 
@@ -863,10 +876,15 @@ Public Class clsPersonalData
 	Public Property ErrorMessage As String
 	Public Sub Insert() 'NodeID As Integer, FirstName As String, LastName As String, ParentID As String, FullAddress As String, City As String, StateProvince As String, PostalCode As String, Country As String, Phone1 As String, Phone2 As String, Email1 As String, Email2 As String, ContactType As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		Dim lbOK As Boolean
-		lbOK = c.InsertPersonalData(UsageType, GuidValue, TextValue)
-		ErrorMessage = c.ErrorMessage
-	End Sub
+        Dim lbOK As Boolean
+        Try
+            lbOK = c.InsertPersonalData(UsageType, GuidValue, TextValue)
+            ErrorMessage = c.ErrorMessage
+        Catch ex As Exception
+            ErrorMessage = ex.Message
+        End Try
+
+    End Sub
 	Public Sub getlastValue(ByVal lsUsageValue As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		Dim ds As DataSet
@@ -1448,8 +1466,10 @@ Public Class clsPhases
         Try
             ds = c.LoadPhases(NODEID, ID, lsObjectID)
             'Return ds
-            'Exit Function
-
+            If ds.Tables.Count = 0 Then
+                Return New clsPhase
+                Exit Function
+            End If
             For Each row As DataRow In ds.Tables(0).Rows
                 Dim values As New List(Of Object)
                 cPhase = New clsPhase
@@ -2021,7 +2041,8 @@ Public Class clsBase
 	Public Property ErrorMessage As String
 	Public Property TableName As String
 	Public Property EditMode As Boolean
-	Public Property ObjectType As String
+    Public Property ObjectType As String
+    Public Property LogoURL As String
     Public Sub New()
         On Error Resume Next
         NodeID = System.Web.HttpContext.Current.Session("NodeID")
@@ -2060,8 +2081,10 @@ Public Class clsBase
 				Case "NodeID".ToUpper
 					NodeID = kvp.Value
 				Case "ImageUrl".ToUpper
-					ImageUrl = kvp.Value
-			End Select
+                    ImageUrl = kvp.Value
+                Case "LogoURL".ToUpper
+                    LogoURL = kvp.Value
+            End Select
 
 		Next
 		If CodeExists() Then

@@ -336,8 +336,8 @@ Public Class clsSelectDataLoader
 			'response.write("No Project Selectedd")
 			Exit Function
 		End If
-        lsSQL = "SELECT F.NODEID, F.CODE ,F.ID, F.Name, F.Description, F.Active, F.Image, f.ImageURL, F.ProjectType , F.Code, F.ProjectTypeName  , f.addressmap, f.addressPrint, f.longitude, f.latitude  FROM " & NL &
-                "(Select P.NodeID, P.ID, P.Code, P.Name, P.Description, P.ImageURL, P.Active, P.Image, P.ProjectType, p.addressmap, p.addressPrint, p.longitude, p.latitude, T.Code as typeCode, T.Name as ProjectTypeName  " & NL &
+        lsSQL = "SELECT F.NODEID, F.CODE ,F.ID, F.Name, F.Description, F.Active, F.Image, f.ImageURL,f.LogoURL, F.ProjectType , F.Code, F.ProjectTypeName  , f.addressmap, f.addressPrint, f.longitude, f.latitude  FROM " & NL &
+                "(Select P.NodeID, P.ID, P.Code, P.Name, P.Description, P.ImageURL,P.LogoURL, P.Active, P.Image, P.ProjectType, p.addressmap, p.addressPrint, p.longitude, p.latitude, T.Code as typeCode, T.Name as ProjectTypeName  " & NL &
                 "FROM tblProjects as P left join   tblProjectTypes as T on P.ProjectType = T.Code )  F                              " & NL &
                 "WHERE  ( NodeID=" & llNodeID & " " & IIf(lsWhere.Length > 4, " And " & lsWhere, "") &
                     IIf(lbActive = True, " And Active = 1 ", "") & ")" & NL &
@@ -385,7 +385,7 @@ Public Class clsSelectDataLoader
         '*** Run The SQL.
         InsertProjects = fRunSQL("SQLConnection", lscnStr, lsSQL)
     End Function
-    Public Function UpdateProjects(ByVal llNodeID As Long, ByVal lsName As String, ByVal lsDescription As String, ByVal lsImage As String, lsProjectType As String, ByVal lsActive As String, ByVal ID As String, lsCode As String, Address As String, AddressMap As String, Longitude As String, Latitude As String) As Boolean
+    Public Function UpdateProjects(ByVal llNodeID As Long, ByVal lsName As String, ByVal lsDescription As String, ByVal lsImage As String, ByVal lsLogo As String, lsProjectType As String, ByVal lsActive As String, ByVal ID As String, lsCode As String, Address As String, AddressMap As String, Longitude As String, Latitude As String) As Boolean
         Dim lsSQL As String
         Dim lscnStr As String = mscnDefault
         Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
@@ -399,7 +399,8 @@ Public Class clsSelectDataLoader
                 "Set Name = '" & fTakeOutQuotes(lsName) & "', Description = " & NL &
                            "'" & fTakeOutQuotes(lsDescription) & "', CODE= " & NL &
                            "'" & fTakeOutQuotes(lsCode) & "', imageURL= " & NL &
-                           "'" & fTakeOutQuotes(lsImage) & "', ProjectType= " & NL &
+                           "'" & fTakeOutQuotes(lsImage) & "', LogoURL= " & NL &
+                           "'" & fTakeOutQuotes(lsLogo) & "', ProjectType= " & NL &
                            "'" & fTakeOutQuotes(lsProjectType) & "', AddressPrint= " & NL &
                            "'" & fTakeOutQuotes(Address) & "', AddressMap= " & NL &
                            "'" & fTakeOutQuotes(AddressMap) & "', Longitude= " & NL &
@@ -1507,9 +1508,9 @@ Public Class clsSelectDataLoader
 		LoadRoomCategories = Nothing
 		If llNodeID = 0 Or lsUnitType = "" Then Exit Function
 
-        lsSQL = "Select * From f_LoadRoomCategories('" & lsUnitType & "', '" & lsRoom & "', '" & lsQuoteID & "', " & lsPhase & ", 0) ORDER BY CATEGORYNAME"
-		'*** Load a data set.
-		Dim ds As New DataSet()
+        lsSQL = "Select * From f_LoadRoomCategories('" & lsUnitType & "', '" & lsRoom & "', '" & lsQuoteID & "', " & lsPhase & ", 0) ORDER BY categorygrouping, Upgradecategory"
+        '*** Load a data set.
+        Dim ds As New DataSet()
 		ds = fGetDataset(mscnType, mscnStr, lsSQL, "Categories")
 
 		mdsRooms = ds
@@ -2331,30 +2332,30 @@ Public Class clsSelectDataLoader
 		Dim lsSQL As String = "Update tblLogins Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE  NodeID=" & llNodeID & " AND ID = '" & RecordID & "'"
 		DeleteLogins = fRunSQL(mscnType, mscnStr, lsSQL)
 	End Function
-	Public Function InsertLogins(ByVal llNodeID As Long, ByVal lsName As String, ByVal lsContact As String, ByVal lsAbbreviation As String) As Boolean
-		Dim lsSQL As String
-		Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
-		'*** Initialize
-		InsertLogins = False
-		'*** Check for No Selected Category
-		If llNodeID = 0 Then
-			'response.write("No Project Selectedd")
-			Exit Function
-		End If
-		lsSQL = "INSERT INTO tblVendors ( VendorName, VendorContact, VendorAbbreviation, " &
-				"                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID ) " &
-				"Values ( """ & fTakeOutQuotes(lsName) & """, " & NL &
-						  """" & fTakeOutQuotes(lsContact) & """, " & NL &
-						  """" & fTakeOutQuotes(lsAbbreviation) & """, " & NL &
-						  """" & Now.ToString & """, " & NL &
-						  """" & fTakeOutQuotes(lsCurrentUser) & """, " & NL &
-						  """" & Now.ToString & """, " & NL &
-						  """" & fTakeOutQuotes(lsCurrentUser) & """, " & NL &
-						   "true, " & llNodeID & "); "
-		'*** Run The SQL.
-		InsertLogins = fRunSQL(mscnType, mscnStr, lsSQL)
-	End Function
-	Public Function UpdateLogins(ByVal llNodeID As Long, ByVal lsName As String, ByVal lsContact As String, ByVal lsAbbreviation As String, ByVal lsActive As String, ByVal VendorID As String) As Boolean
+    Public Function InsertLogins(ByVal llNodeID As Long, ByVal lsName As String, lscode As String, lsdescription As String) As Boolean
+        Dim lsSQL As String
+        Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
+        '*** Initialize
+        InsertLogins = False
+        '*** Check for No Selected Category
+        If llNodeID = 0 Then
+            'response.write("No Project Selectedd")
+            Exit Function
+        End If
+        lsSQL = "INSERT INTO tblLogins (ID, Name, code, Description, " &
+                "                         UpdateDate, UpdateUser, CreateDate, CreateUser, Active, NodeID ) " &
+                "Values ('" & System.Guid.NewGuid.ToString() & "', '" & fTakeOutQuotes(lsName) & "', " & NL &
+                          "'" & fTakeOutQuotes(lscode) & "', " & NL &
+                          "'" & fTakeOutQuotes(lsdescription) & "', " & NL &
+                          "'" & Now.ToString & "', " & NL &
+                          "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
+                          "'" & Now.ToString & "', " & NL &
+                          "'" & fTakeOutQuotes(lsCurrentUser) & "', " & NL &
+                           "1, " & llNodeID & "); "
+        '*** Run The SQL.
+        InsertLogins = fRunSQL(mscnType, mscnStr, lsSQL)
+    End Function
+    Public Function UpdateLogins(ByVal llNodeID As Long, ByVal lsName As String, ByVal lsContact As String, ByVal lsAbbreviation As String, ByVal lsActive As String, ByVal VendorID As String) As Boolean
 		Dim lsSQL As String
 		Dim lsCurrentUser As String = fGetUser() ' Membership.GetUser.ToString
 		'*** Initialize

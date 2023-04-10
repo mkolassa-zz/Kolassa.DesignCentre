@@ -1,5 +1,6 @@
-﻿Public Class frmTest
-	Inherits System.Web.UI.Page
+﻿Imports System.IO
+Public Class frmTest
+    Inherits System.Web.UI.Page
     Public Sub popGrid()
         Dim cn As New clsSelectDataLoader
         Dim ds As New DataSet
@@ -66,6 +67,7 @@
 
     Private Sub frmTest_Load(sender As Object, e As EventArgs) Handles Me.Load
         ctrlIncompatibilities1.ProjectID = Session("Project")
+        litinfo.Text = MapPath("customerfiles") & "     " & ResolveUrl("customerfiles")
     End Sub
 
     Protected Sub cmdSendEmail_Click(sender As Object, e As EventArgs) Handles cmdSendEmail.Click
@@ -87,5 +89,44 @@
         h.Add(room, unit)
         email.SendNewCustomerEmail(h, "Test Hashtable", Session("UserEmail"), "Hash table")
         email.SendNewCustomerEmail(Session("UserEmail"), "Email Message", "Email Subject", ds)
+    End Sub
+    Protected Sub uploadcomplete(sender As Object, e As AjaxControlToolkit.AjaxFileUploadEventArgs) Handles fuCSV.UploadComplete
+        Dim c As New clsTestCSV
+        Dim lsFileName As String
+        Dim fPath As String = "customerfiles"
+
+        If Not Directory.Exists(fPath) Then Directory.CreateDirectory(fPath)
+
+        Dim lsCust As String = Session("NodeID").ToString
+        lsCust = "000" & Trim(lsCust)
+        lsCust = Right(lsCust, 3)
+
+        '  fPath = fPath & "/cust" & lsCust
+        '  If Not Directory.Exists(fPath) Then Directory.CreateDirectory(fPath)
+        '  Dim fileNametoupload As String = Server.MapPath(fPath) + "\" + Guid.NewGuid.ToString + e.FileName.ToString()
+        '  fileNametoupload = fPath + "\" + Guid.NewGuid.ToString + e.FileName.ToString()
+
+        lsFileName = Server.MapPath(Request.QueryString("ID"))
+
+        lsFileName = lsFileName & "/" & Guid.NewGuid.ToString & Replace(e.FileName, " ", "")
+        Try
+            fuCSV.SaveAs(lsFileName)
+        Catch ex As Exception
+            Dim lsEx As String = ex.Message
+            fuCSV.Attributes.Add("exception", lsEx)
+        End Try
+        '     Session("objType") = Request.QueryString("objType")
+        '    c.ObjectType = Session("objType")
+        '    c.csvReadTest(lsFileName)
+        '    c.csvWriteTest()
+
+    End Sub
+
+    Protected Sub cmdfu_Click(sender As Object, e As EventArgs) Handles cmdfu.Click
+        Dim s As String = Server.MapPath(txtSaveAs.Text)
+        If (fu.HasFile) Then
+
+            fu.SaveAs(s & "/" & fu.FileName)
+        End If
     End Sub
 End Class

@@ -32,13 +32,40 @@ Partial Public Class ctrlImagesNew
     Protected WithEvents txtImageURL As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''lnkbSave control.
+    '''lnkbSaveImageURL control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lnkbSave As Global.System.Web.UI.WebControls.LinkButton
+    Protected WithEvents lnkbSaveImageURL As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
+    '''txtfileupload control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtfileupload As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''fu control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fu As Global.System.Web.UI.WebControls.FileUpload
+
+    '''<summary>
+    '''cmdfu control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdfu As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''upFileUploader control.
@@ -102,6 +129,33 @@ Partial Public Class ctrlImagesNew
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents AjaxFileUpload1 As Global.AjaxControlToolkit.AjaxFileUpload
+
+    '''<summary>
+    '''litMessage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents litMessage As Global.System.Web.UI.WebControls.Literal
+
+    '''<summary>
+    '''btnMessage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnMessage As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''hdMessage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hdMessage As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
     '''upExisting control.

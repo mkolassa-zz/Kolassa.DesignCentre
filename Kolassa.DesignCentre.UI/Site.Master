@@ -102,113 +102,126 @@
         </asp:ScriptManager> 
 
         <%="" %>
-		<nav class="swite-header sticky-top py-0" style="background-color:cornsilk">
-        <div class="container d-flex flex-column flex-md-row justify-content-between">
-            <a class="py-2" href="#">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="d-block mx-auto"><circle cx="12" cy="12" r="10"></circle><line x1="14.31" y1="8" x2="20.05" y2="17.94"></line><line x1="9.69" y1="8" x2="21.17" y2="8"></line><line x1="7.38" y1="12" x2="13.12" y2="2.06"></line><line x1="9.69" y1="16" x2="3.95" y2="6.06"></line><line x1="14.31" y1="16" x2="2.83" y2="16"></line><line x1="16.62" y1="12" x2="10.88" y2="21.94"></line></svg>
-            </a>
-		    <a class="navbar-brand" runat="server" href="~/">Design Centre</a>
-            <a class="py-2 d-none d-md-inline-block" runat="server" href="~/About">About</a>
-            <a class="py-2 d-none d-md-inline-block" runat="server" href="~/Contact">Contact</a>
-
-            <asp:LoginView runat="server" ViewStateMode="Disabled">
-                <AnonymousTemplate> <a class="py-2 d-none d-md-inline-block" runat="server" href="~/">Home</a>  
-				    <a class="py-2 d-none d-md-inline-block" runat="server" href="~/Account/Register">Register</a></li>
-				    <a class="py-2 d-none d-md-inline-block" runat="server" href="~/Account/Login">Log in</a></li>
-                </AnonymousTemplate>
-                <LoggedInTemplate>
-				    <a href="#" data-target="#sidebar" data-toggle="collapse" aria-expanded="false" onclick="w3_open()"><i class="fas fa-bars fa-1x" 
-                        style="position: absolute;top: 10px; left: 10px;"></i></a>
-				   
+        <navbar>
+		    <nav class="navbar navbar-expand-lg navbar-light  swite-header sticky-top py-0" style="background-color:cornsilk">
+              <button class="ml-4 navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="xnavbar-toggler-icon ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">  <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg>
+                </span>
+              </button>
+              <a href="#" data-target="#sidebar" data-toggle="collapse" aria-expanded="false" onclick="w3_open()">
+                <span style="position: absolute;top: 10px; left: 10px;"> 
+                    <i class="fas fa-bars fa-1x" style="position: absolute;top: 5px; left: 10px;"></i>
+                    
+                </span>
+			  </a>
+			  
                 
+              <div class="collapse navbar-collapse" id="navbarContent">
+              <div class="container d-flex flex-column flex-md-row justify-content-between">
+                <a class="py-2 d-none" href="#" >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="d-block mx-auto"><circle cx="12" cy="12" r="10"></circle><line x1="14.31" y1="8" x2="20.05" y2="17.94"></line><line x1="9.69" y1="8" x2="21.17" y2="8"></line><line x1="7.38" y1="12" x2="13.12" y2="2.06"></line><line x1="9.69" y1="16" x2="3.95" y2="6.06"></line><line x1="14.31" y1="16" x2="2.83" y2="16"></line><line x1="16.62" y1="12" x2="10.88" y2="21.94"></line></svg>           
+                </a>
+		        <a class="navbar-brand" runat="server" href="~/">Design Centre</a>
+                <a class="py-2 d-none d-md-inline-block" runat="server" href="~/About">About</a>
+                <a class="py-2 d-none d-md-inline-block" runat="server" href="~/Contact">Contact</a>
+
+                <asp:LoginView runat="server" ViewStateMode="Disabled">
+                    <AnonymousTemplate> <a class="py-2 d-none d-md-inline-block" runat="server" href="~/">Home</a>  
+				        <a class="py-2 d-none d-md-inline-block" runat="server" href="~/Account/Register">Register</a></li>
+				        <a class="py-2 d-none d-md-inline-block" runat="server" href="~/Account/Login">Log in</a></li>
+                    </AnonymousTemplate>
+                    <LoggedInTemplate>
+
+                        <ul class="navbar-nav px-3">
+                            <li class="nav-item text-nowrap">		
+						    <%    If Session("Project") Is Nothing Then  %>
+            			 	    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ProjectModal" style="border:none;">
+									    <i class="fa fa-search" ></i> Select Project
+							    </button>
+          
+						    <%Else  %>
+								    <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#ProjectModal" style="padding-top:7px;border:none;">
+								        <i class="fa fa-arrow-circle-down" ></i> <%: Session("ProjectName")  %></a>
+								    </button>
+						    <%End If %>&nbsp;
+				        </li>
+                    </ul>
                     <ul class="navbar-nav px-3">
                         <li class="nav-item text-nowrap">		
-						<%    If Session("Project") Is Nothing Then  %>
-            			 	<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ProjectModal" style="border:none;">
-									<i class="fa fa-search" ></i> Select Project
-							</button>
-          
-						<%Else  %>
-								<button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#ProjectModal" style="padding-top:7px;border:none;">
-								    <i class="fa fa-arrow-circle-down" ></i> <%: Session("ProjectName")  %></a>
-								</button>
-						<%End If %>&nbsp;
-				    </li>
-                </ul>
-                <ul class="navbar-nav px-3">
-                    <li class="nav-item text-nowrap">		
-					<%If Context.User.IsInRole("Admin") = False Then  %>
-					<%Else  %>
-							<button  type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#NodeModal" style="padding-top:7px;border:none;">
-								<i class="fa fa-arrow-circle-down" ></i>&nbsp;Node:&nbsp; <% Response.Write(Session("NodeID"))  %></a>
-							</button>
-					<%End If %>&nbsp;
-				    </li>
-                </ul>
-                    <!--<ul>
-                        <a href="#submenuManages" data-toggle="collapse" aria-expanded="false" class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-start align-items-center">
-                                <span class="fa dc-home fa-fw mr-3"></span>
-                                <span class="menu-collapsed">Hello!</span>
-                                <span class="fa fa-chevron-circle-down  ml-auto"></span>
-                            </div>
-                        </a>
-                         Submenu content 
-                        <div id='submenuManage' class="collapse sidebar-submenu">
-                            <a runat="server"  href="~/frmbase?objType=USERS" class="list-group-item list-group-item-action bg-dark text-white">
-                                <span class="menu-collapsed">Users</span>
+					    <%If Context.User.IsInRole("Admin") = False Then  %>
+					    <%Else  %>
+							    <button  type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#NodeModal" style="padding-top:7px;border:none;">
+								    <i class="fa fa-arrow-circle-down" ></i>&nbsp;Node:&nbsp; <% Response.Write(Session("NodeID"))  %></a>
+							    </button>
+					    <%End If %>&nbsp;
+				        </li>
+                    </ul>
+                        <!--<ul>
+                            <a href="#submenuManages" data-toggle="collapse" aria-expanded="false" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-start align-items-center">
+                                    <span class="fa dc-home fa-fw mr-3"></span>
+                                    <span class="menu-collapsed">Hello!</span>
+                                    <span class="fa fa-chevron-circle-down  ml-auto"></span>
+                                </div>
                             </a>
-                        </div>
-                    </ul>-->
-                <ul class="navbar-nav px-3">
-                 <li class="nav-item dropdown" style="list-style-type: none;">
-                     <a class="nav-link dropdown-toggle" id="navbardrop" data-toggle="dropdown"  onclick="var a = document.getElementById('dropmen');if(a.className=='dropdown-menu'){ a.className = 'dropdown-menu show';} else {a.className = 'dropdown-menu'}" runat="server" href="~/Account/Manage" title="Manage your account"> <%:  Session("UserFriendlyName")  %>!</a>
-                      <div class="dropdown-menu" id="dropmen" style="position:absolute;">
-                          <asp:LoginStatus class="dropdown-item" runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />   
-                             <a class="dropdown-item" href="account/ManagePassword">Manage Account</a>
-                             <a class="dropdown-item" href="account/AddPhoneNumber">Add Phone Number</a>
-                      </div>
-                </li>
-                </ul>
-                <ul class="navbar-nav px-3">
-                   <asp:LinkButton onClientClick="ShowPop('PopEx');return false;"    ID="txtTest" runat="server" ><li class="nav-item text-nowrap" style="padding-top:7px;">  </i><i class="fas fa-envelope fa-x" ></i><span Class="ddropdown badge badge-pill badge-danger" ><% Response.Write(Session("TaskCount")) %> </span></asp:LinkButton>
-                  
-                   <script type="text/javascript">
-                       function ShowPop(ModalPopup) {
-                           var p = document.getElementsByClassName('PopEx');
-
-                           for (index = 0; index < p.length; ++index) {
-                               p[index].style = 'background-color: ivory; position:absolute;right:10px;';
-                           }
-                           //*** Now click the bind button
-                           p = document.getElementsByClassName('btnbind');
-                           for (index = 0; index < p.length; ++index) {
-                               p[index].click();
-                           }
-                       }
-                       function HidePop() {
-                           var p = document.getElementsByClassName('PopEx');
-
-                           for (index = 0; index < p.length; ++index) {
-                               p[index].style = 'background-color: white; position:absolute;visibility:hidden; display:none;';
-                           }
-
-                       }
-                   </script>
-                        <ajaxToolkit:PopupControlExtender ID="PopEx" runat="server"    TargetControlID="txtTest"    PopupControlID="pnlNotifications"    Position="Bottom"  />
-                        <asp:Panel runat="server" ID ="pnlNotifications" style="background-color: ivory;" CssClass="PopEx border border-primary">
-                            <span onclick="HidePop();" class="nclose"><i class="fas fa-times-circle  fa-1x"></i></span>
-                            <span onclick="ShowPop('PopEx');" class="nclose"><i class="fas fa-recycle  fa-1x"></i></span>
-                            
-                            <uc1:ctrlNotifications runat="server" id="ctrlNotifications" />
-                        </asp:Panel>
+                             Submenu content 
+                            <div id='submenuManage' class="collapse sidebar-submenu">
+                                <a runat="server"  href="~/frmbase?objType=USERS" class="list-group-item list-group-item-action bg-dark text-white">
+                                    <span class="menu-collapsed">Users</span>
+                                </a>
+                            </div>
+                        </ul>-->
+                    <ul class="navbar-nav px-3">
+                     <li class="nav-item dropdown" style="list-style-type: none;">
+                         <a class="nav-link dropdown-toggle" id="navbardrop" data-toggle="dropdown"  onclick="var a = document.getElementById('dropmen');if(a.className=='dropdown-menu'){ a.className = 'dropdown-menu show';} else {a.className = 'dropdown-menu'}" runat="server" href="~/Account/Manage" title="Manage your account"> <%:  Session("UserFriendlyName")  %>!</a>
+                          <div class="dropdown-menu" id="dropmen" style="position:absolute;">
+                              <asp:LoginStatus class="dropdown-item" runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />   
+                                 <a class="dropdown-item" href="account/ManagePassword">Manage Account</a>
+                                 <a class="dropdown-item" href="account/AddPhoneNumber">Add Phone Number</a>
+                          </div>
                     </li>
-                 </ul>
-            </LoggedInTemplate>
-        </asp:LoginView>
-    </div>
-</nav>
-    
+                    </ul>
+                    <ul class="navbar-nav px-3">
+                       <asp:LinkButton onClientClick="ShowPop('PopEx');return false;"    ID="txtTest" runat="server" ><li class="nav-item text-nowrap" style="padding-top:7px;">  </i><i class="fas fa-envelope fa-x" ></i><span Class="ddropdown badge badge-pill badge-danger" ><% Response.Write(Session("TaskCount")) %> </span></asp:LinkButton>
+                  
+                       <script type="text/javascript">
+                           function ShowPop(ModalPopup) {
+                               var p = document.getElementsByClassName('PopEx');
+
+                               for (index = 0; index < p.length; ++index) {
+                                   p[index].style = 'background-color: ivory; position:absolute;right:10px;';
+                               }
+                               //*** Now click the bind button
+                               p = document.getElementsByClassName('btnbind');
+                               for (index = 0; index < p.length; ++index) {
+                                   p[index].click();
+                               }
+                           }
+                           function HidePop() {
+                               var p = document.getElementsByClassName('PopEx');
+
+                               for (index = 0; index < p.length; ++index) {
+                                   p[index].style = 'background-color: white; position:absolute;visibility:hidden; display:none;';
+                               }
+
+                           }
+                       </script>
+                            <ajaxToolkit:PopupControlExtender ID="PopEx" runat="server"    TargetControlID="txtTest"    PopupControlID="pnlNotifications"    Position="Bottom"  />
+                            <asp:Panel runat="server" ID ="pnlNotifications" style="background-color: ivory;" CssClass="PopEx border border-primary">
+                                <span onclick="HidePop();" class="nclose"><i class="fas fa-times-circle  fa-1x"></i></span>
+                                <span onclick="ShowPop('PopEx');" class="nclose"><i class="fas fa-recycle  fa-1x"></i></span>
+                            
+                                <uc1:ctrlNotifications runat="server" id="ctrlNotifications" />
+                            </asp:Panel>
+                        </li>
+                     </ul>
+                </LoggedInTemplate>
+            </asp:LoginView>
+        </div>
+            </div>
+            </nav>
+        </navbar>
 
 
 
@@ -247,8 +260,8 @@
 
 <!-- SideNav -->
                             
-         <div id="sidebar-container" class="sidebar-expanded d-none d-md-block">
-        <!-- d-* hiddens the Sidebar in smaller devices. Its itens can be kept on the Navbar 'Menu' -->
+         <div id="sidebar-container" class="sidebar-expanded "><!-- orig included d-none d-md-block -->
+        <!-- d-* hiddens the Sidebar in smaller devices. Its items can be kept on the Navbar 'Menu' -->
         <!-- Bootstrap List Group -->
         <ul class="list-group">
             <!-- Separator with title -->
@@ -266,18 +279,21 @@
             </a>
             <!-- Submenu content -->
             <div id='submenu2' class="collapse sidebar-submenu">
-  						<!-- Page Info Pane -->
-		       <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+  			    <!-- Page Info Pane -->
+		       <a href="#" class="d-none list-group-item list-group-item-action bg-dark text-white">
                     <span class="menu-collapsed small">Project ID:<br/> <%: Session("Project")  %>
                         <asp:literal runat="server" ID="litPageInfo"></asp:literal></span></a>
 						<!-- End Page Info Pane -->
- <a runat="server" class="bg-dark list-group-item list-group-item-action" href="~/account/addphonenumber.aspx" ><div class="d-flex w-100 justify-content-start align-items-center"><span class="fa fa-cog fa-fw mr-3"></span><span class="menu-collapsed">Settings</span></div></a>
- <a runat="server" class="bg-dark list-group-item list-group-item-action" href="~/account/managepassword.aspx" ><div class="d-flex w-100 justify-content-start align-items-center"><span class="fa fa-key fa-fw mr-3"></span><span class="menu-collapsed">Password</span></div></a>
+                 <a runat="server" class="bg-dark list-group-item list-group-item-action" href="~/account/addphonenumber.aspx" ><div class="d-flex w-100 justify-content-start align-items-center"><span class="fa fa-cog fa-fw mr-3"></span><span class="menu-collapsed">Settings</span></div></a>
+                 <a runat="server" class="bg-dark list-group-item list-group-item-action" href="~/account/managepassword.aspx" ><div class="d-flex w-100 justify-content-start align-items-center"><span class="fa fa-key fa-fw mr-3"></span><span class="menu-collapsed">Password</span></div></a>
             </div>
                 <a runat="server" class="bg-dark list-group-item list-group-item-action" href="~/frmProjects" ><div class="d-flex w-100 justify-content-start align-items-center"><span class="fa fa-th fa-fw mr-3"></span><span class="menu-collapsed">Project Dashboard</span></div></a>
                 <a runat="server" class="bg-dark list-group-item list-group-item-action" href="~/frmBase?objType=Customers"><div class="d-flex w-100 justify-content-start align-items-center"><span class="fa fa-users fa-fw mr-3"></span><span class="menu-collapsed">Customers</span></div></a>
         <!--    <a runat="server" class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="~/frmContacts" ><i class="dcmenu fa fa-phone"     ></i> <span class="d-none d-md-inline">Contacts</span></a> -->
                 <a runat="server" class="bg-dark list-group-item list-group-item-action" href="~/frmQuote"    ><div class="d-flex w-100 justify-content-start align-items-center"><span class="fa fa-quote-left fa-fw mr-3"></span><span class="menu-collapsed">Quotes</span></div></a>
+                <% If Context.User.IsInRole("Customer") Then  %>
+                <a runat="server" class="bg-dark list-group-item list-group-item-action" href="~/frmQuoteCustomer"    ><div class="d-flex w-100 justify-content-start align-items-center"><span class="fa fa-quote-left fa-fw mr-3"></span><span class="menu-collapsed">My Quote</span></div></a>
+                <% End if %>
                 <a href="#" class="bg-dark list-group-item list-group-item-action">
                 <a runat="server" class="bg-dark list-group-item list-group-item-action" href="~/frmTasks"><span class="fa fa-tasks fa-fw mr-3"></span><span class="menu-collapsed">Tasks</span></a>
             </a>
@@ -398,7 +414,7 @@
                 <a runat="server"  href="~/frmbase?objType=LOGINS" class="list-group-item list-group-item-action bg-dark text-white">
                     <span class="menu-collapsed">Logins</span>
                 </a>
-                <a runat="server"  href="~/frmbase?objType=BASE" class="list-group-item list-group-item-action bg-dark text-white">
+                <a runat="server"  href="~/frmbase?objType=BASE" class="d-none list-group-item list-group-item-action bg-dark text-white">
                     <span class="menu-collapsed">Base</span>
                 </a>
             </div>
@@ -644,15 +660,21 @@
             function w3_open() {
               //  document.getElementById("main").style.marginLeft = "25%";
                // document.getElementById("mySidebar").style.width = "25%";
-                document.getElementById("mySidebar").style.display = "block";
-                document.getElementById("openNav").style.display = 'none';
+                var disp = document.getElementById("mySidebar").style.display;
+                if (disp == 'none') {
+                    document.getElementById("mySidebar").style.display = "block";
+                    //document.getElementById("openNav").style.display = 'none';
+                }
+                else {
+                    document.getElementById("mySidebar").style.display = "none";
+                }
             }
             function w3_close() {
                 document.getElementById("main").style.marginLeft = "0%";
                 document.getElementById("mySidebar").style.display = "none";
                 document.getElementById("openNav").style.display = "inline-block";
             }
-    </script>
+        </script>
     <script>
         // Hide submenus
         $('#body-row .collapse').collapse('hide');

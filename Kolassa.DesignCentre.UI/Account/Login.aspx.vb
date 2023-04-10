@@ -30,7 +30,7 @@ Partial Public Class Login
                 Dim user = manager.FindByName(Email.Text)
                 If Not (user Is Nothing) Then
                     If Not (user.EmailConfirmed) Then
-                        FailureText.Text = "Invalid login attempt. You must have a confirmed email address. Enter your email and password, then press 'Resend Confirmation'."
+                        FailureText.Text = "It seems you have not confirmed your account. You must have a confirmed email address. Enter your email, then press 'Resend Confirmation'."
                         ErrorMessage.Visible = True
                         ResendConfirm.Visible = True
                     Else
@@ -43,8 +43,14 @@ Partial Public Class Login
                         Select Case result
                             Case SignInStatus.Success
                                 Session("NodeID") = user.NodeID
-                                Session("UserFriendlyName") = ""
-                                IdentityHelper.RedirectToReturnUrl("../frmProjects", Response) 'Request.QueryString("ReturnUrl"), Response)
+                                Session("UserFriendlyName") = user.UserFriendlyName
+                                '    IdentityHelper.RedirectToReturnUrl("../frmProjects", Response) 'Request.QueryString("ReturnUrl"), Response)
+                                Dim l As New clsLogin
+                                l.ProjectID = Session("Project")
+                                l.ID = System.Guid.NewGuid.ToString()
+                                l.Name = user.UserFriendlyName
+                                l.Description = user.UserName
+                                l.insert
                                 Exit Select
                             Case SignInStatus.LockedOut
                                 Response.Redirect("/Account/Lockout")
