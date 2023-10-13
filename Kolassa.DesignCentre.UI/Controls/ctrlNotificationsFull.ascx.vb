@@ -1,6 +1,6 @@
 ﻿Imports Microsoft.AspNet.Identity
 Imports Microsoft.AspNet.Identity.EntityFramework
-Public Class ctrlNotifications
+Public Class ctrlNotificationsFull
     Inherits System.Web.UI.UserControl
     Dim _lastdate As String
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
@@ -28,25 +28,17 @@ Public Class ctrlNotifications
             End If
         End If
     End Sub
-
-
     Public Sub BindData()
-        gvData.DataBind()
         repeaterData.DataBind()
-        lvNotifications.DataBind()
     End Sub
     Function DaysFromDate(ByVal dt As Date) As Long
         DaysFromDate = DateDiff("d", dt, Now())
     End Function
-    Protected Sub gvData_DataBinding(sender As Object, e As EventArgs) Handles gvData.DataBinding
+    Protected Sub gvData_DataBinding(sender As Object, e As EventArgs) Handles repeaterData.DataBinding
         Dim t As New clsTasks()
-        Dim ds As DataSet
-        gvData.DataSource = t.GetRecords("", "", Session("Project"), Session("NodeID"), HttpContext.Current.User.Identity.GetUserId)
-        repeaterData.DataSource = gvData.DataSource
-        lvNotifications.DataSource = gvData.DataSource
+        repeaterData.DataSource = t.GetRecords("", "", Session("Project"), Session("NodeID"), HttpContext.Current.User.Identity.GetUserId)
     End Sub
     Protected Sub cmdPostComm_Click(sender As Object, e As EventArgs) Handles cmdPostComm.Click
-        gvData.DataBind()
         repeaterData.DataBind()
     End Sub
     Protected Sub cmdBindData_Click(sender As Object, e As EventArgs) Handles cmdBindData.Click
@@ -66,9 +58,6 @@ Public Class ctrlNotifications
             Dim data As DataRowView = e.Item.DataItem
             Dim r As clstask = rpt.DataSource(e.Item.ItemIndex + 1)
             Dim li As LiteralControl = e.Item.Controls(0)
-
-            '  FormatItem(r, li)
-            ' Exit Sub
             Dim lsDate As String
             Dim llDays As Long = (DateDiff("d", Now, r.CreateDate))
             Select Case System.Math.Abs(llDays)
@@ -86,16 +75,12 @@ Public Class ctrlNotifications
                 li.Visible = True
                 _lastdate = lsDate
             End If
-
-
         Catch ex As Exception
             Dim msError As String = ex.Message
         End Try
     End Sub
 
     Protected Sub repeaterData_ItemCreated(sender As Object, e As RepeaterItemEventArgs) Handles repeaterData.ItemCreated
-
-        ' Dim data As ClassType = CType(e.Item.DataItem, ClassType)
         Try
             Dim rpt As Repeater
             rpt = sender
@@ -118,16 +103,16 @@ Public Class ctrlNotifications
             Next
 
             For Each c In e.Item.Controls
-                    If c.ClientID.ToUpper.Contains("LNKREAD") Then
-                        lnk = c
-                        If r.Read Then
-                            lnk.Text = "Read"
-                        Else
-                            lnk.Text = "Mark as Read"
-                        End If
-                        Exit For
+                If c.ClientID.ToUpper.Contains("LNKREAD") Then
+                    lnk = c
+                    If r.Read Then
+                        lnk.Text = "Read"
+                    Else
+                        lnk.Text = "Mark as Read"
                     End If
-                Next
+                    Exit For
+                End If
+            Next
 
             Dim li As Literal
 
@@ -158,38 +143,11 @@ Public Class ctrlNotifications
                 li.Text = "<div Class='box-title border-bottom p-3'><h6 Class='m-0'>" & lsDate & "</h6></div>"
                 _lastdate = lsDate
             End If
-
-
         Catch ex As Exception
             Dim msError As String = ex.Message
         End Try
     End Sub
-
-
-    Protected Sub ProcessTaskLV(source As Object, e As ListViewCommandEventArgs) Handles lvNotifications.ItemCommand
-        Dim t As New clstask
-        t.ID = e.CommandArgument
-        t.NodeID = Session("NodeID")
-        Select Case e.CommandName.ToUpper
-            Case "LNKREAD"
-                t.TaskRead()
-            Case "LNKCOMPLETE"
-                t.TaskComplete()
-        End Select
-
-    End Sub
-
-    Private Sub lvNotifications_ItemCreated(sender As Object, e As ListViewItemEventArgs) Handles lvNotifications.ItemCreated
-        Dim lsID As String = e.Item.DataItem.id
-        Dim lnk As LinkButton = e.Item.FindControl("lnkRead")
-        lnk.CommandArgument = lsID
-        lnk.ID = "LNKREAD" & lsID
-        lnk = e.Item.FindControl("lnkComplete")
-        lnk.CommandArgument = lsID
-        lnk.ID = "LNKCOMPLETE" & lsID
-    End Sub
-
-    Protected Sub repeaterData_ItemCommand(source As Object, e As RepeaterCommandEventArgs) Handles repeaterData.ItemCommand
+    Protected Sub ProcessTask(source As Object, e As RepeaterCommandEventArgs) Handles repeaterData.ItemCommand
         Dim t As New clstask
         t.ID = e.CommandArgument
         t.NodeID = Session("NodeID")

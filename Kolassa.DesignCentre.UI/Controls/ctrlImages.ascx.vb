@@ -93,10 +93,30 @@ Public Class ctrlImages
         gvImages.DataBind()
     End Sub
 
-    Protected Sub lnkImageUpload_Click(sender As Object, e As EventArgs) Handles lnkImageUpload.Click
-        Dim intId As Integer = 100
-        ' Passing intId to popup window.
-        Dim strPopup As String = "<script language='javascript' ID='script1'>" + "window.open('frmImagePopOut.aspx?ObjType=" & Request.QueryString("ObjType") & "&ObjectID=" & lblObjectID.Text & "&data=" + HttpUtility.UrlEncode(intId.ToString()) + "','new window', 'top=90, left=200, width=600, height=300, dependant=no, location=0, alwaysRaised=no, menubar=no, resizeable=no, scrollbars=n, toolbar=no, status=no, center=yes')" + "</script>"
-        ScriptManager.RegisterStartupScript(DirectCast(HttpContext.Current.Handler, Page), GetType(Page), "Script1", strPopup, False)
-    End Sub
+	Protected Sub lnkImageUpload_Click(sender As Object, e As EventArgs) Handles lnkImageUpload.Click
+		Dim intId As Integer = 100
+		' Passing intId to popup window.
+		Dim strPopup As String = "<script language='javascript' ID='script1'>" + "window.open('frmImagePopOut.aspx?ObjType=" & Request.QueryString("ObjType") & "&ObjectID=" & lblObjectID.Text & "&data=" + HttpUtility.UrlEncode(intId.ToString()) + "','new window', 'top=90, left=200, width=600, height=300, dependant=no, location=0, alwaysRaised=no, menubar=no, resizeable=no, scrollbars=n, toolbar=no, status=no, center=yes')" + "</script>"
+		ScriptManager.RegisterStartupScript(DirectCast(HttpContext.Current.Handler, Page), GetType(Page), "Script1", strPopup, False)
+	End Sub
+    Protected Sub gvImages_RowCommand(sender As Object, e As GridViewCommandEventArgs) Handles gvImages.RowCommand
+        '// If multiple ButtonField column fields are used, use the
+        '// CommandName property to determine which button was clicked.
+        Dim clsImg As New clsImage
+
+        Dim lsID As String = e.CommandArgument
+		If lsID.Length = 36 Then
+			Select Case e.CommandName
+				Case "Primary"
+                    '               'Stop
+                    clsImg.setPrimary(lsID)
+				Case "Swatch"
+
+                    '	Stop
+                    clsImg.setSwatch(lsID)
+				Case Else
+					Stop
+			End Select
+		End If
+	End Sub
 End Class

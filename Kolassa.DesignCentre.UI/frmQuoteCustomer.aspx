@@ -49,6 +49,7 @@
 			<asp:Parameter DefaultValue="" Name="lsWhere" Type="String" />
 			<asp:Parameter DefaultValue="True" Name="lbActive" Type="Boolean" />
 			<asp:SessionParameter DefaultValue="" Name="lsID" SessionField="QuoteID"  Type="String" />
+			<asp:SessionParameter DefaultValue="" Name="CustomerEmail" SessionField="UserEmail"  Type="String" />
 			<asp:Parameter DefaultValue="" Name="liNumRecs" Type="Int16" />
 			<asp:Parameter DefaultValue="" Name="SortOrder" Type="Boolean" />
 		</SelectParameters>
@@ -518,8 +519,32 @@
 	</asp:Panel>
 	<!-- END Payment PANEL -->
 
-
-
+	<!-- MY QUOTES -->
+	<div class="container"> <!-- style="padding-left:0px;padding-right:0px;"> -->
+		<div class="row">
+			<asp:ListView ID="lvQuotes"   runat="server" DataSourceID="odsQuotes" DataKeyNames="ID"  >
+				<LayoutTemplate>
+					<table  class="table-bordered table-hover" id="tblQuotes">
+						<tr>
+						<asp:PlaceHolder ID="itemPlaceholder" runat="server">No Quote</asp:PlaceHolder>
+						</tr>
+					</table>
+				</LayoutTemplate>
+				<ItemTemplate>
+						<td class="table-light border-0">
+							<asp:LinkButton runat="server" ID="lnkQuoteID"  Text='<%#Eval("UnitName")%>' 
+							 CommandArgument='<%#Eval("ID")%>'	CommandName="Select" OnClick="lnkQuoteID_Click"/>
+						</td>
+				</ItemTemplate>
+				<SelectedItemTemplate>
+						<td class="table-success font-weight-bold">
+							<asp:LinkButton runat="server" ID="lnkQuoteID" Text='<%#Eval("UnitName")%>'
+							 CommandArgument='<%#Eval("ID")%>' CommandName="Select" OnClick="lnkQuoteID_Click" />
+						</td>
+				</SelectedItemTemplate>
+			</asp:ListView>
+		</div>
+	</div>
 
 <asp:Panel runat="server" ID="pnlQuote">     
 	<div class="card-deck">
@@ -572,14 +597,11 @@
 				</div>
 				<h5 class="card-title">Customer	<button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#CommunicationsModal"><i class="fas fa-comments"></i></button></h5>
 				<p class="card-text">
-				<asp:Repeater ID="Repeater1" runat="server" DataSourceID="odsQuotes" >
-					<ItemTemplate>
-						<asp:Label runat="server" ID="lblName" Text='<%# Eval("CustomerName") %>' CssClass="card-subtitle font-weight-bold" /><br />
-						<asp:Label runat="server" ID="lblUnitName"     Text='<%# Eval("UnitName") %>' /><br />
-						<asp:Label runat="server" ID="lblUnitTypeName" Text='<%# Eval("UnitTypeName") %>' /><br />
-						<asp:Label runat="server" ID="lblUnitTypeDesc" Text='<%# Eval("UnitTypeDescription") %>' />
-					</ItemTemplate>
-				</asp:Repeater></p>
+						<asp:Label runat="server" ID="lblName" Text='CustomerName' CssClass="card-subtitle font-weight-bold" /><br />
+						<asp:Label runat="server" ID="lblUnitName"     Text='UnitName' /><br />
+						<asp:Label runat="server" ID="lblUnitTypeName" Text='UnitTypeName' /><br />
+						<asp:Label runat="server" ID="lblUnitTypeDesc" Text='UnitTypeDescription' />
+				</p>
 			</div>
 		</div>
 		<div class="card col-6">
@@ -726,41 +748,39 @@
          *** Container
          *********************************************************************************************************** -->
 	<div class="container"> <!-- style="padding-left:0px;padding-right:0px;"> -->
-		
-		
 		<div class="row">
 			<asp:UpdatePanel ID="upRoomHorizontal" runat="server"  Height="250px">       
-						<ContentTemplate>
-							<asp:ListView ID="lvRoomHorizontal"   runat="server" DataSourceID="odsRooms" DataKeyNames="RoomName"  >
-								<LayoutTemplate>
-									<table style="width:100%;height:250px" class="table-bordered table-hover" id="gradient-style">
-										<tr>
-										<asp:PlaceHolder ID="itemPlaceholder" runat="server"></asp:PlaceHolder>
-										</tr>
-									</table>
-								</LayoutTemplate>
-								<ItemTemplate>
-										<td class="table-light border-0">
-											<asp:LinkButton runat="server" ID="SelectCategoryButton"  Text='<%#Eval("UpgradeCount")%>' CommandName="Select" />
-										</td>
-								</ItemTemplate>
-								<SelectedItemTemplate>
-										<td class="table-success font-weight-bold"><asp:LinkButton runat="server" ID="SelectCategoryButton" 
-											Text='<%#Eval("UpgradeCount")%>' CommandName="Select" /></td>
-								</SelectedItemTemplate>
-							</asp:ListView>
+				<ContentTemplate>
+					<asp:ListView ID="lvRoomHorizontal"   runat="server" DataSourceID="odsRooms" DataKeyNames="RoomName"  >
+						<LayoutTemplate>
+							<table style="width:100%;height:250px" class="table-bordered table-hover" id="gradient-style">
+								<tr>
+								<asp:PlaceHolder ID="itemPlaceholder" runat="server"></asp:PlaceHolder>
+								</tr>
+							</table>
+						</LayoutTemplate>
+						<ItemTemplate>
+								<td class="table-light border-0">
+									<asp:LinkButton runat="server" ID="SelectCategoryButton"  Text='<%#Eval("UpgradeCount")%>' CommandName="Select" />
+								</td>
+						</ItemTemplate>
+						<SelectedItemTemplate>
+								<td class="table-success font-weight-bold"><asp:LinkButton runat="server" ID="SelectCategoryButton" 
+									Text='<%#Eval("UpgradeCount")%>' CommandName="Select" /></td>
+						</SelectedItemTemplate>
+					</asp:ListView>
 	
-						</ContentTemplate>
-						<Triggers >
-							<asp:AsyncPostBackTrigger ControlID="lvRoomHorizontal" EventName="SelectedIndexChanged" />
-							<asp:AsyncPostBackTrigger ControlID="lstRooms2" EventName="SelectedIndexChanged" />
-							<asp:asyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemDeleted"  />
-							<asp:AsyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemInserted"  />					
-							<asp:AsyncPostBackTrigger ControlID="cmdAutoPick" EventName="Click" />
-							<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemCommand" />
-							<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemDeleting" />
-						</Triggers>
-					</asp:UpdatePanel>
+				</ContentTemplate>
+				<Triggers >
+					<asp:AsyncPostBackTrigger ControlID="lvRoomHorizontal" EventName="SelectedIndexChanged" />
+					<asp:AsyncPostBackTrigger ControlID="lstRooms2" EventName="SelectedIndexChanged" />
+					<asp:asyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemDeleted"  />
+					<asp:AsyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemInserted"  />					
+					<asp:AsyncPostBackTrigger ControlID="cmdAutoPick" EventName="Click" />
+					<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemCommand" />
+					<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemDeleting" />
+				</Triggers>
+			</asp:UpdatePanel>
 		</div>
 		<div class="row">
 		<!-- **********************************************************************************************************
@@ -890,6 +910,102 @@
 	    <!-- **********************************************************************************************************
          *** Options
          *********************************************************************************************************** -->
+	<style>
+		body {
+		  margin: 0;
+		  padding: 0;
+		  box-sizing: border-box;
+		  position: relative;
+		  width: 100%;
+		  height: 90vh;
+		  display: flex;
+		  justify-content: center;
+		  align-items: center;
+		  background-color: #F5F5F5;
+		}
+
+		.images-selector input {
+		  position: absolute;
+		  z-index: 10;
+		}
+
+		.images-selector input:checked + .img-card {
+		  filter: none;
+		  transform: scaleY(1);
+		}
+
+		.img-card {
+		  display: inline-block;
+		  width: 250px;
+		  height: 200px;
+		  background-size: contain;
+		  background-repeat: no-repeat;
+		  cursor: pointer;
+		  transition: all 200ms ease-in;
+		  filter: grayscale(1) opacity(.8);
+		}
+
+		.img-card:hover {
+		  filter: grayscale(0) opacity(1);
+		/*   box-shadow:  0px 8px 4px rgba(0, 0, 0, 0.3),
+					   0px 10px 2px rgba(0, 0, 0, 0.1); */
+		}
+
+		.img-card::before,
+		.img-card::after {
+		  transform: scaleY(-1);
+		}
+
+		/*reflection*/
+		.img-card:hover::after {
+		  content: '';
+		  background-image: inherit;
+		  background-repeat: no-repeat;
+		  background-position: bottom;
+		  background-size: cover;
+		  width: inherit;
+		  height: 40%;
+		  position: absolute;
+		  bottom: -25%;
+		}
+
+		/*fade reflection*/
+		.img-card:hover::before {
+		  content: '';
+		  width: inherit;
+		  height: 42%;
+		  position: absolute;
+		  bottom: -25%;
+		  background: linear-gradient(to bottom, rgba(255, 255, 255, .9),rgba(255, 255, 255, .5));
+		  z-index: 1;
+		}
+
+		.img1 {
+		  background-image: url(https://images.unsplash.com/photo-1442689859438-97407280183f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ);
+		}
+
+		.img2 {
+		  background-image: url(https://images.unsplash.com/photo-1548199973-03cce0bbc87b?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ);
+		}
+
+		.img3 {
+		  background-image: url(https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ);
+		}
+
+		.img4 {
+		  background-image: url(https://images.unsplash.com/photo-1549488235-42996ae3b650?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ);
+		}
+	</style>
+	<div class="images-selector">
+  <input type="radio" id="duck" name="image" value="duck">
+  <label for="duck" class="img-card img1"></label>
+  <input type="radio" id="dog" name="image" value="dog">
+  <label for="dog" class="img-card img2"></label>
+  <input type="radio" id="cat" name="image" value="cat">
+  <label for="cat" class="img-card img3"></label>
+  <input type="radio" id="cow" name="image" value="cow">
+  <label for="cow" class="img-card img4"></label>
+</div>
 <table style="width:100%; border-width:thick;" >
 	<tr style="">
 		<td>

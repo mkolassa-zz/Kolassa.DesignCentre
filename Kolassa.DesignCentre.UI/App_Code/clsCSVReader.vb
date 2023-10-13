@@ -145,6 +145,8 @@ Public Class CsvFileReader
 End Class
 Public Class clsTestCSV
     Public ObjectType As String
+    Dim ms As MemoryStream
+    Dim tw As TextWriter
     Public Sub csvWriteTest()
         ' Write sample data to CSV file
         Using writer As CsvFileWriter = New CsvFileWriter("WriteTest.csv")
@@ -161,7 +163,12 @@ Public Class clsTestCSV
         End Using
     End Sub
 
-    Public Sub csvReadTest(lsFileName As String)
+    Public Function csvReadTest(lsFileName As String, ByVal ErrPath As String, id As String) As String
+        ms = New MemoryStream()
+        csvReadTest = ""
+        Dim errfile As String = ErrPath + "\Error_" + ObjectType + id + ".csv"
+        tw = New StreamWriter(errfile)
+        Dim sPath = System.IO.Path.GetFullPath(ErrPath) + "\Error_" + ObjectType + id + ".csv"
         Dim clsb As clsBases
         Dim clsObj As clsBase
         Dim formvalues As List(Of KeyValuePair(Of String, String))
@@ -176,16 +183,14 @@ Public Class clsTestCSV
         iRow = 0
         iCol = 0
 
-        ' Read sample data from CSV file
+        '***  Read  data from CSV file
         Try
-
-
             Using reader As CsvFileReader = New CsvFileReader(lsFileName)
                 Dim row As CsvRow = New CsvRow()
                 objTypeCol = 0
                 While reader.ReadRow(row)
+                    If iRow = 0 Then AddLine(row.LineText & ",ErrorMessage")
                     lsObjType = ""
-
                     iRow = iRow + 1
                     iCol = 0
                     formvalues = New List(Of KeyValuePair(Of String, String))
@@ -205,6 +210,7 @@ Public Class clsTestCSV
                         'System.Diagnostics.Debug.Print(s)
                         str1 = sHeader(1, iCol)
                         System.Diagnostics.Debug.Print(str1 & ": " & s)
+                        '*** is there an ID column Present?  If So its an Update, Not an Insert
                         If str1.ToUpper.Trim = "ID" Then
                             If isGUID(str2) Then
                                 lbUpdate = True
@@ -225,19 +231,21 @@ Public Class clsTestCSV
                         clsObj.FormValue = formvalues
                         clsObj.processFormValues()
 
-                        '     If lbUpdate = True Then
-                        '     clsObj.Update()
-                        ' Else
-                        '     clsObj.Insert()
-                        ' End If
+                        If clsObj.ErrorMessage <> "" Then
+                            System.Diagnostics.Debug.Print(clsObj.ErrorMessage)
+                            AddLine(row.LineText & "," & clsObj.ErrorMessage)
+                            csvReadTest = sPath
+                        End If
                     End If
 
                 End While
             End Using
+            tw.Close()
         Catch ex As Exception
             System.Diagnostics.Debug.Print(ex.Message)
+            tw.Close()
         End Try
-    End Sub
+    End Function
     Public Function isGUID(ByVal QFormUID As String) As Boolean
         If QFormUID Is Nothing Then
             QFormUID = "00" ' "00000000-0000-0000-0000-000000000000"
@@ -249,6 +257,32 @@ Public Class clsTestCSV
             Return False
         End If
     End Function
+
+
+    Public Sub New()
+
+    End Sub
+    Public Sub AddLine(NewLine As String)
+        tw.WriteLine(NewLine)
+        ' Debug.Print(ms.ToString)
+    End Sub
+    Public Function getFileContents() As Byte()
+        ' ms = New MemoryStream()
+        ' tw = New StreamWriter(ms)
+        ' tw.Write("123456789asasdasdfasdf66666666666666jjjjjjjjjjj6asdfasdfasdfasdfasdfasdfasdf")
+        tw.Flush()
+        'Dim sr As New StreamReader(ms)
+        'Dim myStr = sr.ReadToEnd()
+        '  Debug.Print(myStr)
+        getFileContents = ms.ToArray()
+        ms.Close()
+    End Function
+    Public Function getMemoryStream() As MemoryStream
+        tw.Flush()
+        getMemoryStream = ms
+        ms.Close()
+    End Function
+
 End Class
 
 

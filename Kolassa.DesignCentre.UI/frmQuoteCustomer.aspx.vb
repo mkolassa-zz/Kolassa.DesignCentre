@@ -1,4 +1,6 @@
 Imports Kolassa.DesignCentre.Data
+Imports Microsoft.AspNet.Identity
+Imports Microsoft.AspNet.Identity.Owin
 
 Partial Class frmQuoteCustomer
     Inherits System.Web.UI.Page
@@ -319,18 +321,13 @@ Err_txtPhase2CompleteDate_DblClick:
         Dim liCounter As Integer = 0
         Dim lsMsg As String = ""
         Dim liRetVal As Integer = 0
-        'For liCounter = 0 To lst.columnCOunt - 1
-        '    lsMsg = lsMsg & " " & lst.Column(liCounter)
-        'Next
-        'liRetVal = SysCmd(acSysCmdSetStatus, lsMsg)
-
     End Sub
 
     Private Sub Form_Load()
         checkQuoteID()
         LoadQUote()
     End Sub
-    Private Sub LoadQUote()
+    Private Sub LoadQuote()
         checkQuoteID()
         Dim cmbStatus As DropDownList
         If rblPhase.SelectedValue = 1 Then
@@ -343,36 +340,41 @@ Err_txtPhase2CompleteDate_DblClick:
         End If
         cmbStatus = Me.fvQuote.FindControl("cmbQuoteStatus")
         If cmbStatus.Text = "Completed" Then
-
-            'lstRooms.Enabled = False
             lstCategories.Enabled = False
-            'lstLevels.Enabled = False
-            'lstStyle.Enabled = False
-            '	lstRequestedUpgrades.Enabled = False
             Me.fvQuote.Enabled = False
-
             Me.cmdAddNewOption.Enabled = False
             Me.cmdAutoPick.Enabled = False
             Me.fvQuote.Enabled = False
-
         Else
             cmbStatus = fvQuote.FindControl("")
             If cmbStatus.Text = "Completed" Then
                 rblPhase.SelectedValue = 2
             End If
-
-            lvRoomHorizontal.Enabled = True ' lstRooms.Enabled = True
-            'lstRequestedUpgrades.Enabled = True
+            lvRoomHorizontal.Enabled = True
             fvQuote.Enabled = True
-
         End If
-        lvRoomHorizontal.Enabled = True ' lstRooms.Enabled = True
+        lvRoomHorizontal.Enabled = True
         lstLevels.Enabled = True
         lstSelectedUpgrade.Enabled = True
         lstCategories.Enabled = True
     End Sub
     Sub checkQuoteID()
+        Dim sessionstring As String = ""
         Dim lsQuoteID As String = Request.QueryString("QuoteID")
+        For Each s As String In Session.Contents
+            If Not Session(s) Is Nothing Then
+                sessionstring = sessionstring & "[" & s & "] = " & Session(s).ToString & "<br/>"
+            End If
+        Next
+        Dim manager = Context.GetOwinContext().GetUserManager(Of ApplicationUserManager)()
+        Dim lsEmail As String = HttpContext.Current.User.Identity.Name.ToString
+        Dim userid As String = manager.FindByEmail(lsEmail).Id
+        Response.Write(lsEmail & ": " & userid)
+        Response.Write(sessionstring)
+        Session("UserEmail") = lsEmail
+        Session("UserID") = userid
+
+
         Dim cp As New clsPersonalData
         Dim a As New GlobalFunctionsDC
         Dim lsLast
@@ -481,42 +483,7 @@ Err_CustomerID_DblClick:
         '*** End Logging
     End Sub
 
-    Private Sub Form_Current()
 
-        ''*** Logging
-        'Dim rs As Recordset
-        'Dim f As Field
-
-        'rs = Me.RecordsetClone
-
-        'cLog.ClearItems()
-
-        'For Each f In rs.Fields
-        '    cLog.AddField(f, CStr(Nz(Me.QuoteID)))
-        'Next
-        ''*** End Logging
-
-        ''*** Check whether the Phases should be available to the user
-        'sCheckPhaseComplete()
-
-        'DoCmd.DoMenuItem(acFormBar, acRecordsMenu, 5, , acMenuVer70)
-
-        'lstRequestedUpgrades.RowSource = "SELECT tblRequestedUpgrades.RequestedUpgradeID, " &
-        '        "tblRequestedUpgrades.UpgradeCategory as [Category, " &
-        '        "tblRequestedUpgrades.UpgradeClass as [Upgrade Level, " &
-        '        "tblRequestedUpgrades.UpgradeDescription as Description, " &
-        '        "tblRequestedUpgrades.StyleDescription as Style, " &
-        '        "tblRequestedUpgrades.CustomerPrice + tblRequestedUpgrades.Adjustments AS Cost " &
-        '        "FROM tblRequestedUpgrades " &
-        '        "WHERE (tblRequestedUpgrades.RoomDescription)= '" & lstRooms.Column(2) & "'" &
-        '        "and (tblRequestedUpgrades.BuildingPhase) = " & Me.BuildingPhaseOption & " " &
-        '        "and (tblRequestedUpgrades.quoteid) = " & Me.QuoteID & " order by tblRequestedUpgrades.UpgradeCategory"
-
-
-
-        'lstRequestedUpgrades.Requery()
-        'Me.SetFocus()
-    End Sub
 
 
 
@@ -978,11 +945,12 @@ ph1Status_Error:
         ShowErrors(Err.Number, Err.Description)
         Resume ph1Status_Exit
     End Sub
-
+    Protected Sub lnkQuoteID_Click(ByVal sender As Object, ByVal e As EventArgs)
+        ' Stop
+        Dim lsQuoteID As String = sender.commandargument
+        Response.Redirect("frmQuoteCustomer?QuoteID=" & lsQuoteID)
+    End Sub
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        '     Exit Sub
-
-
         If Not Page.IsPostBack Then
             Dim li As ListItem
             cboAssignedTo.Items.Clear()
@@ -997,12 +965,11 @@ ph1Status_Error:
                     cboAssignedTo.Items.Add(li)
                 Next
             Next
-            ds = c.LoadQuotes(Session("NodeID"), "", True, "", 4, " updateDate DESC")
+            ds = c.LoadQuotes(Session("NodeID"), "", True, "", 4, " updateDate DESC", Session("UserEmail"))
             rptRecentQuotes.DataSource = ds
             rptRecentQuotes.DataBind()
         End If
         loadPage()
-
     End Sub
     Function getQuoteID() As String
         Return String.Format("QuoteID={0}", Eval("QuoteID"))
@@ -1098,27 +1065,19 @@ ph1Status_Error:
         Me.cmdAddNewOption.Enabled = False
         'End If
 
-
-
         Try
 
             '*** If the Quote is complete, Dis-allow any editing
             If q.QuoteStatus = "Completed" Then
                 lvRoomHorizontal.Enabled = False 'lstRooms.enabled = false
                 lstCategories.Enabled = False
-                '	lstLevels.Enabled = False
-                'lstStyle.Enabled = False
-                'lstRequestedUpgrades.Enabled = False
                 pnlQuote.Enabled = False
-
                 Me.cmdAddNewOption.Enabled = False
                 Me.cmdAutoPick.Enabled = False
                 Me.rblPhase.Enabled = False
-
             Else
                 If q.Phase1Status Is Nothing Then
                 Else
-
                     If q.Phase1Status = "Completed" Then
                         Me.rblPhase.SelectedValue = 2
                     End If
@@ -1135,15 +1094,8 @@ ph1Status_Error:
             Dim msg As String = ex.Message
             Response.Write(ex.Message)
         End Try
-
-
     End Sub
-
-
     Protected Sub odsRequestedUpgrades_Inserting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.ObjectDataSourceMethodEventArgs) 'Handles odsRequestedUpgrades.Inserting
-        '  dim lst as listviewdataitem = session("requesteditemid") ' lststyle.items(lststyle.selectedindex)
-        ' dim findme as integer = lst.displayindex
-
         Dim ds As DataSet
         Dim dr As DataRow
         Dim ll As Long
@@ -1280,15 +1232,20 @@ ph1Status_Error:
         End If
 
         Dim q As New clsQuote(Session("QuoteID"))
+        lblName.Text = q.Name
+        lblUnitName.Text = q.UnitName
+        lblUnitTypeName.Text = q.UnitTypeName
+        lblUnitTypeDesc.Text = q.UnitTypeDescription
+
         cboAssignedTo.SelectedValue = q.AssignedTo
         litName.Text = q.AssignedToEmail
         txtPhaseID.Attributes.Add("readonly", "readonly")
         txtPhaseName.Attributes.Add("readonly", "readonly")
-
         ctrlCommunications.DataBind()
         CtrlAdjustments.DataBind()
         Me.ctrlPayments.DataBind()
         ctrlImagesDisplay.DataBind()
+
     End Sub
 
 
@@ -1488,7 +1445,14 @@ ph1Status_Error:
 
     Private Sub frmQuote_Init(sender As Object, e As EventArgs) Handles Me.Init
         '        Exit Sub
-        Dim lsQuoteID As String = Request.QueryString("QuoteID")
+        Dim lsQuoteID As String = ""
+        ' Dim sTarget As String = Page.Request.Params.Get("__EVENTTARGET")
+        ' Dim liFromLNK As Integer = InStr(sTarget.ToUpper, "LNKQUOTEID")
+        ' If liFromLNK > 0 Then
+        ' lsQuoteID = Page.Request.Params.Get("__EVENTARGUMENT")
+        '  Else
+        lsQuoteID = Request.QueryString("QuoteID")
+        'End If
         checkQuoteID()
         Dim dc As New GlobalFunctionsDC
         If dc.isGUIDString(lsQuoteID) Then Session("QuoteID") = lsQuoteID

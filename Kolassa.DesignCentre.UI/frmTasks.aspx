@@ -1,7 +1,6 @@
 ﻿<%@ Page Language="vb" EnableEventValidation="false" AutoEventWireup="false" MasterPageFile="~/Site.Master" CodeBehind="frmTasks.aspx.vb" Inherits="Kolassa.DesignCentre.UI.frmTasks" %>
 <%@ Register Assembly="Kolassa.DesignCenter.ReportManager" Namespace="Kolassa.DesignCenter.ReportManager" TagPrefix="cc1" %>
-<%@ Register Src="~/Controls/ctrlIncompatibilities.ascx" TagPrefix="uc1" TagName="ctrlIncompatibilities" %>
-<%@ Register Src="~/Controls/ctrlNotifications.ascx" TagPrefix="uc1" TagName="ctrlNotifications" %>
+<%@ Register Src="~/Controls/ctrlNotificationsFull.ascx" TagPrefix="uc1" TagName="ctrlNotificationsFull" %>
 
 
 
@@ -12,9 +11,9 @@
     <div class="container">
         <h2>Notifications</h2>
          <asp:LinkButton id="lnkNoteRefresh" runat="Server"><i class="fas fa-recycle  fa-1x"></i></asp:LinkButton>
-        <asp:UpdatePanel id="upChecks" runat="server" ChildrenAsTriggers="true">
+        <asp:UpdatePanel id="upNotificationsFull" runat="server" ChildrenAsTriggers="true">
             <ContentTemplate>
-                <uc1:ctrlNotifications runat="server" id="ctrlNotifications" />
+                <uc1:ctrlNotificationsFull runat="server" id="ctrlNotifications" />
             </ContentTemplate>
             <Triggers>
                 <asp:AsyncPostBackTrigger ControlID="lnkNoteRefresh" EventName="Click" />

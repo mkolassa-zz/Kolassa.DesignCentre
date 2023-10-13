@@ -342,6 +342,7 @@
     <Content Include="Content\scrodal.css" />
     <Content Include="Content\sidebar.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="Controls\ctrlNotificationsFull.ascx" />
     <Content Include="Controls\ctrlUpgradeCategories.ascx" />
     <Content Include="Controls\ctrlNotifications.ascx" />
     <Content Include="Controls\ctrlContactEntry.ascx" />
@@ -830,6 +831,13 @@
     <Compile Include="Configure\frmUnitRooms.aspx.vb">
       <DependentUpon>frmUnitRooms.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ctrlNotificationsFull.ascx.designer.vb">
+      <DependentUpon>ctrlNotificationsFull.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ctrlNotificationsFull.ascx.vb">
+      <DependentUpon>ctrlNotificationsFull.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controls\ctrlUpgradeCategories.ascx.designer.vb">
       <DependentUpon>ctrlUpgradeCategories.ascx</DependentUpon>

@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class ctrlPayments
-    
+
     '''<summary>
     '''odsPayments control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class ctrlPayments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents odsPayments As Global.System.Web.UI.WebControls.ObjectDataSource
-    
+
     '''<summary>
     '''litID control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class ctrlPayments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents litID As Global.System.Web.UI.WebControls.Literal
-    
+
     '''<summary>
     '''litPageInfo control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class ctrlPayments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents litPageInfo As Global.System.Web.UI.WebControls.Literal
-    
+
     '''<summary>
     '''pnlPay control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class ctrlPayments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlPay As Global.System.Web.UI.UpdatePanel
-    
+
     '''<summary>
     '''GridView1 control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class ctrlPayments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents GridView1 As Global.System.Web.UI.WebControls.GridView
-    
+
     '''<summary>
     '''txtID control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class ctrlPayments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtID As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtPaymentDueDate control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class ctrlPayments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtPaymentDueDate As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtActualPaymentDate control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class ctrlPayments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtActualPaymentDate As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtPaymentDueAmount control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class ctrlPayments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtPaymentDueAmount As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtActualPaymentAmount control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class ctrlPayments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtActualPaymentAmount As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtPaymentComment control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class ctrlPayments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtPaymentComment As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtCheckNumber control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class ctrlPayments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtCheckNumber As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''cmdPost control.
     '''</summary>
@@ -129,4 +129,13 @@ Partial Public Class ctrlPayments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdPost As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''upPayProg control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents upPayProg As Global.System.Web.UI.UpdateProgress
 End Class

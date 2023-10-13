@@ -749,6 +749,7 @@ LoadChildrenError:
     Private Function fGetDataset(ByVal lsConnectionType As String, ByVal lsCn As String, ByVal lsSQL As String, ByVal lsTableName As String) As DataSet
         'Debug.Print("<clsDataLoader.fGetDataset>" & lsSQL & "</clsDataLoader.fGetDataset>")
         msErrorMsg = ""
+        '     If lsSQL.ToUpper.Contains("TBLCUSTO") Then Stop
         If lsSQL.Length > 4 Then
             If Right(Trim(lsSQL), 4).ToUpper = " AND" Then
                 lsSQL = Trim(lsSQL)

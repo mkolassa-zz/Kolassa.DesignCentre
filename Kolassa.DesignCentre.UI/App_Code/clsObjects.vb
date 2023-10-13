@@ -98,7 +98,7 @@ Public Class clsCustomer
     Public Overloads Property CustomerEmail As String
     Public Overloads Property NodeID As Integer
     Public Property CustomerType As String
-    Public Property CustomerActive As Boolean
+    Public Property CustomerActive As Boolean = True
     Public Property CustomerCreateDate As Date
     Public Property CustomerCreateUser As String
     Public Property CustomerUpdateDate As Date
@@ -646,6 +646,7 @@ Public Class clsQuote
     Public Property AssignedTo As String
     Public Property AssignedToEmail As String
     Public Property CustomerName As String
+    Public Property CustomerEmail As String = ""
     Public Property SortOrder As String
     Public Property NumRecs As Integer
 
@@ -662,7 +663,7 @@ Public Class clsQuote
         Dim colName, colVal As String
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 
-        ds = c.LoadQuotes(NodeID, "", True, ID, NumRecs, SortOrder)
+        ds = c.LoadQuotes(NodeID, "", True, ID, NumRecs, SortOrder, CustomerEmail)
         If ds Is Nothing Then Exit Sub
         If ds.Tables.Count = 0 Then Exit Sub
         For Each row As DataRow In ds.Tables(0).Rows
@@ -705,21 +706,44 @@ Public Class clsQuote
             Next
         Next
     End Sub
-    Function AssignQuoteToSales(lsID As String, lsAssignedToID As String, lsURL As String, baseURL As String) As Boolean
+	Function AssignQuoteToSales(lsID As String, lsAssignedToID As String, lsURL As String, baseURL As String) As Boolean
+		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+		If lsID.Length = 36 And lsAssignedToID.Length = 36 Then
+			If ProjectID Is Nothing Then ProjectID = Current.Session("Project")
+			c.UpdateQuotes(lsID, "", "", True, "", lsAssignedToID)
+			Dim ds As DataSet
+			ds = c.LoadAppUsers(lsAssignedToID)
+			Dim dt As DataTable = ds.Tables(0)
+			AssignedToEmail = dt.Rows(0)("Email")
+			Dim AssignTask As New clstask
+			AssignTask.ProjectID = ProjectID
+			AssignTask.NodeID = NodeID
+			AssignTask.Code = Trim(Code)
+			AssignTask.Description = "Quote: " & Code & " For Unit: " & Trim(UnitCode) + ": " + UnitName & " has been Assigned to you."
+			AssignTask.Name = Name
+			AssignTask.AssignedToEmail = AssignedToEmail
+			AssignTask.AssignedTo = lsAssignedToID
+			AssignTask.AppUrl = lsURL
+			AssignTask.BaseURL = baseURL
+			AssignTask.Insert()
+		End If
+		Return True
+	End Function
+    Function AssignQuoteToCustomer(lsID As String, lsAssignedToID As String, lsURL As String, baseURL As String) As Boolean
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
         If lsID.Length = 36 And lsAssignedToID.Length = 36 Then
             If ProjectID Is Nothing Then ProjectID = Current.Session("Project")
-            c.UpdateQuotes(lsID, "", "", True, "", lsAssignedToID)
+            c.UpdateQuotes(lsID, lsAssignedToID, "", True, "", "")
             Dim ds As DataSet
-            ds = c.LoadAppUsers(lsAssignedToID)
+            ds = c.LoadCustomers(Current.Session("NodeID"), "", True, lsAssignedToID, "", "")
             Dim dt As DataTable = ds.Tables(0)
-            AssignedToEmail = dt.Rows(0)("Email")
+            '      AssignedToEmail = dt.Rows(0)("Email")
             Dim AssignTask As New clstask
             AssignTask.ProjectID = ProjectID
             AssignTask.NodeID = NodeID
             AssignTask.Code = Trim(Code)
-            AssignTask.Description = "Quote: " & Code & " For Unit: " & Trim(UnitCode) + ": " + UnitName & " has been Assigned to you."
-            AssignTask.Name = Name
+            AssignTask.Description = "Quote: " & Code & " For Unit: " & Trim(UnitCode) + ": " + UnitName & " Customer Assigned."
+            AssignTask.Name = dt.Rows(0)("Name")
             AssignTask.AssignedToEmail = AssignedToEmail
             AssignTask.AssignedTo = lsAssignedToID
             AssignTask.AppUrl = lsURL
@@ -2049,7 +2073,7 @@ Public Class clsBase
         ProjectID = IIf(System.Web.HttpContext.Current.Session("ProjectID") Is Nothing, "00000000-0000-0000-0000-000000000000", System.Web.HttpContext.Current.Session("ProjectID"))
         Dim lsTest As String = ""
     End Sub
-    Public Overridable Sub processFormValues()
+	Public Overridable Sub processFormValues()
 		Dim lsString As String = ""
 		For Each kvp As KeyValuePair(Of String, String) In FormValue
 			lsString = lsString & Chr(13) & Chr(10) & kvp.Key & kvp.Value
@@ -2081,10 +2105,10 @@ Public Class clsBase
 				Case "NodeID".ToUpper
 					NodeID = kvp.Value
 				Case "ImageUrl".ToUpper
-                    ImageUrl = kvp.Value
-                Case "LogoURL".ToUpper
-                    LogoURL = kvp.Value
-            End Select
+					ImageUrl = kvp.Value
+				Case "LogoURL".ToUpper
+					LogoURL = kvp.Value
+			End Select
 
 		Next
 		If CodeExists() Then
@@ -2093,13 +2117,33 @@ Public Class clsBase
 			Exit Sub
 		End If
 
-        If ID = "" Or ID = "00000000-0000-0000-0000-000000000000" Then
-            Insert()
-        Else
-            Update()
+		If ID = "" Or ID = "00000000-0000-0000-0000-000000000000" Then
+			Insert()
+		Else
+			Update()
 		End If
 		lsString = lsString
 	End Sub
+	Public Function fRecordisRightPlace(llNodeID As Long, lsProjectID As String, lsID As String) As String
+		Dim wrongNode As Boolean = False
+		Dim wrongProject As Boolean = False
+        '***  Having an ID field means the record is being updated.  But the record with that ID might belong to a different
+        '*** Project or event a different Node (Customer)  So.  If ID exists check to make sure you are in the correct Node and Project
+        '*** This Function Should exist in the base class
+        If llNodeID > 0 And llNodeID <> System.Web.HttpContext.Current.Session("NodeID") Then wrongNode = True
+        If lsProjectID <> "" And lsProjectID <> "00000000-0000-0000-0000-000000000000" And lsProjectID <> System.Web.HttpContext.Current.Session("ProjectID") Then wrongProject = True
+
+        If WrongNode Then
+			ErrorMessage = "Item Lists Node that is different from Currently logged in Node.  Refuse to process that data."
+			Return ErrorMessage
+		End If
+		If WrongProject Then
+			ErrorMessage = "Item Lists Project that is different from Currently logged in and selected Project.  Refuse to process that data."
+			Return ErrorMessage
+		End If
+
+		fRecordisRightPlace = ""
+    End Function
 	Public Function GetNextCode() As String
 		GetNextCode = ""
         Dim c As New Kolassa.DesignCenter.ReportManager.clsDataLoader
@@ -2578,13 +2622,13 @@ Public Class clstask
     Public Sub TaskRead()
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
         Dim lsMsg As String = ""
-        Dim lbOK As Boolean = c.TaskRead(NodeID, ID, Read)
+        Dim lbOK As Boolean = c.TaskRead(NodeID, ID, "Read")
         If lbOK = False Then ErrorMessage = lsMsg
     End Sub
     Public Sub TaskComplete()
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
         Dim lsMsg As String = ""
-        Dim lbOK As Boolean = c.TaskComplete(NodeID, ID, Read)
+        Dim lbOK As Boolean = c.TaskComplete(NodeID, ID, "Complete")
         If lbOK = False Then ErrorMessage = lsMsg
     End Sub
     Public Sub TaskComments()
@@ -2609,55 +2653,61 @@ Public Class clsTasks
         Dim cObject As New clstask
         Dim colName As String
         Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-        If lsObjectID = "" Then lsObjectID = "11112222-3333-4444-5555-666677778888"
-        lsWhere = " "
-        ds = c.LoadTasks(NODEID, lsWhere, True, lsID, AssignedTo)
-        'Return ds
-        'Exit Function
-
         Dim result As New List(Of clstask)
-        If ds Is Nothing Then Return result
-        If ds.Tables.Count > 0 Then
-            ObjectCount = ds.Tables(0).Rows.Count
-            For Each row As DataRow In ds.Tables(0).Rows
-                Dim values As New List(Of Object)
-                cObject = New clstask
-                For Each column As DataColumn In ds.Tables(0).Columns
-                    If row.IsNull(column) Then
-                        values.Add(Nothing)
-                    Else
-                        colName = UCase(column.ColumnName)
-                        Select Case colName.ToUpper
-                            Case "PROJECT" : cObject.Project = row.Item(column).ToString
-                            Case "DESCRIPTION" : cObject.Description = row.Item(column).ToString
-                            Case "EMAIL" : cObject.AssignedToEmail = row.Item(column).ToString
-                            Case "ID" : cObject.ID = row.Item(column).ToString
-                            Case "NAME" : cObject.Name = row.Item(column)
-                            Case "OBJECTID" : cObject.ObjectID = row.Item(column).ToString
-                            Case "CODE" : cObject.Code = row.Item(column)
-                            Case "ASSIGNEDTO" : cObject.AssignedTo = row.Item(column).ToString
-                            Case "READ", "TASKREAD" : cObject.Read = row.Item(column)
-                            Case "COMPLETED", "TASKCOMPLETED" : cObject.Complete = row.Item(column)
-                            Case "APPURL", "TASKURL" : cObject.AppUrl = row.Item(column)
-                            Case "COMMENTS", "TASKCOMMENTS" : cObject.Comments = row.Item(column)
-                            Case "CREATEUSERNAME" : cObject.CreateUserName = row.Item(column)
-                            Case "UPDATEUSERNAME" : cObject.UpdateUserName = row.Item(column)
-                            Case "ACTIVE" : cObject.Active = row.Item(column)
-                            Case "CREATEDATE"
-                                CustDate = row.Item(column)
-                                If CustDate > DateAdd("d", -100000, Now) Then cObject.CreateDate = CustDate
-                            Case "CREATEUSER" : cObject.CreateUser = row.Item(column).ToString
-                            Case "UPDATEDATE" : cObject.UpdateDate = row.Item(column)
-                                CustDate = row.Item(column)
-                                If CustDate > DateAdd("d", -100000, Now) Then cObject.UpdateDate = CustDate
-                            Case "UPDATEUSER" : cObject.UpdateUser = row.Item(column).ToString
+        Try
+            If lsObjectID = "" Then lsObjectID = "11112222-3333-4444-5555-666677778888"
+            lsWhere = " "
+            ds = c.LoadTasks(NODEID, lsWhere, True, lsID, AssignedTo, True)
 
-                        End Select
-                    End If
+            'Return ds
+            'Exit Function
+
+
+            If ds Is Nothing Then Return result
+            If ds.Tables.Count > 0 Then
+                ObjectCount = ds.Tables(0).Rows.Count
+                For Each row As DataRow In ds.Tables(0).Rows
+                    Dim values As New List(Of Object)
+                    cObject = New clstask
+                    For Each column As DataColumn In ds.Tables(0).Columns
+                        If row.IsNull(column) Then
+                            values.Add(Nothing)
+                        Else
+                            colName = UCase(column.ColumnName)
+                            Select Case colName.ToUpper
+                                Case "PROJECT" : cObject.Project = row.Item(column).ToString
+                                Case "DESCRIPTION" : cObject.Description = row.Item(column).ToString
+                                Case "EMAIL" : cObject.AssignedToEmail = row.Item(column).ToString
+                                Case "ID" : cObject.ID = row.Item(column).ToString
+                                Case "NAME" : cObject.Name = row.Item(column)
+                                Case "OBJECTID" : cObject.ObjectID = row.Item(column).ToString
+                                Case "CODE" : cObject.Code = row.Item(column)
+                                Case "ASSIGNEDTO" : cObject.AssignedTo = row.Item(column).ToString
+                                Case "READ", "TASKREAD" : cObject.Read = row.Item(column)
+                                Case "COMPLETED", "TASKCOMPLETED" : cObject.Complete = row.Item(column)
+                                Case "APPURL", "TASKURL" : cObject.AppUrl = row.Item(column)
+                                Case "COMMENTS", "TASKCOMMENTS" : cObject.Comments = row.Item(column)
+                                Case "CREATEUSERNAME" : cObject.CreateUserName = row.Item(column)
+                                Case "UPDATEUSERNAME" : cObject.UpdateUserName = row.Item(column)
+                                Case "ACTIVE" : cObject.Active = row.Item(column)
+                                Case "CREATEDATE"
+                                    CustDate = row.Item(column)
+                                    If CustDate > DateAdd("d", -100000, Now) Then cObject.CreateDate = CustDate
+                                Case "CREATEUSER" : cObject.CreateUser = row.Item(column).ToString
+                                Case "UPDATEDATE" : cObject.UpdateDate = row.Item(column)
+                                    CustDate = row.Item(column)
+                                    If CustDate > DateAdd("d", -100000, Now) Then cObject.UpdateDate = CustDate
+                                Case "UPDATEUSER" : cObject.UpdateUser = row.Item(column).ToString
+
+                            End Select
+                        End If
+                    Next
+                    result.Add(cObject)
                 Next
-                result.Add(cObject)
-            Next
-        End If
+            End If
+        Catch ex As Exception
+            Dim ErrorMessage As String = ex.Message
+        End Try
         Return result
     End Function
 End Class
@@ -2806,7 +2856,9 @@ Public Class clsImage
     'Public Property ImageURL As String
     Public Property ObjectID As String
 	Public Property ImageOrder As Integer
-	Public Property ImageType As String
+    Public Property ImageType As String
+    Public Property PrimaryItem As Boolean
+    Public Property Swatch As Boolean
     'Private Property NODEID As Long
     'Public Property ProjectID As String
     Public Sub New()
@@ -2822,12 +2874,35 @@ Public Class clsImage
         Dim b As Byte()
         b = System.Text.Encoding.ASCII.GetBytes("")
         If ObjectID = "" Then ObjectID = ProjectID
-        lbOK = c.InsertImages(ObjectID, ObjectType, NodeID, Name, Description, ImageOrder, b, ImageType, ImageURL, ProjectID)
-        If lbOK = False Then
+        lbOK = c.InsertImages(ObjectID, ObjectType, NodeID, Name, Description, ImageOrder, b, ImageType, ImageUrl, ProjectID, PrimaryItem, Swatch)
+		If lbOK = False Then
 			ErrorMessage = c.ErrorMessage
 		End If
 	End Sub
+    Public Sub setPrimary(lsID As String)
+        Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+        If Description = "" Then Description = Name
+        Dim lsMsg As String = ""
+        Dim lbOK As Boolean
 
+        If ObjectID = "" Then ObjectID = ProjectID
+        lbOK = c.UpdateImagesSetImagePrimaryItem(lsID)
+        If lbOK = False Then
+            ErrorMessage = c.ErrorMessage
+        End If
+    End Sub
+    Public Sub setSwatch(lsID As String)
+        Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+        If Description = "" Then Description = Name
+        Dim lsMsg As String = ""
+        Dim lbOK As Boolean
+
+        If ObjectID = "" Then ObjectID = ProjectID
+        lbOK = c.UpdateImagesSetImageSwatchItem(lsID)
+        If lbOK = False Then
+            ErrorMessage = c.ErrorMessage
+        End If
+    End Sub
 End Class
 '*********************************************************
 '**** ReportCategory
@@ -2945,8 +3020,8 @@ Public Class clsDBObjects
 	Public Overloads Function Update(obj As clsDBObject) As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		If obj.TableName = "" Then obj.TableName = c.fGetTableName(obj.ObjectType, NODEID)
-		c.UpdateThings(obj.FormValue, obj.NodeID, obj.Name, obj.Description, obj.Code, obj.ID, obj.TableName, obj.Active)
-		If c.msErrorMsg = "" Then
+        c.UpdateThings(obj.FormValue, obj.NodeID, obj.Name, obj.Description, obj.Code, obj.ID, obj.TableName, obj.Active, obj.ProjectID)
+        If c.msErrorMsg = "" Then
 			Update = 1
 		Else
 			Update = 0
@@ -3025,8 +3100,8 @@ Public Class clsDBObject
 	End Sub
 	Public Overloads Function Update(obj As clsDBObject) As Integer 'NodeID As Integer, FirstName As String, LastName As String, City As String, ContactType As String, Active As String, ID As String)
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		c.UpdateThings(FormValue, NodeID, obj.Name, obj.Description, obj.Code, obj.ID, obj.TableName, obj.Active)
-		If c.msErrorMsg <> "" Then
+        c.UpdateThings(FormValue, NodeID, obj.Name, obj.Description, obj.Code, obj.ID, obj.TableName, obj.Active, obj.ProjectID)
+        If c.msErrorMsg <> "" Then
 			Update = 0
 			ErrorMessage = c.msErrorMsg
 			obj.ErrorMessage = c.msErrorMsg
@@ -3037,62 +3112,77 @@ Public Class clsDBObject
 	End Function
 
 	Public Overrides Sub processFormValues()
-		Dim lsString As String = ""
-		For Each kvp As KeyValuePair(Of String, String) In FormValue
-			lsString = lsString & Chr(13) & Chr(10) & kvp.Key & kvp.Value
-			Select Case kvp.Key.ToUpper
-				Case "ID"
-					ID = kvp.Value
+        Dim lsString As String = ""
+        Dim objectID As String = ""
+		'Dim WrongNode As Boolean = False
+		'Dim WrongProject As Boolean = False
+		Try
+			For Each kvp As KeyValuePair(Of String, String) In FormValue
+				'WrongNode = False
+				lsString = lsString & Chr(13) & Chr(10) & kvp.Key & kvp.Value
+				Select Case kvp.Key.ToUpper
+					Case "ID"
+						ID = kvp.Value
 
-				Case "CODE"
-					Code = kvp.Value
-				Case "NAME"
-					Name = kvp.Value
-				Case "Description".ToUpper
-					Description = kvp.Value
-				Case "Active".ToUpper
-					Select Case Trim(UCase(kvp.Value))
-						Case "YES", "TRUE", "1", "-1"
-							Active = True
-						Case "Not", "False", "0"
-							Active = False
-						Case Else
-							'Active = nothing
-					End Select
+					Case "CODE"
+						Code = kvp.Value
+					Case "NAME"
+						Name = kvp.Value
+					Case "Description".ToUpper
+						Description = kvp.Value
+					Case "Active".ToUpper
+						Select Case Trim(UCase(kvp.Value))
+							Case "YES", "TRUE", "1", "-1"
+								Active = True
+							Case "Not", "False", "0"
+								Active = False
+							Case Else
+								'Active = nothing
+						End Select
 					'Active = kvp.Value
-				Case "CreateDate".ToUpper
-					CreateDate = kvp.Value
-				Case "CreateUser".ToUpper
-					CreateUser = kvp.Value
-				Case "UpdateDate".ToUpper
-					UpdateDate = kvp.Value
-				Case "UpdateUser.toupper"
-					UpdateUser = kvp.Value
-				Case "UpdateUserName".ToUpper
-					UpdateUserName = kvp.Value
-				Case "CreateUserName".ToUpper
-					CreateUserName = kvp.Value
-				Case "llNodeID".ToUpper
-					NodeID = kvp.Value
-				Case "NodeID".ToUpper
-					NodeID = kvp.Value
-				Case "ImageUrl".ToUpper
-                    ImageUrl = kvp.Value
+					Case "CreateDate".ToUpper
+                        'CreateDate = kvp.Value
+                    Case "CreateUser".ToUpper
+                        'CreateUser = kvp.Value
+                    Case "UpdateDate".ToUpper
+                        'UpdateDate = kvp.Value
+                    Case "UpdateUser.toupper"
+                        'UpdateUser = kvp.Value
+                    Case "UpdateUserName".ToUpper
+                        'UpdateUserName = kvp.Value
+                    Case "CreateUserName".ToUpper
+                        'CreateUserName = kvp.Value
+                    Case "llNodeID".ToUpper, "NodeID".ToUpper
+						NodeID = kvp.Value
+					Case "ImageUrl".ToUpper
+						ImageUrl = kvp.Value
+					Case "ObjectID".ToUpper
+						objectID = kvp.Value
+				End Select
 
-            End Select
-
-		Next
-        If CodeExists() Then
-            ErrorMessage = "Item Code already exists on another item.  Please change the code field."
-            lsString = ErrorMessage
-            Exit Sub
-        End If
-        If ID = "" Or ID = "00000000-0000-0000-0000-000000000000" Then 'INSERTUPDATE
-            Insert()
-        Else
-            Update(Me)
-		End If
-		lsString = lsString
+			Next
+			If CodeExists() Then
+				ErrorMessage = "Item Code already exists on another item.  Please change the code field."
+				lsString = ErrorMessage
+				Exit Sub
+			End If
+			If ID = "" Or ID = "00000000-0000-0000-0000-000000000000" Then 'INSERTUPDATE
+				Insert()
+			Else
+				'*** Before we Update the record, make sure it exists for this Project
+				Dim lsRecRight As String = fRecordisRightPlace(NodeID, objectID, ID)
+				If lsRecRight = "" Then
+					Update(Me)
+				Else
+					ErrorMessage = lsRecRight
+					lsString = ErrorMessage
+					Exit Sub
+				End If
+			End If
+			lsString = lsString
+		Catch ex As Exception
+            ErrorMessage = ex.Message
+        End Try
 	End Sub
 End Class
 

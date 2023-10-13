@@ -78,11 +78,11 @@ Public Class frmImagePopOut
                 If lsObjectID = "" Then
                     'No File
                 Else
-                    Dim lsObjType As String = Request.QueryString("objType")
-                    Dim lsProject As String = Session("Project")
-                    If lsObjType.ToUpper = "PROJECT" Then lsProject = lsObjectID
-                    c.InsertImages(lsObjectID, lsObjType, liNode, lsFileName, txtDescription.Text, 1, ImageContent, strImageType, "", lsProject)
-                End If
+                Dim lsObjType As String = Request.QueryString("objType")
+                Dim lsProject As String = Session("Project")
+                If lsObjType.ToUpper = "PROJECT" Then lsProject = lsObjectID
+                c.InsertImages(lsObjectID, lsObjType, liNode, lsFileName, txtDescription.Text, 1, ImageContent, strImageType, "", lsProject, False, False)
+            End If
             Catch ex As Exception
                 ErrorMessage = ErrorMessage & ex.Message
                 litMessage.Text = ErrorMessage

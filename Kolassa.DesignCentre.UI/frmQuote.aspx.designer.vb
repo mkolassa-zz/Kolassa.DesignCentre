@@ -257,6 +257,60 @@ Partial Public Class frmQuote
     Protected WithEvents lblQuoteID As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''pnlAssignCustomer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlAssignCustomer As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''upAssignedCustomer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents upAssignedCustomer As Global.System.Web.UI.UpdatePanel
+
+    '''<summary>
+    '''cboAssignedCustomer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cboAssignedCustomer As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''cmdAssignCustomer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdAssignCustomer As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
+    '''lblAssignedCustomer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblAssignedCustomer As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblQuoteIDCustomer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblQuoteIDCustomer As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''pnlQuoteLookup control.
     '''</summary>
     '''<remarks>
@@ -444,6 +498,15 @@ Partial Public Class frmQuote
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents litName As Global.System.Web.UI.WebControls.Literal
+
+    '''<summary>
+    '''LitCustomer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents LitCustomer As Global.System.Web.UI.WebControls.Literal
 
     '''<summary>
     '''cmdAddNewOption control.

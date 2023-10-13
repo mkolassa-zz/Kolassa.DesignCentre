@@ -13,7 +13,7 @@
 	<div class="panel panel-default">
 			  <div class="panel-heading">
 				<h4 class="panel-title">
-				  <a data-toggle="collapse" href="#collapseAdjust"><i class="fa fa-arrow-circle-down" ></i> Adjustment</a>
+				  <a data-toggle="collapse" href="#collapseAdjust"><i class="d-none fa fa-arrow-circle-down" ></i> Adjustment</a>
 				</h4>
 			  </div>
 			  <div id="collapseAdjust" class="panel-collapse collapse">
@@ -27,7 +27,7 @@
 
 		<asp:GridView ID="GridView1" runat="server" DataSourceID="odsAdjustments" AutoGenerateColumns="False" DataKeyNames="ID">
 			<Columns >
-				<asp:CommandField ButtonType="Link" ShowEditButton="true" ShowDeleteButton="true"  ShowCancelButton="true" />
+				<asp:CommandField ButtonType="Link" ShowEditButton="true" ShowDeleteButton="true"  ShowCancelButton="true" Visible="false" />
 				<asp:TemplateField HeaderText="Edit in form" Visible="false">
 					<ItemTemplate>
 						<asp:LinkButton ID="btnEdit" runat="server" 

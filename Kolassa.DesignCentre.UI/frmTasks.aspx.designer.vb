@@ -23,13 +23,13 @@ Partial Public Class frmTasks
     Protected WithEvents lnkNoteRefresh As Global.System.Web.UI.WebControls.LinkButton
 
     '''<summary>
-    '''upChecks control.
+    '''upNotificationsFull control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents upChecks As Global.System.Web.UI.UpdatePanel
+    Protected WithEvents upNotificationsFull As Global.System.Web.UI.UpdatePanel
 
     '''<summary>
     '''ctrlNotifications control.
@@ -38,7 +38,7 @@ Partial Public Class frmTasks
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ctrlNotifications As Global.Kolassa.DesignCentre.UI.ctrlNotifications
+    Protected WithEvents ctrlNotifications As Global.Kolassa.DesignCentre.UI.ctrlNotificationsFull
 
     '''<summary>
     '''upProgress control.

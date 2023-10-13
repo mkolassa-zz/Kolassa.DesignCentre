@@ -54,7 +54,38 @@
 
 
 
-	<div class="card-group">
+
+ 
+		<div class="card-group">
+			<div class="card border-light mb-12" style="max-width: 180rem;">
+				<div class="card-body text-secondary" style="resize: both; overflow: auto;">
+					<p class="card-text">
+						<uc1:ctrlGoogleChartPie  ID="ctrlGoogleChartPie1" runat="server" xvaluemember="chartlabel" title="Quotes By Status" subtitle="Count" yvaluemembers ="chartdata" SQL="select QuoteStatus, Count(QUoteSTatus) as QuoteCount 	from v_QuoteLookup where 1=1 and PROJECTGUID Group By QuoteStatus " />
+				</div>
+			</div>
+		<div class="card border-light mb-12" style="max-width: 180rem;">
+			<div class="card-body text-secondary" style="resize: both; overflow: auto;">
+					<p class="card-text">
+						<uc1:ctrlGoogleChartPie ID="ctrlGoogleChartPie2"  runat="server" xvaluemember="chartlabel" title="Customers By State" subtitle="Count" yvaluemembers ="chartdata" SQL="select Customerstate, Count(customerstate) as StateCount 	from tblCustomers where 1=1 and NODEGUID Group By customerstate " />
+				</div>
+			</div>
+		</div>
+		<div class="card-group">
+			<div class="card border-light mb-12" style="max-width: 180rem;">
+				<div class="card-body text-secondary" style="resize: both; overflow: auto;">
+				
+						<uc1:ctrlGoogleChartPie  ID="ctrlGoogleChartPie3" runat="server" xvaluemember="chartlabel" title="Quotes By Status" subtitle="Count" yvaluemembers ="chartdata" SQL="select QuoteStatus, Count(QUoteSTatus) as QuoteCount 	from v_QuoteLookup where 1=1 and PROJECTGUID Group By QuoteStatus " />
+				</div>
+			</div>
+		<div class="card border-light mb-12" style="max-width: 180rem;">
+			<div class="card-body text-secondary" style="resize: both; overflow: auto;">
+					<p class="card-text">
+						<uc1:ctrlGoogleChartPie ID="ctrlGoogleChartPie4"  runat="server" xvaluemember="chartlabel" title="Customers By State" subtitle="Count" yvaluemembers ="chartdata" SQL="select Customerstate, Count(customerstate) as StateCount 	from tblCustomers where 1=1 and NODEGUID Group By customerstate " />
+				</div>
+			</div>
+		</div>
+	</div>
+    	<div class="card-group">
 		<div class="card border-light mb-6" style="max-width: 180rem;">
 			<div class="card-body text-secondary">
 				<h5 class="card-title"><%= Session("ProjectName") %></h5>
@@ -88,36 +119,6 @@
 						
 	                 </div>
 					<style>.mapouter{position:relative;text-align:right;height:100px;width:600px;}.gmap_canvas {overflow:hidden;background:none!important;height:500px;width:400px;}</style>
-				</div>
-			</div>
-		</div>
-	</div>
- 
-		<div class="card-group">
-			<div class="card border-light mb-12" style="max-width: 180rem;">
-				<div class="card-body text-secondary" style="resize: both; overflow: auto;">
-					<p class="card-text">
-						<uc1:ctrlGoogleChartPie  ID="ctrlGoogleChartPie1" runat="server" xvaluemember="chartlabel" title="Quotes By Status" subtitle="Count" yvaluemembers ="chartdata" SQL="select QuoteStatus, Count(QUoteSTatus) as QuoteCount 	from v_QuoteLookup where 1=1 and PROJECTGUID Group By QuoteStatus " />
-				</div>
-			</div>
-		<div class="card border-light mb-12" style="max-width: 180rem;">
-			<div class="card-body text-secondary" style="resize: both; overflow: auto;">
-					<p class="card-text">
-						<uc1:ctrlGoogleChartPie ID="ctrlGoogleChartPie2"  runat="server" xvaluemember="chartlabel" title="Customers By State" subtitle="Count" yvaluemembers ="chartdata" SQL="select Customerstate, Count(customerstate) as StateCount 	from tblCustomers where 1=1 and NODEGUID Group By customerstate " />
-				</div>
-			</div>
-		</div>
-		<div class="card-group">
-			<div class="card border-light mb-12" style="max-width: 180rem;">
-				<div class="card-body text-secondary" style="resize: both; overflow: auto;">
-				
-						<uc1:ctrlGoogleChartPie  ID="ctrlGoogleChartPie3" runat="server" xvaluemember="chartlabel" title="Quotes By Status" subtitle="Count" yvaluemembers ="chartdata" SQL="select QuoteStatus, Count(QUoteSTatus) as QuoteCount 	from v_QuoteLookup where 1=1 and PROJECTGUID Group By QuoteStatus " />
-				</div>
-			</div>
-		<div class="card border-light mb-12" style="max-width: 180rem;">
-			<div class="card-body text-secondary" style="resize: both; overflow: auto;">
-					<p class="card-text">
-						<uc1:ctrlGoogleChartPie ID="ctrlGoogleChartPie4"  runat="server" xvaluemember="chartlabel" title="Customers By State" subtitle="Count" yvaluemembers ="chartdata" SQL="select Customerstate, Count(customerstate) as StateCount 	from tblCustomers where 1=1 and NODEGUID Group By customerstate " />
 				</div>
 			</div>
 		</div>

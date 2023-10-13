@@ -59,7 +59,6 @@ Public Class ctrlImagesNew
     Protected Sub btnUpload_Click(sender As Object, e As EventArgs) 'Handles btnUpload.Click
         Try
             Dim lsFileName As String = ""
-
             If lsFileName = "" Then Exit Sub
             Dim intImageSize As Int64
             Dim strImageType As String
@@ -89,7 +88,7 @@ Public Class ctrlImagesNew
                 Dim lsObjType As String = Request.QueryString("objType")
                 Dim lsProject As String = Session("Project")
                 If lsObjType.ToUpper = "PROJECT" Then lsProject = lsObjectID
-                c.InsertImages(lsObjectID, lsObjType, liNode, lsFileName, txtDescription.Text, 1, ImageContent, strImageType, "", lsProject)
+                c.InsertImages(lsObjectID, lsObjType, liNode, lsFileName, txtDescription.Text, 1, ImageContent, strImageType, "", lsProject, False, False)
             End If
         Catch ex As Exception
             ErrorMessage = ErrorMessage & ex.Message
@@ -226,7 +225,7 @@ Public Class ctrlImagesNew
             o.ObjectType = Request.QueryString("objType")
             o.Insert()
         Catch ex As Exception
-
+            ErrorMessage = ex.Message
         End Try
     End Sub
     Function fgetImageType(lsImageType As String) As String

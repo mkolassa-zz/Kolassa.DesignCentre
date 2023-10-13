@@ -161,17 +161,21 @@
                 <li class="nav-item" style="padding-left:20px;padding-right:10px; padding-top:5px;">
                     <asp:linkbutton ID="lnkExport"      runat="server" tooltip="Download" ><i class="dc-Download"></i></asp:linkbutton>
                 </li>
+                     
+                <!-- **** UPLOAD DROPDOWN  **** -->
                 <li class="dropdown">
                       <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" title="Design Centre" aria-haspopup="true" aria-expanded="false">
                         <i class='fa fa-upload  padding-left:80px;'></i>
                       </button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" href="#">&nbsp;<i class="dc-Download"></i>&nbsp;Download Template</a>
-                        <!-- <a class="dropdown-item" data-toggle="modal" data-target="#modalupload"  href="#">&nbsp;<i class='fa fa-upload  padding-left:80px;'></i>&nbsp;Upload File</a>
-                        <a class="dropdown-item" data-toggle="modal" data-target="#modaluploadimage"  href="#">&nbsp;<i class='fa fa-upload  padding-left:80px;'></i>&nbsp;Upload Images</a> -->
-                        <a class="dropdown-item" data-toggle="modal" data-target="#modaluploadimage2"  href="#">&nbsp;<i class='fa fa-upload  padding-left:80px;'></i>&nbsp;Upload Images</a>
+                        <a class="dropdown-item" data-toggle="collapse" href="#collapsUploadPanel" role="button"  aria-expanded="false" aria-controls="collapseExample">Upload CSV File</a>
                       </div>
-                    </li>
+                        <!-- <a class="dropdown-item" data-toggle="modal" data-target="#modaluploadimage"  href="#">&nbsp;<i class='fa fa-upload  padding-left:80px;'></i>&nbsp;Upload Images</a> 
+                        <a class="dropdown-item" data-toggle="modal" data-target="#modaluploadimage2"  href="#">&nbsp;<i class='fa fa-upload  padding-left:80px;'></i>&nbsp;Upload Images</a> -->
+                 </li>
+
+    
                 <li class="nav-item" style="padding-left:20px;padding-right:10px; padding-top:5px;">
                     <asp:linkButton  ID="cmdNewrec"   runat="server" tooltip="Add Record" CssClass="newrec" OnClientClick="fSetPhase(this);" data-dude="newrec(this);" >
                         <i class='fa fa-plus-circle fa-1x' ></i></asp:linkButton>
@@ -193,6 +197,18 @@
  
         </div>
     </nav>
+    <!-- ************************************************************************
+         *** UPLOAD PANEL
+         ************************************************************************ -->
+    <div class="collapse" id="collapsUploadPanel">
+      <div class="card card-body" style="max-width:500px;">
+           <a class="close-button" data-toggle="collapse" href="#collapsUploadPanel" role="button"  aria-expanded="false" aria-controls="collapseExample">X close </a>
+           <asp:Label ID="lblfileupload" runat="server" AssociatedControlID="fuCSV" Text="file: " />
+           <ajaxToolkit:AjaxFileUpload ID="fuCSV" runat="server" CssClass="lbtn lbtn-light"  />
+           <asp:linkbutton ID ="hlErrorFile" runat="server" Text="Download Results"></asp:linkbutton>
+      </div>
+    </div>
+
 
     <div class="d-none accordion" id="accordionExample">
         <div class="card">
@@ -205,7 +221,6 @@
                 <div class="card-body">
                     <cc1:ReportContainer ID="ReportContainer1" runat="server"  CssClass="row" showDebug="True" 
                         ReportListClass="list-group-item " ReportListSelectedClass="list-group-item list-group-item-primary"/>
-
                 </div>
             </div>
         </div>
@@ -289,9 +304,9 @@
                             </div>
                              <!-- Modal body -->
                             <div class="modal-body">
-                                <p> <asp:Label ID="lblfileupload" runat="server" AssociatedControlID="fuCSV" Text="file: " />
-                                   <ajaxToolkit:AjaxFileUpload ID="fuCSV" runat="server" CssClass="lbtn lbtn-light"  />
-				                   <asp:Button ID="cmdCSV" class="btn btn-primary" runat="server" Text="Upload CSV" /> 
+                                <p> 
+  
+                                    <!-- <asp:Button ID="cmdCSV" class="btn btn-primary" runat="server" Text="Upload CSV" /> -->
 				                </p>
                             </div>       
                          </div>

@@ -428,6 +428,15 @@ Partial Public Class frmQuoteCustomer
     Protected WithEvents ctrlPayments As Global.Kolassa.DesignCentre.UI.ctrlPayments
 
     '''<summary>
+    '''lvQuotes control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lvQuotes As Global.System.Web.UI.WebControls.ListView
+
+    '''<summary>
     '''pnlQuote control.
     '''</summary>
     '''<remarks>
@@ -518,13 +527,40 @@ Partial Public Class frmQuoteCustomer
     Protected WithEvents cmdVendorInstallationReport As Global.System.Web.UI.WebControls.LinkButton
 
     '''<summary>
-    '''Repeater1 control.
+    '''lblName control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents Repeater1 As Global.System.Web.UI.WebControls.Repeater
+    Protected WithEvents lblName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblUnitName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblUnitName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblUnitTypeName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblUnitTypeName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblUnitTypeDesc control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblUnitTypeDesc As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''fvQuote control.

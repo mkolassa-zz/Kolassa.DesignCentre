@@ -14,6 +14,15 @@ Option Explicit On
 Partial Public Class SiteMaster
 
     '''<summary>
+    '''lgvnav control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lgvnav As Global.System.Web.UI.WebControls.LoginView
+
+    '''<summary>
     '''lg control.
     '''</summary>
     '''<remarks>

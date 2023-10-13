@@ -32,11 +32,47 @@ Partial Public Class ctrlImagesDisplay
     Protected WithEvents txtImageObjectID As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''rpt control.
+    '''btnGo control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents rpt As Global.System.Web.UI.WebControls.Repeater
+    Protected WithEvents btnGo As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''Button1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents Button1 As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''upImages control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents upImages As Global.System.Web.UI.UpdatePanel
+
+    '''<summary>
+    '''rptInd control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rptInd As Global.System.Web.UI.WebControls.Repeater
+
+    '''<summary>
+    '''rptImages control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rptImages As Global.System.Web.UI.WebControls.Repeater
 End Class

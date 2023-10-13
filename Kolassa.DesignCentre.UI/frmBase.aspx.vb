@@ -24,6 +24,7 @@ Partial Class frmBase
 	End Function
 	Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load, Me.Load
         'ShowMessage("Hey", "Error")
+        '   hlErrorFile.ToolTip = ""
         'txtSearch.Text = "Path is:" & Path.GetTempPath
         If mlRecordCount = 0 Then
 			Exit Sub
@@ -406,30 +407,45 @@ Partial Class frmBase
 	End Sub
 
 	Protected Sub uploadcomplete(sender As Object, e As AjaxControlToolkit.AjaxFileUploadEventArgs) Handles fuCSV.UploadComplete
-        Dim c As New clsTestCSV
-        Dim lsFileName As String
-        Dim fPath As String = "customerfiles"
+		Dim c As New clsTestCSV
+		Dim lsFileName As String
+		Dim fPath As String = "customerfiles"
 
-        If Not Directory.Exists(fPath) Then Directory.CreateDirectory(fPath)
+		If Not Directory.Exists(fPath) Then Directory.CreateDirectory(fPath)
 
-        Dim lsCust As String = Session("NodeID").ToString
-        lsCust = "000" & Trim(lsCust)
-        lsCust = Right(lsCust, 3)
+		Dim lsCust As String = Session("NodeID").ToString
+		lsCust = "000" & Trim(lsCust)
+		lsCust = Right(lsCust, 3)
 
-        '  fPath = fPath & "/cust" & lsCust
-        '  If Not Directory.Exists(fPath) Then Directory.CreateDirectory(fPath)
-        '  Dim fileNametoupload As String = Server.MapPath(fPath) + "\" + Guid.NewGuid.ToString + e.FileName.ToString()
-        '  fileNametoupload = fPath + "\" + Guid.NewGuid.ToString + e.FileName.ToString()
+		fPath = fPath & "/cust" & lsCust
+		If Not Directory.Exists(fPath) Then Directory.CreateDirectory(fPath)
+		'  Dim fileNametoupload As String = Server.MapPath(fPath) + "\" + Guid.NewGuid.ToString + e.FileName.ToString()
+		'  fileNametoupload = fPath + "\" + Guid.NewGuid.ToString + e.FileName.ToString()
 
 
-        lsFileName = ConfigurationManager.AppSettings("uploadFolder") & "/" & Guid.NewGuid.ToString & fTakeOutQuotes(e.FileName)
-        fuCSV.SaveAs(lsFileName)
-        Session("objType") = Request.QueryString("objType")
-        c.ObjectType = Session("objType")
-        c.csvReadTest(lsFileName)
-        c.csvWriteTest()
+		lsFileName = ConfigurationManager.AppSettings("uploadFolder") & "/" & Guid.NewGuid.ToString & fTakeOutQuotes(e.FileName)
+		fuCSV.SaveAs(lsFileName)
+		Session("objType") = Request.QueryString("objType")
+		c.ObjectType = Session("objType")
+		Dim lsID As String = Guid.NewGuid.ToString
+        Dim slink As String = c.csvReadTest(lsFileName, fPath, lsID)
 
+
+        'hlErrorFile.ToolTip = slink
+        Session("ErrorFile") = slink
+        hlErrorFile.Text = "Download Error File" + slink
+        'c.csvWriteTest()
+        Exit Sub
+        Response.Clear()
+        Response.ContentType = "application/force-download"
+        Response.AddHeader("content-disposition", "attachment;    filename=file.txt")
+        'Response.BinaryWrite(c.getFileContents)
+        ' Write the MemoryStream data to the response stream
+        Dim ms As MemoryStream = c.getMemoryStream
+        ms.WriteTo(Response.OutputStream)
+        Response.End()
     End Sub
+
     Protected Sub afuuploadcomplete(sender As Object, e As AjaxControlToolkit.AjaxFileUploadEventArgs) Handles afuImage.UploadComplete
 
         Dim lsFileName As String
@@ -465,11 +481,74 @@ Partial Class frmBase
 
     Private Sub cmdfuImage_Click(sender As Object, e As EventArgs) Handles cmdfuImage.Click
         Dim s As String = Server.MapPath("customerfiles")
-        If (fuImage.HasFile) Then
-            fuImage.SaveAs(fuImage.FileName)
+		If (fuImage.HasFile) Then
+			fuImage.SaveAs(fuImage.FileName)
+		End If
+	End Sub
 
-        End If
+    Protected Sub btnGenerateCSV_Click_Click(sender As Object, e As EventArgs) Handles btnGenerateCSV_Click.Click
+        Dim csvData As String = "Name,Email,Phone" & vbCrLf
+        csvData += "John Doe,johndoe@example.com,555-1234" & vbCrLf
+        csvData += "Jane Smith,janesmith@example.com,555-5678" & vbCrLf
+
+        ' Create a MemoryStream to hold the CSV data
+        Using memoryStream As New System.IO.MemoryStream()
+            Dim bytes As Byte() = Encoding.UTF8.GetBytes(csvData)
+            memoryStream.Write(bytes, 0, bytes.Length)
+            memoryStream.Seek(0, SeekOrigin.Begin)
+
+            ' Clear the response content
+            Response.Clear()
+
+            ' Set the content type and headers for the response
+            Response.ContentType = "text/csv"
+            Response.AddHeader("Content-Disposition", "attachment; filename=sample.csv")
+
+            ' Write the MemoryStream data to the response stream
+            memoryStream.WriteTo(Response.OutputStream)
+
+            ' End the response
+            Response.End()
+        End Using
     End Sub
+
+    Private Sub hlErrorFile_Click(sender As Object, e As EventArgs) Handles hlErrorFile.Click
+        Try
+            '  Dim csvData As String = "Name,Email,Phone" & vbCrLf
+            Dim lsLink As String = Session("ErrorFile")
+            ' lsLink = "C:\Program Files (x86)\IIS Express\customerfiles\cust002\Error_FLOORS2c829ad8-4328-4797-b1c6-17a2e3ca341d.csv"
+            If lsLink = "" Then Exit Sub
+
+            If File.Exists(lsLink) Then
+                ' Set the content type and headers for the response.
+                Using memoryStream As New System.IO.MemoryStream(File.ReadAllBytes(lsLink))
+                    'Dim bytes As Byte() = Encoding.UTF8.GetBytes(csvData)
+                    'memoryStream.Write(bytes, 0, bytes.Length)
+                    'memoryStream.Seek(0, SeekOrigin.Begin)
+
+                    ' Clear the response content
+                    Response.Clear()
+
+                    ' Set the content type and headers for the response
+                    Response.ContentType = "text/csv"
+                    Response.AddHeader("Content-Disposition", "attachment; filename=ErrorFile.csv")
+
+                    ' Write the MemoryStream data to the response stream
+                    memoryStream.WriteTo(Response.OutputStream)
+
+
+                End Using
+            Else
+                ' Display an error message if the file does not exist.
+                ' = "The CSV file does not exist on the server."
+            End If
+        Catch ex As Exception
+            Debug.Print(ex.Message)
+		End Try
+        Response.End()
+    End Sub
+
+
 
 
 

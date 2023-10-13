@@ -302,16 +302,34 @@ Err_txtPhase2CompleteDate_DblClick:
 			End If
 		Next
         Dim lsURL As String = "frmQuote" & "?QuoteID=" + lsID
+		If lsID.Length = 36 And lsAssignedToID.Length = 36 Then
+			q.AssignQuoteToSales(lsID, lsAssignedToID, lsURL, Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd("/") + "/")
+			litName.Text = q.AssignedToEmail
+			lblAssigned.Text = "Assigned to " & litName.Text
+			cmdAssign.Enabled = False
+			cmdAssign.CssClass = "btn btn-secondary"
+		End If
+	End Sub
+    Private Sub cmdAssignCustomer_Click(sender As Object, e As EventArgs) Handles cmdAssignCustomer.Click
+        Dim lsID As String = lblQuoteID.Text 'Session("QuoteID")
+        Dim q As New clsQuote(lsID)
+
+        Dim lsAssignedToID As String = ""
+        For Each key As String In Request.Form.AllKeys
+            If (key.Contains("cboAssignedCustomer")) Then
+                lsAssignedToID = Request.Form(key)
+                Exit For
+            End If
+        Next
+        Dim lsURL As String = "frmQuote" & "?QuoteID=" + lsID
         If lsID.Length = 36 And lsAssignedToID.Length = 36 Then
-            q.AssignQuoteToSales(lsID, lsAssignedToID, lsURL, Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd("/") + "/")
-            litName.Text = q.AssignedToEmail
-            lblAssigned.Text = "Assigned to " & litName.Text
+            q.AssignQuoteToCustomer(lsID, lsAssignedToID, lsURL, Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd("/") + "/")
+            LitCustomer.Text = q.CustomerName
+            lblAssigned.Text = "Assigned to " & LitCustomer.Text
             cmdAssign.Enabled = False
             cmdAssign.CssClass = "btn btn-secondary"
         End If
-
     End Sub
-
 
 
     Sub sDisplayListbox(ByVal lst As ListBox)
@@ -994,7 +1012,20 @@ ph1Status_Error:
 					cboAssignedTo.Items.Add(li)
 				Next
 			Next
-            ds = c.LoadQuotes(Session("NodeID"), "", True, "", 4, " updateDate DESC")
+            cboAssignedCustomer.Items.Clear()
+            cboAssignedCustomer.Items.Add("-- Assign Customer  --")
+
+            ds = c.LoadCustomers(Session("NodeID"), "", True, "", "", "")
+            For Each dt As DataTable In ds.Tables
+                For Each dr As DataRow In dt.Rows
+                    li = New ListItem
+                    li.Value = dr("ID").ToString
+                    li.Text = dr("Name") & " - " & dr("CustomerEmail")
+                    cboAssignedCustomer.Items.Add(li)
+                Next
+            Next
+
+            ds = c.LoadQuotes(Session("NodeID"), "", True, "", 4, " updateDate DESC", "")
             rptRecentQuotes.DataSource = ds
             rptRecentQuotes.DataBind()
         End If
@@ -1284,8 +1315,8 @@ ph1Status_Error:
 		ctrlCommunications.DataBind()
 		CtrlAdjustments.DataBind()
 		Me.ctrlPayments.DataBind()
-		ctrlImagesDisplay.DataBind()
-	End Sub
+        ctrlImagesDisplay.DataBind()
+    End Sub
 
 
 

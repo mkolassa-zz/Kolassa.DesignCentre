@@ -39,7 +39,7 @@ Public Class frmProjects
         Session("ProjectUpgradesMetric") = FormatNumber(Val(c.FgetMetric("Upgrades", lsProject)), 0)
         Session("ProjectRevenueMetric") = FormatCurrency(Val(c.FgetMetric("Revenue", lsProject)), 0)
         If Session("NodeID") Is Nothing Then Session("NodeID") = 0
-        ctrlGoogleChartPie1.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch001&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
+        ctrlGoogleChartPie1.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch005&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
         ctrlGoogleChartPie2.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch002&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
         ctrlGoogleChartPie3.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch003&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"
         ctrlGoogleChartPie4.data_url = "dccharts.asmx/GetReportChartData?llChartID=ch004&Node=" & Session("NodeID") & "&Project='" & Session("Project") & "'"

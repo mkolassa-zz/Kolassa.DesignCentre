@@ -14,7 +14,7 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h4 class="panel-title">
-				  <a data-toggle="collapse" href="#collapsePayments"><i class="fa fa-arrow-circle-down" ></i> <%: Session("ProjectName")  %></a>
+				  <a data-toggle="collapse" href="#collapsePayments"><i class=" d-none fa fa-arrow-circle-down" ></i> <%: Session("ProjectName")  %></a>
 				</h4>
 			  </div>
 			  <div id="collapsePayments" class="panel-collapse collapse">
@@ -28,7 +28,7 @@
 	<div Class="table table-striped table-bordered table-hover glyphicon-hover  padding: 10px 10px 10x 10px;">
 		<asp:GridView ID="GridView1" runat="server" DataKeyNames="ID" DataSourceID="odsPayments" AutoGenerateColumns="False">
 			<Columns >
-				<asp:CommandField ButtonType="Link" ShowEditButton="true" ShowDeleteButton="true"  ShowCancelButton="true" />
+				<asp:CommandField ButtonType="Link" ShowEditButton="true" ShowDeleteButton="true"  ShowCancelButton="true" Visible="false" />
 				<asp:TemplateField HeaderText="Edit in form" Visible="false">
 					<ItemTemplate>
 						<asp:LinkButton ID="btnEdit" runat="server" 
@@ -115,25 +115,25 @@
 			</Columns>
 		</asp:GridView>
 	</div>
-	<div class="form-group">
+	<div class="d-none form-group">
 		<label for="lblAdjustmentDate">ID</label>
 		<asp:textbox runat="server"  class="form-control" id="txtID"  ReadOnly="true" />
 	</div>
 	<div class="form-group">
 		<label for="lblAdjustmentDate">Payment Due Date</label>
-		<asp:textbox runat="server" textmode="date" class="form-control" id="txtPaymentDueDate" required="required" />
+		<asp:textbox runat="server" textmode="date" class="form-control" id="txtPaymentDueDate" required="nrequired" />
 	</div>
 	<div class="form-group">
 		<label for="lblAdjustmentDate">Actual Payment Date</label>
-		<asp:textbox runat="server" textmode="date" class="form-control" id="txtActualPaymentDate" required="required"/>
+		<asp:textbox runat="server" textmode="date" class="form-control" id="txtActualPaymentDate" required="nrequired"/>
 	</div>
 	<div class="form-group">
 		<label for=" Amount">Payment Due Amount</label>
-		<asp:textbox runat="server" type="number" class="form-control" id="txtPaymentDueAmount" placeholder="$0.00" required="required"/>
+		<asp:textbox runat="server" type="number" class="form-control" id="txtPaymentDueAmount" placeholder="$0.00" required="nrequired"/>
 	</div>
 	<div class="form-group">
 		<label for=" Amount">Actual Payment Amount</label>
-		<asp:textbox runat="server" type="number" class="form-control" id="txtActualPaymentAmount" placeholder="$0.00" required="required"/>
+		<asp:textbox runat="server" type="number" class="form-control" id="txtActualPaymentAmount" placeholder="$0.00" required="nrequired"/>
 	</div>
 	<div class="form-group">
 		<label for="lblAdjustmentReason">Payment Comment</label>
@@ -143,9 +143,18 @@
 		<label for="lblAdjustmentReason">Check Number</label>
 		<asp:textbox runat="server" class="form-control" id="txtCheckNumber" rows="3"></asp:textbox>
 	</div>
+<asp:Button class="btn btn-primary" ID="cmdPost" runat="server" Text="Post" />
 	</ContentTemplate>
 	<Triggers>
 		<asp:AsyncPostBackTrigger ControlID="cmdPost" EventName="Click" />
 	</Triggers>
 </asp:UpdatePanel>
-<asp:Button class="btn btn-primary" ID="cmdPost" runat="server" Text="Post" />
+<asp:UpdateProgress ID="upPayProg" runat="server">
+	<ProgressTemplate>
+            <div id="Overlay">
+                       <b>... Please Wait ...</b>                              
+                        <asp:Image ID="LoadImage" runat="server"    style="position:relative; top:45%; width:100px;" 
+						ImageUrl="~/images/loading_nice.gif" />
+            </div>
+	</ProgressTemplate>
+</asp:UpdateProgress>

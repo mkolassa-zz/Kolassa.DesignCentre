@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="Forgot Password" Language="vb" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Forgot.aspx.vb" Inherits="Kolassa.DesignCentre.UI.ForgotPassword" Async="true" %>
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-    <h2><%: Title %>.</h2>
+    <h2></h2>
 
     <div class="row">
         <div class="col-md-8">

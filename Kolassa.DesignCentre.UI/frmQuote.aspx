@@ -49,6 +49,7 @@
 			<asp:Parameter DefaultValue="" Name="lsWhere" Type="String" />
 			<asp:Parameter DefaultValue="True" Name="lbActive" Type="Boolean" />
 			<asp:SessionParameter DefaultValue="" Name="lsID" SessionField="QuoteID"  Type="String" />
+			<asp:SessionParameter DefaultValue="" Name="CustomerEmail" SessionField="UserEmail"  Type="String" />
 			<asp:Parameter DefaultValue="" Name="liNumRecs" Type="Int16" />
 			<asp:Parameter DefaultValue="" Name="SortOrder" Type="Boolean" />
 		</SelectParameters>
@@ -343,7 +344,41 @@
 		</asp:Panel>
 		<!-- END QUOTE LOOKUP PANEL -->
 	
-
+		<!-- THIS IS THE PANEL FOR Assigning a CUSTOMER -->
+		<asp:Panel Runat="server" ID="pnlAssignCustomer" Visible = "true">
+			<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR SEARCHING FOR A QUOTE -->
+			<div class="modal fade" id="modAssignCustomer" tabindex="-1" role="dialog" aria-labelledby="quoteSearchModalLabel" aria-hidden="true" >
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content" style="width:700px;">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="modAssignCustomerTitle">Assign Customer</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						  <span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<asp:UpdatePanel  ID="upAssignedCustomer" runat="server" ChildrenAsTriggers="true" >
+							<ContentTemplate><div class="">
+								<asp:DropDownList ID="cboAssignedCustomer" runat="server" title="AssignedToCustomerTitle" AutoPostBack="false" EnableViewState="true" />
+								<asp:linkButton ID="cmdAssignCustomer" CssClass="btn btn-small btn-primary" Text="Assign Customer" runat="server" />
+								<br>
+								</br>
+								<asp:Label ID="lblAssignedCustomer" runat="server" CssClass=" text-primary"/>
+								<asp:Label ID="lblQuoteIDCustomer" runat="server" CssClass="d-none"/>
+							</ContentTemplate>
+							<Triggers>
+								<asp:AsyncPostBackTrigger ControlID="cboAssignedCustomer" EventName="SelectedIndexChanged" />	
+							</Triggers>		
+							</asp:UpdatePanel>
+					</div>
+					  <div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					  </div>
+				</div>
+			  </div>
+			</div>
+		</asp:Panel>
+		<!-- END ASSIGNED CUSTOMER LOOKUP PANEL -->
 
 
 	<!-- THIS IS THE PANEL FOR SEARCHING FOR A QUOTE -->
@@ -538,13 +573,21 @@
 												<i class="fa fa-user-plus"></i> Assign Resource</button>
 										</td>			
 									</tr>
+									<tr>
+										<td>
+											<asp:literal ID="LitCustomer" runat="server" />
+											<button  id="btnAssignCustomer" type="button" class="btn btn-default btn-sm"
+												data-toggle="modal" data-target="#modAssignCustomer" >
+												<i class="fa fa-user"></i> Assign Customer</button>
+										</td>			
+									</tr>
 								</table>			
 								<table>
 									<tr>
 										<td>
 											<nav class="Kolassa" >
 												<ul class="Kolassa" style="padding:unset;">
-													<button type="button" class="btn btn-primary btn-sm" id="cmdSave" ><i class="fa fa-save" ></i> Save</button>
+													<button type="button" class="d-none btn btn-primary btn-sm" id="cmdSave" ><i class="fa fa-save" ></i> Save</button>
 												</ul>
 											</nav>	 
 										</td>
@@ -1172,7 +1215,9 @@
             var sID = currow.find("td[id='OptionID']").text();
 			//alert(sID);
 			$("#MainContent_ctrlImagesDisplay_txtImageObjectID").val(sID);
-            $("#SelectedItemsModal").attr("style", "display:none;");
+			$("#SelectedItemsModal").attr("style", "display:none;");
+            //__doPostBack(sID, '');
+            $('.btn.btnrefresh').click();
         }
 
 	//********************************************
@@ -1222,13 +1267,14 @@
                 break;
             default:
                 cssclass = 'alert-info'
-        } 
+		} 
+		cssclass = 'alert-light';
 
 	    <% Dim s As String = "div" & (Rnd() * 1000).ToString%>
         var divname;
         var titlediv = WebForm_GetElementById('MessageModalTitle');
         titlediv.innerHTML = messagetitle;
-        $('#messagemodalbody').append('<div id="<%=s%>"  class="alert alert-dismissible ' + cssclass + '"><a href="#" class="close" data-dismiss="alert"   aria-label="close">&times;</a><strong>' + messagetype + '!</strong> <span>' + message + '</span></div>');
+        $('#messagemodalbody').append('<div id="<%=s%>"  class="alert xalert-dismissible ' + cssclass + '"><a href="#" class="close" data-dismiss="alert"   aria-label="close">&times;</a><strong>' + messagetype + '!</strong> <span>' + message + '</span></div>');
         $('#MessageModal').modal();
     }
 

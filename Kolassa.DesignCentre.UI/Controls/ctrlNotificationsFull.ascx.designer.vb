@@ -11,16 +11,16 @@ Option Strict On
 Option Explicit On
 
 
-Partial Public Class ctrlNotifications
+Partial Public Class ctrlNotificationsFull
 
     '''<summary>
-    '''pnlComm control.
+    '''pnlNotifications control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents pnlComm As Global.System.Web.UI.UpdatePanel
+    Protected WithEvents pnlNotifications As Global.System.Web.UI.UpdatePanel
 
     '''<summary>
     '''litID control.
@@ -30,24 +30,6 @@ Partial Public Class ctrlNotifications
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents litID As Global.System.Web.UI.WebControls.Literal
-
-    '''<summary>
-    '''gvData control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents gvData As Global.System.Web.UI.WebControls.GridView
-
-    '''<summary>
-    '''lvNotifications control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lvNotifications As Global.System.Web.UI.WebControls.ListView
 
     '''<summary>
     '''repeaterData control.

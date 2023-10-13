@@ -131,6 +131,33 @@ Partial Public Class frmBase
     Protected WithEvents cmdClearSelectedItems As Global.System.Web.UI.WebControls.LinkButton
 
     '''<summary>
+    '''lblfileupload control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblfileupload As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''fuCSV control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fuCSV As Global.AjaxControlToolkit.AjaxFileUpload
+
+    '''<summary>
+    '''hlErrorFile control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hlErrorFile As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
     '''ReportContainer1 control.
     '''</summary>
     '''<remarks>
@@ -228,24 +255,6 @@ Partial Public Class frmBase
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents Label1 As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''lblfileupload control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblfileupload As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''fuCSV control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents fuCSV As Global.AjaxControlToolkit.AjaxFileUpload
 
     '''<summary>
     '''cmdCSV control.
