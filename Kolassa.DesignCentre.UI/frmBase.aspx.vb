@@ -486,31 +486,6 @@ Partial Class frmBase
 		End If
 	End Sub
 
-    Protected Sub btnGenerateCSV_Click_Click(sender As Object, e As EventArgs) Handles btnGenerateCSV_Click.Click
-        Dim csvData As String = "Name,Email,Phone" & vbCrLf
-        csvData += "John Doe,johndoe@example.com,555-1234" & vbCrLf
-        csvData += "Jane Smith,janesmith@example.com,555-5678" & vbCrLf
-
-        ' Create a MemoryStream to hold the CSV data
-        Using memoryStream As New System.IO.MemoryStream()
-            Dim bytes As Byte() = Encoding.UTF8.GetBytes(csvData)
-            memoryStream.Write(bytes, 0, bytes.Length)
-            memoryStream.Seek(0, SeekOrigin.Begin)
-
-            ' Clear the response content
-            Response.Clear()
-
-            ' Set the content type and headers for the response
-            Response.ContentType = "text/csv"
-            Response.AddHeader("Content-Disposition", "attachment; filename=sample.csv")
-
-            ' Write the MemoryStream data to the response stream
-            memoryStream.WriteTo(Response.OutputStream)
-
-            ' End the response
-            Response.End()
-        End Using
-    End Sub
 
     Private Sub hlErrorFile_Click(sender As Object, e As EventArgs) Handles hlErrorFile.Click
         Try

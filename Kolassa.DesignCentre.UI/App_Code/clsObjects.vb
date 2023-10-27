@@ -645,6 +645,7 @@ Public Class clsQuote
 
     Public Property AssignedTo As String
     Public Property AssignedToEmail As String
+    Public Property AssignedToName As String
     Public Property CustomerName As String
     Public Property CustomerEmail As String = ""
     Public Property SortOrder As String
@@ -701,6 +702,7 @@ Public Class clsQuote
                         Case "PROJECTDESCRIPTION" : ProjectDescription = colVal
                         Case "PROJECTLOGOURL" : ProjectLogoURL = colVal
                         Case "QUOTECODE", "CODE" : Code = colVal
+                        Case "ASSIGNEDTONAME" : AssignedToName = colVal
                     End Select
                 End If
             Next
@@ -1421,9 +1423,10 @@ Public Class clsPhase
 	Public Property Code As String
 	Public Property Name As String
 	Public Property Description As String
-	Public Property PhaseStatus As String
+    Public Property PhaseStatus As String
+    Public Property PhaseNum As Integer
 
-	Public Property ProjectType As String
+    Public Property ProjectType As String
 		Get
 			Return _ProjectType
 		End Get
@@ -1506,7 +1509,9 @@ Public Class clsPhases
                             Case "ID" : cPhase.ID = row.Item(column).ToString.Trim
                             Case "NAME" : cPhase.Name = row.Item(column).ToString.Trim
                             Case "OBJECTID" : cPhase.ObjectID = row.Item(column).ToString.Trim
-                            Case "CODE" : cPhase.Code = row.Item(column).ToString.Trim
+                            Case "CODE"
+                                cPhase.Code = row.Item(column).ToString.Trim
+                                cPhase.PhaseNum = Val(cPhase.Code)
                             Case "DESCRIPTION" : cPhase.Description = row.Item(column).ToString.Trim
                             Case "PHASETARGETDATE"
                                 cPhase.PhaseTargetDate = Trim(row.Item(column))

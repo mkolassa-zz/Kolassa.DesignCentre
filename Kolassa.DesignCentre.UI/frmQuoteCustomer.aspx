@@ -574,7 +574,7 @@
 									<td>
 										<nav class="Kolassa" >
 											<ul class="Kolassa">
-												<li class="btn btn-danger dropdown-toggle btn-sm"><a class="Kolassa" href="#">Action</a>
+												<li class="btn btn-primary dropdown-toggle btn-sm"><a class="caret" href="#">Action  <b class="caret"></a>
 													<ul class="Kolassa">
 														<asp:linkButton ID="cmdAddNewOption"      runat="server" class="dropdown-item" ><i class='fas fa-plus'></i> Add New Option</asp:linkButton> 
 														<asp:linkButton ID="cmdAutoPick"          runat="server" class="dropdown-item" ><i class='fas fa-adjust'></i> Auto Pick</asp:linkButton> 		

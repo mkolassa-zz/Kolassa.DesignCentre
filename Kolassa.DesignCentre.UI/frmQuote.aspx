@@ -199,11 +199,10 @@
             </DeleteParameters>
             <InsertParameters>
                <asp:SessionParameter DefaultValue="0" Name="llNodeID" SessionField="NodeID" Type="Int64" />
-                <asp:SessionParameter DefaultValue="000000000000-0000-0000-00000000" Name="lsProjectID" SessionField="ProjectID" Type="String" />
-                 <asp:SessionParameter DefaultValue="000000000000-0000-0000-00000000" Name="lsQuoteID" SessionField="QuoteID" Type="String" />
-            
-                <asp:Parameter Name="lsOptionID" Type="String" />
-                <asp:Parameter DefaultValue="1" Name="liQuantity" Type="Int16" />
+               <asp:SessionParameter DefaultValue="000000000000-0000-0000-00000000" Name="lsProjectID" SessionField="ProjectID" Type="String" />
+               <asp:SessionParameter DefaultValue="000000000000-0000-0000-00000000" Name="lsQuoteID" SessionField="QuoteID" Type="String" />
+               <asp:Parameter Name="lsOptionID" Type="String" />
+               <asp:Parameter DefaultValue="1" Name="liQuantity" Type="Int16" />
             </InsertParameters>
         <SelectParameters>
             <asp:SessionParameter DefaultValue="0" Name="llNodeID" SessionField="NodeID" Type="Int64" />
@@ -359,7 +358,7 @@
 					<div class="modal-body">
 						<asp:UpdatePanel  ID="upAssignedCustomer" runat="server" ChildrenAsTriggers="true" >
 							<ContentTemplate><div class="">
-								<asp:DropDownList ID="cboAssignedCustomer" runat="server" title="AssignedToCustomerTitle" AutoPostBack="false" EnableViewState="true" />
+								<asp:DropDownList ID="cboAssignedCustomer" runat="server" title="AssignedToCustomerTitle" AutoPostBack="false" EnableViewState="true" Width="400px" />
 								<asp:linkButton ID="cmdAssignCustomer" CssClass="btn btn-small btn-primary" Text="Assign Customer" runat="server" />
 								<br>
 								</br>
@@ -562,70 +561,62 @@
 			<div class="col-md-3">
 				<div class="card h-100">
 					<div class="card-body">			
-					<div class="dropup">
-							<div class="lauto-style1">
-								<table>
-									<tr>
-										<td>
-											<asp:literal ID="litName" runat="server" />
-											<button  id="btnAssignResource" type="button" class="btn btn-default btn-sm"
-												data-toggle="modal" data-target="#modAssignResource" >
-												<i class="fa fa-user-plus"></i> Assign Resource</button>
-										</td>			
-									</tr>
-									<tr>
-										<td>
-											<asp:literal ID="LitCustomer" runat="server" />
-											<button  id="btnAssignCustomer" type="button" class="btn btn-default btn-sm"
-												data-toggle="modal" data-target="#modAssignCustomer" >
-												<i class="fa fa-user"></i> Assign Customer</button>
-										</td>			
-									</tr>
-								</table>			
-								<table>
-									<tr>
-										<td>
-											<nav class="Kolassa" >
-												<ul class="Kolassa" style="padding:unset;">
-													<button type="button" class="d-none btn btn-primary btn-sm" id="cmdSave" ><i class="fa fa-save" ></i> Save</button>
-												</ul>
-											</nav>	 
-										</td>
-										<td>
-											<nav class="Kolassa" >
-												<ul class="Kolassa">
-													<li class="btn btn-danger dropdown-toggle btn-sm"><a class="Kolassa" href="#">Action</a>
-														<ul class="Kolassa">
-															<asp:linkButton ID="cmdAddNewOption"      runat="server" class="dropdown-item" ><i class='fas fa-plus'></i> Add New Option</asp:linkButton> 
-															<asp:linkButton ID="cmdAutoPick"          runat="server" class="dropdown-item" ><i class='fas fa-adjust'></i> Auto Pick</asp:linkButton> 		
-															<!--	<asp:linkButton ID="btnAutoPop"           runat="server" class="dropdown-item" ><i class="material-icons">flash_auto</i> Auto Populate</asp:linkButton> 		-->
-															<button type="button" class="dropdown-item" data-toggle="modal" data-target="#PaymentsModal"><i class="fas fa-dollar-sign"></i> Payments</button>
-															<button type="button" class="dropdown-item btn-sm" data-toggle="modal" data-target="#AdjustmentsModal"><i class="fas fa-adjust"></i> Adjustments</button>
-							      							<asp:label ID="lblReports" runat="server"><i class='fas fa-file-code'></i> Reports</asp:label>
-															<asp:linkbutton ID="cmdMissingSelections"           runat="server" class="dropdown-item" ><i class='fas fa-file-code'></i> Missing Report</asp:linkbutton>
-															<asp:linkButton ID="cmdCustomerReceipt"             runat="server" class="dropdown-item" ><i class='fas fa-file-alt'></i> Preview Receipt</asp:linkButton>   
-															<asp:linkbutton ID="cmdStandardReport"              runat="server" class="dropdown-item" ><i class='fas fa-file'></i> Standard Selections Report</asp:linkbutton>	
-															<asp:linkbutton ID="cmdVendorInstallationReport"    runat="server" class="dropdown-item" ><i class='fas fa-chevron-right'></i> Vendor Installation Report</asp:linkbutton>	
-														</ul>
-													</li>
-												</ul>
-											</nav>
-										</td>
-									</tr>
-								</table>
-							</div>
+						<div class="dropup">
+								<div class="lauto-style1">
+									<table>
+										<tr>
+											<td> <!-- *******  ASSIGNED TO SALESPERSON ********** -->
+												<h5 class="card-title" style="margin-bottom:0rem;">Sales Professional</h5>
+												<asp:literal ID="litAssignedToName" runat="server"  />
+												<% If User.IsInRole("Admin") Then %>
+												<button  id="btnAssignResource" type="button" class="btn btn-default btn-sm"
+													data-toggle="modal" data-target="#modAssignResource" >
+													<i class="fa fa-user-plus"></i> Assign Resource</button>
+												<% End If  %>
+											</td>			
+										</tr>
+										<tr>
+											<td>
+											
+											</td>			
+										</tr>
+									</table>			
+
+								</div>
+						</div><br />
+						<h5 class="card-title" style="margin-bottom:0rem;">Customer	<button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#CommunicationsModal"><i class="fas fa-comments"></i></button></h5>
+						<p class="card-text">
+						<!-- *********   CUSTOMER INFORMATION  ***********-->
+						<% If User.IsInRole("Admin") Then %>
+							<asp:literal ID="LitCustomer" runat="server" />
+							<button  id="btnAssignCustomer" type="button" class="btn btn-default btn-sm"
+								data-toggle="modal" data-target="#modAssignCustomer" >
+								<i class="fa fa-user"></i> Re-assign Customer</button>
+						<% End If  %>
+						<asp:Repeater ID="Repeater1" runat="server" DataSourceID="odsQuotes" >
+							<ItemTemplate>
+								<asp:Label runat="server" ID="lblName" Text='<%# Eval("CustomerName") %>' CssClass="card-subtitle font-weight-bold " ForeColor="#990000" /><br />
+								<asp:Label runat="server" ID="lblUnitName"     Text='<%# Eval("UnitName") %>' /><br />
+								<asp:Label runat="server" ID="lblUnitTypeName" Text='<%# Eval("UnitTypeName") %>' /><br />
+								<asp:Label runat="server" ID="lblUnitTypeDesc" Text='<%# Eval("UnitTypeDescription") %>' />
+							</ItemTemplate>
+						</asp:Repeater></p>
 					</div>
-					<h5 class="card-title">Customer	<button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#CommunicationsModal"><i class="fas fa-comments"></i></button></h5>
-					<p class="card-text">
-					<asp:Repeater ID="Repeater1" runat="server" DataSourceID="odsQuotes" >
-						<ItemTemplate>
-							<asp:Label runat="server" ID="lblName" Text='<%# Eval("CustomerName") %>' CssClass="card-subtitle font-weight-bold" /><br />
-							<asp:Label runat="server" ID="lblUnitName"     Text='<%# Eval("UnitName") %>' /><br />
-							<asp:Label runat="server" ID="lblUnitTypeName" Text='<%# Eval("UnitTypeName") %>' /><br />
-							<asp:Label runat="server" ID="lblUnitTypeDesc" Text='<%# Eval("UnitTypeDescription") %>' />
-						</ItemTemplate>
-					</asp:Repeater></p>
-				</div>
+					<!-- Save Button -->
+					<table class="d-none">
+						<tr>
+							<td>
+								<nav class="Kolassa" >
+									<ul class="Kolassa" style="padding:unset;">
+										<button type="button" class="d-none btn btn-primary btn-sm" id="cmdSave" ><i class="fa fa-save" ></i> Save</button>
+									</ul>
+								</nav>	 
+							</td>
+							<td>
+							</td>
+						</tr>
+					</table>
+
 				</div>
 			</div>
 			<div class="col-md-6">
@@ -678,7 +669,7 @@
 									<asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="card-title" />
 									<asp:BoundField DataField="Description" HeaderText="Description" SortExpression="Description" Visible="false"/>
 						   			<asp:TemplateField HeaderText="Status">
-										<ItemTemplate><label id="lbl" data-id="<%# Eval("ID") %>"><%# Eval("PhaseStatus") %></label>
+										<ItemTemplate><label id="lbl"  data-id="<%# Eval("ID") %>"  data-phasenum="<%# Eval("PhaseNum") %>"><%# Eval("PhaseStatus") %></label>
 										</ItemTemplate>
 									</asp:TemplateField>
 									<asp:BoundField DataField="ProjectType" HeaderText="ProjectType" SortExpression="ProjectType" Visible="false"/>
@@ -701,7 +692,7 @@
 							   </Columns>
 						   </asp:GridView>
 					  	   
-		<!-- THIS IS THE PANEL FOR Phase Edits -->
+		<!--******************* PHASE PANEL FOR Phase Edits ******************* -->
 			<asp:Panel Runat="server" ID="pnlPhaseEdit"   Visible = "true">
 			<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR Phase Edits -->
 			<div class="modal fade" id="PhaseModal" tabindex="-1" role="dialog" aria-labelledby="lblPhaseInfo" aria-hidden="true">
@@ -717,8 +708,12 @@
 						 <div class="form-group">
 							<label for="txtPhaseName">Phase</label>
 							<asp:textbox ID="txtPhaseName" runat="server" class="form-control"  />
-							<label for="txtPhaseID">Phase ID</label>
-							<asp:textbox ID="txtPhaseID" runat="server" class="form-control"  />
+							<div class="d-none">
+								<label for="txtPhaseNum">Phase Number</label>
+								<asp:textbox ID="txtPhaseNum" runat="server" class="form-control"  />
+								<label for="txtPhaseID">Phase ID</label>
+								<asp:textbox ID="txtPhaseID" runat="server" class="form-control"  />
+							</div>
 							<label for="ddlPhaseStatus">Phase Status</label>
 							<asp:DropDownList ID="ddlPhaseStatus" runat="server" class="form-control" 
 								DataValueField="DESCRIPTION"  DataSourceID="odsPhase1Status">	</asp:DropDownList>
@@ -760,8 +755,28 @@
 				<div class="card h-100">
 					<div class="card-body">
 						<h5 class="card-title">Current Phase</h5>
-							<asp:RadioButtonList  ID="rblPhase" runat="server" AutoPostBack="True" 
+						<asp:RadioButtonList  ID="rblPhase" runat="server" AutoPostBack="True" 
 								CssClass="card border-0 form-check form-check-label form-check-input"> </asp:RadioButtonList>
+					</div>
+					<div class="card-footer">
+						<nav class="Kolassa" >
+							<ul class="Kolassa">
+								<li class="btn btn-primary dropdown-toggle btn-sm"><a style="color:white;" href="#">Action <b class="caret"></b></a>
+									<ul class="Kolassa">
+										<asp:linkButton ID="cmdAddNewOption"      runat="server" class="dropdown-item" ><i class='fas fa-plus'></i> Add New Option</asp:linkButton> 
+										<asp:linkButton ID="cmdAutoPick"          runat="server" class="dropdown-item" ><i class='fas fa-adjust'></i> Auto Pick</asp:linkButton> 		
+										<!--	<asp:linkButton ID="btnAutoPop"           runat="server" class="dropdown-item" ><i class="material-icons">flash_auto</i> Auto Populate</asp:linkButton> 		-->
+										<button type="button" class="dropdown-item" data-toggle="modal" data-target="#PaymentsModal"><i class="fas fa-dollar-sign"></i> Payments</button>
+										<button type="button" class="dropdown-item btn-sm" data-toggle="modal" data-target="#AdjustmentsModal"><i class="fas fa-adjust"></i> Adjustments</button>
+							      		<asp:label ID="lblReports" runat="server"><i class='fas fa-file-code'></i> Reports</asp:label>
+										<asp:linkbutton ID="cmdMissingSelections"           runat="server" class="dropdown-item" ><i class='fas fa-file-code'></i> Missing Report</asp:linkbutton>
+										<asp:linkButton ID="cmdCustomerReceipt"             runat="server" class="dropdown-item" ><i class='fas fa-file-alt'></i> Preview Receipt</asp:linkButton>   
+										<asp:linkbutton ID="cmdStandardReport"              runat="server" class="dropdown-item" ><i class='fas fa-file'></i> Standard Selections Report</asp:linkbutton>	
+										<asp:linkbutton ID="cmdVendorInstallationReport"    runat="server" class="dropdown-item" ><i class='fas fa-chevron-right'></i> Vendor Installation Report</asp:linkbutton>	
+									</ul>
+								</li>
+							</ul>
+						</nav>
 					</div>
 				</div>
 			</div>
@@ -902,6 +917,10 @@
 	</div>
 		</div>
 	</div>
+
+
+
+
 	    <!-- **********************************************************************************************************
          *** Options
          *********************************************************************************************************** -->
@@ -915,21 +934,20 @@
 					<div class="card w-100"><div class="card-body">
 					<h5><asp:label id="lblAvailableUpgrades" runat="server">Available Upgrades</asp:label></h5>
 					<div class="border border primary">
-					<asp:Panel runat="server" ID="pnlStyle" Width="100%" Height="250px" ScrollBars="Vertical" class="border border-primary">               
-					
-	                		<asp:ListView ID="lstStyle"  runat="server" DataSourceID="odsStyle" DataKeyNames="ID"> 
-							<LayoutTemplate>
-                            <table style="width:100%" class="table-bordered table-hover" id="gradient-style">
-                                <tr>
-                                    <th style="width:5%">Insert</th>
-                                    <th style="width:60%">Description</th>
+					<asp:Panel runat="server" ID="pnlStyle" Width="100%" Height="250px" ScrollBars="Vertical" class="border border-primary">               	
+	                	<asp:ListView ID="lstStyle"  runat="server" DataSourceID="odsStyle" DataKeyNames="ID"> 
+						<LayoutTemplate>
+							<table style="width:100%" class="table-bordered table-hover" id="gradient-style">
+								<tr>
+									<th style="width:5%">Insert</th>
+									<th style="width:60%">Description</th>
 									<th style="width:10%" class="d-none">ID</th>
-                                    <th style="width:15%">Style</th>
-                                    <th style="width:15%">Customer Price</th>
-                               </tr>
-                               <asp:PlaceHolder ID="itemPlaceholder" runat="server"></asp:PlaceHolder>
-                           </table>
-                       </LayoutTemplate>
+									<th style="width:15%">Style</th>
+									<th style="width:15%">Customer Price</th>
+								</tr>
+								<asp:PlaceHolder ID="itemPlaceholder" runat="server"></asp:PlaceHolder>
+							</table>
+						</LayoutTemplate>
 							<ItemTemplate>
 								<tr>
 									<td><asp:LinkButton runat="server" ID="InsertItem" Text="Insert"  
@@ -960,7 +978,6 @@
                                 <td><%#Eval("Style")%></td>
                                 <td><%#Eval("CustomerPrice", "{0:c}")%></td>
                           </SelectedItemTemplate>
-
                     </asp:ListView>
 					</asp:Panel>
 						</div></div></div>
@@ -975,7 +992,7 @@
 					  <asp:Image ID="imgOptions" runat="server" ImageUrl="~/images/loadingH.gif"  Height="20px"  />  
 				</ProgressTemplate>
 			</asp:UpdateProgress>
-                    <br />
+            <br />
 
     <!-- **********************************************************************************************************
          *** Selected Upgrades
@@ -1077,6 +1094,11 @@
          </td>
     </tr>  
 </table>
+
+
+
+
+
 
 
 <!-- Message Modal -->
@@ -1304,9 +1326,11 @@
         var sStatus = currow.find('td:eq(1)').text();
         var sTarget = currow.find('td:eq(2)').text();
         var sCompleted = currow.find('td:eq(3)').text();
-        var sPhaseID = currow.find('label:eq(0)').data("id");
+		var sPhaseID = currow.find('label:eq(0)').data("id");
+        var sPhaseNum = currow.find('label:eq(0)').data("phasenum");
         // var sPhaseID = currow.cells[1].childNodes[0].data("id");
-        $("#MainContent_txtPhaseName").val(sPhase);
+		$("#MainContent_txtPhaseName").val(sPhase);
+        $("#MainContent_txtPhaseNum").val(sPhaseNum);
         $("#MainContent_txtPhaseID").val(sPhaseID.trim());
         $("#MainContent_txtTargetDate").val(sTarget);
         $("#MainContent_txtCompleteDate").val(sCompleted);
@@ -1324,6 +1348,32 @@
             document.getElementById("MainContent_txtCompleteDate").disabled = false;
             document.getElementById("MainContent_ddlPhaseStatus").disabled = false;
             document.getElementById("MainContent_cmdPhaseStatusSave").disabled = false;
+		}
+        var d = document.getElementById("MainContent_ddlPhaseStatus");
+		switch (sStatus.trim()) {
+            case "Closed":
+				$('option[value="Pending"]').prop('disabled', true);
+				$('option[value="Closed"]').prop('disabled', true);
+				$('option[value="Change Order"]').prop('disabled', false);
+                $('option[value="Completed"]').prop('disabled', false);
+                break;
+            case "Change Order":
+                $('option[value="Pending"]').prop('disabled', true);
+                $('option[value="Closed"]').prop('disabled', false);
+                $('option[value="Change Order"]').prop('disabled', false);
+                $('option[value="Completed"]').prop('disabled', false);
+                break;
+            case "Completed":
+                $('option[value="Pending"]').prop('disabled', true);
+                $('option[value="Closed"]').prop('disabled', true);
+                $('option[value="Change Order"]').prop('disabled', true);
+                $('option[value="Completed"]').prop('disabled', false);
+                break;
+			default:
+                $('option[value="Pending"]').prop('disabled', false);
+                $('option[value="Closed"]').prop('disabled', false);
+                $('option[value="Change Order"]').prop('disabled', true);
+                $('option[value="Completed"]').prop('disabled', false);
         }
     }
 

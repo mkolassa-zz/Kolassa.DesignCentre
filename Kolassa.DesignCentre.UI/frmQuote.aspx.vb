@@ -304,9 +304,9 @@ Err_txtPhase2CompleteDate_DblClick:
         Dim lsURL As String = "frmQuote" & "?QuoteID=" + lsID
 		If lsID.Length = 36 And lsAssignedToID.Length = 36 Then
 			q.AssignQuoteToSales(lsID, lsAssignedToID, lsURL, Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd("/") + "/")
-			litName.Text = q.AssignedToEmail
-			lblAssigned.Text = "Assigned to " & litName.Text
-			cmdAssign.Enabled = False
+            litAssignedToName.Text = q.AssignedTo
+            lblAssigned.Text = "Assigned to " & litAssignedToName.Text
+            cmdAssign.Enabled = False
 			cmdAssign.CssClass = "btn btn-secondary"
 		End If
 	End Sub
@@ -348,9 +348,9 @@ Err_txtPhase2CompleteDate_DblClick:
         checkQuoteID()
         LoadQUote()
     End Sub
-    Private Sub LoadQUote()
-		checkQuoteID()
-		Dim cmbStatus As DropDownList
+    Private Sub LoadQuote()
+        checkQuoteID()
+        Dim cmbStatus As DropDownList
 		If rblPhase.SelectedValue = 1 Then
 			Me.cmdAutoPick.Enabled = False
 			' Me.AddNewOption.Enabled = False
@@ -359,37 +359,37 @@ Err_txtPhase2CompleteDate_DblClick:
 			'*** Set value to True to allow new finish selection on the fly.
 			' Me.AddNewOption.Enabled = False
 		End If
+
 		cmbStatus = Me.fvQuote.FindControl("cmbQuoteStatus")
-		If cmbStatus.Text = "Completed" Then
+        If cmbStatus.Text = "Completed" Then
+            'lstRooms.Enabled = False
+            lstCategories.Enabled = False
+            'lstLevels.Enabled = False
+            'lstStyle.Enabled = False
+            lstSelectedUpgrade.Enabled = False
 
-			'lstRooms.Enabled = False
-			lstCategories.Enabled = False
-			'lstLevels.Enabled = False
-			'lstStyle.Enabled = False
-			'	lstRequestedUpgrades.Enabled = False
-			Me.fvQuote.Enabled = False
+            Me.fvQuote.Enabled = False
+            Me.cmdAddNewOption.Enabled = False
+            Me.cmdAutoPick.Enabled = False
+            Me.fvQuote.Enabled = False
 
-			Me.cmdAddNewOption.Enabled = False
-			Me.cmdAutoPick.Enabled = False
-			Me.fvQuote.Enabled = False
+        Else
+            cmbStatus = fvQuote.FindControl("")
+            If cmbStatus.Text = "Completed" Then
+                rblPhase.SelectedValue = 2
+            End If
 
-		Else
-			cmbStatus = fvQuote.FindControl("")
-			If cmbStatus.Text = "Completed" Then
-				rblPhase.SelectedValue = 2
-			End If
+            lstRooms.Enabled = True
+            'lstRequestedUpgrades.Enabled = True
+            fvQuote.Enabled = True
 
-			lstRooms.Enabled = True
-			'lstRequestedUpgrades.Enabled = True
-			fvQuote.Enabled = True
-
-		End If
-		lstRooms.Enabled = True
-		lstLevels.Enabled = True
-		lstSelectedUpgrade.Enabled = True
-		lstCategories.Enabled = True
-	End Sub
-	Sub checkQuoteID()
+        End If
+        lstRooms.Enabled = True
+        lstLevels.Enabled = True
+        lstSelectedUpgrade.Enabled = True
+        lstCategories.Enabled = True
+    End Sub
+    Sub checkQuoteID()
 		Dim lsQuoteID As String = Request.QueryString("QuoteID")
 		Dim cp As New clsPersonalData
 		Dim a As New GlobalFunctionsDC
@@ -644,20 +644,8 @@ Err_CustomerID_DblClick:
 		End Select
 	End Sub
 
-	Private Sub cmbphase2status_BeforeUpdate(ByVal Cancel As Integer)
-		On Error GoTo ph2Status_Error
-		'        If UCase(cmbphase2status.value) = "COMPLETED" Or UCase(Phase2Status.value) = "CLOSED" Then
-		'            Cancel = fRequired(Me.QuoteID, 2)
-		'            Phase2Status.Undo()
-		'        End If
-ph2Status_Exit:
-		Exit Sub
-ph2Status_Error:
-		ShowErrors(Err.Number, Err.Description)
-		Resume ph2Status_Exit
-	End Sub
 
-	Private Sub txtPhase2TargetDate_DblClick(ByVal Cancel As Integer)
+    Private Sub txtPhase2TargetDate_DblClick(ByVal Cancel As Integer)
 		'        If IsNull(Me.ActiveControl) Then
 		'    Me.ActiveControl = Date + 14
 		'        Else
@@ -1015,7 +1003,7 @@ ph1Status_Error:
             cboAssignedCustomer.Items.Clear()
             cboAssignedCustomer.Items.Add("-- Assign Customer  --")
 
-            ds = c.LoadCustomers(Session("NodeID"), "", True, "", "", "")
+            ds = c.LoadCustomers(Session("NodeID"), "", True, "", "f.name", "")
             For Each dt As DataTable In ds.Tables
                 For Each dr As DataRow In dt.Rows
                     li = New ListItem
@@ -1030,6 +1018,7 @@ ph1Status_Error:
             rptRecentQuotes.DataBind()
         End If
         loadPage()
+
 
     End Sub
 	Function getQuoteID() As String
@@ -1261,42 +1250,9 @@ ph1Status_Error:
 		Response.Write(llError & ": " & lsError)
 	End Sub
 
-	Protected Sub cmbPhase2Status_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs)
-		'        Dim d As DropDownList
-		'        Dim t As TextBox
-		'        Dim theDate As Date = Date.Today
-		'        Dim lbCancel As Boolean
-
-		'        d = sender
-		'        t = FormView1.FindControl("txtPhase2CompleteDate")
-		'        If IsDate(t.Text) Then
-		'            theDate = t.Text
-		'        End If
-
-		'        On Error GoTo ph1Status_Error
-		'        If UCase(sender.SelectedValue) = "COMPLETED" Or UCase(sender.SelectedValue) = "CLOSED" Then
-		'            '*** Check for Required Items
-		'            'MOVE THIS TO THE DATA LOADER
-		'            'lbCancel = fRequired(Me.QuoteID, 1)
-		'            If lbCancel = False Then
-		'                SetQuoteStatus(Session("QuoteID"), "Phase2Status", d.SelectedValue, "Phase2CompleteDate", """" & theDate.Date & """")
-		'            End If
-		'        Else
-		'            SetQuoteStatus(Session("QuoteID"), "Phase2Status", d.SelectedValue, "Phase2CompleteDate", "Null")
 
 
-		'        End If
-		'        'odsQuotes.DataBind()
-		'        Me.DataBind()
-
-		'ph1Status_Exit:
-		'        Exit Sub
-		'ph1Status_Error:
-		'        ShowErrors(Err.Number, Err.Description)
-		'        Resume ph1Status_Exit
-	End Sub
-
-	Private Sub frmQuote_LoadComplete(sender As Object, e As EventArgs) Handles Me.LoadComplete
+    Private Sub frmQuote_LoadComplete(sender As Object, e As EventArgs) Handles Me.LoadComplete
         '   Exit Sub
         sCheckPhaseComplete()
         If txtSelectedItemID Is Nothing Then Exit Sub
@@ -1308,9 +1264,13 @@ ph1Status_Error:
 
         Dim q As New clsQuote(Session("QuoteID"))
         cboAssignedTo.SelectedValue = q.AssignedTo
-        litName.Text = q.AssignedToEmail
-        txtPhaseID.Attributes.Add("readonly", "readonly")
-        txtPhaseName.Attributes.Add("readonly", "readonly")
+        If Not IsNothing(q.AssignedTo) Then
+            litAssignedToName.Text = "<div style='color:#990000;     font-weight: 700 !important;' > " & q.AssignedToName & "</div>"
+        Else
+            litAssignedToName.Text = "No Sales Professional Selected"
+        End If
+		txtPhaseID.Attributes.Add("ReadOnly", "ReadOnly")
+        txtPhaseName.Attributes.Add("ReadOnly", "ReadOnly")
 
 		ctrlCommunications.DataBind()
 		CtrlAdjustments.DataBind()
@@ -1399,43 +1359,45 @@ ph1Status_Error:
         Dim dc As New DataColumn
 		Dim lbRemoved As Boolean
 		Dim lsMsg As String
-		Dim liRecordCount As Integer
-		sID = txtPhaseID.Text
+        Dim liRecordCount As Integer
+
+        '*** Set Values from the Phase Panel
+        sID = txtPhaseID.Text
         sStatus = ddlPhaseStatus.SelectedValue
         sTarget = txtTargetDate.Text
         sComplete = txtCompleteDate.Text
 
         Dim lbHasCompDate As Boolean = IsDate(sComplete)
 		If (sStatus = "Completed" And lbHasCompDate = False) Then sComplete = Now().ToShortDateString
-		If sStatus = "Completed" Then
-			'*** Check to Make sure there are no Required Selections unfullfilled in this phase
-			ds = cn.LoadUnfullfilledRequiredItems(rblPhase.SelectedValue, "ALL", litID.Text)
+        If sStatus = "Completed" Or sStatus = "Closed" Then
+            '*** Check to Make sure there are no Required Selections unfullfilled in this phase
+            ds = cn.LoadUnfullfilledRequiredItems(txtPhaseNum.Text, "ALL", litID.Text) 'rblPhase.SelectedValue, "ALL", litID.Text)
 
-			'*** Cut the table down to just the appropriate columns that I want to convert to HTML to show if there are items
-			For Each dt In ds.Tables
-				liRecordCount = liRecordCount + dt.Rows.Count
-				lbRemoved = True
-				While lbRemoved = True
-					lbRemoved = False
-					For Each dc In dt.Columns
-						Select Case dc.ColumnName.ToUpper
-							Case "REQUIRED", "ID", "UNITTYPEID", "CATREQUIRED", "CATEGORYDETAILID", "THECOUNT"
-								lbRemoved = True
-								dt.Columns.Remove(dc)
-								Exit For
-						End Select
-					Next
-				End While
-			Next
+            '*** Cut the table down to just the appropriate columns that I want to convert to HTML to show if there are items
+            For Each dt In ds.Tables
+                liRecordCount = liRecordCount + dt.Rows.Count
+                lbRemoved = True
+                While lbRemoved = True
+                    lbRemoved = False
+                    For Each dc In dt.Columns
+                        Select Case dc.ColumnName.ToUpper
+                            Case "REQUIRED", "ID", "UNITTYPEID", "CATREQUIRED", "CATEGORYDETAILID", "THECOUNT"
+                                lbRemoved = True
+                                dt.Columns.Remove(dc)
+                                Exit For
+                        End Select
+                    Next
+                End While
+            Next
 
-			If liRecordCount > 0 Then
-				'*** There are required picks that have not yet been made Let's list them and quit
-				lsMsg = ConvertDataTableToHTML(ds.Tables(0))
-				ScriptManager.RegisterClientScriptBlock(Me, Me.GetType(), "Required" & Guid.NewGuid.ToString, "ShowMessage('" & lsMsg & "','Warning','Required Selections have NOT been made!',);", True)
-				Exit Sub
-			End If
-		End If
-		If sID.Length > 10 And sStatus <> "" Then
+            If liRecordCount > 0 Then
+                '*** There are required picks that have not yet been made Let's list them and quit
+                lsMsg = ConvertDataTableToHTML(ds.Tables(0))
+                ScriptManager.RegisterClientScriptBlock(Me, Me.GetType(), "Required" & Guid.NewGuid.ToString, "ShowMessage('" & lsMsg & "','Warning','Required Selections have NOT been made!',);", True)
+                Exit Sub
+            End If
+        End If
+        If sID.Length > 10 And sStatus <> "" Then
 			p.ID = sID
 			p.PhaseStatus = sStatus
 			If IsDate(sTarget) Then

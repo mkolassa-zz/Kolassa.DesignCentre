@@ -491,13 +491,13 @@ Partial Public Class frmQuote
     Protected WithEvents pnlQuote As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''litName control.
+    '''litAssignedToName control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents litName As Global.System.Web.UI.WebControls.Literal
+    Protected WithEvents litAssignedToName As Global.System.Web.UI.WebControls.Literal
 
     '''<summary>
     '''LitCustomer control.
@@ -507,6 +507,141 @@ Partial Public Class frmQuote
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents LitCustomer As Global.System.Web.UI.WebControls.Literal
+
+    '''<summary>
+    '''Repeater1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents Repeater1 As Global.System.Web.UI.WebControls.Repeater
+
+    '''<summary>
+    '''fvQuote control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fvQuote As Global.System.Web.UI.WebControls.FormView
+
+    '''<summary>
+    '''upPhase control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents upPhase As Global.System.Web.UI.UpdatePanel
+
+    '''<summary>
+    '''odsPhases control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents odsPhases As Global.System.Web.UI.WebControls.ObjectDataSource
+
+    '''<summary>
+    '''grdPhases control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents grdPhases As Global.System.Web.UI.WebControls.GridView
+
+    '''<summary>
+    '''pnlPhaseEdit control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlPhaseEdit As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''txtPhaseName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtPhaseName As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''txtPhaseNum control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtPhaseNum As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''txtPhaseID control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtPhaseID As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ddlPhaseStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlPhaseStatus As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''txtTargetDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtTargetDate As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''txtCompleteDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtCompleteDate As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''cmdPhaseStatusSave control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdPhaseStatusSave As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''upprogPhase control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents upprogPhase As Global.System.Web.UI.UpdateProgress
+
+    '''<summary>
+    '''rblPhase control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rblPhase As Global.System.Web.UI.WebControls.RadioButtonList
 
     '''<summary>
     '''cmdAddNewOption control.
@@ -579,132 +714,6 @@ Partial Public Class frmQuote
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdVendorInstallationReport As Global.System.Web.UI.WebControls.LinkButton
-
-    '''<summary>
-    '''Repeater1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents Repeater1 As Global.System.Web.UI.WebControls.Repeater
-
-    '''<summary>
-    '''fvQuote control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents fvQuote As Global.System.Web.UI.WebControls.FormView
-
-    '''<summary>
-    '''upPhase control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents upPhase As Global.System.Web.UI.UpdatePanel
-
-    '''<summary>
-    '''odsPhases control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents odsPhases As Global.System.Web.UI.WebControls.ObjectDataSource
-
-    '''<summary>
-    '''grdPhases control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents grdPhases As Global.System.Web.UI.WebControls.GridView
-
-    '''<summary>
-    '''pnlPhaseEdit control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents pnlPhaseEdit As Global.System.Web.UI.WebControls.Panel
-
-    '''<summary>
-    '''txtPhaseName control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtPhaseName As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''txtPhaseID control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtPhaseID As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''ddlPhaseStatus control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ddlPhaseStatus As Global.System.Web.UI.WebControls.DropDownList
-
-    '''<summary>
-    '''txtTargetDate control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtTargetDate As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''txtCompleteDate control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtCompleteDate As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''cmdPhaseStatusSave control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents cmdPhaseStatusSave As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''upprogPhase control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents upprogPhase As Global.System.Web.UI.UpdateProgress
-
-    '''<summary>
-    '''rblPhase control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rblPhase As Global.System.Web.UI.WebControls.RadioButtonList
 
     '''<summary>
     '''pnlLoca control.

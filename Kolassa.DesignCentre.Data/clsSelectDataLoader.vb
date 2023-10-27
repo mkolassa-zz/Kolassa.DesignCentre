@@ -1972,25 +1972,26 @@ Public Class clsSelectDataLoader
 			'response.write("No Project Selectedd")
 			'Exit Function
 		End If
-		lsSQL = "Select      c.[ID]               ,    c.[CustomerID]       , " &
-				"            c.[Category]         , " &
-				"			 c.[Comments]         ,    c.[BuildingPhase]    , " &
-				"            c.[UserName]         ,    c.[UpdateDate]       , " &
-				"            c.[UpdateUser]       ,    c.[CreateDate]       , " &
-				"           cu.[username] as cuname  ,   uu.[username] as uuname  , " &
-				"            c.[CreateUser]       ,    c.[Active]           , " &
-				"            c.[ObjectID]         ,    c.[NodeID] " &
-				"FROM tblCommunications C " &
-				"      left join  aspnetusers cu on c.createuser = cu.id " &
-				"      left join  aspnetusers uu on c.updateuser = uu.id " &
-				"WHERE (c.NodeID Is null Or c.NodeID=" & llNodeID & " ) " &
-					IIf(lsWhere.Length > 4, " And " & lsWhere, "") & NL &
-					IIf(isGUID(lsObjectID), " And c.objectID='" & lsObjectID & "'", "") & NL &
-					IIf(lbActive = True, " And Active = 1 ", "") & NL &
-					IIf(lsID = "", "", " And ID = '" & lsID & "' ") & " ORDER BY CREATEDate "
+        lsSQL = "Select      c.[ID]               ,    c.[CustomerID]       , " &
+                "            c.[Category]         , " &
+                "			 c.[Comments]         ,    c.[BuildingPhase]    , " &
+                "            c.[UserName]         ,    c.[UpdateDate]       , " &
+                "            c.[UpdateUser]       ,    c.[CreateDate]       , " &
+                "           cu.[username] as cuname  , cu.userfriendlyname as cname, " &
+                "           uu.[username] as uuname  , uu.Userfriendlyname as uname, " &
+                "            c.[CreateUser]       ,    c.[Active]           , " &
+                "            c.[ObjectID]         ,    c.[NodeID] " &
+                "FROM tblCommunications C " &
+                "      left join  aspnetusers cu on c.createuser = cu.id " &
+                "      left join  aspnetusers uu on c.updateuser = uu.id " &
+                "WHERE (c.NodeID Is null Or c.NodeID=" & llNodeID & " ) " &
+                    IIf(lsWhere.Length > 4, " And " & lsWhere, "") & NL &
+                    IIf(isGUID(lsObjectID), " And c.objectID='" & lsObjectID & "'", "") & NL &
+                    IIf(lbActive = True, " And Active = 1 ", "") & NL &
+                    IIf(lsID = "", "", " And ID = '" & lsID & "' ") & " ORDER BY CREATEDate "
 
-		'*** Load a data set.
-		Dim ds As New DataSet()
+        '*** Load a data set.
+        Dim ds As New DataSet()
 
 		ds = fGetDataset("SQLConnection", lscnStr, lsSQL, "Communications")
 
@@ -2257,24 +2258,25 @@ Public Class clsSelectDataLoader
 			'response.write("No Project Selectedd")
 			' Exit Function
 		End If
-		lsSQL = "With LookupList as (
+        lsSQL = "With LookupList as (
                 Select a.NodeID, convert(nvarchar(50), a.ID) as ID , convert(nvarchar(50),  a.ParentID) as ParentID , a.LookupID, a.LookupValue, a.DESCRIPTION
-                      , 1 as LookupLevel,active from tbllookups a where a.Parentid is null
+                      , 1 as LookupLevel,active, sortorder from tbllookups a where a.Parentid is null
 	                  and lookupCategory = '" & fTakeOutQuotes(lsLookupType) & "'
                 union All
                 Select  b.NodeID, convert(nvarchar(50), b.ID) as ID, convert(nvarchar(50), b.ParentID) as ParentID, b.LookupID, b.LookupValue, b.DESCRIPTION
-                      , a.LookupLevel + 1 as LookupLevel, a.active from LookupList a
+                      , a.LookupLevel + 1 as LookupLevel, a.active, a.sortorder from LookupList a
                         Inner Join tbllookups b on a.id = b.parentid
                 Where b.ParentID is not null
                ) Select * from LookupList " & NL &
-				"WHERE (NodeID is null or NodeID=0 or NodeID=" & llNodeID & " ) " &
-						IIf(lsWhere.Length > 4, " and " & lsWhere, "") & NL &
-					IIf(isGUID(lsLookupID), " and ID=" & lsLookupID, "") & NL &
-					IIf(lbActive = True, " and Active = 1 ", "") & NL &
-					IIf(llID > 0, " and lookupID = " & llID & " ", "")
+                "WHERE (NodeID is null or NodeID=0 or NodeID=" & llNodeID & " ) " &
+                        IIf(lsWhere.Length > 4, " and " & lsWhere, "") & NL &
+                    IIf(isGUID(lsLookupID), " and ID=" & lsLookupID, "") & NL &
+                    IIf(lbActive = True, " and Active = 1 ", "") & NL &
+                    IIf(llID > 0, " and lookupID = " & llID & " ", "") &
+                    " Order By SortOrder "
 
-		'*** Load a data set.
-		Dim ds As New DataSet()
+        '*** Load a data set.
+        Dim ds As New DataSet()
 		ds = fGetDataset("SQLConnection", lscnStr, lsSQL, "Lookups")
 
 		mdsLookups = ds

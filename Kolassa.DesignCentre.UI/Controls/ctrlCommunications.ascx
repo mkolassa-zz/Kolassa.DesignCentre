@@ -29,7 +29,7 @@ Quote:	<asp:Literal ID="litID" runat="server"></asp:Literal><br />
             <asp:repeater ID="rptDiscussion" runat="server" DataSourceID="odsCommunications"  >
 				<ItemTemplate>
 					<blockquote class="blockquote text-right">
-  <p class="mb-0 text-success"><%#"User: " + Trim(IIf(IsDBNull(Eval("cuname")), "Unknown User", Eval("cuname"))) + "  " %><i class="fa fa-user" aria-hidden="true"></i></p>
+  <p class="mb-0 text-success"><%#"User: " + Trim(IIf(IsDBNull(Eval("cname")), "Unknown User", Eval("cname"))) + "  " %><i class="fa fa-user" aria-hidden="true"></i></p>
   <footer class="blockquote-footer"><cite title="Source Title"><small><%#"" + Trim(Eval("createdate")) + "  " %></small></cite></footer>
 </blockquote>
 					
