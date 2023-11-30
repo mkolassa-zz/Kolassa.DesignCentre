@@ -1,5 +1,6 @@
 Imports Kolassa.DesignCentre.Data
-
+Imports Microsoft.AspNet.Identity
+Imports Microsoft.AspNet.Identity.EntityFramework
 Partial Class frmQuote
 	Inherits System.Web.UI.Page
 
@@ -370,7 +371,9 @@ Err_txtPhase2CompleteDate_DblClick:
 
             Me.fvQuote.Enabled = False
             Me.cmdAddNewOption.Enabled = False
+            cmdAddNewOption.CssClass = "disabled"
             Me.cmdAutoPick.Enabled = False
+            cmdAutoPick.CssClass = "disabled"
             Me.fvQuote.Enabled = False
 
         Else
@@ -971,10 +974,8 @@ WriteRequestStyleError:
 			End If
 		Else
 			SetQuoteStatus(Session("QuoteID"), "Phase1Status", d.SelectedValue, "Phase1CompleteDate", "Null")
-
-
 		End If
-		'odsQuotes.DataBind()
+
 		Me.DataBind()
 
 ph1Status_Exit:
@@ -984,35 +985,42 @@ ph1Status_Error:
 		Resume ph1Status_Exit
 	End Sub
 
-	Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+
+        If Session("NodeID") Is Nothing Then
+            '  Response.Redirect("Account/Login.aspx")
+            Dim ls As String = User.Identity.Name
+        End If
         '     Exit Sub
+        Dim c As New clsSelectDataLoader
         If Not Page.IsPostBack Then
             Dim li As ListItem
             cboAssignedTo.Items.Clear()
             cboAssignedTo.Items.Add("-- Assign Sales Consultant --")
-            Dim c As New clsSelectDataLoader
-            Dim ds As DataSet = c.LoadAppUsers
-			For Each dt As DataTable In ds.Tables
-				For Each dr As DataRow In dt.Rows
-					li = New ListItem
-					li.Value = dr("ID").ToString
-					li.Text = dr("userFriendlyName") & " - " & dr("email")
-					cboAssignedTo.Items.Add(li)
-				Next
-			Next
-            cboAssignedCustomer.Items.Clear()
-            cboAssignedCustomer.Items.Add("-- Assign Customer  --")
 
-            ds = c.LoadCustomers(Session("NodeID"), "", True, "", "f.name", "")
+            Dim ds As DataSet = c.LoadAppUsers
             For Each dt As DataTable In ds.Tables
                 For Each dr As DataRow In dt.Rows
                     li = New ListItem
                     li.Value = dr("ID").ToString
-                    li.Text = dr("Name") & " - " & dr("CustomerEmail")
-                    cboAssignedCustomer.Items.Add(li)
+                    li.Text = dr("userFriendlyName") & " - " & dr("email")
+                    cboAssignedTo.Items.Add(li)
                 Next
             Next
+            cboAssignedCustomer.Items.Clear()
+            cboAssignedCustomer.Items.Add("-- Assign Customer  --")
 
+            ds = c.LoadCustomers(Session("NodeID"), "", True, "", "f.name", "")
+			If Not IsNothing(ds) Then
+				For Each dt As DataTable In ds.Tables
+					For Each dr As DataRow In dt.Rows
+						li = New ListItem
+						li.Value = dr("ID").ToString
+						li.Text = dr("Name") & " - " & dr("CustomerEmail")
+						cboAssignedCustomer.Items.Add(li)
+					Next
+				Next
+			End If
             ds = c.LoadQuotes(Session("NodeID"), "", True, "", 4, " updateDate DESC", "")
             rptRecentQuotes.DataSource = ds
             rptRecentQuotes.DataBind()
@@ -1020,14 +1028,17 @@ ph1Status_Error:
         loadPage()
 
 
+
     End Sub
-	Function getQuoteID() As String
+    Function getQuoteID() As String
 		Return String.Format("QuoteID={0}", Eval("QuoteID"))
 	End Function
     Private Sub loadPage()
-        '   Exit Sub
+        '***********************************************************
+        '*** QUOTE ID
         '*** Make Sure we have the propert Quote ID
         '*** Is there an ID in the URL? IF so, Use that
+        '***********************************************************
         Dim lsQuoteID As String = Request.QueryString("QuoteID")
         '*** If So, Set the Session Variable 'Might want to not use Session, but . . . 
         Dim dc As New GlobalFunctionsDC
@@ -1043,6 +1054,8 @@ ph1Status_Error:
         '*** Finally, Try the Session Variable
         If lsQuoteID Is Nothing Then lsQuoteID = Session("QuoteID")
 
+
+        '*** Make sure UI Items have loaded, Set read only propertiees
         If txtSelectedItemID Is Nothing Then
             Exit Sub
         End If
@@ -1050,6 +1063,7 @@ ph1Status_Error:
         txtItemText.Attributes.Add("readonly", "readonly")
         txtItemPrice.Attributes.Add("readonly", "readonly")
 
+        '*** Load the Quote
         Dim q As New clsQuote(lsQuoteID)
         If q.ID Is Nothing Then
             'Exit Sub '*** Took this out to hide the Quote Panel 2023-01
@@ -1069,21 +1083,19 @@ ph1Status_Error:
         End If
         If Session("Project") Is Nothing Or Session("QuoteID") Is Nothing Then
             pnlQuote.Visible = False
-            '    Me.ddmActions.Visible = False
             Exit Sub
         Else
             pnlQuote.Visible = True
             Dim lsPhase As String
             lsPhase = rblPhase.SelectedValue
-            If lsPhase = "" Then
-                Try
-                    lsPhase = rblPhase.Items(0).Value
-                Catch exc As Exception
-                    Exit Sub '**** PUT IN SOME CODE TO EXPLAIN
-                End Try
-
-            End If
-            '    Me.ddmActions.Visible = True
+			If lsPhase = "" Then
+				Try
+					lsPhase = rblPhase.Items(0).Value
+				Catch exc As Exception
+					Exit Sub '**** PUT IN SOME CODE TO EXPLAIN
+				End Try
+			End If
+            '*** Set Report Links
             Dim hl As LinkButton
             hl = pnlQuote.FindControl("cmdStandardReport")
             If Not hl Is Nothing Then
@@ -1105,50 +1117,62 @@ ph1Status_Error:
             rblPhase.SelectedIndex = 0
         End If
         Me.fvQuote.ChangeMode(FormViewMode.Edit)
-
-        'If Me.rblPhase.SelectedValue = 1 Then
-        'Me.cmdAutoPick.Enabled = False
-        'Me.cmdAddNewOption.Enabled = False
-        'Else
         Me.cmdAutoPick.Enabled = True
         ''*** Set value to True to allow new finish selection on the fly.
         Me.cmdAddNewOption.Enabled = False
-        'End If
+        cmdAddNewOption.CssClass = "disabled"
+        '   cmdAutoPick.CssClass = "disabled"
 
 
 
         Try
 
-            '*** If the Quote is complete, Dis-allow any editing
-            If q.QuoteStatus = "Completed" Then
-                lstRooms.Enabled = False
-                lstCategories.Enabled = False
+			'*** If the Quote is complete, Dis-allow any editing
+			If q.QuoteStatus = "Completed" Or q.QuoteStatus = "Closed" Then
+				lstRooms.Enabled = False
+				lstCategories.Enabled = False
                 '	lstLevels.Enabled = False
                 'lstStyle.Enabled = False
-                'lstRequestedUpgrades.Enabled = False
-                pnlQuote.Enabled = False
-
+                lstSelectedUpgrade.Enabled = False
+				pnlQuote.Enabled = False
+                Me.cmdSelectedItemSave.Enabled = False
                 Me.cmdAddNewOption.Enabled = False
                 Me.cmdAutoPick.Enabled = False
-                Me.rblPhase.Enabled = False
+                cmdAddNewOption.CssClass = "disabled"
+                cmdAutoPick.CssClass = "disabled"
+                'Me.rblPhase.Enabled = False
 
             Else
-                If q.Phase1Status Is Nothing Then
-                Else
-
-                    If q.Phase1Status = "Completed" Then
-                        Me.rblPhase.SelectedValue = 2
+				Dim lsPhase As String = rblPhase.SelectedValue
+				Dim lsPhaseStatus As String = q.getPhaseStatus(lsPhase)
+				If lsPhase Is Nothing Or lsPhase = "" Then 'If q.Phase1Status Is Nothing Then
+				Else
+					'*** Not sure if needed.  Sets the rbl to a different phase if completed
+					' If lsPhase = "Completed" Then '                    If q.Phase1Status = "Completed" Then
+					'Me.rblPhase.SelectedValue = 2
+					'End If
+					If lsPhaseStatus = "Closed" Or lsPhaseStatus = "Completed" Then
+                        lstStyle.Enabled = False
+                        lstSelectedUpgrade.Enabled = False
+                        Me.cmdSelectedItemSave.Enabled = False
+                        cmdAutoPick.Enabled = False
+                        cmdAddNewOption.Enabled = False
+                        cmdAddNewOption.CssClass = "disabled"
+                        cmdAutoPick.CssClass = "disabled"
+                    Else
+                        Me.cmdSelectedItemSave.Enabled = True
+                        lstRooms.Enabled = True
+						lstStyle.Enabled = True
+						lstSelectedUpgrade.Enabled = True
+                        pnlQuote.Enabled = True ' Quote Status
+                        cmdAutoPick.Enabled = True
+                        cmdAddNewOption.Enabled = True
                     End If
 
-                    lstRooms.Enabled = True
-                    'lstRequestedUpgrades.Enabled = True
-                    pnlQuote.Enabled = True ' Quote Status
-
-                End If
-
-                '	sCheckPhaseComplete()
-            End If
-        Catch ex As Exception
+					'	sCheckPhaseComplete()
+				End If
+			End If
+		Catch ex As Exception
             Dim msg As String = ex.Message
             Response.Write(ex.Message)
         End Try
@@ -1274,8 +1298,11 @@ ph1Status_Error:
 
 		ctrlCommunications.DataBind()
 		CtrlAdjustments.DataBind()
-		Me.ctrlPayments.DataBind()
+        ctrlPay.DataBind()
         ctrlImagesDisplay.DataBind()
+
+        ctrlPay.BuildingPhase = rblPhase.SelectedValue
+        CtrlAdjustments.BuildingPhase = rblPhase.SelectedValue
     End Sub
 
 
@@ -1287,6 +1314,7 @@ ph1Status_Error:
 	Protected Sub rblPhase_Init(sender As Object, e As EventArgs) Handles rblPhase.Init
         ' Exit Sub
         sSetPhase()
+
     End Sub
 	Protected Sub sSetPhase()
 		Dim c As New clsPhases
@@ -1310,23 +1338,22 @@ ph1Status_Error:
                 l.Text = " " & row.Name
 
                 For Each rowp In cpc
-					If rowp.Code = row.Code Then
-						If Trim(rowp.PhaseStatus) = "Completed" Or Trim(rowp.PhaseStatus) = "Closed" Then
-							l.Enabled = False
-							'l.Attributes.Add("style", "btn-disabled")
-							l.Attributes.Add("disabled", "disabled")
-						Else
-							'*** ITs a good match , Lets see if we set the deault Yet
-							l.Enabled = True
-							If lbDefault = False Then
-								lbDefault = True
-								l.Selected = True
-								liSelectedIndex = liCounter
-
-							End If
+                    If rowp.Code = row.Code Then
+                        '*** I think we want to leave them enabled so we can print reports.  We should disable all action items
+                        'If Trim(rowp.PhaseStatus) = "Completed" Or Trim(rowp.PhaseStatus) = "Closed" Then
+                        'l.Enabled = False
+                        'l.Attributes.Add("disabled", "disabled")
+                        'Else
+                        '*** ITs a good match , Lets see if we set the deault Yet
+                        l.Enabled = True
+						If lbDefault = False Then
+							lbDefault = True
+							l.Selected = True
+							liSelectedIndex = liCounter
 						End If
+						'End If
 					End If
-				Next
+                Next
 				liCounter = liCounter + 1
 				rblPhase.Items.Add(l)
 
@@ -1474,9 +1501,20 @@ ph1Status_Error:
 		c.DeleteRequestedUpgrades(s)
 		updPnlSelectedUpgrades.DataBind()
 	End Sub
-
-	Private Sub frmQuote_Init(sender As Object, e As EventArgs) Handles Me.Init
-        '        Exit Sub
+    Private Function getNodeInformation()
+        Dim context = New ApplicationDbContext()
+        Dim userStore = New UserStore(Of ApplicationUser)(context)
+        Dim myUserManager = New UserManager(Of ApplicationUser)(userStore)
+        Dim u As New ApplicationUser
+        Dim lsUser = Web.HttpContext.Current.User.Identity.GetUserName
+        u = myUserManager.FindByName(lsUser)
+        Session("NodeID") = u.NodeID
+    End Function
+    Private Sub frmQuote_Init(sender As Object, e As EventArgs) Handles Me.Init
+        Dim lsname As String = User.Identity.Name
+        If Session("NodeID") = 0 Then
+            getNodeInformation()
+        End If
         Dim lsQuoteID As String = Request.QueryString("QuoteID")
         checkQuoteID()
 		Dim dc As New GlobalFunctionsDC
@@ -1508,8 +1546,8 @@ ph1Status_Error:
 		If f.isGUIDString(litID.Text) And lsPhase <> "" Then
 			lb = c.fMissingSelections(Me.litID.Text, "Report", rblPhase.SelectedValue)
 			Dim url As String = "frmReport.aspx?ReportName=rptMissing&QuoteID=" & Session("QuoteID") & "&Phase=" & lsPhase
-			Dim s As String = "window.open('" & url + "', 'popup_window', 'width=300,height=100,left=100,top=100,resizable=yes');"
-			ClientScript.RegisterStartupScript(Me.GetType(), "script", s, True)
+            Dim s As String = "window.open('" & url + "', 'popup_window', 'width=500,height=800,left=100,top=100,resizable=yes');"
+            ClientScript.RegisterStartupScript(Me.GetType(), "script", s, True)
 		Else
 			'RaiseEvent "You need to select an quote first and then a phase
 		End If
@@ -1631,6 +1669,9 @@ Err_cmdAutoPick_Click:
                 InsertRequestedItem(lnk.CommandArgument)
                 lstStyle.DataBind()
                 lstSelectedUpgrade.DataBind()
+                fvQuoteTotals.DataBind()
+                fvPhaseTotals.DataBind()
+                lstRooms.DataBind()
 
                 ' Case "delete"
                 '    DeleteItem(lnk.CommandArgument)
@@ -1668,5 +1709,44 @@ Err_cmdAutoPick_Click:
 		Return html
 	End Function
 
+    Private Sub odsLevels_DataBinding(sender As Object, e As EventArgs) Handles odsLevels.DataBinding
+        Stop
+    End Sub
 
+    Private Sub lstLevels_DataBound(sender As Object, e As EventArgs) Handles lstLevels.DataBound
+        '   Stop
+        Dim lbLevels As ListBox = sender
+        If lbLevels.SelectedIndex = -1 And lbLevels.Items.Count > 0 Then
+            lstLevels.SelectedIndex = 0
+        End If
+    End Sub
+
+    Protected Sub cmdRefresh_Click(sender As Object, e As EventArgs) Handles cmdRefresh.Click
+        'Refresh
+        Dim s As String = "Refresh"
+    End Sub
+    Protected Sub lnkRefresh_click(sender As Object, e As EventArgs) Handles lnkRefresh.Click
+        'Refresh
+        Dim s As String = "Refresh"
+    End Sub
+    Private Sub upMetrics_Load(sender As Object, e As EventArgs) Handles upMetrics.Load
+        'Threading.Thread.Sleep(5000)
+        '    Stop
+        fvQuoteTotals.DataBind()
+        fvPhaseTotals.DataBind()
+    End Sub
+
+    Protected Sub lstSelectedUpgrade_ItemUpdated(sender As Object, e As ListViewUpdatedEventArgs) Handles lstSelectedUpgrade.ItemUpdated
+        Stop
+        odsQuoteTotals.DataBind()
+        fvPhaseTotals.DataBind()
+        fvQuoteTotals.DataBind()
+
+        Stop
+    End Sub
+
+	Protected Sub lstSelectedUpgrade_ItemCreated(sender As Object, e As ListViewItemEventArgs) Handles lstSelectedUpgrade.ItemCreated
+        'Stop
+
+    End Sub
 End Class

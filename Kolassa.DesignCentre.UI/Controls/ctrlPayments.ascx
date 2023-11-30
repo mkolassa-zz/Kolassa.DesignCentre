@@ -29,12 +29,20 @@
 		<asp:GridView ID="GridView1" runat="server" DataKeyNames="ID" DataSourceID="odsPayments" AutoGenerateColumns="False">
 			<Columns >
 				<asp:CommandField ButtonType="Link" ShowEditButton="true" ShowDeleteButton="true"  ShowCancelButton="true" Visible="false" />
-				<asp:TemplateField HeaderText="Edit in form" Visible="false">
+				<asp:TemplateField HeaderText="Edit in form" Visible="true">
 					<ItemTemplate>
 						<asp:LinkButton ID="btnEdit" runat="server" 
 							CommandName="EditRecord" Text="Edit" OnClick="btnEdit_Click" />
 						</ItemTemplate>
 				</asp:TemplateField> 
+				<asp:TemplateField HeaderText="Building Phase">
+					<EditItemTemplate>
+						<asp:TextBox ID="txtBuildingPhase" runat="server"  title="Building Phase" class="col-xs-2"  Text='<%# Bind("BuildingPhaseName", "") %>'></asp:TextBox>
+					</EditItemTemplate>
+					<ItemTemplate>
+						<asp:Label ID="txtBuildingPhase" runat="server"  Text='<%# Bind("BuildingPhasename", "") %>'></asp:Label>
+					</ItemTemplate>
+				</asp:TemplateField>
 				<asp:TemplateField HeaderText="Due Date">
 					<EditItemTemplate>
 						<asp:TextBox ID="txtPaymentDueDate" runat="server"  TextMode="date"   class="col-xs-2"  Text='<%# Bind("PaymentDueDate", "{0:yyyy-MM-dd}") %>'></asp:TextBox>
@@ -44,7 +52,7 @@
 							Text='<%# Bind("ActualPaymentDate", "{0:yyyy/MM/dd}") %>'></asp:Label>
 					</ItemTemplate>
 				</asp:TemplateField>
-								<asp:TemplateField HeaderText="Actaul Date">
+				<asp:TemplateField HeaderText="Actual Date">
 					<EditItemTemplate>
 						<asp:TextBox ID="txtActualPaymentDate" runat="server"  TextMode="date"   class="col-xs-2" Text='<%# Bind("ActualPaymentDate", "{0:yyyy-MM-dd}") %>'></asp:TextBox>
 					</EditItemTemplate>
@@ -95,7 +103,7 @@
 					<HeaderStyle CssClass="d-none" />
 					<ItemStyle CssClass="d-none" />
 				</asp:BoundField>
-								<asp:BoundField DataField="ID"    Headertext="ID"   ItemStyle-CssClass="d-none"  HeaderStyle-CssClass="d-none" >
+				<asp:BoundField DataField="ID"    Headertext="ID"   ItemStyle-CssClass="d-none"  HeaderStyle-CssClass="d-none" >
 					<HeaderStyle CssClass="d-none" />
 					<ItemStyle CssClass="d-none" />
 				</asp:BoundField>
@@ -115,32 +123,44 @@
 			</Columns>
 		</asp:GridView>
 	</div>
+
+
+
 	<div class="d-none form-group">
-		<label for="lblAdjustmentDate">ID</label>
+		<label for="txtID">ID</label>
 		<asp:textbox runat="server"  class="form-control" id="txtID"  ReadOnly="true" />
 	</div>
-	<div class="form-group">
-		<label for="lblAdjustmentDate">Payment Due Date</label>
-		<asp:textbox runat="server" textmode="date" class="form-control" id="txtPaymentDueDate" required="nrequired" />
+	<div class="d-none form-group">
+		<label for="txtBuildingPhase">Building Phase</label>
+		<asp:textbox runat="server"  class="form-control" id="txtBuildingPhase"  ReadOnly="true" />
 	</div>
-	<div class="form-group">
-		<label for="lblAdjustmentDate">Actual Payment Date</label>
-		<asp:textbox runat="server" textmode="date" class="form-control" id="txtActualPaymentDate" required="nrequired"/>
+	  <div class="form-row">
+		 <div class="col">
+			<label for="lblAdjustmentDate">Payment Due Date</label>
+			<asp:textbox runat="server" textmode="date" class="form-control" id="txtPaymentDueDate" required="nrequired" />
+		</div>
+		<div class="col">
+			<label for="lblAdjustmentDate">Actual Payment Date</label>
+			<asp:textbox runat="server" textmode="date" class="form-control" id="txtActualPaymentDate" required="nrequired"/>
+		</div>
 	</div>
-	<div class="form-group">
-		<label for=" Amount">Payment Due Amount</label>
-		<asp:textbox runat="server" type="number" class="form-control" id="txtPaymentDueAmount" placeholder="$0.00" required="nrequired"/>
-	</div>
-	<div class="form-group">
-		<label for=" Amount">Actual Payment Amount</label>
-		<asp:textbox runat="server" type="number" class="form-control" id="txtActualPaymentAmount" placeholder="$0.00" required="nrequired"/>
+
+	<div class="form-row">
+		<div class="col">
+			<label for=" Amount">Payment Due Amount (+ increases price /- is a discount)</label>
+			<asp:textbox runat="server" type="number" class="form-control" id="txtPaymentDueAmount" placeholder="$0.00" required="nrequired"/>
+		</div>
+		<div class="col">
+			<label for=" Amount">Actual Payment Amount (+ increases price /- is a discount)</label>
+			<asp:textbox runat="server" type="number" class="form-control" id="txtActualPaymentAmount" placeholder="$0.00" required="nrequired"/>
+		</div>
 	</div>
 	<div class="form-group">
 		<label for="lblAdjustmentReason">Payment Comment</label>
 		<asp:textbox runat="server" class="form-control" id="txtPaymentComment" rows="3"></asp:textbox>
 	</div>
 	<div class="form-group">
-		<label for="lblAdjustmentReason">Check Number</label>
+		<label for="lblAdjustmentReason">Payment Info (Check, Transaction Num)</label>
 		<asp:textbox runat="server" class="form-control" id="txtCheckNumber" rows="3"></asp:textbox>
 	</div>
 <asp:Button class="btn btn-primary" ID="cmdPost" runat="server" Text="Post" />

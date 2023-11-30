@@ -651,64 +651,90 @@ Public Class clsQuote
     Public Property SortOrder As String
     Public Property NumRecs As Integer
 
-    ' Public ErrorMessage As String
-    Public Sub New(Optional lsID As String = "11111111-1111-1111-1111-1111222223333")
+	' Public ErrorMessage As String
+	Public Sub New(Optional lsID As String = "11111111-1111-1111-1111-1111222223333")
 		If lsID = "11111111-1111-1111-1111-1111222223333" Then
 			ID = lsID
 		Else
-			ID = System.Web.HttpContext.Current.Session("QuoteID")
+            ID = System.Web.HttpContext.Current.Session("QuoteID")
+            QuoteID = ID
         End If
-        NodeID = System.Web.HttpContext.Current.Session("NodeID")
-        ProjectID = Current.Session("Project")
-        Dim ds As New DataSet
-        Dim colName, colVal As String
-        Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
+		NodeID = System.Web.HttpContext.Current.Session("NodeID")
+		ProjectID = Current.Session("Project")
+		Dim ds As New DataSet
+		Dim colName, colVal As String
+		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 
-        ds = c.LoadQuotes(NodeID, "", True, ID, NumRecs, SortOrder, CustomerEmail)
-        If ds Is Nothing Then Exit Sub
-        If ds.Tables.Count = 0 Then Exit Sub
-        For Each row As DataRow In ds.Tables(0).Rows
+		ds = c.LoadQuotes(NodeID, "", True, ID, NumRecs, SortOrder, CustomerEmail)
+		If ds Is Nothing Then Exit Sub
+		If ds.Tables.Count = 0 Then Exit Sub
+		For Each row As DataRow In ds.Tables(0).Rows
 
-            For Each column As DataColumn In ds.Tables(0).Columns
-                If row.IsNull(column) Then
-                Else
-                    colName = UCase(column.ColumnName)
-                    colVal = row.Item(column).ToString
-                    Select Case colName
-                        Case "UNITTYPEID" : UnitTypeID = colVal
-                        Case "QUOTESTATUS" : QuoteStatus = colVal
-                        Case "PHASE1STATUS" : Phase1Status = colVal
-                        Case "PHASE2STATUS" : Phase2Status = colVal
-                        Case "CUSTOMERID" : CustomerID = colVal
-                        Case "QUOTEID" : QuoteID = colVal
-                        Case "PHASE1TARGETDATE" : Phase1TargetDate = colVal
-                        Case "PHASE1COMPLETEDATE" : Phase1CompleteDate = colVal
-                        Case "PHASE2TARGETDATE" : Phase2TargetDate = colVal
-                        Case "PHASE2COMPLETEDATE" : Phase2CompleteDate = colVal
-                        Case "UnitTypeID" : UnitTypeID = colVal
-                        Case "UNITCODE" : UnitCode = colVal
-                        Case "UNITID" : UnitID = colVal
-                        Case "UNITNAME" : UnitName = colVal
-                        Case "UNITTYPEID" : UnitTypeID = colVal
-                        Case "UNITTYPECODE" : UnitTypeCode = colVal
-                        Case "UNITTYPENAME" : UnitTypeName = colVal
-                        Case "UNITTYPEDESCRIPTION" : UnitTypeDescription = colVal
-                        Case "CUSTOMERNAME", "NAME" : Name = colVal
-                        Case "OBJECTID" : ProjectID = colVal
-                        Case "ASSIGNEDTO" : AssignedTo = colVal
-                        Case "ASSIGNEDTOEMAIL" : AssignedToEmail = colVal
-                        Case "CUSTOMERNAME" : CustomerName = colVal
-                        Case "PROJECTNAME" : ProjectName = colVal
-                        Case "PROJECTDESCRIPTION" : ProjectDescription = colVal
-                        Case "PROJECTLOGOURL" : ProjectLogoURL = colVal
-                        Case "QUOTECODE", "CODE" : Code = colVal
-                        Case "ASSIGNEDTONAME" : AssignedToName = colVal
-                    End Select
+			For Each column As DataColumn In ds.Tables(0).Columns
+				If row.IsNull(column) Then
+				Else
+					colName = UCase(column.ColumnName)
+					colVal = row.Item(column).ToString
+					Select Case colName
+						Case "UNITTYPEID" : UnitTypeID = colVal
+						Case "QUOTESTATUS" : QuoteStatus = colVal
+						Case "PHASE1STATUS" : Phase1Status = colVal
+						Case "PHASE2STATUS" : Phase2Status = colVal
+						Case "CUSTOMERID" : CustomerID = colVal
+                        Case "ID" : QuoteID = colVal
+						Case "PHASE1TARGETDATE" : Phase1TargetDate = colVal
+						Case "PHASE1COMPLETEDATE" : Phase1CompleteDate = colVal
+						Case "PHASE2TARGETDATE" : Phase2TargetDate = colVal
+						Case "PHASE2COMPLETEDATE" : Phase2CompleteDate = colVal
+						Case "UnitTypeID" : UnitTypeID = colVal
+						Case "UNITCODE" : UnitCode = colVal
+						Case "UNITID" : UnitID = colVal
+						Case "UNITNAME" : UnitName = colVal
+						Case "UNITTYPEID" : UnitTypeID = colVal
+						Case "UNITTYPECODE" : UnitTypeCode = colVal
+						Case "UNITTYPENAME" : UnitTypeName = colVal
+						Case "UNITTYPEDESCRIPTION" : UnitTypeDescription = colVal
+						Case "CUSTOMERNAME", "NAME" : Name = colVal
+						Case "OBJECTID" : ProjectID = colVal
+						Case "ASSIGNEDTO" : AssignedTo = colVal
+						Case "ASSIGNEDTOEMAIL" : AssignedToEmail = colVal
+						Case "CUSTOMERNAME" : CustomerName = colVal
+						Case "PROJECTNAME" : ProjectName = colVal
+						Case "PROJECTDESCRIPTION" : ProjectDescription = colVal
+						Case "PROJECTLOGOURL" : ProjectLogoURL = colVal
+						Case "QUOTECODE", "CODE" : Code = colVal
+						Case "ASSIGNEDTONAME" : AssignedToName = colVal
+					End Select
+				End If
+			Next
+		Next
+	End Sub
+    Public Property Phases() As clsPhases
+        Get
+            Phases = New clsPhases()
+            Phases.GetRecords("Code", "", QuoteID)
+        End Get
+        Set(value As clsPhases)
+
+        End Set
+    End Property
+    Public Property getPhaseStatus(lsPhase As String) As String
+        Get
+			For Each p As clsPhase In Phases.GetRecords("Code", "", QuoteID)
+                If p.Code = lsPhase Then
+                    Return p.PhaseStatus
                 End If
             Next
-        Next
-    End Sub
-	Function AssignQuoteToSales(lsID As String, lsAssignedToID As String, lsURL As String, baseURL As String) As Boolean
+            Return "None"
+        End Get
+        Set(value As String)
+
+        End Set
+    End Property
+
+
+
+    Function AssignQuoteToSales(lsID As String, lsAssignedToID As String, lsURL As String, baseURL As String) As Boolean
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
 		If lsID.Length = 36 And lsAssignedToID.Length = 36 Then
 			If ProjectID Is Nothing Then ProjectID = Current.Session("Project")
@@ -1479,6 +1505,7 @@ Public Class clsPhases
     Public NODEID As Long
     Public Active As Boolean
     Public ID As String
+
     Public Sub New()
         NODEID = System.Web.HttpContext.Current.Session("NodeID")
     End Sub
@@ -1896,8 +1923,9 @@ Public Class clsPayment
 	Public Property PaymentDueDate As Date
 	Public Property ActualPaymentDate as Date
 	Public Property CheckNumber As String
-	Public Property BuildingPhase As String
-	Public Property ActualPaymentAmount As Double
+    Public Property BuildingPhase As String
+    Public Property BuildingPhaseName As String
+    Public Property ActualPaymentAmount As Double
 	Public Property PaymentDueAmount As Double
 	Public Property PaymentComment As String
 	Public Property PaymentType As String
@@ -1967,8 +1995,10 @@ Public Class clsPayments
 							Case "NAME" : cObject.Name = row.Item(column)
 							Case "OBJECTID" : cObject.ObjectID = row.Item(column).ToString
 							Case "CODE" : cObject.Code = row.Item(column)
-							Case "PAYMENTCOMMENT" : cObject.PaymentComment = row.Item(column)
-							Case "PAYMENTTYPE" : cObject.PaymentType = row.Item(column)
+                            Case "PAYMENTCOMMENT" : cObject.PaymentComment = row.Item(column)
+                            Case "BUILDINGPHASE" : cObject.BuildingPhase = row.Item(column)
+                            Case "BUILDINGPHASENAME" : cObject.BuildingPhaseName = row.Item(column)
+                            Case "PAYMENTTYPE" : cObject.PaymentType = row.Item(column)
 							Case "PAYMENTDUEAMOUNT" : cObject.PaymentDueAmount = row.Item(column)
 							Case "PAYMENTDUEDATE" : cObject.PaymentDueDate = (row.Item(column))
 							Case "ACTUALPAYMENTAMOUNT" : cObject.ActualPaymentAmount = row.Item(column).ToString
@@ -2446,8 +2476,9 @@ Public Class clsAdjustment
 	Public Property AdjustmentDate As Date
 	Public Property AdjustmentReason As String
 	Public Property CheckNumber As String
-	Public Property BuildingPhase As String
-	Public Property AdjustmentAmount As Double
+    Public Property BuildingPhase As String
+    Public Property BuildingPhaseName As String
+    Public Property AdjustmentAmount As Double
 
 	Public Property ObjectID As String
 	Public Property Code As String
@@ -2517,7 +2548,8 @@ Public Class clsAdjustments
                             Case "ADJUSTMENTREASON" : cObject.AdjustmentReason = row.Item(column)
                             Case "ADJUSTMENTAMOUNT" : cObject.AdjustmentAmount = row.Item(column)
                             Case "ADJUSTMENTDATE" : cObject.AdjustmentDate = row.Item(column)
-
+                            Case "BUILDINGPHASE" : cObject.BuildingPhase = row.Item(column)
+                            Case "BUILDINGPHASENAME" : cObject.BuildingPhaseName = row.Item(column)
                             Case "CHECKNUMBER" : cObject.CheckNumber = row.Item(column)
                             Case "CREATEUSERNAME" : cObject.CreateUserName = row.Item(column)
                             Case "UPDATEUSERNAME" : cObject.UpdateUserName = row.Item(column)

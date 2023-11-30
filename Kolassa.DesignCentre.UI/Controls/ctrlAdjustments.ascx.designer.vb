@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class ctrlAdjustments
-    
+
     '''<summary>
     '''odsAdjustments control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class ctrlAdjustments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents odsAdjustments As Global.System.Web.UI.WebControls.ObjectDataSource
-    
+
     '''<summary>
     '''pnlAdj control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class ctrlAdjustments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlAdj As Global.System.Web.UI.UpdatePanel
-    
+
     '''<summary>
     '''litID control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class ctrlAdjustments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents litID As Global.System.Web.UI.WebControls.Literal
-    
+
     '''<summary>
     '''GridView1 control.
     '''</summary>
@@ -48,7 +48,16 @@ Partial Public Class ctrlAdjustments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents GridView1 As Global.System.Web.UI.WebControls.GridView
-    
+
+    '''<summary>
+    '''txtBuildingPhase control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtBuildingPhase As Global.System.Web.UI.WebControls.TextBox
+
     '''<summary>
     '''txtAdjustmentDate control.
     '''</summary>
@@ -57,7 +66,7 @@ Partial Public Class ctrlAdjustments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtAdjustmentDate As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtAdjustmentAmount control.
     '''</summary>
@@ -66,7 +75,7 @@ Partial Public Class ctrlAdjustments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtAdjustmentAmount As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtAdjustmentReason control.
     '''</summary>
@@ -75,7 +84,16 @@ Partial Public Class ctrlAdjustments
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtAdjustmentReason As Global.System.Web.UI.WebControls.TextBox
-    
+
+    '''<summary>
+    ''' litError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents litError As Global.System.Web.UI.WebControls.Literal
+
     '''<summary>
     '''cmdPostAdj control.
     '''</summary>

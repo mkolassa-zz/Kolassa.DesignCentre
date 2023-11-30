@@ -23,6 +23,7 @@ Public Class frmProjects
         If lsProject Is Nothing Then
             lsProject = Session("Project")
         End If
+        If lsProject Is Nothing Then Response.Redirect("account/login.aspx")
         If lsProject.Length = 36 Then
             If lsProject <> Session("Project") Then
                 Session("Project") = lsProject
@@ -33,7 +34,7 @@ Public Class frmProjects
                 Session("ProjectName") = cp.Name
             End If
         Else
-                lsProject = Session("Project")
+            lsProject = Session("Project")
 		End If
 		Session("ProjectUnitsMetric") = FormatNumber(c.FgetMetric("Units", lsProject), 0)
         Session("ProjectUpgradesMetric") = FormatNumber(Val(c.FgetMetric("Upgrades", lsProject)), 0)

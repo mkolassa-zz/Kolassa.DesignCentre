@@ -1483,7 +1483,7 @@ ph1Status_Error:
         If f.isGUIDString(litID.Text) And lsPhase <> "" Then
             lb = c.fMissingSelections(Me.litID.Text, "Report", rblPhase.SelectedValue)
             Dim url As String = "frmReport.aspx?ReportName=rptMissing&QuoteID=" & Session("QuoteID") & "&Phase=" & lsPhase
-            Dim s As String = "window.open('" & url + "', 'popup_window', 'width=300,height=100,left=100,top=100,resizable=yes');"
+            Dim s As String = "window.open('" & url + "', 'popup_window', 'width=500,height=800,left=100,top=100,resizable=yes');"
             ClientScript.RegisterStartupScript(Me.GetType(), "script", s, True)
         Else
             'RaiseEvent "You need to select an quote first and then a phase

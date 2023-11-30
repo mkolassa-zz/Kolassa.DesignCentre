@@ -1,18 +1,32 @@
 ﻿Public Class ctrlPayments
 	Inherits System.Web.UI.UserControl
+    Dim msBuildingPhase As String
+    Public Property BuildingPhase As String
+        Get
+            BuildingPhase = msBuildingPhase
+        End Get
+        Set(value As String)
+            msBuildingPhase = value
+            txtBuildingPhase.Text = value
+        End Set
+    End Property
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        Page.Form.Enctype = "multipart/form-data"
+        Dim lsDate As String = Now.ToString("yyyy-MM-dd")
+        txtActualPaymentDate.Text = lsDate
+        txtCheckNumber.Text = ""
+        txtPaymentComment.Text = ""
+        txtPaymentDueAmount.Text = ""
+        txtPaymentDueDate.Text = lsDate
+    End Sub
 
-	Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
-		Page.Form.Enctype = "multipart/form-data"
-	End Sub
-
-
-	Protected Sub odsCommunications_Selecting(sender As Object, e As ObjectDataSourceSelectingEventArgs) Handles odsPayments.Selecting
-		Dim lsOID As String = GetObjectID()
-		e.InputParameters("lsObjectID") = lsOID
-		litID.Text = lsOID
-	End Sub
-	Function GetObjectID() As String
+    Protected Sub odsPaymens_Selecting(sender As Object, e As ObjectDataSourceSelectingEventArgs) Handles odsPayments.Selecting
+        Dim lsOID As String = GetObjectID()
+        e.InputParameters("lsObjectID") = lsOID
+        litID.Text = lsOID
+    End Sub
+    Function GetObjectID() As String
 		Dim lsObjectID As String
 		Dim lit As Literal
 		lit = Me.Parent.FindControl("litID")
@@ -36,14 +50,16 @@
 
 	Protected Sub cmdPost_Click(sender As Object, e As EventArgs) Handles cmdPost.Click
 		InsertRecord()
-		odsPayments.DataBind()
-		txtActualPaymentAmount.Text = ""
-		txtActualPaymentDate.Text = ""
-		txtCheckNumber.Text = ""
-		txtPaymentComment.Text = ""
-		txtPaymentDueAmount.Text = ""
-		txtPaymentDueDate.Text = ""
-	End Sub
+        odsPayments.DataBind()
+        txtBuildingPhase.Text = BuildingPhase
+        txtActualPaymentAmount.Text = ""
+        Dim lsDate As String = Now.ToString("yyyy-MM-dd")
+        txtActualPaymentDate.Text = lsDate
+        txtCheckNumber.Text = ""
+        txtPaymentComment.Text = ""
+        txtPaymentDueAmount.Text = ""
+        txtPaymentDueDate.Text = lsDate
+    End Sub
 
 
 
@@ -58,8 +74,8 @@
 		cPay.PaymentDueAmount = Val(txtPaymentDueAmount.Text)
 
 		cPay.ActualPaymentAmount = Val(txtActualPaymentAmount.Text)
-		cPay.BuildingPhase = ""
-		cPay.CheckNumber = txtCheckNumber.Text
+        cPay.BuildingPhase = txtBuildingPhase.Text
+        cPay.CheckNumber = txtCheckNumber.Text
 		cPay.PaymentComment = txtPaymentComment.Text
 		'e.InputParameters("lsPaymentType") = txt.Text
 		cPay.Insert()
@@ -69,13 +85,14 @@
 		'// Get the currently selected row using the SelectedRow property.
 		Dim row As GridViewRow = sender.namingcontainer
 
-		'// And you respective cell's value
-		txtActualPaymentDate.Text = row.Cells(3).Text
-		txtActualPaymentAmount.Text = row.Cells(5).Text
-		txtCheckNumber.Text = row.Cells(7).Text
-		txtPaymentComment.Text = row.Cells(6).Text
-		txtPaymentDueAmount.Text = row.Cells(4).Text
+        '// And you respective cell's value
+        txtActualPaymentDate.Text = row.Cells(4).Text
+        txtActualPaymentAmount.Text = row.Cells(5).Text
+        txtCheckNumber.Text = row.Cells(8).Text
+        txtPaymentComment.Text = row.Cells(7).Text
+        txtPaymentDueAmount.Text = row.Cells(4).Text
 		txtPaymentDueDate.Text = row.Cells(2).Text
-		txtID.Text = row.Cells(9).Text
-	End Sub
+        txtID.Text = row.Cells(9).Text
+        txtBuildingPhase.Text = row.Cells(3).Text
+    End Sub
 End Class

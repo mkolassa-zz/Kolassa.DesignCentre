@@ -95,6 +95,24 @@ Partial Public Class frmQuote
     Protected WithEvents odsSelectedUpgrade As Global.System.Web.UI.WebControls.ObjectDataSource
 
     '''<summary>
+    '''odsQuoteTotals control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents odsQuoteTotals As Global.System.Web.UI.WebControls.ObjectDataSource
+
+    '''<summary>
+    '''odsPhaseTotals control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents odsPhaseTotals As Global.System.Web.UI.WebControls.ObjectDataSource
+
+    '''<summary>
     '''odsRequestedUpgrades control.
     '''</summary>
     '''<remarks>
@@ -473,13 +491,13 @@ Partial Public Class frmQuote
     Protected WithEvents pnlPayments As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''ctrlPayments control.
+    '''ctrlPay control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ctrlPayments As Global.Kolassa.DesignCentre.UI.ctrlPayments
+    Protected WithEvents ctrlPay As Global.Kolassa.DesignCentre.UI.ctrlPayments
 
     '''<summary>
     '''pnlQuote control.
@@ -489,6 +507,105 @@ Partial Public Class frmQuote
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlQuote As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''upMetrics control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents upMetrics As Global.System.Web.UI.UpdatePanel
+
+    '''<summary>
+    '''cpe control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cpe As Global.AjaxControlToolkit.CollapsiblePanelExtender
+
+    '''<summary>
+    '''pnlkpi control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlkpi As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''imgkpi control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgkpi As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblkpi control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblkpi As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''kpi control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents kpi As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''fvPhaseTotals control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fvPhaseTotals As Global.System.Web.UI.WebControls.FormView
+
+    '''<summary>
+    '''fvQuoteTotals control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fvQuoteTotals As Global.System.Web.UI.WebControls.FormView
+
+    '''<summary>
+    '''lnkRefresh control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lnkRefresh As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
+    '''prgTotals control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents prgTotals As Global.System.Web.UI.UpdateProgress
+
+    '''<summary>
+    '''cmdRefresh control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdRefresh As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''litAssignedToName control.
@@ -509,13 +626,22 @@ Partial Public Class frmQuote
     Protected WithEvents LitCustomer As Global.System.Web.UI.WebControls.Literal
 
     '''<summary>
-    '''Repeater1 control.
+    '''rptCustomerInformation control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents Repeater1 As Global.System.Web.UI.WebControls.Repeater
+    Protected WithEvents rptCustomerInformation As Global.System.Web.UI.WebControls.Repeater
+
+    '''<summary>
+    '''lblQuoteStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblQuoteStatus As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''fvQuote control.
@@ -635,15 +761,6 @@ Partial Public Class frmQuote
     Protected WithEvents upprogPhase As Global.System.Web.UI.UpdateProgress
 
     '''<summary>
-    '''rblPhase control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rblPhase As Global.System.Web.UI.WebControls.RadioButtonList
-
-    '''<summary>
     '''cmdAddNewOption control.
     '''</summary>
     '''<remarks>
@@ -714,6 +831,42 @@ Partial Public Class frmQuote
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdVendorInstallationReport As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
+    '''rblPhase control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rblPhase As Global.System.Web.UI.WebControls.RadioButtonList
+
+    '''<summary>
+    '''lblLegend control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblLegend As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
+    '''popLegend control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents popLegend As Global.AjaxControlToolkit.PopupControlExtender
+
+    '''<summary>
+    '''pnlLegend control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlLegend As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
     '''pnlLoca control.

@@ -68,6 +68,15 @@ Partial Public Class ctrlPayments
     Protected WithEvents txtID As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''txtBuildingPhase control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtBuildingPhase As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
     '''txtPaymentDueDate control.
     '''</summary>
     '''<remarks>

@@ -278,9 +278,7 @@ Public Class ReportResults
         If e.SortExpression = "" Then
             Sorting = ""
         Else
-
             Sorting = " ORDER BY " & sortfield & " " & IIf(direction = SortDirection.Ascending, " ASC ", " DESC ")
-
         End If
 
         bindgv()
@@ -295,11 +293,9 @@ Public Class ReportResults
                 imgSort.CssClass = ".height:10px;"
                 If direction = SortDirection.Ascending Then
                     gv.Columns(index).HeaderText = gv.Columns(index).HeaderText & " V"
-                    '     gv.Columns(index).HeaderStyle.CssClass = "btn btn-outline-primary"
                     imgSort.ImageUrl = "~/images/sort-" + "asc" + ".png"
                 Else
                     gv.Columns(index).HeaderText = gv.Columns(index).HeaderText & " ^"
-                    '      gv.Columns(index).HeaderStyle.CssClass = "btn btn-outline-danger"
                     imgSort.ImageUrl = "~/images/sort-" + "desc" + ".png"
                 End If
                 gv.HeaderRow.Cells(index).Controls.Add(imgSort)
@@ -307,6 +303,8 @@ Public Class ReportResults
         Next
     End Sub
     Private Sub GridViewSortDirection(g As GridView, e As GridViewSortEventArgs, ByRef d As SortDirection, ByRef f As String)
+        '*************************************************************
+        '*** All We are doing is SETTING Attribute on the Gridview
         f = e.SortExpression
         d = e.SortDirection
 
@@ -469,6 +467,21 @@ Public Class ReportResults
                 End If
             End If
         End If
+
+        '*** GET SORTING FROM GRIDVIEW ATTRIBUTES
+        Dim lsField As String = ""
+        Dim lsOrder As String = "ASC"
+        If Sorting Is Nothing Or Sorting = "" Then
+            If gv.Attributes("data-CurrentSortField") <> "" And Not gv.Attributes("data-CurrentSortField") Is Nothing Then
+                lsField = gv.Attributes("data-CurrentSortField")
+                If gv.Attributes("data-CurrentSortDir") <> "" And Not gv.Attributes("data-CurrentSortDir") Is Nothing Then
+                    lsOrder = gv.Attributes("data-CurrentSortDir")
+                End If
+                Sorting = " Order By " & lsField & " " & lsOrder
+            End If
+        End If
+
+
 
         WhereClause = ReportWhereClause() & SearchCriteria
         '*** Get WHERE CLAUSE
@@ -636,6 +649,9 @@ Public Class ReportResults
     Protected Sub gv_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         'Stop
         gv.PageIndex = e.NewPageIndex
+
+
+
         bindgv()
         'gvPageNum = e.NewPageIndex
         'debug.print(e.NewPageIndex)

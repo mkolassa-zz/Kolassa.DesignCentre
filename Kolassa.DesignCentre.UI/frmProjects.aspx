@@ -63,7 +63,7 @@
 						<uc1:ctrlGoogleChartPie  ID="ctrlGoogleChartPie1" runat="server" xvaluemember="chartlabel" title="Quotes By Status" subtitle="Count" yvaluemembers ="chartdata" SQL="select QuoteStatus, Count(QUoteSTatus) as QuoteCount 	from v_QuoteLookup where 1=1 and PROJECTGUID Group By QuoteStatus " />
 				</div>
 			</div>
-		<div class="card border-light mb-12" style="max-width: 180rem;">
+	    	<div class="card border-light mb-12" style="max-width: 180rem;">
 			<div class="card-body text-secondary" style="resize: both; overflow: auto;">
 					<p class="card-text">
 						<uc1:ctrlGoogleChartPie ID="ctrlGoogleChartPie2"  runat="server" xvaluemember="chartlabel" title="Customers By State" subtitle="Count" yvaluemembers ="chartdata" SQL="select Customerstate, Count(customerstate) as StateCount 	from tblCustomers where 1=1 and NODEGUID Group By customerstate " />
@@ -93,7 +93,8 @@
 					<h5 class="card-title">
                     <% 
                         Dim c As Kolassa.DesignCentre.UI.clsProject = Session("ProjectObject")
-                        Response.Write(c.Address) 'Do something
+                        c.GetRecord(Session("Project"), True)
+                        Response.Write(Trim(c.Address)) 'Do something
                          %></h5>
 					<nav class="nav nav-pills nav-fill">
 						<a class="nav-item nav-link active" href="frmQuote.aspx?search=true">Quote Lookup</a>
@@ -109,11 +110,8 @@
 				<h5 class="card-title">Project Location</h5>
 				<!-- div id="map_div" style="width: 400px; height: 400px"></!-->
 					<div class="mapouter"><div class="gmap_canvas">
-						<iframe width="600" height="300" id="gmap_canvas" 
-							src="<% 
-                            ' Dim c As clsProject = Session("ProjectObject")
-                            Response.Write(c.AddressMap) 'Do something
-                         %>" 
+        				<iframe width="600" height="300" id="gmap_canvas" 
+							src="<%  Response.Write(Trim(c.AddressMap))       %>" 
 							frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
 						</iframe>
 						
@@ -132,22 +130,23 @@
 			</div>
 
 
-	<!-- LOCATION -->
-	<!--	<div class="card border-secondary mb-6" style="max-width: 180rem;">
+	<!-- LOCATION 
+		<div class="card border-secondary mb-6" style="max-width: 180rem;">
 			<div class="card-body text-secondary">
-				<p class="card-text">Project Location</p>
+				<p class="card-text">Project Geo Location</p>
 				<div id="newdiv" style="width: 600px; height: 500px"></div>
 			</div>
 		</div>
 		<div class="card border-secondary mb-6" style="max-width: 180rem;">
 			<div class="card-body text-secondary">
 					<p class="card-text">
-				
+		
+
 					</p>
 				</div>
 			</div>
 
-   --> 
+    -->
   
 	  
 

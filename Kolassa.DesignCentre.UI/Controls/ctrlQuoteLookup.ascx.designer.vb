@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class ctrlQuoteLookup
-    
+
     '''<summary>
     '''grdQuoteLookup control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class ctrlQuoteLookup
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents grdQuoteLookup As Global.System.Web.UI.WebControls.GridView
-    
+
     '''<summary>
     '''odsQuoteLookup control.
     '''</summary>

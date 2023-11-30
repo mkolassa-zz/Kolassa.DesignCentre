@@ -55,6 +55,7 @@
 		</SelectParameters>
 	</asp:ObjectDataSource>
 
+
 	<asp:ObjectDataSource ID="odsRooms" runat="server" SelectMethod="LoadQuoteRooms"  
 	TypeName="Kolassa.DesignCentre.Data.clsSelectDataLoader">
 		<SelectParameters>
@@ -190,7 +191,20 @@
                 PropertyName="SelectedValue" Type="String" />
         </SelectParameters>
     </asp:ObjectDataSource>
-       
+       	<asp:ObjectDataSource ID="odsQuoteTotals" runat="server" SelectMethod="LoadInvoiceGrid"  TypeName="Kolassa.DesignCentre.Data.clsSelectDataLoader">
+		<SelectParameters>
+			<asp:SessionParameter  Name="llNodeID" SessionField="NodeID" DefaultValue="0"  Type="Int64" />
+            <asp:Parameter DefaultValue="0" Name="lsPhaseID" Type="String" />
+			<asp:SessionParameter  Name="lsObjectID" SessionField="QuoteID" DefaultValue="00000000-0000-0000-0000-000000000000"  Type="String" />
+		</SelectParameters>
+	</asp:ObjectDataSource>
+		<asp:ObjectDataSource ID="odsPhaseTotals" runat="server" SelectMethod="LoadInvoiceGrid"  TypeName="Kolassa.DesignCentre.Data.clsSelectDataLoader">
+		<SelectParameters>
+			<asp:SessionParameter  Name="lsObjectID" SessionField="QuoteID" DefaultValue="00000000-0000-0000-0000-000000000000"  Type="String" />
+			<asp:SessionParameter  Name="llNodeID" SessionField="NodeID" DefaultValue="0"  Type="Int64" />
+            <asp:ControlParameter ControlID="rblPhase"  Name="lsPhaseID"  DefaultValue="0"  Type="String" />
+		</SelectParameters>
+	</asp:ObjectDataSource>
 	<asp:ObjectDataSource ID="odsRequestedUpgrades" runat="server" 
         SelectMethod="LoadRequestedUpgrades" TypeName="Kolassa.DesignCentre.Data.clsSelectDataLoader" 
         DeleteMethod="DeleteRequestedUpgrades" InsertMethod="InsertRequestedUpgrades">
@@ -272,9 +286,9 @@
 				<div class="modal-content" style="width:700px;">
 				  <div class="modal-header">
 					<h5 class="modal-title" id="modRecentTitle">Recent Quotes</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						  <span aria-hidden="true">&times;</span>
-						</button>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
 					</div>
 					<div class="modal-body">
 						<asp:UpdatePanel ID="upRecent" runat="server">
@@ -283,11 +297,13 @@
  								<asp:Repeater ID="rptRecentQuotes" runat ="server" EnableTheming="False"  >
 									<ItemTemplate>
 										<div class="card border-success mb-3" style="max-width: 18rem;">
-											<div class="card-header bg-transparent border-success"><p class="card-text"> <%#Eval("updatedate") %>
-												</p></div>
+											<div class="card-header bg-transparent border-success">
+												<p class="card-text"> <%#Eval("maxdate", "{0:yyyy/M/dd}") %>
+												</p>
+											</div>
 											<div class="card-body text-success">
-											<h5 class="card-title"><a href="frmQuote?QuoteID=<%#Eval("ID") %>"><%#Eval("UnitCode") %> <%#Eval("UnitTypeDescription") %></a></h5>
-											<p class="card-text"><%#Eval("CustomerName") %></p>
+												<p class="card-text"><a class="card-text text-decoration-none" style="color:brown;" href="frmQuote?QuoteID=<%#Eval("ID") %>"><b><%#Eval("CustomerName") %></b></a></p>
+												<h7 class="card-text small"><a href="frmQuote?QuoteID=<%#Eval("ID") %>"><br /><%#Eval("UnitCode") %><br /><%#Eval("UnitTypeDescription") %></a></h7>
 											</div>
 										</div>
 									</ItemTemplate>
@@ -330,7 +346,8 @@
 								<asp:Label ID="lblQuoteID" runat="server" CssClass="d-none"/>
 							</ContentTemplate>
 							<Triggers>
-								<asp:AsyncPostBackTrigger ControlID="cboAssignedTo" EventName="SelectedIndexChanged" />	
+								<asp:AsyncPostbackTrigger ControlID="cboAssignedTo" EventName="SelectedIndexChanged" />	
+								
 							</Triggers>		
 							</asp:UpdatePanel>
 					</div>
@@ -356,7 +373,7 @@
 						</button>
 					</div>
 					<div class="modal-body">
-						<asp:UpdatePanel  ID="upAssignedCustomer" runat="server" ChildrenAsTriggers="true" >
+						<asp:UpdatePanel  ID="upAssignedCustomer" runat="server" ChildrenAsTriggers="true"  >
 							<ContentTemplate><div class="">
 								<asp:DropDownList ID="cboAssignedCustomer" runat="server" title="AssignedToCustomerTitle" AutoPostBack="false" EnableViewState="true" Width="400px" />
 								<asp:linkButton ID="cmdAssignCustomer" CssClass="btn btn-small btn-primary" Text="Assign Customer" runat="server" />
@@ -366,7 +383,7 @@
 								<asp:Label ID="lblQuoteIDCustomer" runat="server" CssClass="d-none"/>
 							</ContentTemplate>
 							<Triggers>
-								<asp:AsyncPostBackTrigger ControlID="cboAssignedCustomer" EventName="SelectedIndexChanged" />	
+								<asp:AsyncPostbackTrigger ControlID="cboAssignedCustomer" EventName="SelectedIndexChanged" />	
 							</Triggers>		
 							</asp:UpdatePanel>
 					</div>
@@ -384,8 +401,8 @@
 	<asp:Panel Runat="server" ID="pnlQuoteLookup"   Visible = "true">
 		<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR SEARCHING FOR A QUOTE -->
 		<div class="modal fade" id="quoteSearchModal" tabindex="-1" role="dialog" aria-labelledby="quoteSearchModalLabel" aria-hidden="true" >
-		  <div class="modal-dialog" role="document">
-			<div class="modal-content" style="width:700px;">
+		  <div class="modal-dialog" role="document" style="min-width:90%">
+			<div class="modal-content" style="width:100%;">
 			  <div class="modal-header">
 				<h5 class="modal-title" id="quoteSearchModalLabel">Quote Search</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -479,8 +496,7 @@
 						</div>
 						<div class="form-group">
 							<label for="txtAdjustment">Adjustment</label>
-							<asp:textbox runat="server"  type="number" class="form-control" id="txtAdjustment"
-								 min="0.00"  />
+							<asp:textbox runat="server"  type="number" class="form-control" id="txtAdjustment" min="0.00"  />
 						</div>
                         <label for="lblTotalPrice">Total Price</label>
 						<asp:label ID="lblTotalPrice" runat="server" class="form-control"  />
@@ -493,7 +509,6 @@
 					<asp:button runat="server" OnClick="cmdSelectedItemSave_Click" UseSubmitBehavior="false" 
 						ID="cmdSelectedItemSave"  class="btn btn-primary"  data-dismiss="modal" Text="Save">
 					</asp:button>
-                 
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 			  </div> 
 			</div>
@@ -528,7 +543,7 @@
 	</asp:Panel>
 	<!-- END ITEM IMAGES PANEL -->
 
-	    <!-- THIS IS THE PANEL FOR Payments -->
+	<!-- THIS IS THE PANEL FOR Payments -->
 	<asp:Panel Runat="server" ID="pnlPayments"   Visible = "true">
 		<!-- Modal  THIS IS THE LOOKUP MODAL FORM FOR Payments -->
 		<div class="modal fade" id="PaymentsModal" tabindex="-1" role="dialog" aria-labelledby="lblPayments" aria-hidden="true">
@@ -541,7 +556,7 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<uc1:ctrlPayments runat="server" id="ctrlPayments" />
+					<uc1:ctrlPayments runat="server" id="ctrlPay" />
 				</div>
 			  <div class="modal-footer">
 
@@ -553,9 +568,145 @@
 	<!-- END Payment PANEL -->
 
 
+<style>
+	.icon {   float: right;  font-size:500%;  position: absolute;  top:0rem;  right:-0.3rem;  opacity: .16;}
+	#KPIcontainer {  width: 100%;  display: flex;}
+	.grey-dark {  background: #495057;  color: #efefef;}
+	.red-gradient {  background: linear-gradient(180deg, rgba(207,82,82,1) 0%, rgba(121,9,9,1) 80%);  color: #fff;}
+	.red {  background: #a83b3b;  color: #fff;}
+	.green {  background: green;  color: #fff;}
+	.purple{  background: #886ab5;  color: #fff;}
+	.orange {  background: #ffc241;  color: #fff;}
+
+	.tgrey {  background: #463f3f;  color: #efefef;}
+	.tred {  background: #d00f0f;  color: #fff;}
+	.tgreen {  background: #19851e;  color: #fff;}
+	.tpurple{  background: #961db9;  color: #fff;}
+	.torange {  background: #bf9a2d;  color: #fff;}
+	.kpi-card
+	{  overflow: hidden;  position: relative;  box-shadow: 1px 1px 3px rgba(0,0,0,0.75);;  display:flax;  float:none;  padding: 1em;  border-radius: 0.3em;
+	  font-family: sans-serif;    width: 250px;  min-width: 180px;  margin-left: 0.5em;  margin-top: 0.5em;
+	}
+	.card-value {  display: block;  font-size: 150%;    font-weight: bolder;}
+	.card-text-kpi {  display:block;  font-size: 70%;  padding-left: 0.2em;}
+</style>
 
 
-<asp:Panel runat="server" ID="pnlQuote">     
+	<asp:Panel runat="server" ID="pnlQuote">     
+		<div class="card-group">
+			<asp:updatepanel runat="server" ID ="upMetrics" class="w-100">
+				<ContentTemplate>	
+					<ajaxToolkit:CollapsiblePanelExtender ID="cpe" runat="Server"
+						TargetControlID="kpi"
+						CollapsedSize="0"
+						ExpandedSize="350"
+						Collapsed="True"
+						ExpandControlID="pnlkpi"
+						CollapseControlID="pnlkpi"
+						AutoCollapse="False"
+						AutoExpand="False"
+						ScrollContents="True"
+						TextLabelID="lblkpi"
+						CollapsedText="Show Quote Summary..."
+						ExpandedText="Hide Quote Summary" 
+						ImageControlID="imgkpi"
+						ExpandedImage="/images/collapse.jpg"
+						CollapsedImage="/images/expand.jpg"
+						ExpandDirection="Vertical" />
+					<asp:panel ID="pnlkpi" runat="server" HorizontalAlign="center" CssClass="p-3 text-success">
+						<linkbutton id="lbkpi"><i class="fas fa-dollar-sign"></i></linkbutton><asp:Image ID="imgkpi" runat="server" />
+						<asp:Label ID="lblkpi" runat="server" />
+					</asp:panel>
+						<asp:Panel ID="kpi" runat="server" HorizontalAlign="center" CssClass="card border-light mb-12" style="max-width: 180rem;">
+							<div class="card-body text-secondary center-align" style="resize: both; overflow: auto;">
+								<p class="card-title font-weight-bold">
+									Phase Quote 
+								</p>
+								<asp:FormView runat="server" id="fvPhaseTotals" class="mx-auto" DataSourceID="odsPhaseTotals">
+									<ItemTemplate>
+										<div id="KPIcontainer">
+											  <div class="kpi-card orange">
+												<span class="card-value"><%# String.Format("{0:C}", Eval("itemcost"))  %> </span>
+												<span class="card-text-kpi">Item Sales <%# Eval("PhaseName") %> Phase</span>
+												 <i class="fas fa-shopping-cart icon"></i>
+											  </div>
+ 											  <div class="kpi-card purple">
+												<span class="card-value"><%# Eval("Quantity")  %> </span>
+												<span class="card-text-kpi">Items Selected <%# Eval("PhaseName") %> Phase</span>
+												 <i class="fas fa-box-open icon"></i>
+											  </div>
+											  <div class="kpi-card grey-dark">
+												<span class="card-value"><%# String.Format("{0:C}", Eval("adjustmentcost"))  %> </span>
+												<span class="card-text-kpi">ttl Adjustments <%# Eval("PhaseName") %> Phase</span>
+												 <i class="fas fa-adjust icon"></i>
+											  </div>
+											  <div class="kpi-card green">
+												<span class="card-value"><%# String.Format("{0:C}", Eval("PaymentCost"))  %> </span>
+												<span class="card-text-kpi">Payments Made for <%# Eval("PhaseName") %> Phase</span>
+												 <i class="fas fa-address-card icon"></i>
+											  </div>
+											 <div class="kpi-card red">
+												<span class="card-value"><%# String.Format("{0:C}", Eval("TotalCost"))  %> </span>
+												<span class="card-text-kpi">Total Sales <%# Eval("PhaseName") %> Phase</span>
+												 <i class="fas fa-dollar-sign icon"></i>
+											  </div>
+
+										</div>
+									</ItemTemplate>
+							</asp:FormView>
+
+								<p class="card-Title font-weight-bold">
+									Total Quote 
+								</p>
+								<asp:FormView runat="server" id="fvQuoteTotals" CssClass="mx-auto" DataSourceID="odsQuoteTotals">
+								<ItemTemplate>
+									<div id="KPIcontainer">
+											<div class="kpi-card torange">
+											<span class="card-value"><%# String.Format("{0:C}", Eval("itemcost"))  %> </span>
+											<span class="card-text-kpi">Item Sales <%# Eval("PhaseName") %> Phase</span>
+												<i class="fas fa-shopping-cart icon"></i>
+											</div>
+ 											<div class="kpi-card tpurple">
+											<span class="card-value"><%# Eval("Quantity")  %> </span>
+											<span class="card-text-kpi">Items Selected <%# Eval("PhaseName") %> Phase</span>
+												<i class="fas fa-box-open icon"></i>
+											</div>
+											<div class="kpi-card tgrey">
+											<span class="card-value"><%# String.Format("{0:C}", Eval("adjustmentcost"))  %> </span>
+											<span class="card-text-kpi">ttl Adjustments <%# Eval("PhaseName") %> Phase</span>
+												<i class="fas fa-adjust icon"></i>
+											</div>
+											<div class="kpi-card tgreen">
+											<span class="card-value"><%# String.Format("{0:C}", Eval("PaymentCost"))  %> </span>
+											<span class="card-text-kpi">Payments for <%# Eval("PhaseName") %> Phase</span>
+												<i class="fa fa-address-card icon"></i>
+											</div>
+											<div class="kpi-card tred">
+											<span class="card-value"><%# String.Format("{0:C}", Eval("TotalCost"))  %> </span>
+											<span class="card-text-kpi">Total Sales <%# Eval("PhaseName") %> Phase</span>
+												<i class="fas fa-dollar-sign icon"></i>
+											</div>
+
+									</div>
+								</ItemTemplate>
+							</asp:FormView>
+								<asp:LinkButton runat="server" ID="lnkRefresh"><i class="fas fa-cog"></i>Refresh</asp:LinkButton>
+							</div>
+						</asp:Panel>
+
+				</ContentTemplate>
+				<Triggers>
+					<asp:AsyncPostBackTrigger ControlID="cmdRefresh" EventName="Click" />
+					<asp:AsyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemUpdated" />
+					<asp:AsyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemInserted" />
+					<asp:AsyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="Databound" />
+				</Triggers>
+			</asp:updatepanel>
+			<asp:UpdateProgress runat="server" ID="prgTotals" AssociatedUpdatePanelID="UPMetrics">
+				<ProgressTemplate>Loading....</ProgressTemplate>
+			</asp:UpdateProgress>
+			<asp:Button runat="server" ID="cmdRefresh" Text="Refresh" CssClass="d-none" />
+		</div>
 	<div class="container pb-2">
 		<div class="row">
 			<div class="col-md-3">
@@ -586,21 +737,22 @@
 						</div><br />
 						<h5 class="card-title" style="margin-bottom:0rem;">Customer	<button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#CommunicationsModal"><i class="fas fa-comments"></i></button></h5>
 						<p class="card-text">
-						<!-- *********   CUSTOMER INFORMATION  ***********-->
-						<% If User.IsInRole("Admin") Then %>
-							<asp:literal ID="LitCustomer" runat="server" />
-							<button  id="btnAssignCustomer" type="button" class="btn btn-default btn-sm"
-								data-toggle="modal" data-target="#modAssignCustomer" >
-								<i class="fa fa-user"></i> Re-assign Customer</button>
-						<% End If  %>
-						<asp:Repeater ID="Repeater1" runat="server" DataSourceID="odsQuotes" >
-							<ItemTemplate>
-								<asp:Label runat="server" ID="lblName" Text='<%# Eval("CustomerName") %>' CssClass="card-subtitle font-weight-bold " ForeColor="#990000" /><br />
-								<asp:Label runat="server" ID="lblUnitName"     Text='<%# Eval("UnitName") %>' /><br />
-								<asp:Label runat="server" ID="lblUnitTypeName" Text='<%# Eval("UnitTypeName") %>' /><br />
-								<asp:Label runat="server" ID="lblUnitTypeDesc" Text='<%# Eval("UnitTypeDescription") %>' />
-							</ItemTemplate>
-						</asp:Repeater></p>
+							<!-- *********   CUSTOMER INFORMATION  ***********-->
+							<% If User.IsInRole("Admin") Then %>
+								<asp:literal ID="LitCustomer" runat="server" />
+								<button  id="btnAssignCustomer" type="button" class="btn btn-default btn-sm"
+									data-toggle="modal" data-target="#modAssignCustomer" >
+									<i class="fa fa-user"></i> Re-assign Customer</button>
+							<% End If  %>
+							<asp:Repeater ID="rptCustomerInformation" runat="server" DataSourceID="odsQuotes" >
+								<ItemTemplate>
+									<asp:Label runat="server" ID="lblName" Text='<%# Eval("CustomerName") %>' CssClass="card-subtitle font-weight-bold " ForeColor="#990000" /><br />
+									<asp:Label runat="server" ID="lblUnitName"     Text='<%# Eval("UnitName") %>' /><br />
+									<asp:Label runat="server" ID="lblUnitTypeName" Text='<%# Eval("UnitTypeName") %>' /><br />
+									<asp:Label runat="server" ID="lblUnitTypeDesc" Text='<%# Eval("UnitTypeDescription") %>' />
+								</ItemTemplate>
+							</asp:Repeater>
+						</p>
 					</div>
 					<!-- Save Button -->
 					<table class="d-none">
@@ -620,17 +772,15 @@
 				</div>
 			</div>
 			<div class="col-md-6">
-				 <div class="card h-100">
+				<div class="card h-100">
 					<div class="card-body">
-				  <h5 class="card-title">Phase Status</h5>
-					<p class="card-text">
+						<h5 class="card-title"><asp:Label ID="lblQuoteStatus" runat="server" Height="20px">Quote Status</asp:Label></h5>
+						<p class="card-text"></p>
 						<asp:FormView ID="fvQuote" runat="server" DataSourceID="odsQuotes" BorderStyle="None" BorderWidth="0px">
 							<EditItemTemplate >
-								<table>
+								<table class="table table-success table-sm">
 									<tr>
-										<td> 
-											 <asp:Label ID="lblQuoteStatus" runat="server" Height="20px">Quote Status</asp:Label>
-										</td>
+										<td></td><td class="accordion"><%# Eval("QuoteStatus") %></td><td><%# Eval("createdate", "{0:yyyy-MM-dd}") %></td> <!--td><asp:Button ID="cmdCloseQuote" runat="server" CssClass="btn  btn-success btn-sm" text="Close Quote"/></!--td -->
 									</tr>
 								</table>
 							</EditItemTemplate>
@@ -648,7 +798,9 @@
 								</table>
 							</ItemTemplate>
 						</asp:FormView>
-					  <asp:UpdatePanel ID="upPhase" runat="server" >
+						<!-- *** Phase Status ***-->
+						<h5 class="card-title">Phase Status</h5>
+						<asp:UpdatePanel ID="upPhase" runat="server" >
 						  <ContentTemplate >
 							  <asp:ObjectDataSource ID="odsPhases" runat="server" 
 								SelectMethod="GetRecords" TypeName="Kolassa.DesignCentre.UI.clsPhases" InsertMethod="Insert" 
@@ -669,7 +821,7 @@
 									<asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="card-title" />
 									<asp:BoundField DataField="Description" HeaderText="Description" SortExpression="Description" Visible="false"/>
 						   			<asp:TemplateField HeaderText="Status">
-										<ItemTemplate><label id="lbl"  data-id="<%# Eval("ID") %>"  data-phasenum="<%# Eval("PhaseNum") %>"><%# Eval("PhaseStatus") %></label>
+										<ItemTemplate><label id="lbl"  data-id="<%# Eval("ID") %>"  data-phasenum="<%# Eval("PhaseNum") %>" ><i class='fas fa-edit'></i> <%# Eval("PhaseStatus") %></label>
 										</ItemTemplate>
 									</asp:TemplateField>
 									<asp:BoundField DataField="ProjectType" HeaderText="ProjectType" SortExpression="ProjectType" Visible="false"/>
@@ -753,18 +905,13 @@
 			</div>
 			<div class=" col-md-3">
 				<div class="card h-100">
-					<div class="card-body">
-						<h5 class="card-title">Current Phase</h5>
-						<asp:RadioButtonList  ID="rblPhase" runat="server" AutoPostBack="True" 
-								CssClass="card border-0 form-check form-check-label form-check-input"> </asp:RadioButtonList>
-					</div>
-					<div class="card-footer">
+					<div class="card-header">
 						<nav class="Kolassa" >
 							<ul class="Kolassa">
-								<li class="btn btn-primary dropdown-toggle btn-sm"><a style="color:white;" href="#">Action <b class="caret"></b></a>
+								<li class="btn btn-primary w-100 dropdown-toggle btn-sm"><a style="color:white;" href="#">Action <b class="caret"></b></a>
 									<ul class="Kolassa">
-										<asp:linkButton ID="cmdAddNewOption"      runat="server" class="dropdown-item" ><i class='fas fa-plus'></i> Add New Option</asp:linkButton> 
-										<asp:linkButton ID="cmdAutoPick"          runat="server" class="dropdown-item" ><i class='fas fa-adjust'></i> Auto Pick</asp:linkButton> 		
+										<asp:linkButton ID="cmdAddNewOption"  cssclass="dropdown-item"    runat="server"  ><i class='fas fa-plus'></i> Add New Option</asp:linkButton> 
+										<asp:linkButton ID="cmdAutoPick"      cssclass="dropdown-item"    runat="server"  ><i class='fas fa-adjust'></i> Auto Pick</asp:linkButton> 		
 										<!--	<asp:linkButton ID="btnAutoPop"           runat="server" class="dropdown-item" ><i class="material-icons">flash_auto</i> Auto Populate</asp:linkButton> 		-->
 										<button type="button" class="dropdown-item" data-toggle="modal" data-target="#PaymentsModal"><i class="fas fa-dollar-sign"></i> Payments</button>
 										<button type="button" class="dropdown-item btn-sm" data-toggle="modal" data-target="#AdjustmentsModal"><i class="fas fa-adjust"></i> Adjustments</button>
@@ -778,6 +925,12 @@
 							</ul>
 						</nav>
 					</div>
+					<div class="card-body">
+						<h5 class="card-title">Current Phase</h5>
+						<asp:RadioButtonList  ID="rblPhase" runat="server" AutoPostBack="True" 
+								CssClass="card border-0 form-check form-check-label form-check-input"> </asp:RadioButtonList>
+					</div>
+				
 				</div>
 			</div>
 		</div>
@@ -787,8 +940,8 @@
     <!-- **********************************************************************************************************
          *** Container
          *********************************************************************************************************** -->
-	<div class="container"> <!-- style="padding-left:0px;padding-right:0px;"> -->
-		<div class="row">
+	<div class="container-lg"> <!-- style="padding-left:0px;padding-right:0px;"> -->
+		<div class="row justify-content-lg-center" style="width:1300px;">
 		<!-- **********************************************************************************************************
          *** LOCATION
          *********************************************************************************************************** -->
@@ -796,46 +949,59 @@
 			<div class="col-md-3" style="padding-left:0px;padding-right:0px;">
 				<div class="card w-100">
 					<div class="card-body">
-				<h5 class="card-title"">Location</h5>
+				<h5 class="card-title"">Location<asp:linkbutton id="lblLegend" cssclass="text-success small"   runat="server" text="    *Legend"/></h5>
+						<ajaxToolkit:PopupControlExtender ID="popLegend" runat="server"
+    TargetControlID="lblLegend"
+    PopupControlID="pnlLegend"
+    Position="Bottom" />
+						<asp:panel ID="pnlLegend" runat="server" CssClass="bg-white border border-info" Width="300px">
+                            <img src="images/Legend-badge.png" /> Number of Selections Made<br />
+                            <img src="images/Legend-NoSelection.png" /> No Selection for Category<br />
+                            <img src="images/Legend-Required-No-Selection.png" /> Required Category Not Selected<br />
+                            <img src="images/Legend-Required-Selection.png" /> Required Category Selected<br />
+                            <img src="images/Legend-Selected.png" /> Item Selected for NON Required Category<br />
+						</asp:panel>
                 <asp:Panel ID="pnlLoca" runat="server"  Height="270px" style="overflow-y:auto;padding-left:3px"  CssClass="border border-primary">       
-                <asp:UpdatePanel ID="upRoom" runat="server"  Height="250px">       
-                    <ContentTemplate>
-                        <asp:ListView ID="lstRooms2"   runat="server" DataSourceID="odsRooms" DataKeyNames="RoomName"  >
-                            <LayoutTemplate>
-                                <table style="width:100%;height:250px" class="table-bordered table-hover" id="gradient-style">
-                                    <asp:PlaceHolder ID="itemPlaceholder" runat="server"></asp:PlaceHolder>
-                                </table>
-                            </LayoutTemplate>
-                            <ItemTemplate>
-                                <tr>
-                                    <td class="table-light border-0">
-                                        <asp:LinkButton runat="server" ID="SelectCategoryButton"  Text='<%#Eval("UpgradeCount")%>' CommandName="Select" />
-                                    </td>
-                                </tr>
-                            </ItemTemplate>
-                            <SelectedItemTemplate>
-                                <tr>
-                                    <td class="table-success font-weight-bold"><asp:LinkButton runat="server" ID="SelectCategoryButton" 
-                                        Text='<%#Eval("UpgradeCount")%>' CommandName="Select" /></td>
-                                </tr>
-                            </SelectedItemTemplate>
-                        </asp:ListView>
-                        <asp:Listbox   class="d-none"  id="lstRooms" runat="server" 
-                            Rows="10"  Width="99%"     Height="250px" 
-                            DataSourceID="odsRooms"    DataTextField="UpgradeCount" 
-                            DataValueField="RoomName"  AutoPostBack="True"         >
-                        </asp:Listbox>
-                    </ContentTemplate>
-                    <Triggers >
-                        <asp:AsyncPostBackTrigger ControlID="lstRooms2" EventName="SelectedIndexChanged" />
-						<asp:asyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemDeleted"  />
-						<asp:AsyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemInserted"  />					
-						<asp:AsyncPostBackTrigger ControlID="cmdAutoPick" EventName="Click" />
-						<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemCommand" />
-						<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemDeleting" />
-                    </Triggers>
-                </asp:UpdatePanel>
-                    </asp:Panel>
+					<asp:UpdatePanel ID="upRoom" runat="server"  Height="250px">       
+						<ContentTemplate>
+							<asp:ListView ID="lstRooms2"   runat="server" DataSourceID="odsRooms" DataKeyNames="RoomName"  >
+								<LayoutTemplate>
+									<table style="width:100%;height:250px" class="table-bordered table-hover" id="gradient-style">
+										<asp:PlaceHolder ID="itemPlaceholder" runat="server"></asp:PlaceHolder>
+									</table>
+								</LayoutTemplate>
+								<ItemTemplate>
+									<tr>
+										<td class="table-light border-0">
+											<asp:LinkButton runat="server" ID="SelectCategoryButton"  Text='<%#Eval("UpgradeCount")%>' CommandName="Select" />
+										</td>
+									</tr>
+								</ItemTemplate>
+								<SelectedItemTemplate>
+									<tr>
+										<td class="table-success font-weight-bold"><asp:LinkButton runat="server" ID="SelectCategoryButton" 
+											Text='<%#Eval("UpgradeCount")%>' CommandName="Select" /></td>
+									</tr>
+								</SelectedItemTemplate>
+							</asp:ListView>
+							<asp:Listbox   class="d-none"  id="lstRooms" runat="server" 
+								Rows="10"  Width="99%"     Height="250px" 
+								DataSourceID="odsRooms"    DataTextField="UpgradeCount" 
+								DataValueField="RoomName"  AutoPostBack="True"         >
+							</asp:Listbox>
+						</ContentTemplate>
+						<Triggers >
+			
+							<asp:AsyncPostBackTrigger ControlID="lstRooms2" EventName="SelectedIndexChanged" />
+							<asp:AsyncPostbackTrigger ControlID="lstSelectedUpgrade" EventName="ItemDeleted"  />
+							<asp:AsyncPostbackTrigger ControlID="lstSelectedUpgrade" EventName="ItemInserted"  />					
+							<asp:AsyncPostBackTrigger ControlID="cmdAutoPick" EventName="Click" />
+							<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemCommand" />
+							<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemDeleting" />
+						</Triggers>
+					</asp:UpdatePanel>
+
+                </asp:Panel>
 			</div>
 		</div>
 	</div>
@@ -881,7 +1047,7 @@
 						</asp:panel>
 
 					</div>
-            						<asp:UpdateProgress ID="updPrgCategories" runat="server" AssociatedUpdatePanelID="updPnlCategories">
+            			<asp:UpdateProgress ID="updPrgCategories" runat="server" AssociatedUpdatePanelID="updPnlCategories">
 							<ProgressTemplate>Waiting . . . 
 								  <asp:Image ID="imgCategories" runat="server" ImageUrl="~/images/loadingH.gif"  Height="20px" />  
 							</ProgressTemplate>
@@ -891,30 +1057,32 @@
 
 		<!-- **********************************************************************************************************
 			 *** Levels
-         *********************************************************************************************************** -->
-			<div class="col-md-3" style="padding-left:0px;padding-right:0px;">
-        <div class="card w-100">
-				<div class="card-body">
-					<h5 class="card-title">Levels</h5>
-					<asp:UpdatePanel ID="updPnlLevels" runat="server" >
-						<ContentTemplate>
-							<asp:ListBox      id="lstLevels"  runat="server"   Rows="8"  
-							Width="90%" Height="270px" DataSourceID="odsLevels" 
-							DataTextField="UpgradeLevel"      DataValueField="UpgradeLevel" AutoPostBack="True" />
-						</ContentTemplate>
-						<Triggers>
-							<asp:AsyncPostBackTrigger ControlID="lstCategories" EventName="SelectedIndexChanged" />
-                            <asp:AsyncPostBackTrigger ControlID="lvCategories" EventName="SelectedIndexChanged" />
-						</Triggers>
-					</asp:UpdatePanel>
-					<asp:UpdateProgress ID="updPrgLevel" runat="server" AssociatedUpdatePanelID="updPnlLevels">
-						<ProgressTemplate>
-								<asp:Image ID="imgLevel" runat="server" ImageUrl="~/images/loadingH.gif" Height="20px"  />  
-						</ProgressTemplate>
-					</asp:UpdateProgress>
+             ********************************************************************************************************** -->
+		<div class="col-md-3" style="padding-left:0px;padding-right:0px;">
+			<div class="card w-100">
+					<div class="card-body">
+						<h5 class="card-title">Levels</h5>
+						<asp:UpdatePanel ID="updPnlLevels" runat="server" >
+							<ContentTemplate>
+								<div style="width: 270px;  overflow-x: scroll;"">
+									<asp:ListBox      id="lstLevels"  runat="server"   Rows="8"  
+									 Height="255px" DataSourceID="odsLevels" width="400px"
+									DataTextField="UpgradeLevel"      DataValueField="UpgradeLevel" AutoPostBack="True" />
+								</div>
+							</ContentTemplate>
+							<Triggers>
+								<asp:AsyncPostBackTrigger ControlID="lstCategories" EventName="SelectedIndexChanged" />
+								<asp:AsyncPostBackTrigger ControlID="lvCategories" EventName="SelectedIndexChanged" />
+							</Triggers>
+						</asp:UpdatePanel>
+						<asp:UpdateProgress ID="updPrgLevel" runat="server" AssociatedUpdatePanelID="updPnlLevels">
+							<ProgressTemplate>
+									<asp:Image ID="imgLevel" runat="server" ImageUrl="~/images/loadingH.gif" Height="20px"  />  
+							</ProgressTemplate>
+						</asp:UpdateProgress>
+					</div>
 				</div>
 			</div>
-	</div>
 		</div>
 	</div>
 
@@ -1012,15 +1180,15 @@
                                     <th style="width:7%; text-align:center">ActItems</i></th>
                                     <th  data-visible="false" class="d-none">ID</i></th>
 									<th  data-visible="false" class="d-none">OptionID</i></th>
-                                    <th style="width:10%; text-align:center">Category</th>
-                                    <th style="width:10%; text-align:center">Upgrade Level</th>							
-                                    <th style="width:55%; text-align:center">Description</th>
-                                    <th style="width:10%; text-align:center">Style</th>
-                                    <th style="width:10%; text-align:center">Qty</th>                             
-									<th style="width:10%; text-align:center">Price</th>       
+                                    <th style="width:8%; text-align:center">Category</th>
+                                    <th style="width:8%; text-align:center">Upgrade Level</th>							
+                                    <th style="width:25%; text-align:center">Description</th>
+                                    <th style="width:8%; text-align:center">Style</th>
+                                    <th style="width:5%; text-align:center">Qty</th>                             
+									<th style="width:8%; text-align:center">Price</th>       
 									<th style="width:8%; text-align:center">Adj</th>  
-									<th style="width:10%; text-align:center">Total</th>      
-                                    <th style="display:inline; text-align:center">Comment</th>     
+									<th style="width:8%; text-align:center">Total</th>      
+                                    <th style="width:15%; display:inline; text-align:center">Comment</th>     
                                </tr>
                                <asp:PlaceHolder ID="itemPlaceholder" runat="server"></asp:PlaceHolder>
                            </table>
@@ -1061,7 +1229,7 @@
 								<td id="customerprice" style="text-align:right"><%#Eval("CustomerPrice", "{0:c}")%></td>
 								<td id="adjustments" style="text-align:right"><%#Eval("Adjustments", "{0:c}")%></td>
 								<td id="cost" style="text-align:right"><%#Eval("Cost", "{0:c}")%></td>
-							<td id="comments" style="text-align:right"><%#Eval("Comments")%></td>
+								<td id="comments" class="col-2" style="text-align:right"><%#Eval("Comments")%></td>
                             </tr>
 
                         </ItemTemplate>
@@ -1071,18 +1239,18 @@
 					</div></div>
 				</ContentTemplate>
 				<Triggers>
-					<asp:AsyncPostBackTrigger ControlID="lststyle" EventName="ItemInserting" />
+					<asp:AsyncPostbackTrigger ControlID="lststyle" EventName="ItemInserting" />
 					<asp:AsyncPostBackTrigger ControlID="lstRooms2" EventName="SelectedIndexChanged" />
 					
                     <asp:AsyncPostBackTrigger ControlID="lstCategories" EventName="SelectedIndexChanged" />
                     <asp:AsyncPostBackTrigger ControlID="lvCategories" EventName="SelectedIndexChanged" />
 
 					<asp:AsyncPostBackTrigger ControlID="lstLevels" EventName="SelectedIndexChanged" />
-					<asp:AsyncPostBackTrigger ControlID="lstStyle" EventName="ItemDataBound" />
-					<asp:AsyncPostBackTrigger ControlID="lstStyle" EventName="ItemCommand" />
-					<asp:AsyncPostBackTrigger ControlID="lstSelectedUpgrade" EventName="ItemCommand" />
-                    <asp:AsyncPostBackTrigger ControlID="cmdSelectedItemSave" EventName="Click" />
-                    <asp:AsyncPostBackTrigger ControlID="cmdAutoPick" EventName="Click" />
+					<asp:AsyncPostbackTrigger ControlID="lstStyle" EventName="ItemDataBound" />
+					<asp:AsyncPostbackTrigger ControlID="lstStyle" EventName="ItemCommand" />
+					<asp:AsyncPostbackTrigger ControlID="lstSelectedUpgrade" EventName="ItemCommand" />
+                    <asp:AsyncPostbackTrigger ControlID="cmdSelectedItemSave" EventName="Click" />
+                    <asp:AsyncPostbackTrigger ControlID="cmdAutoPick" EventName="Click" />
 				</Triggers>
 			</asp:UpdatePanel>
 			<asp:UpdateProgress ID="updPrgSelected" runat="server" AssociatedUpdatePanelID="updPnlSelectedUpgrades">
@@ -1215,14 +1383,15 @@
             var sID = currow.find("td[id='id']").text();
             var sComment = currow.find("td[id='comments']").text();
             var sItemDesc = sCategory.concat(sLevel);
-            var sAdjustmentText = currow.find("td[id='adjustments']").text();
+			var sAdjustmentText = currow.find("td[id='adjustments']").text();
+			sAdjustmentText = sAdjustmentText.replace('(','-')
             sAdjustmentText = sAdjustmentText.replace(/[^0-9.-]+/g, "");
             // var sPhaseID = currow.cells[1].childNodes[0].data("id");
             //.concat(sStyle.concat(sDescription))
             $("#MainContent_txtItemText").val(sItemDesc);
             $("#MainContent_txtQuantity").val(sQuantity.trim());
             $("#MainContent_txtSelectedItemID").val(sID.trim());
-            $("#MainContent_txtAdjustment").val(sAdjustment);
+            $("#MainContent_txtAdjustment").val(sAdjustmentText);
             $("#MainContent_txtItemPrice").val(sCustomerPrice);
             //  $("#MainContent_lblTotalPrice").val(sCost);
             $("#MainContent_txtComment").val(sComment);

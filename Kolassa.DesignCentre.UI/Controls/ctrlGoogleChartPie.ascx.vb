@@ -17,7 +17,7 @@ Public Class CtrlGoogleChartPie
 	Public SubTitle As String
 	Public data_url As String
 
-	Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 		'Me.Attributes.Add("data_Dude", Session("Project") & "&Node=" & Session("Node"))
 		'Dim query As String = SQL
 		'query = Replace(query, "PROJECTGUID", " ProjectID = '" & Session("Project") & "' ")
@@ -35,8 +35,9 @@ Public Class CtrlGoogleChartPie
 
 		If IsPostBack Then
 		Else
-			GetChartTypes()
-		End If
+            GetChartTypes()
+            ddlChartType.SelectedValue = chartType
+        End If
 	End Sub
 
 	Public Sub GetReportChartData()
@@ -65,8 +66,9 @@ Public Class CtrlGoogleChartPie
 		ds = cn.LoadChartData(llNodeID, lsProjectID, lsChartID)
 		Title = ds.Tables(0)(0)("Name")
 		SubTitle = ds.Tables(0)(0)("Description")
-		ChartOptions = ds.Tables(0)(0)("ChartOptions")
-		Dim data As New List(Of googleChartData)
+        ChartOptions = ds.Tables(0)(0)("ChartOptions")
+        If lsChartType Is Nothing Then lsChartType = ds.Tables(0)(0)("charttype")
+        Dim data As New List(Of googleChartData)
 
 		'Dim ds As System.Data.DataSet = cn.LoadAdhoc(1, "Select Roomdescription, Sum(customerprice) customertotal, avg(customerprice) avgcust, count(customerprice) countcust,count(customerprice) countcust2 from tblRequestedUpgrades group by RoomDescription", True, "", "")
 		Dim chartData = New List(Of Object())
@@ -84,13 +86,14 @@ Public Class CtrlGoogleChartPie
 			lsChartType = nvc("lsChartType")
 		End If
 		If lsChartType Is Nothing Then lsChartType = "Pie"
-		Select Case lsChartType.ToUpper
 
-			Case "DONUT"
-				liColumnsForChart = 3
-		End Select
+        Select Case lsChartType.ToUpper
+            Case "DONUT"
+                liColumnsForChart = 3
+        End Select
 
-		If liColumnsForChart < liColCount Then liColCount = liColumnsForChart
+        chartType = lsChartType
+        If liColumnsForChart < liColCount Then liColCount = liColumnsForChart
 
 		Dim o(liColCount - 1) As Object
 		For Each col In ds.Tables("chartdata").Columns

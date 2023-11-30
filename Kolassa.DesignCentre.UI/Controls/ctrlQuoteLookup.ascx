@@ -52,9 +52,9 @@
 			
 	<!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit"  >Search</button> -->
 
-<span class="counter pull-right"></span>
+    <span class="counter pull-right"></span>
 	<asp:GridView ID="grdQuoteLookup" runat="server" AutoGenerateSelectButton="True" DataSourceID="odsQuoteLookup"
-		class="table table-hover table-bordered results" AutoGenerateColumns="False" DataKeyNames="ID">
+		class="table table-hover table-bordered table-sm results" AutoGenerateColumns="False" DataKeyNames="ID">
 		<Columns>
 			<asp:BoundField DataField="ID" HeaderText="ID" Visible="False" />
 			<asp:BoundField DataField="CustomerName" HeaderText="Customer" />
@@ -62,8 +62,12 @@
 			<asp:BoundField DataField="UnitTypeName" HeaderText="Unit Type Name" />
 			<asp:BoundField DataField="UnitTypeDescription" HeaderText="Type Description" />
 			<asp:BoundField DataField="UnitTypeCode" HeaderText="Unit Type Code" />
+			<asp:BoundField DataField="quotestatus" HeaderText="Quote Status" />
+			<asp:BoundField DataField="AssignedToName" HeaderText="Assigned To" />
+			<asp:BoundField DataField="updatedate" HeaderText="Last Updated" />
 		</Columns>
-</asp:GridView>
+    </asp:GridView>
+
 
 	<asp:ObjectDataSource ID="odsQuoteLookup" runat="server" SelectMethod="LoadAllQuotes" TypeName="Kolassa.DesignCentre.Data.clsSelectDataLoader">
         <SelectParameters>

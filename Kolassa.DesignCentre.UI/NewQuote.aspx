@@ -11,12 +11,13 @@
 
 
 <asp:Content ID="cntRecords" runat="server" ContentPlaceHolderID="MainContent" >
-	<h5><asp:Label ID="lblNewQuoteTitle" runat="server" Text="New Quote Form" /></h5>
+	<h4><asp:Label ID="lblNewQuoteTitle" runat="server" Text="New Quote Form" /></h4>
+	<h5>Each New Quote MUST have  a Project Selected, a Unit in that Project and a Customer Assigned to that Unit.  Please Select thes items in Order from  Left to Right.</h5>
 	<asp:Literal ID ="litQuoteID" runat="server" />
 		<div class="card-group">
 			
 			<div class="card">
-				<img src="images/1.png" class="card-img-top" style="width: 120px;" alt="...">
+				<h5>STEP</h5> <img src="images/1.png" class="card-img-top" style="width: 120px;" alt="...">
 				<div class="card-body">
 						<button  id="cmdProject" type="button" class="btn-group-lg btn-outline-danger" data-toggle="modal" data-target="#ProjectModal"><i class="fas fa-arrow-alt-circle-down"></i> Project</button>			  
 				  <h5 class="card-title"><asp:Label runat="server" ID ="lblSelectaProject" Text ="Select a Project" /></h5> 
@@ -43,7 +44,7 @@
 				</div>			
 			</div>
 			<div class="card">
-				<img src="images/2.png" class="card-img-top" style="width: 120px;" alt="...">
+				<h5>STEP</h5> <img src="images/2.png" class="card-img-top" style="width: 120px;" alt="...">
 				<div class="card-body">
 					<button id="cmdUnit" type="button" class="btn-group-lg btn-outline-primary" data-toggle="modal" data-target="#UnitModal"><i class="fas fa-building"></i> Unit</button>			  
 					<h5 class="card-title"><asp:Label runat="server" ID ="lblSelectaUnit" Text ="Select a Unit" /></h5> 
@@ -67,7 +68,7 @@
 				</div>			
 			</div>
 			<div class="card">
-				<img src="images/3.png" class="card-img-top" style="width: 120px;" alt="...">
+				<h5>STEP</h5> <img src="images/3.png" class="card-img-top" style="width: 120px;" alt="...">
 				<div class="card-body">
 						<button type="button" class="btn-outline-secondary" data-toggle="modal" data-target="#CustomerModal"><i class="fas fa-users"></i> Customer</button>
 					<h5 class="card-title"><asp:Label runat="server" ID ="lblSelectCustomer" Text ="Select a Customer" /></h5> 

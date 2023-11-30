@@ -376,6 +376,11 @@
     <Content Include="images\DCLogoSM.png" />
     <Content Include="images\download.png" />
     <Content Include="images\eye.png" />
+    <Content Include="images\Legend-badge.png" />
+    <Content Include="images\Legend-NoSelection.png" />
+    <Content Include="images\Legend-Required-No-Selection.png" />
+    <Content Include="images\Legend-Required-Selection.png" />
+    <Content Include="images\Legend-Selected.png" />
     <Content Include="images\loadingH.gif" />
     <Content Include="images\newconstruction.png" />
     <Content Include="images\sort-asc.png" />

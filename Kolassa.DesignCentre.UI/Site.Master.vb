@@ -54,11 +54,13 @@ Public Class SiteMaster
 
         '*** Are we coming from a new project selection? If so, its in the querystring
         Dim lsProject As String = Request.QueryString("ProjectId")
+        If lsProject = "" Then lsProject = Session("Project")
         Dim cp As New clsPersonalData
         Dim a As New GlobalFunctionsDC
         Dim lsLast As String
 
         If Session("NodeID") Is Nothing Then
+            ' Response.Redirect("Login.aspx")
             Session("NodeID") = 0
         End If
         txtnodeid.Text = Session("NodeID")

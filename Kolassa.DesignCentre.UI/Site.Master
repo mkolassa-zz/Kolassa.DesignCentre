@@ -265,10 +265,10 @@
             </li>
             <!-- /END Separator -->
    
-            <a href="#submenu2" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
+            <a href="#submenu2" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start" style="height:75px;">
                 <div class="d-flex w-100 justify-content-start align-items-center">
                     <span class="fa fa-user fa-fw mr-3"></span>
-                    <span class="menu-collapsed"><%:IIf(Session("UserFriendlyName") Is Nothing, Context.User.Identity.GetUserName(), Session("UserFriendlyName"))  %></span>
+                    <span class="menu-collapsed" style="height:75px;"><%:IIf(Session("UserFriendlyName") Is Nothing, Context.User.Identity.GetUserName(), Session("UserFriendlyName"))  %></span>
                     <span class="fa fa-chevron-circle-down ml-auto"></span>
                 </div>
             </a>
