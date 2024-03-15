@@ -53,7 +53,7 @@
                                              <%# DataBinder.Eval(Container.DataItem, "Email") %> <br />
                                              <%# DataBinder.Eval(Container.DataItem, "Code") %> <br /></div>
                                              <%# DataBinder.Eval(Container.DataItem, "Description") %> <br />
-                                             Assigned To: <%# DataBinder.Eval(Container.DataItem, "AssignedToEmail") %>  <br />
+                                             Assigned To: <%# DataBinder.Eval(Container.DataItem, "AssignedToName") %>  <br />
                                              <%# DataBinder.Eval(Container.DataItem, "Comments") %>                 
                                             <div class="d-none">
                                                 <%# DataBinder.Eval(Container.DataItem, "CreateUserName") %> <br /><%# DataBinder.Eval(Container.DataItem, "updateusername") %> <%# DataBinder.Eval(Container.DataItem, "Createdate") %> 

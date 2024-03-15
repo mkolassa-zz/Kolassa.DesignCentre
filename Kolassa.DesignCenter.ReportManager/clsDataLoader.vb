@@ -454,7 +454,9 @@ Public Class clsDataLoader
         'If llNodeID = 0 Then
         ' Exit Function
         ' End If
-
+        lsSQL = "Select ID from tblReportViewColumns WHERE  ViewID = '" & lsViewID & "' and FieldName = '" & lsFieldName & "';" ' *** Does the field name already exist?
+        Dim ds As DataSet = fGetDataset(mscnType, mscnStr, lsSQL, "ReportControls")
+        If ds.Tables(0).Rows.Count = 1 Then Return False
         If isGUID(lsID) Then
         Else
             lsID = Guid.NewGuid.ToString
@@ -1007,7 +1009,7 @@ LoadChildrenError:
             If TableName.ToUpper = "TBLPROJECTS" Then
             Else
 
-                lsSQL = lsSQL & "   and ObjectID = '" & ProjectID & " '"
+                lsSQL = lsSQL & "   and ObjectID = '" & ProjectID & "'"
             End If
         End If
         If Not ID Is Nothing Then

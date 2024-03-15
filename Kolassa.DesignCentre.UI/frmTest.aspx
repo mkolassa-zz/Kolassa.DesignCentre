@@ -10,7 +10,7 @@
     <link  rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-   <style>
+    <style>
        th {
                 -webkit-transform: translate(5px, 1px) rotate(315deg);
                 -ms-transform: translate(5px, 1px) rotate(315deg);
@@ -60,42 +60,40 @@
 
    </style>
 
-  <div class="container">
-                    <div class=""><asp:TextBox ID="txtSaveAs" runat="server" />
-                        <asp:Literal ID="litinfo" runat="server" />
-                                <p> <asp:Label ID="lblfileupload" runat="server" AssociatedControlID="fuCSV" Text="file: " />
-                                   <ajaxToolkit:AjaxFileUpload ID="fuCSV" runat="server" CssClass="lbtn lbtn-light"  />
-				                   <asp:Button ID="cmdCSV" class="btn btn-primary" runat="server" Text="Upload CSV" /> 
-                                    <asp:FileUpload ID="fu" runat="server" />
-                                    <asp:Button ID="cmdfu" runat="server" Text="File Upload" />
-				                </p>
-                            </div>      
-        <asp:button runat="server"  type="button" class="btn btn-info btn-lg" id="cmdSendEmail" Text="Send Email" />
+    <div class="container">
+    <div class=""><asp:TextBox ID="txtSaveAs" runat="server" />
+        <asp:Literal ID="litinfo" runat="server" />
+        <p> <asp:Label ID="lblfileupload" runat="server" AssociatedControlID="fuCSV" Text="file: " />
+            <ajaxToolkit:AjaxFileUpload ID="fuCSV" runat="server" CssClass="lbtn lbtn-light"  />
+			<asp:Button ID="cmdCSV" class="btn btn-primary" runat="server" Text="Upload CSV" /> 
+            <asp:FileUpload ID="fu" runat="server" />
+            <asp:Button ID="cmdfu" runat="server" Text="File Upload" />
+		</p>
+    </div>      
+    <asp:button runat="server"  type="button" class="btn btn-info btn-lg" id="cmdSendEmail" Text="Send Email" />
 
-  <h2>Activate Modal with JavaScript</h2>
-  <!-- Trigger the modal with a button -->
-  <button type="button" class="btn btn-info btn-lg" id="myBtn">Open Modal</button>
+    <h2>Activate Modal with JavaScript</h2>
+    <!-- Trigger the modal with a button -->
+    <button type="button" class="btn btn-info btn-lg" id="myBtn">Open Modal</button>
 
-  <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Modal Header</h4>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">   
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Some text in the modal.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
-        <div class="modal-body">
-          <p>Some text in the modal.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-      
     </div>
-  </div>
         <asp:UpdatePanel id="upChecks" runat="server" ChildrenAsTriggers="true">
             <ContentTemplate>
                 <asp:Button CssClass="btn btn-floating" ID="Button1" runat="server" Text="Button" />
@@ -103,26 +101,25 @@
                 <asp:GridView ID="gvCrosstab" runat="server"> </asp:GridView>
             </ContentTemplate>
             <Triggers>
-
             </Triggers>
         </asp:UpdatePanel>
-       <asp:UpdateProgress ID="upProgress" runat="server">
-           <ProgressTemplate>
-            <img src="images/loadingH.gif" /><br />Loading . . .
+        <asp:UpdateProgress ID="upProgress" runat="server">
+            <ProgressTemplate>
+                <img src="images/loadingH.gif" /><br />Loading . . .
             </ProgressTemplate>
-       </asp:UpdateProgress>
+        </asp:UpdateProgress>
       
-      <uc1:ctrlNotifications runat="server" id="ctrlNotifications" />
-</div>
+        <uc1:ctrlNotifications runat="server" id="ctrlNotifications" />
+    </div>
 
 <script>
-$(document).ready(function(){
-  $("#myBtn").click(function(){
-    $("#myModal").modal();
-  });
+    $(document).ready(function(){
+      $("#myBtn").click(function(){
+        $("#myModal").modal();
+      });
 
 
-});
+    });
      function fchange(tthis) {
        //  alert('mike: ' + tthis.dataset.id);
          var cls = tthis.closest('span');

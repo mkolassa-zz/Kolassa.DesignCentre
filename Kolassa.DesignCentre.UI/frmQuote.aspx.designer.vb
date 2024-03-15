@@ -140,6 +140,15 @@ Partial Public Class frmQuote
     Protected WithEvents lblQuoteForm As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''upDebug control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents upDebug As Global.System.Web.UI.UpdatePanel
+
+    '''<summary>
     '''litID control.
     '''</summary>
     '''<remarks>
@@ -156,6 +165,51 @@ Partial Public Class frmQuote
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtUnitTypeID As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCategory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCategory As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCategoryDateil control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCategoryDateil As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblLevel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblLevel As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblUPgradeoption control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblUPgradeoption As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSelectedOptions control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSelectedOptions As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''litPageInfo control.

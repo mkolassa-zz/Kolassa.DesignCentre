@@ -156,7 +156,7 @@
             Dim liItem As ListItem
             Dim cats As New clsDBObjects
             Dim ccats As New List(Of clsDBObject)
-            ccats = cats.GetRecords("", "", "", llNodeID, "tblUpgradecategories", True)
+            ccats = cats.GetRecords(" ObjectID = '" & lsProjectID & "'", "", "", llNodeID, "tblUpgradecategories", True)
             lstCateories.Items.Clear()
 
             For Each cat As clsDBObject In ccats

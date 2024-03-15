@@ -1003,7 +1003,7 @@ ph1Status_Error:
                 For Each dr As DataRow In dt.Rows
                     li = New ListItem
                     li.Value = dr("ID").ToString
-                    li.Text = dr("userFriendlyName") & " - " & dr("email")
+                    li.Text = dr("userFriendlyName") ' & " - " & dr("email")
                     cboAssignedTo.Items.Add(li)
                 Next
             Next
@@ -1072,6 +1072,7 @@ ph1Status_Error:
         Session("UnitType") = q.UnitTypeName
         Session("UnitTypeID") = q.UnitTypeID
         txtUnitTypeID.Text = q.UnitTypeID
+
         Dim l As Literal = Master.FindControl("LitPageInfo")
         If Not l Is Nothing And Not Session("QuoteID") Is Nothing Then l.Text = "QuoteID: " & Session("QuoteID")
         litID.Text = Session("QuoteID")
@@ -1747,6 +1748,14 @@ Err_cmdAutoPick_Click:
 
 	Protected Sub lstSelectedUpgrade_ItemCreated(sender As Object, e As ListViewItemEventArgs) Handles lstSelectedUpgrade.ItemCreated
         'Stop
+
+    End Sub
+
+    Private Sub odsRequestedUpgrades_Load(sender As Object, e As EventArgs) Handles odsRequestedUpgrades.Load
+        'Stop
+        Dim lsVal As String = lvCategories.SelectedValue
+        lblCategory.Text = lsVal '& lvCategories..Text
+        lblCategoryDateil.Text = lstLevels.SelectedValue
 
     End Sub
 End Class

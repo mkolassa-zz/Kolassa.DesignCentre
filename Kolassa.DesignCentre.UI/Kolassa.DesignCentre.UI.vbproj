@@ -372,6 +372,7 @@
     <Content Include="frmQuoteCustomer.aspx" />
     <Content Include="frmReports.aspx" />
     <Content Include="frmTasks.aspx" />
+    <Content Include="frmDataAdmin.aspx" />
     <Content Include="frmUpgradeItems.aspx" />
     <Content Include="images\DCLogoSM.png" />
     <Content Include="images\download.png" />
@@ -941,6 +942,13 @@
     </Compile>
     <Compile Include="frmTasks.aspx.vb">
       <DependentUpon>frmTasks.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="frmDataAdmin.aspx.designer.vb">
+      <DependentUpon>frmDataAdmin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="frmDataAdmin.aspx.vb">
+      <DependentUpon>frmDataAdmin.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="frmUpgradeItems.aspx.designer.vb">

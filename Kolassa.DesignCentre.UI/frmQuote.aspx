@@ -32,6 +32,7 @@
         table.glyphicon-hover .glyphicon { visibility: hidden; }
         table.glyphicon-hover td:hover .glyphicon {  visibility: visible; }
     </style>
+
         <style>
         nav.Kolassa { color:green
         }
@@ -254,9 +255,30 @@
 				</h4>
 			  </div>
 			  <div id="collapseQuote" class="panel-collapse collapse">
-				<div class="panel-body"><asp:Literal  ID="litID" runat="server" />
-					UnitTypeID: <asp:Label runat="server" ID="txtUnitTypeID"  />
-				</div>
+				  <asp:UpdatePanel ID="upDebug" runat="server">
+					  <ContentTemplate>
+						<div class="panel-body">
+							QuoteID: <asp:Literal  ID="litID" runat="server" /><br />
+							UnitTypeID: <asp:Label runat="server" ID="txtUnitTypeID"  /><br />
+							CategoryID: <asp:Label runat="server" ID="lblCategory"  /><br />
+							CategoryDetailID: <asp:Label runat="server" ID="lblCategoryDateil"  /><br />
+							Level: <asp:Label runat="server" ID="lblLevel"  /><br />
+							UpgradeOptions:  <asp:Label runat="server" ID="lblUPgradeoption"  /><br />
+							SelectedUpgrades: <asp:Label runat="server" ID="lblSelectedOptions"  /><br />
+							<button onclick="toggledebug();">debug</button>
+						</div>
+					</ContentTemplate>
+					<Triggers>
+						<asp:AsyncPostbackTrigger ControlID="lststyle" EventName="ItemInserting" />
+						<asp:AsyncPostBackTrigger ControlID="lstRooms2" EventName="SelectedIndexChanged" />
+					
+						<asp:AsyncPostBackTrigger ControlID="lstCategories" EventName="SelectedIndexChanged" />
+						<asp:AsyncPostBackTrigger ControlID="lvCategories" EventName="SelectedIndexChanged" />
+
+						<asp:AsyncPostBackTrigger ControlID="lstLevels" EventName="SelectedIndexChanged" />
+						<asp:AsyncPostbackTrigger ControlID="lstStyle" EventName="ItemCommand" />
+					</Triggers>
+				</asp:UpdatePanel>
 				<div class="panel-footer"><asp:literal runat="server" ID="litPageInfo"></asp:literal></div>
 			  </div>
 			</div>
@@ -949,11 +971,11 @@
 			<div class="col-md-3" style="padding-left:0px;padding-right:0px;">
 				<div class="card w-100">
 					<div class="card-body">
-				<h5 class="card-title"">Location<asp:linkbutton id="lblLegend" cssclass="text-success small"   runat="server" text="    *Legend"/></h5>
+						<h5 class="card-title"">Location<asp:linkbutton id="lblLegend" cssclass="text-success small"   runat="server" text="    *Legend"/></h5>
 						<ajaxToolkit:PopupControlExtender ID="popLegend" runat="server"
-    TargetControlID="lblLegend"
-    PopupControlID="pnlLegend"
-    Position="Bottom" />
+							TargetControlID="lblLegend"
+							PopupControlID="pnlLegend"
+							Position="Bottom" />
 						<asp:panel ID="pnlLegend" runat="server" CssClass="bg-white border border-info" Width="300px">
                             <img src="images/Legend-badge.png" /> Number of Selections Made<br />
                             <img src="images/Legend-NoSelection.png" /> No Selection for Category<br />
@@ -1060,8 +1082,8 @@
              ********************************************************************************************************** -->
 		<div class="col-md-3" style="padding-left:0px;padding-right:0px;">
 			<div class="card w-100">
-					<div class="card-body">
-						<h5 class="card-title">Levels</h5>
+				<div class="card-body">
+					<h5 class="card-title">Levels</h5>
 						<asp:UpdatePanel ID="updPnlLevels" runat="server" >
 							<ContentTemplate>
 								<div style="width: 270px;  overflow-x: scroll;"">
@@ -1092,30 +1114,31 @@
 	    <!-- **********************************************************************************************************
          *** Options
          *********************************************************************************************************** -->
-<table style="width:100%; border-width:thick;" >
-	<tr style="">
-		<td>
-	<tr>
-        <td style="align-content:flex-start;" colspan="4"> 
-			<asp:UpdatePanel ID="updPnlOptions" runat="server" >
-				<ContentTemplate>
-					<div class="card w-100"><div class="card-body">
-					<h5><asp:label id="lblAvailableUpgrades" runat="server">Available Upgrades</asp:label></h5>
-					<div class="border border primary">
-					<asp:Panel runat="server" ID="pnlStyle" Width="100%" Height="250px" ScrollBars="Vertical" class="border border-primary">               	
-	                	<asp:ListView ID="lstStyle"  runat="server" DataSourceID="odsStyle" DataKeyNames="ID"> 
-						<LayoutTemplate>
-							<table style="width:100%" class="table-bordered table-hover" id="gradient-style">
-								<tr>
-									<th style="width:5%">Insert</th>
-									<th style="width:60%">Description</th>
-									<th style="width:10%" class="d-none">ID</th>
-									<th style="width:15%">Style</th>
-									<th style="width:15%">Customer Price</th>
-								</tr>
-								<asp:PlaceHolder ID="itemPlaceholder" runat="server"></asp:PlaceHolder>
-							</table>
-						</LayoutTemplate>
+	<table style="width:100%; border-width:thick;" >
+		<tr style="">
+			<td>
+		<tr>
+			<td style="align-content:flex-start;" colspan="4"> 
+				<asp:UpdatePanel ID="updPnlOptions" runat="server" >
+					<ContentTemplate>
+						<div class="card w-100"><div class="card-body">
+						<h5><asp:label id="lblAvailableUpgrades" runat="server">Available Upgrades</asp:label></h5>
+						<div class="border border primary">
+						<asp:Panel runat="server" ID="pnlStyle" Width="100%" Height="250px" ScrollBars="Vertical" class="border border-primary">               	
+	                		<asp:ListView ID="lstStyle"  runat="server" DataSourceID="odsStyle" DataKeyNames="ID"> 
+							<LayoutTemplate>
+								<table style="width:100%" class="table-bordered table-hover" id="gradient-style">
+									<tr>
+										<th style="width:5%">Insert</th>
+										<th style="width:60%">Description</th>
+										<th style="width:10%" class="debug d-none">ID</th>
+										<th style="width:15%">Style</th>
+										<th style="width:15%">Customer Price</th>
+						
+									</tr>
+									<asp:PlaceHolder ID="itemPlaceholder" runat="server"></asp:PlaceHolder>
+								</table>
+							</LayoutTemplate>
 							<ItemTemplate>
 								<tr>
 									<td><asp:LinkButton runat="server" ID="InsertItem" Text="Insert"  
@@ -1134,7 +1157,7 @@
 									</asp:LinkButton> 
 									</td>
 									<td><%#Eval("Description")%></td>
-									<td ID="OptionID" class="d-none"><%#Eval("ID")%></td>
+									<td ID="OptionID" class="debug d-none"><%#Eval("ID")%></td>
 									<td><%#Eval("Style")%></td>
 									<td><%#Eval("CustomerPrice", "{0:c}")%></td>
 								</tr>
@@ -1142,9 +1165,10 @@
 							<SelectedItemTemplate>
 								<td><asp:LinkButton runat="server" ID="InsertItem" Text="Inserty" CommandName="InsertRequestedItem" CommandArgument='<%#Eval("ID") %>' ClientIDMode="AutoID" /></td>
                                 <td><%#Eval("Description")%></td>
-								<td id="OptionID"><%#Eval("ID")%></td>
+								<td id="OptionID" class="debug d-none"><%#Eval("ID")%></td>
                                 <td><%#Eval("Style")%></td>
                                 <td><%#Eval("CustomerPrice", "{0:c}")%></td>
+						
                           </SelectedItemTemplate>
                     </asp:ListView>
 					</asp:Panel>
@@ -1350,7 +1374,16 @@
 					$("#SelectedItemsModal").modal("show");
 				}
 			});
+
+          
+
         });
+
+        function toggledebug() {
+            var d = $(".debug"); // by classname
+            d.addClass('d-block');
+            d.removeClass('d-none');
+        }
 
 
         function fCheckPhases() {

@@ -139,8 +139,10 @@ Public Class clsSelectDataLoader
         If dt.Rows.Count = 0 Then Return "No Record for that ID"
         dr = dt.Rows(0)
         If llNodeID <> dr("NodeID") Then Return "Record is for another Customer"
-        If lsProject <> dr("objectID") Then Return "Record is for another Project"
-
+        If Not IsDBNull(dr("ObjectID")) Then '*** Vendor is at the Node Level and wont have an Object ID
+            Dim lsTemp As String = dr("ObjectID").ToString
+            If lsProject.ToUpper <> lsTemp.ToUpper Then Return "Record is for another Project"
+        End If
         Return "OK"
     End Function
 
@@ -246,7 +248,7 @@ Public Class clsSelectDataLoader
         End If
         Dim lsUser As String = fGetUser()
 
-        lsSQL = "SELECT TOP 100 p.name as project, u.email, cu.email as createusername, uu.email as updateusername, t.*    " & NL &
+        lsSQL = "SELECT TOP 100 p.name as project,u.userfriendlyname, u.email, cu.email as createusername, uu.email as updateusername, t.*    " & NL &
                     "FROM tblTasks    t left join tblprojects p on t.projectid = p.ID    
 						LEFT JOIN aspnetusers u on t.assignedto = u.id" & NL &
                     "	LEFT JOIN aspnetusers cu on t.Createuser = cu.id" & NL &
@@ -1527,21 +1529,16 @@ Public Class clsSelectDataLoader
 			'response.write("No Project Selectedd")
 			Exit Function
 		End If
-		lsSQL = "SELECT tblUnitProfiles.ID UnitProfileID, tblRooms.ID roomid, tblUnitProfiles.ID UnitTypeID, " &
-				"tblRooms.Name RoomName, tblRooms.Description RoomDescription, tblUnits.UnitCode, tblUnitProfiles.Active " &
-				"FROM (tblUnitTypes " &
-				"   INNER JOIN (tblUnitProfiles " &
-				"   INNER JOIN tblRooms ON tblUnitProfiles.RoomID = tblRooms.ID) " &
-				"   ON tblUnitTypes.ID = tblUnitProfiles.UnitTypeID) " &
-				"   INNER JOIN tblUnits ON tblUnitTypes.ID = tblUnits.UnitTypeID " &
-				"WHERE tblUnits.ID='" & lsID & "' " &
-					IIf(lsWhere.Length > 4, " and " & lsWhere, "") & NL &
-					IIf(lbActive = True, " and tblUnitProfiles.Active = 1 ", "") & NL &
-					" Order By tblRooms.Name"
+        lsSQL = "SELECT  R.ID as ID, r.name ,up.ID as UnitProfileID, R.ID roomid, ut.id UnitTypeID, R.Name RoomName, R.Description RoomDescription, up.Active 
+				FROM (tblUnitTypes as UT   INNER JOIN (tblUnitProfiles   as up
+				INNER JOIN tblRooms as R ON up.RoomID = R.ID)    ON ut.ID = up.UnitTypeID)   
+				WHERE 1=1  and ut.ID = '" & lsID & "' 
+				 and up.Active = 1 
+				 Order By R.Name"
 
 
-		'*** Load a data set.
-		Dim ds As New DataSet()
+        '*** Load a data set.
+        Dim ds As New DataSet()
 		ds = fGetDataset(mscnType, mscnStr, lsSQL, "Rooms")
 
 		mdsRooms = ds
@@ -1565,26 +1562,46 @@ Public Class clsSelectDataLoader
 
     End Function
 
-    '****************************************************
-    '*** Room Categories
-    Public Function LoadRoomCategories(ByVal llNodeID As Long, ByVal lsUnitType As String, ByVal lsPhase As String, ByVal lsRoom As String, ByVal lsQuoteID As String) As DataSet
+	'****************************************************
+	'*** Room Categories
+	Public Function LoadRoomCategories(ByVal llNodeID As Long, ByVal lsUnitType As String, ByVal lsPhase As String, ByVal lsRoom As String, ByVal lsQuoteID As String) As DataSet
 		Dim lsSQL As String
 
 		'*** Initialize
 		LoadRoomCategories = Nothing
 		If llNodeID = 0 Or lsUnitType = "" Then Exit Function
 
-        lsSQL = "Select * From f_LoadRoomCategories('" & lsUnitType & "', '" & lsRoom & "', '" & lsQuoteID & "', " & lsPhase & ", 0) ORDER BY categorygrouping, Upgradecategory"
-        '*** Load a data set.
-        Dim ds As New DataSet()
+		lsSQL = "Select * From f_LoadRoomCategories('" & lsUnitType & "', '" & lsRoom & "', '" & lsQuoteID & "', " & lsPhase & ", 0) ORDER BY categorygrouping, Upgradecategory"
+		'*** Load a data set.
+		Dim ds As New DataSet()
 		ds = fGetDataset(mscnType, mscnStr, lsSQL, "Categories")
 
-        Return ds
+		Return ds
 
+	End Function
+    Public Function LoadRoomCategories2(ByVal llNodeID As Long, ByVal lsUnitTypeID As String, ByVal lsPhase As String, ByVal lsRoomID As String) As DataSet
+        Dim lsSQL As String
+
+        '*** Initialize
+        Dim ds As New DataSet
+        If llNodeID = 0 Or lsUnitTypeID = "" Then Exit Function
+
+        lsSQL = "SELECT d.ID as ID,d.name  ,up.ID as UnitProfileID, R.ID roomid, ut.id UnitTypeID, R.Name RoomName, R.Description RoomDescription,  up.Active 
+				FROM (tblUnitTypes as UT   INNER JOIN (tblUnitProfiles   as up
+				INNER JOIN tblRooms as R ON up.RoomID = R.ID)    ON ut.ID = up.UnitTypeID)   
+				INNER JOIN TBLUPGRADECATEGORYDETAILS as d on d.UNITTYPEID = ut.id and d.locationid = r.id
+				INNER JOIN tblProjectPhases as pp on pp.code = d.BuildingPHase
+				WHERE 1=1  and ut.ID='" & lsUnitTypeID & "' and r.id='" & lsRoomID & "'
+				 and up.Active = 1 and d.nodeid = " & llNodeID & "
+				 and pp.id =  '" & lsPhase & "'
+				 Order By d.name"
+        '*** Load a data set.
+        ds = fGetDataset(mscnType, mscnStr, lsSQL, "Categories")
+        Return ds
     End Function
-	'****************************************************
-	'*** Room Categories
-	Public Function LoadUnfullfilledRequiredItems(ByVal lsPhase As String, ByVal lsRoom As String, ByVal lsQuoteID As String) As DataSet
+    '****************************************************
+    '*** Room Categories
+    Public Function LoadUnfullfilledRequiredItems(ByVal lsPhase As String, ByVal lsRoom As String, ByVal lsQuoteID As String) As DataSet
 		Dim lsSQL As String
 
 		'*** Initialize
@@ -1613,23 +1630,23 @@ Public Class clsSelectDataLoader
 		If llNodeID = 0 Or lsUnitType = "" Then Exit Function
 
 
-		lsSQL = "SELECT DISTINCT  O.UpgradeLevel " &
-				"FROM     tblUpgradeOptions as O " &
-				"WHERE O.UnitTypeID = '" & lsUnitType & "' AND " &
-				"      O.Location   = '" & lsRoom & "'     AND " &
-				"      O.BuildingPhase= '" & lsPhase & "'  AND " &
-				"   O.UpgradeCategory = '" & lsCategory & "' " &
-				"ORDER BY O.UpgradeLevel;"
+        lsSQL = "SELECT DISTINCT  O.UpgradeLevel " &
+                "FROM     tblUpgradeOptions as O " &
+                "WHERE O.UnitTypeID = '" & lsUnitType & "' AND " &
+                "      O.Location   = '" & lsRoom & "'     AND " &
+                "      O.BuildingPhase= '" & lsPhase & "'  AND " &
+                "   O.UpgradeCategory = '" & lsCategory & "' " &
+                "ORDER BY O.UpgradeLevel;"
 
 
 
-		'*** Load a data set.
-		Dim ds As New DataSet()
+        '*** Load a data set.
+        Dim ds As New DataSet()
 		ds = fGetDataset(mscnType, mscnStr, lsSQL, "Categories")
 
-		mdsRooms = ds
-		LoadRoomCategoryLevels = mdsRooms
-	End Function
+        Return ds
+
+    End Function
 
 	'****************************************************
 	'*** Room Category Level Styles
@@ -1640,32 +1657,26 @@ Public Class clsSelectDataLoader
 		LoadRoomCategoryLevelStyles = Nothing
 		If llID = 0 And (llNodeID = 0 Or lsUnitType = "") Then Exit Function
 
-		lsSQL = "SELECT Distinct Description, ModelorStyle as Style, " &
-				   "CustomerPrice, UnitType, UpgradeCategory, " &
-					"Location, UpgradeLevel, 0 as UpgradeOptionID, ID " &
-					"FROM tblUpgradeOptions " &
-					"Where "
-		If llID > 0 Then
-			lsSQL = lsSQL & " UpgradeOptionID = " & llID & ";"
-		Else
-			lsSQL = lsSQL & "( active=1 " &
-					"    AND UnitTypeID='" & lsUnitType & "'  " &
-					"    AND Location='" & lsRoom & "' " &
-					"    AND UpgradeLevel='" & fReplaceQuotes(lsLevel) & "' " &
-					"    AND UpgradeCategory = '" & fReplaceQuotes(lsCategory) & "');"
+        lsSQL = "SELECT Distinct o.Description, o.ModelorStyle as Style, o.CustomerPrice, o.UnitType, o.UpgradeCategory, " &
+                    "o.Location, o.UpgradeLevel, 0 as UpgradeOptionID, o.ID " &
+                    "FROM tblUpgradeOptions as o inner join TBLUPGRADECATEGORYDETAILS d on o.CATEGORYDETAILID = d.id " &
+                    "Where "
+        If llID > 0 Then
+            lsSQL = lsSQL & " o.UpgradeOptionID = " & llID & ";"
+        Else
+            lsSQL = lsSQL & "( o.active=1 " &
+                    "    AND o.UnitTypeID='" & lsUnitType & "'  " &
+                    "    AND o.Location='" & lsRoom & "' " &
+                    "    AND o.UpgradeLevel='" & fReplaceQuotes(lsLevel) & "' " &
+                    "    AND o.UpgradeCategory = '" & fReplaceQuotes(lsCategory) & "');"
+        End If
 
-		End If
-
-
-
-
-		'*** Load a data set.
-		Dim ds As New DataSet()
+        '*** Load a data set.
+        Dim ds As New DataSet()
 		ds = fGetDataset(mscnType, mscnStr, lsSQL, "Categories")
-		'Dim liCount As Integer = ds.Tables(0).Rows.Count
-		mdsRooms = ds
-		LoadRoomCategoryLevelStyles = mdsRooms
-	End Function
+        'Dim liCount As Integer = ds.Tables(0).Rows.Count
+        Return ds
+    End Function
 
 	Public Function DeleteRooms(ByVal RecordID As String, llNodeID As Long) As Boolean
 		Dim lsSQL As String = "Update tblRooms Set Active=0, updatedate = getdate(), updateuser='" & fGetUser() & "'   WHERE  NodeID = " & llNodeID & " AND ID='" & RecordID & "'"
@@ -3388,16 +3399,16 @@ IIf(isGUID(ID), " OR ID = '" & ID & "' ", "")
 			'*** Initialize
 			LoadUpgradeOptions = Nothing
 			If lsWhere = Nothing Then lsWhere = ""
-			'*** Check for No Selected Category
-			If llNodeID = 0 Then
-				'response.write("No Project Selectedd")
-				Exit Function
-			End If
+            '*** Check for No Selected Category
+            If llNodeID = 0 Then
+                Exit Function
+            End If
 
-			lsSQL = "Select TOP 10000 ut.name as unittype, uo.* " &
+            lsSQL = "Select TOP 10000 ut.name as unittype, uo.* " &
 				" FROM   tblUpgradeOptions uo inner join TblUnittypes ut on ut.id = uo.unittypeid " &
 				" WHERE 1=1  " &
 				IIf(lbActive = True, " and uo.Active = 1 ", "") & NL
+
 			If lsID = "00000000-0000-0000-0000-000000000000" Or Not isGUID(lsID) Then
 				If lsRoom <> "" Then lsSQL = lsSQL & " AND uo.[Location] = '" & lsRoom & "' "
 				If lsPhase <> "" Then lsSQL = lsSQL & "       AND uo.BuildingPhase = '" & lsPhase & "' "
@@ -3412,11 +3423,9 @@ IIf(isGUID(ID), " OR ID = '" & ID & "' ", "")
 			End If
 			lsSQL = lsSQL & " ORDER BY UpgradeCategory"
 
-
 			'*** Load a data set.
 			Dim ds As New DataSet()
 			ds = fGetDataset(mscnType, mscnStr, lsSQL, "UpgradeOptions")
-
 			Return ds
 
 		Catch
@@ -3426,10 +3435,48 @@ IIf(isGUID(ID), " OR ID = '" & ID & "' ", "")
 			dt.Rows.Add("No Data!")
 			dsEmpty.Tables.Add(New DataTable("Empty"))
 			Return dsEmpty
-
 		End Try
 	End Function
+    Public Function LoadUpgradeOptionsByCategoryDetail(ByVal llNodeID As Long, ByVal CategoryDetailID As String, ByVal lbActive As Boolean, lsWhere As String, lsID As String) As DataSet
+        Dim lsSQL As String
+        Try
+            '*** Initialize
+            LoadUpgradeOptionsByCategoryDetail = Nothing
 
+            '*** Check for No Selected Category
+            If llNodeID = 0 Then
+                Exit Function
+            End If
+
+            lsSQL = "Select uo.id, uo.upgradelevel + uo.description as name   " &
+                " FROM   tblUpgradeOptions uo  " &
+                " WHERE 1=1  and categorydetailid = '" & CategoryDetailID & "' "
+            IIf(lbActive = True, " and uo.Active = 1 ", "")
+
+            If lsID = "00000000-0000-0000-0000-000000000000" Or Not isGUID(lsID) Then
+				If lsWhere.Length > 4 Then
+					lsWhere = lsWhere.Replace("SearchText", "ut.name + uo.[Description] + uo.[Location] ")
+					lsSQL = lsSQL & " AND " & lsWhere
+				End If
+			Else
+                lsSQL = lsSQL & IIf(isGUID(lsID), " AND ID = '" & lsID & "' ", "") & NL
+            End If
+            lsSQL = lsSQL & " ORDER BY UpgradeCategory"
+
+            '*** Load a data set.
+            Dim ds As New DataSet()
+            ds = fGetDataset(mscnType, mscnStr, lsSQL, "UpgradeOptions")
+            Return ds
+
+        Catch
+            Dim dsEmpty As New DataSet
+            Dim dt As New DataTable
+            dt.Columns.Add("Empty")
+            dt.Rows.Add("No Data!")
+            dsEmpty.Tables.Add(New DataTable("Empty"))
+            Return dsEmpty
+        End Try
+    End Function
 
     Public Function DeleteUpgradeOptions(ByVal RecordID As String, llNodeID As Long) As Boolean
 		If Not isGUID(RecordID) Then
@@ -3988,7 +4035,7 @@ LoadChildrenError:
 
         For Each p As KeyValuePair(Of String, String) In formValue
             Select Case p.Key.ToUpper
-                Case "ID", "CODE", "NAME", "OBJTYPE", "DESCRIPTION", "ACTIVE", "OBJECTID", "CREATEUSER", "CREATEDDATE", "CREATEDATE", "NODEID", "UPDATEDATE", "UPDATEUSER"
+                Case "ID", "CODE", "NAME", "OBJTYPE", "DESCRIPTION", "OBJECTID", "CREATEUSER", "CREATEDDATE", "CREATEDATE", "NODEID", "UPDATEDATE", "UPDATEUSER" ', "ACTIVE"
                 Case Else
                     cmd = New SqlCommand
                     lsSQL = "Update " & lsTable & "  " &
@@ -4719,18 +4766,20 @@ fCheckForRequiredItems_Error:
 		lsSQL = "Delete  from tempselections Where quoteid = '" & lsQuoteID & "';"
 		fMissingSelections = fRunSQL(mscnType, mscnStr, lsSQL)
 
-		lsSQL = "Insert into TempSelections (   UnitType, UnitTypeID, Location, UpgradeCategory,          QuoteID, BuildingPhase, UnitName, ValueExists, Required ) " &
-			"SELECT  Distinct  tblUpgradeOptions.UnitType,  tblUnitTypes.ID as UnitTypeID, tblUpgradeOptions.Location, tblUpgradeOptions.UpgradeCategory,  " &
-			"         tblQuote.ID as quoteID, tblUpgradeOptions.BuildingPhase, tblUnits.UnitName, 0 AS ValueExists , 0 as Optionrequired " &
-			"FROM     (tblUnitTypes LEFT JOIN (tblUnits LEFT JOIN tblQuote ON tblUnits.ID = tblQuote.UnitID)   " &
-			"         ON tblUnitTypes.ID = tblUnits.UnitTypeID) INNER JOIN tblUpgradeOptions ON   " &
-			"         tblUnitTypes.id = tblUpgradeOptions.UnitTypeID  " &
-			"where   tblUpgradeOptions.BuildingPhase = '" & lsPhase & "'  " &
-			" And tblQuote.ID ='" & lsQuoteID & "';"
+        lsSQL = "Insert into TempSelections (   UnitType, UnitTypeID, Location, UpgradeCategory,   QuoteID, BuildingPhase, UnitName, ValueExists, Required ) " &
+            "	SELECT  Distinct  o.UnitType,  ut.ID as UnitTypeID, o.Location, o.UpgradeCategory, tblQuote.ID as quoteID, o.BuildingPhase, U.UnitName, 0 AS ValueExists , 0 as Optionrequired
+	FROM     tblQuote 
+				INNER JOIN tblUnits u on tblquote.UnitID = u.id
+				INNER JOIN tblUnitTypes ut on u.UnitTypeID = ut.id
+				INNER JOIN tblUnitProfiles p on ut.id = p.UnitTypeID
+				INNER JOIN tblRooms r on p.RoomID = r.ID
+				INNER JOIN tblUpgradeOptions o ON            UT.id = o.UnitTypeID  and r.name = o.Location
+				INNER JOIN TBLUPGRADECATEGORYDETAILS d on ut.id = d.unittypeid and o.CATEGORYDETAILID = d.id " &
+            "where   o.BuildingPhase = '" & lsPhase & "'  " & " And tblQuote.ID ='" & lsQuoteID & "';"
 
-		''debug.print(lsSQL)
+        ''debug.print(lsSQL)
 
-		fMissingSelections = fRunSQL(mscnType, mscnStr, lsSQL)
+        fMissingSelections = fRunSQL(mscnType, mscnStr, lsSQL)
 
 		'*** Take out Electrical
 		lsSQL = "Delete * from tempselections where ucase(left(upgradeCategory,10)) = 'ELECTRICAL' where QuoteID='" & lsQuoteID & "';"

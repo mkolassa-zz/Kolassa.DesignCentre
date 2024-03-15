@@ -2605,6 +2605,7 @@ Public Class clstask
     Inherits clsBase
     Public Property AssignedTo As String
     Public Property AssignedToEmail As String
+    Public Property AssignedToName As String
     Public Property email As String
     Public Property Project As String
     Public Property Complete As Boolean
@@ -2720,6 +2721,7 @@ Public Class clsTasks
                                 Case "OBJECTID" : cObject.ObjectID = row.Item(column).ToString
                                 Case "CODE" : cObject.Code = row.Item(column)
                                 Case "ASSIGNEDTO" : cObject.AssignedTo = row.Item(column).ToString
+                                Case "USERFRIENDLYNAME" : cObject.AssignedToName = row.Item(column).ToString
                                 Case "READ", "TASKREAD" : cObject.Read = row.Item(column)
                                 Case "COMPLETED", "TASKCOMPLETED" : cObject.Complete = row.Item(column)
                                 Case "APPURL", "TASKURL" : cObject.AppUrl = row.Item(column)
@@ -2991,9 +2993,14 @@ Public Class clsDBObjects
 		Dim cObject As New clsDBObject
 		Dim colName As String
 		Dim c As New Kolassa.DesignCentre.Data.clsSelectDataLoader
-		If lsObjectID = "" Then lsObjectID = "11112222-3333-4444-5555-666677778888"
-		lsWhere = " "
-		ds = c.LoadThings(NODEID, lsWhere, lbActive, lsID, lsTableName)
+        If lsObjectID = "" Then lsObjectID = "11112222-3333-4444-5555-666677778888"
+        If lsWhere Is Nothing Then lsWhere = " "
+        If lsWhere = "" Then
+            lsWhere = " "
+        Else
+            lsWhere = " " & lsWhere & " "
+        End If
+        ds = c.LoadThings(NODEID, lsWhere, lbActive, lsID, lsTableName)
 
         If ds.Tables.Count = 0 Then Return New List(Of clsDBObject)
 
